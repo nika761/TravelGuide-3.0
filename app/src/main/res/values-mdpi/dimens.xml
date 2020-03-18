@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="main_log_margin_top">40dp</dimen>
+    <dimen name="sign_up_head_margin_top">20dp</dimen>
+    <dimen name="sign_up_fragment_margin_top">100dp</dimen>
+
+</resources>

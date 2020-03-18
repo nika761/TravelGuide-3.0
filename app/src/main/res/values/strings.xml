@@ -1,0 +1,25 @@
+<resources>
+
+    <string name="facebook_app_id">262622864731766</string>
+    <string name="fb_login_protocol_scheme">fb262622864731766</string>
+
+    <string name="app_name">TravelGuide</string>
+    <string name="welcome">Welcome</string>
+    <string name="or">Or</string>
+    <string name="email_or_phone_number">Email or Phone Number</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">forgot password?</string>
+    <string name="name"> Name</string>
+    <string name="surname">Surname</string>
+    <string name="nick_name">NickName</string>
+    <string name="birth_date">Birth date</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="if_you_do_not_have_an_account">if you do not have an account</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="cancel_btn">Cancel</string>
+    <string name="sign_in_btn">Sign in</string>
+    <string name="continue_as">Continue as</string>
+
+</resources>

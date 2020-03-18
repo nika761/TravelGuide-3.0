@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2E314C</color>
+    <color name="colorPrimaryDark">#2E314C</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="splashScreenBackground">#2E314C</color>
+    <color name="whiteTextView">#BAFFFFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellowTextView">#F3BC1E</color>
+    <color name="grey">#807A7A</color>
+    <color name="black">#000</color>
+    <color name="red">#FF0000</color>
+    <color name="transparent">#00FFF2F2</color>
+</resources>
