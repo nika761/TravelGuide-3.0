@@ -21,5 +21,7 @@
     <string name="cancel_btn">Cancel</string>
     <string name="sign_in_btn">Sign in</string>
     <string name="continue_as">Continue as</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 
 </resources>

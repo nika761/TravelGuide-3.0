@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="background_images">
+        <item>@drawable/background_main</item>
+        <item>@drawable/background_2</item>
+        <item>@drawable/background_3</item>
+        <item>@drawable/background_4</item>
+    </array>
+</resources>

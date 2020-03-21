@@ -69,4 +69,5 @@ public class SignInActivity extends AppCompatActivity implements FragmentClickAc
     public void backToSignInFragment() {
         fragmentHead.setText(R.string.welcome);
     }
+
 }

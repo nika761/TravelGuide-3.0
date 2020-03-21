@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/settings_share_profile"
+        android:icon="@drawable/settings_icon_share"
+        android:title="Share Profile" />
+    <item
+        android:id="@+id/settings_balance"
+        android:icon="@drawable/settings_icon_balance"
+        android:title="Balance" />
+    <item
+        android:id="@+id/settings_language"
+        android:icon="@drawable/settings_icon_language"
+        android:title="Language" />
+    <item
+        android:id="@+id/settings_about"
+        android:icon="@drawable/settings_icon_about"
+        android:title="About Travel Guide" />
+    <item
+        android:id="@+id/settings_terms"
+        android:icon="@drawable/settings_icon_terms"
+        android:title="Terms and Conditions" />
+    <item
+        android:id="@+id/settings_sing_out"
+        android:icon="@drawable/settings_icon_sign_out"
+        android:title="Sign out" />
+
+</menu>

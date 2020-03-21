@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
+import com.example.travelguide.model.User;
 import com.example.travelguide.utils.Utils;
 
 public class SplashScreenActivity extends AppCompatActivity {

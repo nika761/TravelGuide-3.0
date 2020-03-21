@@ -11,13 +11,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.travelguide.R;
+import com.example.travelguide.model.User;
 import com.example.travelguide.utils.Utils;
+
+import java.util.List;
 
 
 public class ChooseLanguageActivity extends AppCompatActivity {
 
     private TextView englishFull, georgianFull, russianFull, chineseFull;
     private Button startButton;
+    private List<User> currentUsers;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -38,6 +42,7 @@ public class ChooseLanguageActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setListeners() {
+
         englishFull.setOnClickListener(v -> {
             englishFull.setTextColor(getColor(R.color.yellowTextView));
             georgianFull.setTextColor(getColor(R.color.white));
@@ -75,11 +80,42 @@ public class ChooseLanguageActivity extends AppCompatActivity {
         });
 
         startButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, SignInActivity.class);
-            if (Utils.getSavedUsers(this).size() > 0) {
-                intent = new Intent(ChooseLanguageActivity.this, SavedUserActivity.class);
+            currentUsers = Utils.getSavedUsers(this);
+            if (currentUsers.size() != 0) {
+                for (User currentUser : currentUsers) {
+                    if (currentUser != null && currentUser.getLoginType() != null
+                            && currentUser.getLoginType().equals("google")) {
+                        startUserPageActivity(currentUser);
+                    } else if (currentUser != null && currentUser.getLoginType() != null
+                            && currentUser.getLoginType().equals("facebook")) {
+                        startUserPageActivity(currentUser);
+                    } else {
+                        Intent userIntent = new Intent(this, SavedUserActivity.class);
+                        startActivity(userIntent);
+                    }
+                }
+            } else {
+                Intent signIntent = new Intent(this, SignInActivity.class);
+                startActivity(signIntent);
             }
-            startActivity(intent);
         });
+    }
+
+    private void startUserPageActivity(User currentUser) {
+        String firstName = currentUser.getName();
+        String lastName = currentUser.getLastName();
+        String url = currentUser.getUrl();
+        String id = currentUser.getId();
+        String email = currentUser.getEmail();
+        String loginType = currentUser.getLoginType();
+
+        Intent userPageIntent = new Intent(this, UserPageActivity.class);
+        userPageIntent.putExtra("name", firstName);
+        userPageIntent.putExtra("lastName", lastName);
+        userPageIntent.putExtra("email", email);
+        userPageIntent.putExtra("url", url);
+        userPageIntent.putExtra("id", id);
+        userPageIntent.putExtra("loginType", loginType);
+        startActivity(userPageIntent);
     }
 }

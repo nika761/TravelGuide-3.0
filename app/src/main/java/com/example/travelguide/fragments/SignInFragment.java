@@ -90,12 +90,11 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         initUI(view);
         initGoogleSignClient();
         setClickListeners();
-        checkCurrentFragment();
     }
 
-    private void checkCurrentFragment() {
-        fragmentClickActions.backToSignInFragment();
-    }
+//    private void checkCurrentFragment() {
+//        fragmentClickActions.backToSignInFragment();
+//    }
 
     private void initUI(View view) {
         signInFragmentPresenter = new SignInFragmentPresenter(this);
@@ -126,49 +125,36 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
         registerTxt.setOnClickListener(v -> fragmentClickActions.registerBtnClicked());
 
-        signInBtn.setOnClickListener(v -> {
-            if (enterEmail.getText().toString().isEmpty()) {
-                enterEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-                enterMailHead.setText("*" + getString(R.string.email_or_phone_number));
-                enterMailHead.setTextColor(getResources().getColor(R.color.red));
-                YoYo.with(Techniques.Shake)
-                        .duration(300)
-                        .playOn(enterEmail);
-            }
-
-            if (enterPassword.getText().toString().isEmpty()) {
-                enterPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-                enterPasswordHead.setText("*" + getString(R.string.password));
-                enterPasswordHead.setTextColor(getResources().getColor(R.color.red));
-                YoYo.with(Techniques.Shake)
-                        .duration(300)
-                        .playOn(enterPassword);
-            } else {
-                Intent intent = new Intent(getContext(), UserPageActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        //cancelSignInTxt.setOnClickListener(v -> Objects.requireNonNull(getActivity()).finish());
-
-//        signBtnGoogle.setOnClickListener(v -> {
-//            switch (v.getId()) {
-//                case R.id.sign_in_button_google:
-//                    signInWithGoogle();
-//                    break;
+//        signInBtn.setOnClickListener(v -> {
+//            if (enterEmail.getText().toString().isEmpty()) {
+//                enterEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+//                enterMailHead.setText("*" + getString(R.string.email_or_phone_number));
+//                enterMailHead.setTextColor(getResources().getColor(R.color.red));
+//                YoYo.with(Techniques.Shake)
+//                        .duration(300)
+//                        .playOn(enterEmail);
+//            }
+//
+//            if (enterPassword.getText().toString().isEmpty()) {
+//                enterPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+//                enterPasswordHead.setText("*" + getString(R.string.password));
+//                enterPasswordHead.setTextColor(getResources().getColor(R.color.red));
+//                YoYo.with(Techniques.Shake)
+//                        .duration(300)
+//                        .playOn(enterPassword);
+//            } else {
+//                Intent intent = new Intent(getContext(), UserPageActivity.class);
+//                startActivity(intent);
 //            }
 //        });
 
         googleBtn.setOnClickListener(v -> {
-            //signBtnGoogle.performClick();
             signInWithGoogle();
         });
 
         facebookBtn.setOnClickListener(v -> {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
             signBtnFacebook.performClick();
-//            Intent intent = new Intent(getActivity(), FacebookActivity.class);
-//            startActivity(intent);
         });
 
         callbackManager = CallbackManager.Factory.create();
@@ -190,27 +176,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         });
     }
 
-//    private void loadFbUserProfile(AccessToken accessToken) {
-//        GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
-//            try {
-//                if (object != null) {
-//                    String firstName = object.getString("first_name");
-//                    String lastName = object.getString("last_name");
-//                    String id = object.getString("id");
-//                    String url = "https://graph.facebook.com/" + id + "/picture?type=large";
-////                    String url = "https://graph.facebook.com/" + id + "/pictures?type=normal";
-//                    startUserActivity(firstName, lastName, url);
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        Bundle parameters = new Bundle();
-//        parameters.putString("fields", "first_name,last_name,email,id");
-//        request.setParameters(parameters);
-//        request.executeAsync();
-//    }
-
     private void startUserActivity(User user) {
 
         String firstName = user.getName();
@@ -227,7 +192,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         intent.putExtra("url", url);
         intent.putExtra("id", id);
         intent.putExtra("loginType", loginType);
-
         startActivity(intent);
     }
 
@@ -249,39 +213,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         }
     }
 
-//    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
-//        try {
-//            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-//            // Signed in successfully, show authenticated UI.
-//            getGoogleUserInfo();
-////            Intent intent = new Intent(getActivity(), UserPageActivity.class);
-////            startActivity(intent);
-//        } catch (ApiException e) {
-//            // The ApiException status code indicates the detailed failure reason.
-//            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-//            Log.w("tag", "signInResult:failed code=" + e.getStatusCode());
-//        }
-//    }
-
-//    private void getGoogleUserInfo() {
-//        GoogleSignInAccount currentGoogleUser = GoogleSignIn.getLastSignedInAccount(Objects.requireNonNull(getActivity()));
-//        if (currentGoogleUser != null) {
-//            String personName = currentGoogleUser.getDisplayName();
-//            String personGivenName = currentGoogleUser.getGivenName();
-//            String personFamilyName = currentGoogleUser.getFamilyName();
-//            String personEmail = currentGoogleUser.getEmail();
-//            String personId = currentGoogleUser.getId();
-//            String personPhotoUrl;
-//            Uri personPhotoUri = currentGoogleUser.getPhotoUrl();
-//            if (personPhotoUri != null) {
-//                personPhotoUrl = personPhotoUri.toString();
-//            } else {
-//                personPhotoUrl = null;
-//            }
-//            User user = new User(personGivenName, personFamilyName, personPhotoUrl, personId, personEmail);
-//            startUserActivity(user);
-//        }
-//    }
 
     private void keyboardFocusHelper() {
         enterEmail.setOnFocusChangeListener((v, hasFocus) -> {
@@ -300,20 +231,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     @Override
     public void onGetGglUserData(User user) {
-//        if (googleSignInAccount != null) {
-//            String personName = googleSignInAccount.getDisplayName();
-//            String personGivenName = googleSignInAccount.getGivenName();
-//            String personFamilyName = googleSignInAccount.getFamilyName();
-//            String personEmail = googleSignInAccount.getEmail();
-//            String personId = googleSignInAccount.getId();
-//            String personPhotoUrl;
-//            Uri personPhotoUri = googleSignInAccount.getPhotoUrl();
-//            if (personPhotoUri != null) {
-//                personPhotoUrl = personPhotoUri.toString();
-//            } else {
-//                personPhotoUrl = null;
-//            }
-//            User user = new User(personGivenName, personFamilyName, personPhotoUrl, personId, personEmail);
         startUserActivity(user);
     }
 

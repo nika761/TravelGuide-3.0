@@ -191,10 +191,11 @@ public class RegisterFragment extends Fragment {
             birthDate = registerBirthDate.getText().toString();
         }
 
-        if (registerPassword.getText().toString().isEmpty()) {
+        if (registerPassword.getText().toString().isEmpty() || !checkPassword(registerPassword)) {
             registerPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
             registerPasswordHead.setText("* Password ");
             registerPasswordHead.setTextColor(getResources().getColor(R.color.red));
+            StyleableToast.makeText(getContext(), " Min 8 symbols !", Toast.LENGTH_LONG, R.style.errorToast).show();
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(registerPassword);
@@ -207,10 +208,11 @@ public class RegisterFragment extends Fragment {
 
         }
 
-        if (registerConfirmPassword.getText().toString().isEmpty()) {
+        if (registerConfirmPassword.getText().toString().isEmpty() || !confirmPassword(registerPassword, registerConfirmPassword)) {
             registerConfirmPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
             registerConfirmPasswordHead.setText("* Confirm Password ");
             registerConfirmPasswordHead.setTextColor(getResources().getColor(R.color.red));
+            StyleableToast.makeText(getContext(), " Passwords not match !", Toast.LENGTH_LONG, R.style.errorToast).show();
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(registerConfirmPassword);
@@ -227,22 +229,7 @@ public class RegisterFragment extends Fragment {
 
             showAlertDialog();
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
-        } else {
-            //Toast.makeText(getContext(), "Please fill all tabs " , Toast.LENGTH_LONG).show();
-//                new StyleableToast
-////                        .Builder(Objects.requireNonNull(getContext()))
-////                        .text(" Please fill all tabs !")
-////                        .textColor(Color.RED)
-////                        .textBold()
-////                        .textSize(14)
-////                        .backgroundColor(Color.WHITE)
-////                        .solidBackground()
-////                        .stroke(1, Color.BLACK)
-////                        .show();
-//            StyleableToast.makeText(Objects.requireNonNull(getContext()),
-//                    " Please fill all tabs !", Toast.LENGTH_LONG, R.style.errorToast).show();
         }
-
     }
 
     private void showAlertDialog() {
@@ -290,6 +277,24 @@ public class RegisterFragment extends Fragment {
             numberValidate = true;
         }
         return numberValidate;
+    }
+
+    private boolean checkPassword(EditText enteredPassword) {
+        boolean passwordValidate = true;
+
+        if (enteredPassword.getText().toString().trim().length() < 8) {
+            passwordValidate = false;
+        }
+        return passwordValidate;
+    }
+
+    private boolean confirmPassword(EditText password, EditText confirmPassword) {
+        boolean conirmPassowrdValidate = false;
+
+        if (confirmPassword.getText().toString().equals(password.getText().toString())) {
+            conirmPassowrdValidate = true;
+        }
+        return conirmPassowrdValidate;
     }
 
     private void iniUI(View view) {

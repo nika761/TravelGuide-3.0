@@ -72,6 +72,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
         }
         if (users.get(position).getLoginType().equals("google")) {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.google_little));
+        } else {
+            holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.bot_nav_profile));
         }
     }
 
@@ -150,7 +152,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
                 case R.id.save_user_forgot_password:
                     ((SavedUserActivity) context).loadForgotPswFragment();
                     break;
-
             }
         }
 
