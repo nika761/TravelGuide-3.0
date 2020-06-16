@@ -9,6 +9,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +25,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
@@ -34,8 +37,10 @@ import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.UserPageActivity;
+import com.facebook.login.LoginManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
@@ -43,16 +48,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfileFragment extends Fragment {
 
-    private TextView nickName, name, userBioText, drawerBtn;
+    private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent;
     private ImageButton userContentPhotoBtn, userContentMiddleBtn, userContentTourBtn;
     private ImageView imageView1, imageView2, imageView3, imageView4, imageView5,
             imageView6, imageView7, imageView8, imageView9;
     private CircleImageView userPrfImage;
     private ImageView userBioTextState;
-    private LinearLayout linearLayout;
+    private LinearLayout firstPhotoLinear, linearTour;
+    private NestedScrollView nestedScrollView;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+    private TabLayout tabLayout;
+    private String loginType;
 
     @Nullable
     @Override
@@ -95,7 +103,7 @@ public class UserProfileFragment extends Fragment {
         String url = getArguments().getString("url");
         String id = getArguments().getString("id");
         String email = getArguments().getString("email");
-        String loginType = getArguments().getString("loginType");
+        loginType = getArguments().getString("loginType");
 
         name.setText(firstName + " " + lastName);
         nickName.setText("@" + "" + firstName + lastName);
@@ -123,9 +131,16 @@ public class UserProfileFragment extends Fragment {
         drawerBtn = view.findViewById(R.id.drawer_button);
         nickName = view.findViewById(R.id.user_prf_nickName);
         userPrfImage = view.findViewById(R.id.user_prf_image);
+        tourRequest = view.findViewById(R.id.tour_request_background);
+        firstPhotoConent = view.findViewById(R.id.first_photo_content_tab);
         userContentPhotoBtn = view.findViewById(R.id.user_content_photo_fr);
         userContentMiddleBtn = view.findViewById(R.id.user_content_middle_fr);
         userContentTourBtn = view.findViewById(R.id.user_content_tour_fr);
+        tabLayout = view.findViewById(R.id.tabs_profile);
+        nestedScrollView = view.findViewById(R.id.scrollView_photos);
+        linearTour = view.findViewById(R.id.tour_request);
+        firstPhotoLinear = view.findViewById(R.id.first_photo_content);
+        setContentAnim(firstPhotoConent);
         imageView1 = view.findViewById(R.id.image_1);
         imageView2 = view.findViewById(R.id.image_2);
         imageView3 = view.findViewById(R.id.image_3);
@@ -141,7 +156,6 @@ public class UserProfileFragment extends Fragment {
         userContentPhotoBtn.setOnClickListener(this::onContentIconClick);
         userContentMiddleBtn.setOnClickListener(this::onContentIconClick);
         userContentTourBtn.setOnClickListener(this::onContentIconClick);
-
     }
 
     private void initToolbarNav(View view) {
@@ -188,14 +202,16 @@ public class UserProfileFragment extends Fragment {
 
             case R.id.settings_sing_out:
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                        .setTitle("ნამდვილად ?")
-                        .setPositiveButton("დიახ", (dialog, which) -> {
-                            ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
-                            Toast.makeText(getContext(), "Signed out", Toast.LENGTH_SHORT).show();
+                        .setTitle("Log out ?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            if (loginType.equals("facebook")) {
+                                ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
+                            } else if (loginType.equals("google")) {
+                                ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
+                            }
+//                            Toast.makeText(getContext(), "Signed out", Toast.LENGTH_SHORT).show();
                         })
-                        .setNegativeButton("არა", (dialog, which) -> {
-                            dialog.dismiss();
-                        })
+                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                         .create();
                 alertDialog.show();
                 break;
@@ -204,19 +220,42 @@ public class UserProfileFragment extends Fragment {
         return true;
     };
 
-    public void onContentIconClick(View v) {
+    private void setAnimation(View v) {
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_languages);
+        v.setAnimation(animation);
+    }
+
+    private void setContentAnim(View v) {
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_photo_content_tab);
+        v.setAnimation(animation);
+    }
+
+    private void onContentIconClick(View v) {
         switch (v.getId()) {
 
             case R.id.user_content_photo_fr:
-                Toast.makeText(getContext(), "Photo Clicked", Toast.LENGTH_SHORT).show();
+                userContentPhotoBtn.setBackground(getResources().getDrawable(R.drawable.profile_photos_pressed));
+                userContentTourBtn.setBackground(getResources().getDrawable(R.drawable.profile_tour));
+                userContentMiddleBtn.setBackground(getResources().getDrawable(R.drawable.profile_liked));
+                firstPhotoConent.setVisibility(View.VISIBLE);
+                linearTour.setVisibility(View.GONE);
+                setContentAnim(firstPhotoConent);
                 break;
 
             case R.id.user_content_middle_fr:
+                userContentMiddleBtn.setBackground(getResources().getDrawable(R.drawable.profile_liked_pressed));
+                userContentPhotoBtn.setBackground(getResources().getDrawable(R.drawable.profile_photos));
+                userContentTourBtn.setBackground(getResources().getDrawable(R.drawable.profile_tour));
                 Toast.makeText(getContext(), "Middle Clicked", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.user_content_tour_fr:
-                Toast.makeText(getContext(), "Tour Clicked", Toast.LENGTH_SHORT).show();
+                userContentTourBtn.setBackground(getResources().getDrawable(R.drawable.profile_tour_pressed));
+                userContentPhotoBtn.setBackground(getResources().getDrawable(R.drawable.profile_photos));
+                userContentMiddleBtn.setBackground(getResources().getDrawable(R.drawable.profile_liked));
+                firstPhotoConent.setVisibility(View.GONE);
+                linearTour.setVisibility(View.VISIBLE);
+                setAnimation(tourRequest);
                 break;
         }
     }

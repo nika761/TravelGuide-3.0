@@ -2,10 +2,10 @@ package com.example.travelguide.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,25 +23,28 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.SavedUserActivity;
-import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
-import com.example.travelguide.interfaces.IUserAdapter;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.Utils;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyViewHolder> {
+public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.MyViewHolder> {
 
 
     private Context context;
     private List<User> users;
     private int selectedUserPosition = -1;
+    private String adapterLoginType;
+    private GoogleSignInClient mGoogleSignInClient;
 
-    public UserListAdapter(Context context, List<User> users) {
+    public SavedUsersAdapter(Context context, List<User> users) {
         this.context = context;
         this.users = users;
     }
@@ -69,8 +72,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
         holder.userName.setText(context.getString(R.string.continue_as) + " " + users.get(position).getName() + " " + users.get(position).getLastName() + "");
         if (users.get(position).getLoginType().equals("facebook")) {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.facebook_little));
-        }
-        if (users.get(position).getLoginType().equals("google")) {
+        } else if (users.get(position).getLoginType().equals("google")) {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.google_little));
         } else {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.bot_nav_profile));
@@ -114,7 +116,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
 
         private void setClickListeners() {
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this::onLongClick);
+            itemView.setOnLongClickListener(this);
             signUpBtn.setOnClickListener(this);
             cancelBtn.setOnClickListener(this);
             forgotPassword.setOnClickListener(this);
@@ -146,7 +148,26 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
                     break;
 
                 case R.id.saved_user_sign_in_btn:
-                    checkUserPassword();
+                    GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+                    if (account != null) {
+                        String personPhotoUrl;
+                        Uri personPhotoUri = account.getPhotoUrl();
+                        if (personPhotoUri != null) {
+                            personPhotoUrl = personPhotoUri.toString();
+                        } else {
+                            personPhotoUrl = null;
+                        }
+                        Intent intent = new Intent(context, UserPageActivity.class);
+                        intent.putExtra("name", account.getGivenName());
+                        intent.putExtra("lastName", account.getFamilyName());
+                        intent.putExtra("email", account.getEmail());
+                        intent.putExtra("url", personPhotoUrl);
+                        intent.putExtra("id", account.getId());
+                        intent.putExtra("loginType", "google");
+                        context.startActivity(intent);
+
+                    }
+//                    checkUserPassword();
                     break;
 
                 case R.id.save_user_forgot_password:
@@ -154,6 +175,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
                     break;
             }
         }
+
 
         @Override
         public boolean onLongClick(View v) {

@@ -49,11 +49,12 @@
                     android:background="@drawable/add_btn_on_image" />
 
                 <ImageButton
+                    android:id="@+id/story_like"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/user_pst_react_icon_heart" />
+                    android:background="@drawable/like" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -116,6 +117,5 @@
         </FrameLayout>
 
     </FrameLayout>
-
 
 </FrameLayout>

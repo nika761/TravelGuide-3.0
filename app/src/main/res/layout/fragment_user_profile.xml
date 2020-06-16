@@ -74,9 +74,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:drawableStart="@drawable/edit_btn_user_profile"
+                android:background="@drawable/background_edit_profile"
                 android:gravity="center_vertical|center_horizontal"
+                android:padding="10dp"
                 android:text="Edit Profile"
+                android:textColor="@color/yellowTextView"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/user_prf_nickName"
                 app:layout_constraintTop_toBottomOf="@id/user_prf_nickName" />
 
@@ -85,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@id/user_prf_image"
                 app:layout_constraintTop_toBottomOf="@id/user_prf_image" />
 
@@ -94,11 +97,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/background_signup_edittexts"
-                android:paddingStart="8dp"
-                android:paddingTop="1dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="1dp"
+                android:background="@drawable/bckr_register_field"
+                android:paddingStart="10dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="3dp"
                 app:layout_constraintStart_toStartOf="@id/user_prf_name"
                 app:layout_constraintTop_toBottomOf="@id/user_prf_name">
 
@@ -154,53 +157,160 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/user_bio"
+                app:layout_constraintBottom_toTopOf="@id/content_icon_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/states" />
+
             <LinearLayout
                 android:id="@+id/content_icon_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="35dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:padding="5dp"
+                android:padding="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/states">
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
 
                     <ImageButton
                         android:id="@+id/user_content_photo_fr"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center"
                         android:layout_marginStart="65dp"
-                        android:background="@drawable/user_content_main" />
+                        android:background="@drawable/profile_photos_pressed" />
 
                     <ImageButton
                         android:id="@+id/user_content_middle_fr"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@drawable/user_content_middle" />
+                        android:background="@drawable/profile_liked" />
 
                     <ImageButton
                         android:id="@+id/user_content_tour_fr"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center"
                         android:layout_marginEnd="65dp"
-                        android:background="@drawable/tour_imgbtn_selector" />
+                        android:background="@drawable/profile_tour" />
 
                 </FrameLayout>
 
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabs_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    app:tabIndicatorColor="@color/yellowTextView"
+                    app:tabIndicatorFullWidth="false"
+                    app:tabRippleColor="@android:color/transparent">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tab_photos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/profile_photos" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tab_liked_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/profile_liked" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tab_tours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/profile_tour" />
+
+
+                </com.google.android.material.tabs.TabLayout>
+
             </LinearLayout>
 
-
-            <androidx.core.widget.NestedScrollView
+            <LinearLayout
+                android:id="@+id/tour_request"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content_icon_container">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/background_edit_profile"
+                    android:padding="15dp"
+                    android:text="Send Request"
+                    android:textColor="@color/yellowTextView"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tour_request_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/tour_request"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Tap to create \n \n your first journey"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/first_photo_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content_icon_container">
+
+                <TextView
+                    android:id="@+id/first_photo_content_tab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="58dp"
+                    android:background="@drawable/first_photo_tab"
+                    android:gravity="center_horizontal|center_vertical|center"
+                    android:text="Tap to upload \n \n your first content"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView_photos"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -382,7 +492,6 @@
 
             </androidx.core.widget.NestedScrollView>
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -394,5 +503,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/header_layout_settings_nav"
         app:menu="@menu/user_settings_nav_menu" />
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

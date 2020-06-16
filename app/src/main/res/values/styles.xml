@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Bottom_Navigation_View_Style" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorControlHighlight">@android:color/transparent</item>
+
+    </style>
+
     <style name="errorToast">
         <item name="stTextBold">true</item>
         <item name="stTextColor">@color/red</item>

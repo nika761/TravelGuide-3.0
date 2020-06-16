@@ -4,17 +4,22 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +31,7 @@ import com.example.travelguide.R;
 import com.example.travelguide.activity.ChooseLanguageActivity;
 import com.example.travelguide.activity.SplashScreenActivity;
 
+import java.util.Objects;
 import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,6 +40,7 @@ import jp.shts.android.storiesprogressview.StoriesProgressView;
 public class UserHomeFragment extends Fragment {
     private CircleImageView userLeftImage;
     private StoriesProgressView storiesProgressView;
+    private ImageButton storyLike;
     private ImageView imageView;
     private final int STORY_DISPLAY_ONE = 10000;
     private final int STORY_DISPLAY_TWO = 20000;
@@ -59,11 +66,15 @@ public class UserHomeFragment extends Fragment {
         storiesProgressView = view.findViewById(R.id.stories);
         userLeftImage = view.findViewById(R.id.user_photo_left);
         imageView = view.findViewById(R.id.image_story);
+        storyLike = view.findViewById(R.id.story_like);
     }
 
     private void setClickListeners() {
         imageView.setOnClickListener(v -> startStory());
         imageView.setImageResource(setStoryPhoto());
+        storyLike.setOnClickListener(v -> {
+            storyLike.setBackground(getResources().getDrawable(R.drawable.like_presed));
+        });
     }
 
 //    private void checkStory() {
@@ -151,7 +162,6 @@ public class UserHomeFragment extends Fragment {
                     })
                     .into(userLeftImage);
         }
-
     }
 
     @Override
@@ -162,7 +172,14 @@ public class UserHomeFragment extends Fragment {
 
     @Override
     public void onPause() {
+        storiesProgressView.pause();
         checked = false;
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        storiesProgressView.resume();
+        super.onResume();
     }
 }

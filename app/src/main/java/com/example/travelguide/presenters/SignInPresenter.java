@@ -14,10 +14,10 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 
-public class SignInFragmentPresenter {
+public class SignInPresenter {
     private ISignInFragment iSignInFragment;
 
-    public SignInFragmentPresenter(ISignInFragment iSignInFragment) {
+    public SignInPresenter(ISignInFragment iSignInFragment) {
         this.iSignInFragment = iSignInFragment;
     }
 

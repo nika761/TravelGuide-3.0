@@ -25,9 +25,20 @@ import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.Utils;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenu;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -46,14 +57,16 @@ public class UserPageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
+        initGoogleSignClient();
         initUI();
         ongGetUserDate();
         initBtmNav();
-        initGoogleSignClient();
+
     }
 
     private void initUI() {
         userPhotoLeft = findViewById(R.id.user_photo_left);
+
     }
 
     private void ongGetUserDate() {
@@ -65,8 +78,7 @@ public class UserPageActivity extends AppCompatActivity {
         String loginType = getIntent().getStringExtra("loginType");
         user = new User(firstName, lastName, url, id, email, loginType);
         Utils.saveUser(this, user);
-        setUserProfileData(firstName, lastName, url, id, email, loginType);
-
+        setUserProfileData(user);
     }
 
     private void initBtmNav() {
@@ -76,14 +88,14 @@ public class UserPageActivity extends AppCompatActivity {
         bottomNavigationView.setItemIconSize(60);
     }
 
-    private void setUserProfileData(String firsName, String lastName, String url, String id, String email, String loginType) {
+    private void setUserProfileData(User user) {
         bundlePrfFrg = new Bundle();
-        bundlePrfFrg.putString("firstName", firsName);
-        bundlePrfFrg.putString("lastName", lastName);
-        bundlePrfFrg.putString("url", url);
-        bundlePrfFrg.putString("id", id);
-        bundlePrfFrg.putString("email", email);
-        bundlePrfFrg.putString("loginType", loginType);
+        bundlePrfFrg.putString("firstName", user.getName());
+        bundlePrfFrg.putString("lastName", user.getLastName());
+        bundlePrfFrg.putString("url", user.getUrl());
+        bundlePrfFrg.putString("id", user.getId());
+        bundlePrfFrg.putString("email", user.getEmail());
+        bundlePrfFrg.putString("loginType", user.getLoginType());
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
@@ -133,13 +145,30 @@ public class UserPageActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(Objects.requireNonNull(this), gso);
     }
 
+    public void signOutFromFbAccount() {
+        LoginManager.getInstance().logOut();
+        user.setLoginStatus("no");
+//        if (user != null) {
+//            Utils.deleteUser(this, user);
+//        }
+        finish();
+    }
+
     public void signOutFromGoogleAccount() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, task -> {
-                    if (user != null) {
-                        Utils.deleteUser(this, user);
-                    }
-                    finish();
-                });
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            user.setLoginStatus("no");
+            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        }).addOnCanceledListener(this, () -> {
+            Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(this, e -> {
+            e.printStackTrace();
+            Toast.makeText(this, "Failure", Toast.LENGTH_SHORT).show();
+        });
+//            if (user != null) {
+//                Utils.deleteUser(this, user);
+//            }
+        finish();
+
     }
 }

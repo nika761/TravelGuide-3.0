@@ -9,6 +9,7 @@ public class User {
     private String id;
     private String email;
     private String loginType;
+    private String loginStatus;
 
     public User(String name, String lastName, String url, String id, String email, String loginType) {
         this.name = name;
@@ -65,6 +66,13 @@ public class User {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getLoginStatus() {
+        return loginStatus;
+    }
+    public void setLoginStatus(String loginStatus) {
+        this.loginStatus = loginStatus;
     }
 
     @Override

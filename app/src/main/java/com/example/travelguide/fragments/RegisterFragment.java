@@ -1,9 +1,7 @@
 package com.example.travelguide.fragments;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,28 +18,34 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.interfaces.FragmentClickActions;
-import com.example.travelguide.utils.Utils;
+import com.example.travelguide.interfaces.IRegisterFragment;
+import com.example.travelguide.model.AuthRequestModel;
+import com.example.travelguide.model.AuthResponseModel;
+import com.example.travelguide.model.CheckMailRequestModel;
+import com.example.travelguide.model.CheckMailResponseModel;
+import com.example.travelguide.presenters.RegisterPresenter;
 import com.hbb20.CountryCodePicker;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.Calendar;
 import java.util.Objects;
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends Fragment implements IRegisterFragment {
 
     private static final String TAG = "RegisterFragment";
 
     private Context context;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
+    private RegisterPresenter registerPresenter;
     private LinearLayout phoneNumberContainer;
+    private AuthRequestModel authRequestModel;
     private String userName, userSurname, nickName, birthDate, email,
             phoneNumber, password, confirmPassword;
     private FragmentClickActions fragmentClickActions;
@@ -93,6 +96,14 @@ public class RegisterFragment extends Fragment {
             String date = month + "/" + day + "/" + year;
             registerBirthDate.setText(date);
         };
+
+        registerEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && registerEmail.getText() != null) {
+                CheckMailRequestModel checkMailRequestModel = new CheckMailRequestModel();
+                checkMailRequestModel.setEmail(registerEmail.getText().toString());
+                registerPresenter.checkEmail(checkMailRequestModel);
+            }
+        });
     }
 
     private void checkEnteredDate() {
@@ -227,17 +238,18 @@ public class RegisterFragment extends Fragment {
         if (userName != null && userSurname != null && nickName != null && email != null
                 && phoneNumber != null && birthDate != null && password != null && confirmPassword != null) {
 
-            showAlertDialog();
+            authRequestModel = new AuthRequestModel(userName, userSurname, nickName, email, password, confirmPassword);
+            registerPresenter.sendAuthResponse(authRequestModel);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         }
     }
 
     private void showAlertDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final View customLayout = getLayoutInflater().inflate(R.layout.registration_confirm, null);
         builder.setView(customLayout);
         AlertDialog dialog = builder.create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_background));
         dialog.show();
 
     }
@@ -299,6 +311,7 @@ public class RegisterFragment extends Fragment {
 
     private void iniUI(View view) {
         context = getContext();
+        registerPresenter = new RegisterPresenter(this);
         countryCodePicker = view.findViewById(R.id.ccp);
         phoneNumberContainer = view.findViewById(R.id.register_phone_number_container);
         registerName = view.findViewById(R.id.register_name);
@@ -329,7 +342,27 @@ public class RegisterFragment extends Fragment {
                 assert inputMethodManager != null;
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-
         });
+    }
+
+    @Override
+    public void onGetAuthResult(AuthResponseModel authResponseModel) {
+        showAlertDialog();
+    }
+
+    @Override
+    public void onGetEmailCheckResult(CheckMailResponseModel checkMailResponseModel) {
+        if (checkMailResponseModel.getError().equals("124")) {
+            registerEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+            registerEmailHead.setText("* Email ");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (registerPresenter != null) {
+            registerPresenter = null;
+        }
+        super.onDestroy();
     }
 }

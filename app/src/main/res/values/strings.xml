@@ -5,10 +5,10 @@
 
     <string name="app_name">TravelGuide</string>
     <string name="welcome">Welcome</string>
-    <string name="or">Or</string>
+    <string name="or">Or connect with</string>
     <string name="email_or_phone_number">Email or Phone Number</string>
     <string name="password">Password</string>
-    <string name="forgot_password">forgot password?</string>
+    <string name="forgot_password">Forgot password?</string>
     <string name="name"> Name</string>
     <string name="surname">Surname</string>
     <string name="nick_name">NickName</string>
@@ -16,12 +16,14 @@
     <string name="email">Email</string>
     <string name="phone_number">Phone Number</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="if_you_do_not_have_an_account">if you do not have an account</string>
+    <string name="if_you_do_not_have_an_account">If you do not have an account</string>
     <string name="sign_up">Sign Up</string>
     <string name="cancel_btn">Cancel</string>
     <string name="sign_in_btn">Sign in</string>
     <string name="continue_as">Continue as</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="terms_of_services"> <u>Terms of Services</u></string>
+    <string name="privacy_policy"> <u>Privacy Policy</u>.</string>
 
 </resources>
