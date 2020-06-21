@@ -37,14 +37,14 @@ public class SavedUserActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.animation_fragment_slide_down, R.anim.animation_fragment_slide_down)
-                .add(R.id.saved_user_fragment, savedUsersFragment, "savedUserFragment")
+                .add(R.id.saved_user_fragment_container, savedUsersFragment, "savedUserFragment")
                 .commit();
     }
 
     public void loadForgotPswFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.saved_user_fragment, forgotPswFragment, "forgotPswFragment")
+                .replace(R.id.saved_user_fragment_container, forgotPswFragment, "forgotPswFragment")
                 .addToBackStack(null)
                 .commit();
     }
@@ -53,6 +53,7 @@ public class SavedUserActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(SavedUserActivity.this, ChooseLanguageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 }

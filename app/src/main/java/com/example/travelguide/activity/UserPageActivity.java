@@ -2,8 +2,12 @@ package com.example.travelguide.activity;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -21,6 +26,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
+import com.example.travelguide.fragments.EditProfileFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.User;
@@ -52,21 +58,31 @@ public class UserPageActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private Bundle bundlePrfFrg;
     private User user;
+    private BottomNavigationView bottomNavigationView;
+    private Fragment selectedFragment;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
         initGoogleSignClient();
         initUI();
         ongGetUserDate();
         initBtmNav();
-
     }
 
     private void initUI() {
         userPhotoLeft = findViewById(R.id.user_photo_left);
 
+    }
+
+    public void hideBottomNavigation(Boolean visible) {
+        if (visible)
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        else
+            bottomNavigationView.setVisibility(View.GONE);
     }
 
     private void ongGetUserDate() {
@@ -82,7 +98,7 @@ public class UserPageActivity extends AppCompatActivity {
     }
 
     private void initBtmNav() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+        bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         bottomNavigationView.setItemIconSize(60);
@@ -96,19 +112,15 @@ public class UserPageActivity extends AppCompatActivity {
         bundlePrfFrg.putString("id", user.getId());
         bundlePrfFrg.putString("email", user.getEmail());
         bundlePrfFrg.putString("loginType", user.getLoginType());
+        bundlePrfFrg.putSerializable("user", user);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
-        Fragment selectedFragment;
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
                 selectedFragment = new UserHomeFragment();
-                selectedFragment.setArguments(bundlePrfFrg);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.user_page_frg_container, selectedFragment)
-                        .commit();
+                loadFragment(selectedFragment, bundlePrfFrg, R.id.user_page_frg_container, false);
                 break;
 
             case R.id.bot_nav_search:
@@ -125,17 +137,25 @@ public class UserPageActivity extends AppCompatActivity {
 
             case R.id.bot_nav_profile:
                 selectedFragment = new UserProfileFragment();
-                selectedFragment.setArguments(bundlePrfFrg);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.user_page_frg_container, selectedFragment)
-                        .addToBackStack(null)
-                        .commit();
+                loadFragment(selectedFragment, bundlePrfFrg, R.id.user_page_frg_container, false);
                 break;
         }
 
         return true;
     };
+
+
+    public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
+        currentFragment.setArguments(data);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                .beginTransaction();
+
+        if (backStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
+
+        fragmentTransaction.replace(fragmentID, currentFragment).commit();
+    }
 
     private void initGoogleSignClient() {
         GoogleSignInOptions gso = new GoogleSignInOptions

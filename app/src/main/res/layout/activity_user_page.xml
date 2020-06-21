@@ -14,40 +14,42 @@
         android:layout_height="match_parent"
         android:orientation="vertical" />
 
-
     <LinearLayout
         android:id="@+id/bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
         android:layout_gravity="bottom"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/bot_nav_background">
+        android:background="@drawable/bot_nav_background"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_home_new" />
 
         <ImageView
-            android:src="@drawable/ic_home_new"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_explore_icon" />
+
         <ImageView
-            android:src="@drawable/ic_explore_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_new" />
+
         <ImageView
-            android:src="@drawable/ic_add_new"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:src="@drawable/bot_home_svg" />
+
         <ImageView
-            android:src="@drawable/bot_home_svg"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <ImageView
-            android:src="@drawable/bot_home_svg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:src="@drawable/bot_home_svg" />
 
 
     </LinearLayout>
@@ -59,14 +61,14 @@
         android:layout_gravity="bottom"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
-        android:visibility="visible"
-        android:layout_marginBottom="12dp"
-        android:theme="@style/Bottom_Navigation_View_Style"
+        android:layout_marginBottom="18dp"
         android:background="@drawable/bot_nav_background"
+        android:theme="@style/Bottom_Navigation_View_Style"
+        android:visibility="visible"
         app:itemHorizontalTranslationEnabled="false"
+        app:itemIconTint="@drawable/bot_icon_tab_color"
         app:itemRippleColor="@color/mainColorTransparent"
         app:labelVisibilityMode="unlabeled"
-        app:itemIconTint="@drawable/bot_icon_tab_color"
         app:menu="@menu/bot_nav_menu" />
 
 </FrameLayout>

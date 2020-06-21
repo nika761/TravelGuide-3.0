@@ -13,6 +13,7 @@ import com.example.travelguide.R;
 import com.example.travelguide.fragments.ForgotPswFragment;
 import com.example.travelguide.fragments.RegisterFragment;
 import com.example.travelguide.fragments.SignInFragment;
+import com.example.travelguide.fragments.TermsOfServiceFragment;
 import com.example.travelguide.interfaces.FragmentClickActions;
 
 public class SignInActivity extends AppCompatActivity implements FragmentClickActions {
@@ -47,8 +48,16 @@ public class SignInActivity extends AppCompatActivity implements FragmentClickAc
 //        fragmentHead.setText(R.string.welcome);
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.animation_fragment_slide_down, R.anim.animation_fragment_slide_down)
                 .add(R.id.fragment_container, signInFragment, "signIn")
+                .commit();
+    }
+
+    public void loadTermsFragment() {
+//        fragmentHead.setText(R.string.welcome);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.register_frg_container, new TermsOfServiceFragment(), "terms")
+                .addToBackStack(null)
                 .commit();
     }
 

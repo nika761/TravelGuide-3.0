@@ -1,14 +1,11 @@
 package com.example.travelguide.fragments;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
@@ -19,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,10 +31,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
-import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.UserPageActivity;
-import com.facebook.login.LoginManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -48,10 +41,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfileFragment extends Fragment {
 
-    private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent;
+    private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent, editProfile;
     private ImageButton userContentPhotoBtn, userContentMiddleBtn, userContentTourBtn;
-    private ImageView imageView1, imageView2, imageView3, imageView4, imageView5,
-            imageView6, imageView7, imageView8, imageView9;
     private CircleImageView userPrfImage;
     private ImageView userBioTextState;
     private LinearLayout firstPhotoLinear, linearTour;
@@ -66,6 +57,8 @@ public class UserProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
         return view;
     }
 
@@ -131,31 +124,24 @@ public class UserProfileFragment extends Fragment {
         drawerBtn = view.findViewById(R.id.drawer_button);
         nickName = view.findViewById(R.id.user_prf_nickName);
         userPrfImage = view.findViewById(R.id.user_prf_image);
+        editProfile = view.findViewById(R.id.edit_profile);
         tourRequest = view.findViewById(R.id.tour_request_background);
         firstPhotoConent = view.findViewById(R.id.first_photo_content_tab);
         userContentPhotoBtn = view.findViewById(R.id.user_content_photo_fr);
         userContentMiddleBtn = view.findViewById(R.id.user_content_middle_fr);
         userContentTourBtn = view.findViewById(R.id.user_content_tour_fr);
         tabLayout = view.findViewById(R.id.tabs_profile);
-        nestedScrollView = view.findViewById(R.id.scrollView_photos);
-        linearTour = view.findViewById(R.id.tour_request);
-        firstPhotoLinear = view.findViewById(R.id.first_photo_content);
-        setContentAnim(firstPhotoConent);
-        imageView1 = view.findViewById(R.id.image_1);
-        imageView2 = view.findViewById(R.id.image_2);
-        imageView3 = view.findViewById(R.id.image_3);
-        imageView4 = view.findViewById(R.id.image_4);
-        imageView5 = view.findViewById(R.id.image_5);
-        imageView6 = view.findViewById(R.id.image_6);
-        imageView7 = view.findViewById(R.id.image_7);
-        imageView8 = view.findViewById(R.id.image_8);
-        imageView9 = view.findViewById(R.id.image_9);
+        ((UserPageActivity) Objects.requireNonNull(getActivity()))
+                .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
     }
 
     private void setClickListeners() {
         userContentPhotoBtn.setOnClickListener(this::onContentIconClick);
         userContentMiddleBtn.setOnClickListener(this::onContentIconClick);
         userContentTourBtn.setOnClickListener(this::onContentIconClick);
+        editProfile.setOnClickListener(v -> ((UserPageActivity)
+                Objects.requireNonNull(getActivity()))
+                .loadFragment(new EditProfileFragment(), null, R.id.user_page_frg_container, false));
     }
 
     private void initToolbarNav(View view) {
@@ -204,12 +190,13 @@ public class UserProfileFragment extends Fragment {
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                         .setTitle("Log out ?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            if (loginType.equals("facebook")) {
+                            if (loginType != null && loginType.equals("facebook")) {
                                 ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
-                            } else if (loginType.equals("google")) {
+                            } else if (loginType != null && loginType.equals("google")) {
                                 ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
+                            } else {
+                                Objects.requireNonNull(getActivity()).finish();
                             }
-//                            Toast.makeText(getContext(), "Signed out", Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                         .create();
@@ -230,32 +217,37 @@ public class UserProfileFragment extends Fragment {
         v.setAnimation(animation);
     }
 
+    private void setBackground(View view, int drawable) {
+        view.setBackground(getResources().getDrawable(drawable));
+    }
+
     private void onContentIconClick(View v) {
         switch (v.getId()) {
 
             case R.id.user_content_photo_fr:
-                userContentPhotoBtn.setBackground(getResources().getDrawable(R.drawable.profile_photos_pressed));
-                userContentTourBtn.setBackground(getResources().getDrawable(R.drawable.profile_tour));
-                userContentMiddleBtn.setBackground(getResources().getDrawable(R.drawable.profile_liked));
-                firstPhotoConent.setVisibility(View.VISIBLE);
-                linearTour.setVisibility(View.GONE);
-                setContentAnim(firstPhotoConent);
+                setBackground(userContentPhotoBtn, R.drawable.profile_photos_pressed);
+                setBackground(userContentTourBtn, R.drawable.profile_tour);
+                setBackground(userContentMiddleBtn, R.drawable.profile_liked);
+                ((UserPageActivity) Objects.requireNonNull(getActivity()))
+                        .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
                 break;
 
             case R.id.user_content_middle_fr:
-                userContentMiddleBtn.setBackground(getResources().getDrawable(R.drawable.profile_liked_pressed));
-                userContentPhotoBtn.setBackground(getResources().getDrawable(R.drawable.profile_photos));
-                userContentTourBtn.setBackground(getResources().getDrawable(R.drawable.profile_tour));
+                setBackground(userContentMiddleBtn, R.drawable.profile_liked_pressed);
+                setBackground(userContentPhotoBtn, R.drawable.profile_photos);
+                setBackground(userContentTourBtn, R.drawable.profile_tour);
+
                 Toast.makeText(getContext(), "Middle Clicked", Toast.LENGTH_SHORT).show();
+
                 break;
 
             case R.id.user_content_tour_fr:
-                userContentTourBtn.setBackground(getResources().getDrawable(R.drawable.profile_tour_pressed));
-                userContentPhotoBtn.setBackground(getResources().getDrawable(R.drawable.profile_photos));
-                userContentMiddleBtn.setBackground(getResources().getDrawable(R.drawable.profile_liked));
-                firstPhotoConent.setVisibility(View.GONE);
-                linearTour.setVisibility(View.VISIBLE);
-                setAnimation(tourRequest);
+                setBackground(userContentTourBtn, R.drawable.profile_tour_pressed);
+                setBackground(userContentPhotoBtn, R.drawable.profile_photos);
+                setBackground(userContentMiddleBtn, R.drawable.profile_liked);
+
+                ((UserPageActivity) Objects.requireNonNull(getActivity()))
+                        .loadFragment(new UserTourFragment(), null, R.id.on_user_prof_frg_container, false);
                 break;
         }
     }

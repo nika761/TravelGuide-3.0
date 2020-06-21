@@ -14,12 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.LanguagesAdapter;
 import com.example.travelguide.interfaces.ILanguageActivity;
-import com.example.travelguide.model.LanguagesResponseModel;
+import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.model.User;
 import com.example.travelguide.presenters.LanguagePresenter;
 import com.example.travelguide.utils.Utils;
@@ -89,7 +87,7 @@ public class ChooseLanguageActivity extends AppCompatActivity implements ILangua
 
     }
 
-    private void checkSavedUsers() {
+    public void checkSavedUsers() {
         currentUsers = Utils.getSavedUsers(this);
         if (currentUsers.size() != 0) {
             for (User currentUser : currentUsers) {

@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -71,6 +70,7 @@
                 app:layout_constraintTop_toTopOf="@id/user_prf_image" />
 
             <TextView
+                android:id="@+id/edit_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -237,50 +237,12 @@
                         android:layout_height="wrap_content"
                         android:icon="@drawable/profile_tour" />
 
-
                 </com.google.android.material.tabs.TabLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/tour_request"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:orientation="vertical"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/content_icon_container">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/background_edit_profile"
-                    android:padding="15dp"
-                    android:text="Send Request"
-                    android:textColor="@color/yellowTextView"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tour_request_background"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/tour_request"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="Tap to create \n \n your first journey"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/first_photo_content"
+                android:id="@+id/on_user_prof_frg_container"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="bottom"
@@ -289,208 +251,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/content_icon_container">
-
-                <TextView
-                    android:id="@+id/first_photo_content_tab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="58dp"
-                    android:background="@drawable/first_photo_tab"
-                    android:gravity="center_horizontal|center_vertical|center"
-                    android:text="Tap to upload \n \n your first content"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
+                app:layout_constraintTop_toBottomOf="@id/content_icon_container"
+                app:layout_constraintVertical_bias="0.0">
 
             </LinearLayout>
-
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scrollView_photos"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/content_icon_container">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/first_row_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="90dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <ImageView
-                            android:id="@+id/image_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/second_user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/third_user_content_photo" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/second_row_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="90dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <ImageView
-                            android:id="@+id/image_4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/third_user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/second_user_content_photo" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/third_row_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="90dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <ImageView
-                            android:id="@+id/image_7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/second_user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_8"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/third_user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_9"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/user_content_photo" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/forthy_row_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="90dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <ImageView
-                            android:id="@+id/image_10"
-
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_11"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/second_user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_12"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/third_user_content_photo" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/five_row_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="90dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <ImageView
-                            android:id="@+id/image_13"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/third_user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/second_user_content_photo" />
-
-                        <ImageView
-                            android:id="@+id/image_15"
-                            android:layout_width="wrap_content"
-                            android:layout_height="90dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/user_content_photo" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-            </androidx.core.widget.NestedScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -503,6 +267,5 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/header_layout_settings_nav"
         app:menu="@menu/user_settings_nav_menu" />
-
 
 </androidx.drawerlayout.widget.DrawerLayout>

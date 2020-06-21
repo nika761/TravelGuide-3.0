@@ -1,7 +1,7 @@
 package com.example.travelguide.presenters;
 
 import com.example.travelguide.interfaces.ILanguageActivity;
-import com.example.travelguide.model.LanguagesResponseModel;
+import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 

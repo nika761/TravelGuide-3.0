@@ -1,10 +1,12 @@
 package com.example.travelguide.network;
 
-import com.example.travelguide.model.AuthRequestModel;
-import com.example.travelguide.model.AuthResponseModel;
-import com.example.travelguide.model.CheckMailRequestModel;
-import com.example.travelguide.model.CheckMailResponseModel;
-import com.example.travelguide.model.LanguagesResponseModel;
+import com.example.travelguide.model.request.AuthRequestModel;
+import com.example.travelguide.model.response.AuthResponseModel;
+import com.example.travelguide.model.request.CheckMailRequestModel;
+import com.example.travelguide.model.response.CheckMailResponseModel;
+import com.example.travelguide.model.request.CheckNickRequestModel;
+import com.example.travelguide.model.response.CheckNickResponseModel;
+import com.example.travelguide.model.response.LanguagesResponseModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -19,6 +21,9 @@ public interface ApiService {
     @POST("check_email")
     Call<CheckMailResponseModel> checkEmail(@Body CheckMailRequestModel checkMailRequestModel);
 
+    @POST("check_nick")
+    Call<CheckNickResponseModel> checkNick(@Body CheckNickRequestModel checkNickRequestModel);
+
     @GET("get_languages")
-    Call<LanguagesResponseModel>getLanguages();
+    Call<LanguagesResponseModel> getLanguages();
 }

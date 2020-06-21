@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/terms_of_services_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Terms &amp; Conditions"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scroll_terms"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="22dp"
+        android:background="@drawable/term_services_bg"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/cancel_btn_terms"
+        app:layout_constraintTop_toBottomOf="@+id/terms_of_services_header">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="asdkasjdlkasjdalksdjalksdjaassdasdknmckdkjgejlrthdjflkgndfmgndflkgjdflkgjdflkgjdflgkdjfglkdjfglkdfjgldkfgjdflkgj" />
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/agree_btn_terms"
+        android:layout_width="83dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/agree_btn_bg"
+        android:text="Agree"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/cancel_btn_terms"
+        android:layout_width="83dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/cancel_btn_bg"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:textColor="#000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

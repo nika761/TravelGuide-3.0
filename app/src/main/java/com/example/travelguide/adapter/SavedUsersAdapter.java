@@ -70,9 +70,9 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
                 .into(holder.userImage);
 
         holder.userName.setText(context.getString(R.string.continue_as) + " " + users.get(position).getName() + " " + users.get(position).getLastName() + "");
-        if (users.get(position).getLoginType().equals("facebook")) {
+        if (users.get(position).getLoginType() != null && users.get(position).getLoginType().equals("facebook")) {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.facebook_little));
-        } else if (users.get(position).getLoginType().equals("google")) {
+        } else if (users.get(position).getLoginType() != null && users.get(position).getLoginType().equals("google")) {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.google_little));
         } else {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.bot_nav_profile));
@@ -165,7 +165,6 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
                         intent.putExtra("id", account.getId());
                         intent.putExtra("loginType", "google");
                         context.startActivity(intent);
-
                     }
 //                    checkUserPassword();
                     break;

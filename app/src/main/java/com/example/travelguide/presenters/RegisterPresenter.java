@@ -1,10 +1,12 @@
 package com.example.travelguide.presenters;
 
 import com.example.travelguide.interfaces.IRegisterFragment;
-import com.example.travelguide.model.AuthRequestModel;
-import com.example.travelguide.model.AuthResponseModel;
-import com.example.travelguide.model.CheckMailRequestModel;
-import com.example.travelguide.model.CheckMailResponseModel;
+import com.example.travelguide.model.request.AuthRequestModel;
+import com.example.travelguide.model.request.CheckNickRequestModel;
+import com.example.travelguide.model.response.AuthResponseModel;
+import com.example.travelguide.model.request.CheckMailRequestModel;
+import com.example.travelguide.model.response.CheckMailResponseModel;
+import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
@@ -35,6 +37,7 @@ public class RegisterPresenter {
 
             @Override
             public void onFailure(Call<AuthResponseModel> call, Throwable t) {
+                t.printStackTrace();
             }
         });
     }
@@ -43,11 +46,29 @@ public class RegisterPresenter {
         service.checkEmail(checkMailRequestModel).enqueue(new Callback<CheckMailResponseModel>() {
             @Override
             public void onResponse(Call<CheckMailResponseModel> call, Response<CheckMailResponseModel> response) {
-                iRegisterFragment.onGetEmailCheckResult(response.body());
+                if (response.isSuccessful()) {
+                    iRegisterFragment.onGetEmailCheckResult(response.body());
+                }
             }
 
             @Override
             public void onFailure(Call<CheckMailResponseModel> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void checkNick(CheckNickRequestModel checkNickRequestModel) {
+        service.checkNick(checkNickRequestModel).enqueue(new Callback<CheckNickResponseModel>() {
+            @Override
+            public void onResponse(Call<CheckNickResponseModel> call, Response<CheckNickResponseModel> response) {
+                if (response.isSuccessful()) {
+                    iRegisterFragment.onGetNickCheckResult(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckNickResponseModel> call, Throwable t) {
 
             }
         });

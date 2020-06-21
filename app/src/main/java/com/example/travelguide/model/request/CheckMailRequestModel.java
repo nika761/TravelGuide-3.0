@@ -1,4 +1,4 @@
-package com.example.travelguide.model;
+package com.example.travelguide.model.request;
 
 public class CheckMailRequestModel {
     String email;

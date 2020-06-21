@@ -25,13 +25,14 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.interfaces.FragmentClickActions;
 import com.example.travelguide.interfaces.IRegisterFragment;
-import com.example.travelguide.model.AuthRequestModel;
-import com.example.travelguide.model.AuthResponseModel;
-import com.example.travelguide.model.CheckMailRequestModel;
-import com.example.travelguide.model.CheckMailResponseModel;
+import com.example.travelguide.model.request.AuthRequestModel;
+import com.example.travelguide.model.request.CheckNickRequestModel;
+import com.example.travelguide.model.response.AuthResponseModel;
+import com.example.travelguide.model.request.CheckMailRequestModel;
+import com.example.travelguide.model.response.CheckMailResponseModel;
+import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.presenters.RegisterPresenter;
 import com.hbb20.CountryCodePicker;
-import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -39,15 +40,14 @@ import java.util.Objects;
 public class RegisterFragment extends Fragment implements IRegisterFragment {
 
     private static final String TAG = "RegisterFragment";
-
     private Context context;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
     private RegisterPresenter registerPresenter;
     private LinearLayout phoneNumberContainer;
     private AuthRequestModel authRequestModel;
-    private String userName, userSurname, nickName, birthDate, email,
-            phoneNumber, password, confirmPassword;
+    private String userName, userSurname, nickName, birthDate, email, emailForCheck,
+            phoneNumber, password, passwordForCheck, confirmPassword, nickNameFirst, nickNameSecond;
     private FragmentClickActions fragmentClickActions;
     private EditText registerName, registerSurname, registerNickName, registerEmail,
             registerPhoneNumber, registerPassword, registerConfirmPassword;
@@ -55,7 +55,7 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             registerBirthDate, registerBirthDateHead,
             registerEmailHead, registerPhoneNumberHead,
             registerPasswordHead, registerConfirmPasswordHead,
-            registerSignUpTxt, registerCancelTxt;
+            registerSignUpTxt, registerCancelTxt, registerNickOffer, registerNickOfferOne, registerNickOfferTwo;
 
     public RegisterFragment(FragmentClickActions fragmentClickActions) {
         this.fragmentClickActions = fragmentClickActions;
@@ -78,7 +78,10 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
     private void setClickListeners() {
 
         registerSignUpTxt.setOnClickListener(v -> {
-            checkEnteredDate();
+            onGetData();
+            registerNickOffer.setVisibility(View.GONE);
+            registerNickOfferOne.setVisibility(View.GONE);
+            registerNickOfferTwo.setVisibility(View.GONE);
         });
 
         registerCancelTxt.setOnClickListener(v -> {
@@ -86,97 +89,130 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             fragmentClickActions.backToSignInFragment();
         });
 
-        registerBirthDate.setOnClickListener(v -> {
-            showDatePickerDialog();
-        });
+        registerBirthDate.setOnClickListener(v -> showDatePickerDialog());
 
         mDateSetListener = (datePicker, year, month, day) -> {
             month = month + 1;
             Log.d(TAG, "onDateSet: mm/dd/yyy: " + month + "/" + day + "/" + year);
-            String date = month + "/" + day + "/" + year;
+
+            String dayString = day < 10 ? "0" + day : String.valueOf(day);
+            String monthString = month < 10 ? "0" + month : String.valueOf(month);
+
+            String date = year + "/" + monthString + "/" + dayString;
             registerBirthDate.setText(date);
         };
 
-        registerEmail.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && registerEmail.getText() != null) {
-                CheckMailRequestModel checkMailRequestModel = new CheckMailRequestModel();
-                checkMailRequestModel.setEmail(registerEmail.getText().toString());
-                registerPresenter.checkEmail(checkMailRequestModel);
-            }
+//        registerEmail.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (!hasFocus && registerEmail.getText() != null) {
+//                CheckMailRequestModel checkMailRequestModel = new CheckMailRequestModel();
+//                checkMailRequestModel.setEmail(registerEmail.getText().toString());
+//                registerPresenter.checkEmail(checkMailRequestModel);
+//            }
+//        });
+
+        registerNickOfferOne.setOnClickListener(v -> {
+            registerNickName.setText(nickNameFirst);
+            setFieldsDefault(registerNickName, registerNickNameHead, " NickName ");
         });
+
+        registerNickOfferTwo.setOnClickListener(v -> {
+            registerNickName.setText(nickNameSecond);
+            setFieldsDefault(registerNickName, registerNickNameHead, " NickName ");
+        });
+
     }
 
-    private void checkEnteredDate() {
+    private String checkEditTextData(EditText currentField, TextView currentHead, String currentHeadText, String currentStringData) {
 
-        if (registerName.getText().toString().isEmpty()) {
-            registerName.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            registerNameHead.setText("* Name ");
-            registerNameHead.setTextColor(getResources().getColor(R.color.red));
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(registerName);
+//        switch (currentHeadText) {
+//            case "Email":
+//                if (!checkEmail(currentField)) {
+//                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+//                    currentHead.setText("* " + currentHeadText);
+//                    currentHead.setTextColor(getResources().getColor(R.color.red));
+//                    YoYo.with(Techniques.Shake)
+//                            .duration(300)
+//                            .playOn(currentField);
+//                }
+//                break;
+//
+//            case "Phone Number":
+//                if (!checkNumber(currentField)) {
+//                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+//                    currentHead.setText("* " + currentHeadText);
+//                    currentHead.setTextColor(getResources().getColor(R.color.red));
+//                    YoYo.with(Techniques.Shake)
+//                            .duration(300)
+//                            .playOn(currentField);
+//                }
+//                break;
+//
+//            case "Password":
+//                if (!checkPassword(currentField)) {
+//                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+//                    currentHead.setText("* " + currentHeadText);
+//                    currentHead.setTextColor(getResources().getColor(R.color.red));
+//                    YoYo.with(Techniques.Shake)
+//                            .duration(300)
+//                            .playOn(currentField);
+//                }
+//                break;
+////            case "Confirm Password":
+////                if (!confirmPassword(currentField)){
+////                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+////                    currentHead.setText("* " + currentHeadText);
+////                    currentHead.setTextColor(getResources().getColor(R.color.red));
+////                    YoYo.with(Techniques.Shake)
+////                            .duration(300)
+////                            .playOn(currentField);
+////                }
+////                break
+//        }
 
+        if (currentField.getText().toString().isEmpty()) {
+            setFieldsWarning(currentField, currentHead, currentHeadText);
         } else {
-            registerName.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
-            registerNameHead.setText(" Name ");
-            registerNameHead.setTextColor(getResources().getColor(R.color.black));
-            userName = registerName.getText().toString();
-            //registerUserName.getText().clear();
+            setFieldsDefault(currentField, currentHead, currentHeadText);
+            currentStringData = currentField.getText().toString();
         }
+        return currentStringData;
+    }
 
-        if (registerSurname.getText().toString().isEmpty()) {
-            registerSurname.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            registerSurnameHead.setText("* UserName ");
-            registerSurnameHead.setTextColor(getResources().getColor(R.color.red));
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(registerSurname);
+    private void setFieldsWarning(EditText currentField, TextView currentHead, String currentHeadText) {
+        currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+        currentHead.setText("* " + currentHeadText);
+        currentHead.setTextColor(getResources().getColor(R.color.red));
+        YoYo.with(Techniques.Shake)
+                .duration(300)
+                .playOn(currentField);
+    }
 
-        } else {
-            registerSurname.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
-            registerSurnameHead.setText(" UserName ");
-            registerSurnameHead.setTextColor(getResources().getColor(R.color.black));
-            userSurname = registerSurname.getText().toString();
-            //registerUserName.getText().clear();
-        }
+    private void setFieldsDefault(EditText currentField, TextView currentHead, String currentHeadText) {
+        currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
+        currentHead.setText(currentHeadText);
+        currentHead.setTextColor(getResources().getColor(R.color.black));
+    }
 
+    private void onGetData() {
 
-        if (registerNickName.getText().toString().isEmpty()) {
-            registerNickName.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            registerNickNameHead.setText("* Nick Name ");
-            registerNickNameHead.setTextColor(getResources().getColor(R.color.red));
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(registerNickName);
-        } else {
-            registerNickName.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
-            registerNickNameHead.setText(" Nick Name ");
-            registerNickNameHead.setTextColor(getResources().getColor(R.color.black));
-            nickName = registerNickName.getText().toString();
-            //registerNickName.getText().clear();
-        }
-
-        if (registerEmail.getText().toString().isEmpty() || !checkEmail(registerEmail)) {
-            registerEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            registerEmailHead.setText("* Email ");
-            registerEmailHead.setTextColor(getResources().getColor(R.color.red));
-            StyleableToast.makeText(getContext(), " Email is incorrect !", Toast.LENGTH_LONG, R.style.errorToast).show();
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(registerEmail);
-        } else {
-            registerEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
-            registerEmailHead.setText(" Email ");
-            registerEmailHead.setTextColor(getResources().getColor(R.color.black));
-            email = registerEmail.getText().toString();
-            //registerEmail.getText().clear();
+        userName = checkEditTextData(registerName, registerNameHead, "Name", userName);
+        userSurname = checkEditTextData(registerSurname, registerSurnameHead, "Surname", userSurname);
+        nickName = checkEditTextData(registerNickName, registerNickNameHead, "NickName", nickName);
+        emailForCheck = checkEditTextData(registerEmail, registerEmailHead, "Email", emailForCheck);
+        if (emailForCheck != null) {
+            if (!checkEmail(emailForCheck)) {
+                setFieldsWarning(registerEmail, registerEmailHead, "Email");
+            } else {
+                setFieldsDefault(registerEmail, registerEmailHead, "Email");
+                email = emailForCheck;
+            }
         }
 
         if (registerPhoneNumber.getText().toString().isEmpty() || !checkNumber(registerPhoneNumber)) {
             phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
             registerPhoneNumberHead.setText("* Phone Number ");
             registerPhoneNumberHead.setTextColor(getResources().getColor(R.color.red));
-            StyleableToast.makeText(getContext(), " Number is incorrect !", Toast.LENGTH_LONG, R.style.errorToast).show();
+//            StyleableToast.makeText(getContext(), " Number is incorrect !", Toast.LENGTH_LONG, R.style.errorToast).show();
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(phoneNumberContainer);
@@ -202,46 +238,33 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             birthDate = registerBirthDate.getText().toString();
         }
 
-        if (registerPassword.getText().toString().isEmpty() || !checkPassword(registerPassword)) {
-            registerPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            registerPasswordHead.setText("* Password ");
-            registerPasswordHead.setTextColor(getResources().getColor(R.color.red));
-            StyleableToast.makeText(getContext(), " Min 8 symbols !", Toast.LENGTH_LONG, R.style.errorToast).show();
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(registerPassword);
-        } else {
-            registerPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
-            registerPasswordHead.setText(" Password ");
-            registerPasswordHead.setTextColor(getResources().getColor(R.color.black));
-            password = registerPassword.getText().toString();
-            //registerPassword.getText().clear();
-
+        passwordForCheck = checkEditTextData(registerPassword, registerPasswordHead, "Password", passwordForCheck);
+        if (passwordForCheck != null) {
+            if (!checkPassword(passwordForCheck)) {
+                setFieldsWarning(registerPassword, registerPasswordHead, "Password");
+            } else {
+                setFieldsDefault(registerPassword, registerPasswordHead, "Password");
+                password = passwordForCheck;
+            }
         }
 
         if (registerConfirmPassword.getText().toString().isEmpty() || !confirmPassword(registerPassword, registerConfirmPassword)) {
-            registerConfirmPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            registerConfirmPasswordHead.setText("* Confirm Password ");
-            registerConfirmPasswordHead.setTextColor(getResources().getColor(R.color.red));
-            StyleableToast.makeText(getContext(), " Passwords not match !", Toast.LENGTH_LONG, R.style.errorToast).show();
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(registerConfirmPassword);
+            setFieldsWarning(registerConfirmPassword, registerConfirmPasswordHead, "Confirm Password");
         } else {
-            registerConfirmPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
-            registerConfirmPasswordHead.setText(" Confirm Password ");
-            registerConfirmPasswordHead.setTextColor(getResources().getColor(R.color.black));
+            setFieldsDefault(registerConfirmPassword, registerConfirmPasswordHead, "Confirm Password");
             confirmPassword = registerConfirmPassword.getText().toString();
-            //registerConfirmPassword.getText().clear();
         }
 
         if (userName != null && userSurname != null && nickName != null && email != null
                 && phoneNumber != null && birthDate != null && password != null && confirmPassword != null) {
-
-            authRequestModel = new AuthRequestModel(userName, userSurname, nickName, email, password, confirmPassword);
+            authRequestModel = new AuthRequestModel(userName, userSurname, nickName, email, password,
+                    confirmPassword, birthDate, phoneNumber);
             registerPresenter.sendAuthResponse(authRequestModel);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(), " Error ", Toast.LENGTH_LONG).show();
         }
+
     }
 
     private void showAlertDialog() {
@@ -268,11 +291,11 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
         dialog.show();
     }
 
-    private boolean checkEmail(EditText enteredEmail) {
+    private boolean checkEmail(String enteredEmail) {
         boolean emailValidate = false;
 
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        String email = enteredEmail.getText().toString().trim();
+        String email = enteredEmail.trim();
 
         if (email.matches(emailPattern)) {
             emailValidate = true;
@@ -291,10 +314,10 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
         return numberValidate;
     }
 
-    private boolean checkPassword(EditText enteredPassword) {
+    private boolean checkPassword(String enteredPassword) {
         boolean passwordValidate = true;
 
-        if (enteredPassword.getText().toString().trim().length() < 8) {
+        if (enteredPassword.trim().length() < 8) {
             passwordValidate = false;
         }
         return passwordValidate;
@@ -307,6 +330,20 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             conirmPassowrdValidate = true;
         }
         return conirmPassowrdValidate;
+    }
+
+    private void checkNickNameToServer(String name, String surname, String nickName) {
+        CheckNickRequestModel checkNickRequestModel = new CheckNickRequestModel();
+        checkNickRequestModel.setName(name);
+        checkNickRequestModel.setSurname(surname);
+        checkNickRequestModel.setNickname(nickName);
+        registerPresenter.checkNick(checkNickRequestModel);
+    }
+
+    private void checkEmailToServer(String email) {
+        CheckMailRequestModel checkMailRequestModel = new CheckMailRequestModel();
+        checkMailRequestModel.setEmail(email);
+        registerPresenter.checkEmail(checkMailRequestModel);
     }
 
     private void iniUI(View view) {
@@ -332,6 +369,9 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
         registerConfirmPasswordHead = view.findViewById(R.id.register_confirm_password_head);
         registerSignUpTxt = view.findViewById(R.id.register_sign_btn);
         registerCancelTxt = view.findViewById(R.id.register_cancel_btn);
+        registerNickOffer = view.findViewById(R.id.nickName_offer);
+        registerNickOfferOne = view.findViewById(R.id.nickName_offer_1);
+        registerNickOfferTwo = view.findViewById(R.id.nickName_offer_2);
     }
 
     private void keyBoardFocusHelper(View view) {
@@ -347,15 +387,45 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
 
     @Override
     public void onGetAuthResult(AuthResponseModel authResponseModel) {
-        showAlertDialog();
+
+        String authResultStatus = authResponseModel.getStatus();
+
+        switch (authResultStatus) {
+            case "0":
+                showAlertDialog();
+                break;
+
+            case "2":
+                setFieldsWarning(registerNickName, registerNickNameHead, "NickName");
+                checkNickNameToServer(userName, userSurname, nickName);
+                break;
+
+            case "4":
+                setFieldsWarning(registerEmail, registerEmailHead, "Email");
+//                checkEmailToServer(email);
+                break;
+
+        }
     }
 
     @Override
     public void onGetEmailCheckResult(CheckMailResponseModel checkMailResponseModel) {
-        if (checkMailResponseModel.getError().equals("124")) {
-            registerEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            registerEmailHead.setText("* Email ");
+        if (checkMailResponseModel.getStasus().equals("1")) {
+            setFieldsWarning(registerEmail, registerEmailHead, "Email");
         }
+    }
+
+    @Override
+    public void onGetNickCheckResult(CheckNickResponseModel checkNickResponseModel) {
+        registerNickOffer.setVisibility(View.VISIBLE);
+        registerNickOfferOne.setVisibility(View.VISIBLE);
+        registerNickOfferTwo.setVisibility(View.VISIBLE);
+        nickNameFirst = checkNickResponseModel.getNicknames_to_offer().get(0);
+        nickNameSecond = checkNickResponseModel.getNicknames_to_offer().get(1);
+
+        registerNickOfferOne.setText(nickNameFirst);
+        registerNickOfferTwo.setText(nickNameSecond);
+
     }
 
     @Override
@@ -365,4 +435,5 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
         }
         super.onDestroy();
     }
+
 }

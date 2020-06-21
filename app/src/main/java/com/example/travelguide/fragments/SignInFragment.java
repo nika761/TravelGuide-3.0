@@ -7,17 +7,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
-import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.interfaces.FragmentClickActions;
@@ -45,7 +50,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     private FragmentClickActions fragmentClickActions;
     private SignInPresenter signInPresenter;
-    private TextView registerTxt, signInTxt, cancelSignInTxt, enterMailHead, enterPasswordHead,forgotPassword;
+    private TextView registerTxt, signInTxt, cancelSignInTxt, enterMailHead, enterPasswordHead, forgotPassword, notHaveAccout, connectWiht;
     private EditText enterEmail, enterPassword;
     private SignInButton signBtnGoogle;
     private Button facebookBtn, googleBtn;
@@ -55,6 +60,9 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     private LoginButton signBtnFacebook;
     private Button signInBtn;
     private int RC_SIGN_IN = 0;
+    private Context context;
+    private LinearLayout terms;
+    private ImageView lineLeft, lineRight;
 
     public SignInFragment() {
 
@@ -100,6 +108,11 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         facebookBtn = view.findViewById(R.id.facebook);
         signBtnFacebook = view.findViewById(R.id.login_button_facebook);
         callbackManager = CallbackManager.Factory.create();
+        notHaveAccout = view.findViewById(R.id.not_have_account);
+        connectWiht = view.findViewById(R.id.connect_with);
+        lineLeft = view.findViewById(R.id.line_left);
+        lineRight = view.findViewById(R.id.line_right);
+        terms = view.findViewById(R.id.linear_terms);
     }
 
     private void initGoogleSignClient() {
@@ -113,28 +126,33 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
         registerTxt.setOnClickListener(v -> fragmentClickActions.registerBtnClicked());
 
-//        signInBtn.setOnClickListener(v -> {
-//            if (enterEmail.getText().toString().isEmpty()) {
-//                enterEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-//                enterMailHead.setText("*" + getString(R.string.email_or_phone_number));
-//                enterMailHead.setTextColor(getResources().getColor(R.color.red));
-//                YoYo.with(Techniques.Shake)
-//                        .duration(300)
-//                        .playOn(enterEmail);
-//            }
-//
-//            if (enterPassword.getText().toString().isEmpty()) {
-//                enterPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-//                enterPasswordHead.setText("*" + getString(R.string.password));
-//                enterPasswordHead.setTextColor(getResources().getColor(R.color.red));
-//                YoYo.with(Techniques.Shake)
-//                        .duration(300)
-//                        .playOn(enterPassword);
-//            } else {
-//                Intent intent = new Intent(getContext(), UserPageActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        signInBtn.setOnClickListener(v -> {
+            if (enterEmail.getText().toString().isEmpty()) {
+                enterEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+                enterMailHead.setText("*" + getString(R.string.email_or_phone_number));
+                enterMailHead.setTextColor(getResources().getColor(R.color.red));
+                YoYo.with(Techniques.Shake)
+                        .duration(300)
+                        .playOn(enterEmail);
+            }
+
+            if (enterPassword.getText().toString().isEmpty()) {
+                enterPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+                enterPasswordHead.setText("*" + getString(R.string.password));
+                enterPasswordHead.setTextColor(getResources().getColor(R.color.red));
+                YoYo.with(Techniques.Shake)
+                        .duration(300)
+                        .playOn(enterPassword);
+            } else {
+                Intent intent = new Intent(getContext(), UserPageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        terms.setOnClickListener((View view) -> {
+            ((SignInActivity) (context)).loadTermsFragment();
+        });
 
         googleBtn.setOnClickListener(v -> {
             signInWithGoogle();
@@ -223,4 +241,39 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         }
         super.onDestroy();
     }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        loadAnimation(enterMailHead, R.anim.swipe_from_bottom_anim, 0);
+        loadAnimation(enterEmail, R.anim.swipe_from_bottom_anim, 50);
+        loadAnimation(enterPasswordHead, R.anim.swipe_from_bottom_anim, 100);
+        loadAnimation(enterPassword, R.anim.swipe_from_bottom_anim, 150);
+        loadAnimation(forgotPassword, R.anim.swipe_from_bottom_anim, 200);
+        loadAnimation(notHaveAccout, R.anim.swipe_from_bottom_anim, 250);
+        loadAnimation(registerTxt, R.anim.swipe_from_bottom_anim, 250);
+        loadAnimation(signInBtn, R.anim.swipe_from_bottom_anim, 300);
+        loadAnimation(lineLeft, R.anim.swipe_from_left_anim, 400);
+        loadAnimation(lineRight, R.anim.swipe_from_right_anim, 400);
+        loadAnimation(connectWiht, R.anim.swipe_from_bottom_anim, 350);
+        loadAnimation(facebookBtn, R.anim.swipe_from_left_anim, 450);
+        loadAnimation(googleBtn, R.anim.swipe_from_right_anim, 450);
+        loadAnimation(terms, R.anim.swipe_from_bottom_anim, 500);
+
+    }
+
+    private void loadAnimation(View target, int animationId, int offset) {
+        Animation animation = AnimationUtils.loadAnimation(context, animationId);
+        animation.setStartOffset(offset);
+        target.startAnimation(animation);
+    }
+
 }

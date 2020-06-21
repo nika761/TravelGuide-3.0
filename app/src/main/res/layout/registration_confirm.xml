@@ -29,7 +29,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="50dp"
             android:gravity="center_vertical|center_horizontal"
-            android:text="In order to complete your registration, please click the confirmation link in the email that we have sent to you."
+            android:text="In order to complete your registration, please click the confirmation link that we have sent to you in the email and SMS ."
             android:textSize="14sp" />
 
     </LinearLayout>

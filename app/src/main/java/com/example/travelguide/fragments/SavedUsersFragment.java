@@ -60,6 +60,7 @@ public class SavedUsersFragment extends Fragment {
     private void setClickListeners() {
         closeFragmentBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ChooseLanguageActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
         addAccount.setOnClickListener(v -> {

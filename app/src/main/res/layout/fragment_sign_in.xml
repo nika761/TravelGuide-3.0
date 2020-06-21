@@ -30,7 +30,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|center_horizontal">
 
-
             </FrameLayout>
 
             <LinearLayout
@@ -53,9 +52,10 @@
                     android:layout_width="282dp"
                     android:layout_height="42dp"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/background_signin_edittexts"
+                    android:background="@drawable/background_sign_in_edittexts"
                     android:gravity="center_vertical"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/enter_password_head"
@@ -74,7 +74,8 @@
                     android:background="@drawable/background_sign_in_edittexts"
                     android:gravity="center_vertical"
                     android:inputType="textPassword"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/forgot_password_sign_in"
@@ -82,9 +83,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_marginTop="5dp"
+                    android:background="?attr/selectableItemBackground"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
-                    android:background="?attr/selectableItemBackground"
                     android:text="@string/forgot_password"
                     android:textColor="@color/white" />
 
@@ -130,8 +131,8 @@
                 android:textColor="@color/yellowTextView"
                 android:textSize="16sp" />
 
-
             <LinearLayout
+                android:id="@+id/connect_with_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -140,11 +141,13 @@
                 android:weightSum="3">
 
                 <ImageView
+                    android:id="@+id/line_left"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/line_bckg" />
 
                 <TextView
+                    android:id="@+id/connect_with"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -153,6 +156,7 @@
                     android:textSize="18sp" />
 
                 <ImageView
+                    android:id="@+id/line_right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -160,9 +164,8 @@
 
             </LinearLayout>
 
-
             <LinearLayout
-                android:layout_width="250dp"
+                android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:layout_marginTop="15dp"
                 android:gravity="center_horizontal|center_vertical"
@@ -177,10 +180,9 @@
 
                 <Button
                     android:id="@+id/facebook"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="35dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_weight="1"
                     android:background="@drawable/background_fb_btn"
                     android:drawableStart="@drawable/facebook_text"
                     android:padding="6dp"
@@ -197,9 +199,8 @@
 
                 <Button
                     android:id="@+id/google"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="35dp"
-                    android:layout_weight="1"
                     android:background="@drawable/background_google_btn"
                     android:drawableStart="@drawable/google_text"
                     android:padding="6dp"
@@ -226,14 +227,15 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="30dp"
+                android:id="@+id/linear_terms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="by signing in you agree to our"
                     android:textColor="@color/white"
@@ -241,7 +243,7 @@
                     android:textStyle="normal" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:text="@string/terms_of_services"
@@ -250,7 +252,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:text="and"
@@ -259,7 +261,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/privacy_policy"
                     android:textColor="@color/white"
