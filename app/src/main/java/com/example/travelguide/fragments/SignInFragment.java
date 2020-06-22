@@ -124,49 +124,64 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     private void setClickListeners() {
 
-        registerTxt.setOnClickListener(v -> fragmentClickActions.registerBtnClicked());
+        registerTxt.setOnClickListener(this::onViewClick);
 
-        signInBtn.setOnClickListener(v -> {
-            if (enterEmail.getText().toString().isEmpty()) {
-                enterEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-                enterMailHead.setText("*" + getString(R.string.email_or_phone_number));
-                enterMailHead.setTextColor(getResources().getColor(R.color.red));
-                YoYo.with(Techniques.Shake)
-                        .duration(300)
-                        .playOn(enterEmail);
-            }
+        signInBtn.setOnClickListener(this::onViewClick);
 
-            if (enterPassword.getText().toString().isEmpty()) {
-                enterPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-                enterPasswordHead.setText("*" + getString(R.string.password));
-                enterPasswordHead.setTextColor(getResources().getColor(R.color.red));
-                YoYo.with(Techniques.Shake)
-                        .duration(300)
-                        .playOn(enterPassword);
-            } else {
-                Intent intent = new Intent(getContext(), UserPageActivity.class);
-                startActivity(intent);
-            }
-        });
+        terms.setOnClickListener(this::onViewClick);
 
+        googleBtn.setOnClickListener(this::onViewClick);
 
-        terms.setOnClickListener((View view) -> {
-            ((SignInActivity) (context)).loadTermsFragment();
-        });
+        forgotPassword.setOnClickListener(this::onViewClick);
 
-        googleBtn.setOnClickListener(v -> {
-            signInWithGoogle();
-        });
+        facebookBtn.setOnClickListener(this::onViewClick);
 
-        forgotPassword.setOnClickListener(v -> ((SignInActivity) Objects.requireNonNull(getActivity())).loadForgotPswFragment());
+    }
 
-        facebookBtn.setOnClickListener(v -> {
-            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
-            signBtnFacebook.performClick();
-        });
+    private void startUserActivity(User user) {
 
+        Intent intent = new Intent(getActivity(), UserPageActivity.class);
+        intent.putExtra("name", user.getName());
+        intent.putExtra("lastName", user.getLastName());
+        intent.putExtra("email", user.getEmail());
+        intent.putExtra("url", user.getUrl());
+        intent.putExtra("id", user.getId());
+        intent.putExtra("loginType", user.getLoginType());
+        startActivity(intent);
+    }
+
+    private void signInWithAccount() {
+        if (enterEmail.getText().toString().isEmpty()) {
+            enterEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+            enterMailHead.setText("*" + getString(R.string.email_or_phone_number));
+            enterMailHead.setTextColor(getResources().getColor(R.color.red));
+            YoYo.with(Techniques.Shake)
+                    .duration(300)
+                    .playOn(enterEmail);
+        }
+
+        if (enterPassword.getText().toString().isEmpty()) {
+            enterPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+            enterPasswordHead.setText("*" + getString(R.string.password));
+            enterPasswordHead.setTextColor(getResources().getColor(R.color.red));
+            YoYo.with(Techniques.Shake)
+                    .duration(300)
+                    .playOn(enterPassword);
+        } else {
+            Intent intent = new Intent(getContext(), UserPageActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void signInWithFacebook() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
+        signBtnFacebook.performClick();
         callbackManager = CallbackManager.Factory.create();
-
         signBtnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -183,23 +198,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 Log.d("fbShame", error.toString());
             }
         });
-    }
-
-    private void startUserActivity(User user) {
-
-        Intent intent = new Intent(getActivity(), UserPageActivity.class);
-        intent.putExtra("name", user.getName());
-        intent.putExtra("lastName", user.getLastName());
-        intent.putExtra("email", user.getEmail());
-        intent.putExtra("url", user.getUrl());
-        intent.putExtra("id", user.getId());
-        intent.putExtra("loginType", user.getLoginType());
-        startActivity(intent);
-    }
-
-    private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -274,6 +272,37 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         Animation animation = AnimationUtils.loadAnimation(context, animationId);
         animation.setStartOffset(offset);
         target.startAnimation(animation);
+    }
+
+    private void onViewClick(View v) {
+        switch (v.getId()) {
+            case R.id.register_now:
+                ((SignInActivity) context)
+                        .loadFragment(new RegisterFragment(), null, R.id.register_frg_container, true);
+                break;
+
+            case R.id.linear_terms:
+                ((SignInActivity) context)
+                        .loadFragment(new TermsOfServiceFragment(), null, R.id.register_frg_container, true);
+                break;
+
+            case R.id.forgot_password_sign_in:
+                ((SignInActivity) context)
+                        .loadFragment(new ForgotPswFragment(), null, R.id.register_frg_container, true);
+                break;
+
+            case R.id.google:
+                signInWithGoogle();
+                break;
+
+            case R.id.facebook:
+                signInWithFacebook();
+                break;
+
+            case R.id.sign_in_button_main:
+                signInWithAccount();
+                break;
+        }
     }
 
 }

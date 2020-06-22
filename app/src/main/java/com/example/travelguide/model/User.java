@@ -72,6 +72,7 @@ public class User implements Serializable {
     public String getLoginStatus() {
         return loginStatus;
     }
+
     public void setLoginStatus(String loginStatus) {
         this.loginStatus = loginStatus;
     }

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.R;
 import com.example.travelguide.fragments.ForgotPswFragment;
@@ -16,77 +17,66 @@ import com.example.travelguide.fragments.SignInFragment;
 import com.example.travelguide.fragments.TermsOfServiceFragment;
 import com.example.travelguide.interfaces.FragmentClickActions;
 
-public class SignInActivity extends AppCompatActivity implements FragmentClickActions {
+public class SignInActivity extends AppCompatActivity {
 
     private SignInFragment signInFragment;
-    private RegisterFragment registerFragment;
-    private ForgotPswFragment forgotPswFragment;
     private Button fragmentHead;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        signInFragment = new SignInFragment(this);
-        registerFragment = new RegisterFragment(this);
-        loadSignInFragment();
+        loadFragment(new SignInFragment(), null, R.id.fragment_container, false);
     }
-
-//    public void iniUI() {
-//        fragmentHead = findViewById(R.id.fragment_head);
-//    }
 //
-//    public void checkCurrentFragment() {
-//
-//        SignInFragment checkSignFragment = (SignInFragment) getSupportFragmentManager().findFragmentByTag("signIn");
-//        if (checkSignFragment != null && checkSignFragment.isVisible()) {
-//            fragmentHead.setText(R.string.welcome);
-//        }
+//    public void loadSignInFragment() {
+////        fragmentHead.setText(R.string.welcome);
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.fragment_container, signInFragment, "signIn")
+//                .commit();
 //    }
 
-    public void loadSignInFragment() {
-//        fragmentHead.setText(R.string.welcome);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container, signInFragment, "signIn")
-                .commit();
-    }
+//    public void loadTermsFragment() {
+////        fragmentHead.setText(R.string.welcome);
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.register_frg_container, new TermsOfServiceFragment(), "terms")
+//                .addToBackStack(null)
+//                .commit();
+//    }
 
-    public void loadTermsFragment() {
-//        fragmentHead.setText(R.string.welcome);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.register_frg_container, new TermsOfServiceFragment(), "terms")
-                .addToBackStack(null)
-                .commit();
-    }
+//    public void loadSignUpFragment() {
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.register_frg_container, registerFragment, "signUp")
+//                .addToBackStack(null)
+//                .commit();
+//    }
+//
+//    public void loadForgotPswFragment() {
+//        forgotPswFragment = new ForgotPswFragment();
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.register_frg_container, forgotPswFragment, "forgotPswFragment")
+//                .addToBackStack(null)
+//                .commit();
+//    }
 
-    public void loadSignUpFragment() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.register_frg_container, registerFragment, "signUp")
-                .addToBackStack(null)
-                .commit();
-    }
+    public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
+        currentFragment.setArguments(data);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                .beginTransaction();
 
-    public void loadForgotPswFragment() {
-        forgotPswFragment = new ForgotPswFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.register_frg_container, forgotPswFragment, "forgotPswFragment")
-                .addToBackStack(null)
-                .commit();
+        if (backStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
+
+        fragmentTransaction.replace(fragmentID, currentFragment).commit();
     }
 
     @Override
-    public void registerBtnClicked() {
-//        fragmentHead.setText(R.string.sign_up);
-        loadSignUpFragment();
+    public void onBackPressed() {
+        super.onBackPressed();
     }
-
-    @Override
-    public void backToSignInFragment() {
-
-    }
-
 }

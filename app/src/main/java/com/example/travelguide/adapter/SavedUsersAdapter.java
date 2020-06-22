@@ -86,7 +86,7 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         CircleImageView userImage;
-        TextView userName, signUpBtn, cancelBtn, passwordHead, forgotPassword;
+        TextView userName, signInBtn, cancelBtn, passwordHead, forgotPassword;
         LinearLayout linearLayout;
         EditText savedUserPassword;
         ImageView loginTypeImg;
@@ -106,7 +106,7 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
             userImage = itemView.findViewById(R.id.saved_user_image);
             userName = itemView.findViewById(R.id.saved_user_name);
             linearLayout = itemView.findViewById(R.id.saved_user_hide_content);
-            signUpBtn = itemView.findViewById(R.id.saved_user_sign_in_btn);
+            signInBtn = itemView.findViewById(R.id.saved_user_sign_in_btn);
             cancelBtn = itemView.findViewById(R.id.saved_user_cancel_btn);
             savedUserPassword = itemView.findViewById(R.id.saved_user_password_edit);
             passwordHead = itemView.findViewById(R.id.saved_user_password_head);
@@ -116,10 +116,12 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
 
         private void setClickListeners() {
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-            signUpBtn.setOnClickListener(this);
+            userName.setOnLongClickListener(this);
+            signInBtn.setOnClickListener(this);
             cancelBtn.setOnClickListener(this);
+            userName.setOnClickListener(this);
             forgotPassword.setOnClickListener(this);
+            userImage.setOnClickListener(this);
         }
 
         private void checkUserPassword() {
@@ -134,11 +136,32 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
             }
         }
 
+        private void startActivityWithGoogle() {
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+            if (account != null) {
+                String personPhotoUrl;
+                Uri personPhotoUri = account.getPhotoUrl();
+                if (personPhotoUri != null) {
+                    personPhotoUrl = personPhotoUri.toString();
+                } else {
+                    personPhotoUrl = null;
+                }
+                Intent intent = new Intent(context, UserPageActivity.class);
+                intent.putExtra("name", account.getGivenName());
+                intent.putExtra("lastName", account.getFamilyName());
+                intent.putExtra("email", account.getEmail());
+                intent.putExtra("url", personPhotoUrl);
+                intent.putExtra("id", account.getId());
+                intent.putExtra("loginType", "google");
+                context.startActivity(intent);
+            }
+        }
+
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
 
-                case R.id.saved_user_adapter_root:
+                case R.id.saved_user_name:
                     selectedUserPosition = getAdapterPosition();
                     notifyDataSetChanged();
                     break;
@@ -148,33 +171,18 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
                     break;
 
                 case R.id.saved_user_sign_in_btn:
-                    GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                    if (account != null) {
-                        String personPhotoUrl;
-                        Uri personPhotoUri = account.getPhotoUrl();
-                        if (personPhotoUri != null) {
-                            personPhotoUrl = personPhotoUri.toString();
-                        } else {
-                            personPhotoUrl = null;
-                        }
-                        Intent intent = new Intent(context, UserPageActivity.class);
-                        intent.putExtra("name", account.getGivenName());
-                        intent.putExtra("lastName", account.getFamilyName());
-                        intent.putExtra("email", account.getEmail());
-                        intent.putExtra("url", personPhotoUrl);
-                        intent.putExtra("id", account.getId());
-                        intent.putExtra("loginType", "google");
-                        context.startActivity(intent);
-                    }
-//                    checkUserPassword();
+                    checkUserPassword();
                     break;
 
                 case R.id.save_user_forgot_password:
                     ((SavedUserActivity) context).loadForgotPswFragment();
                     break;
+
+                case R.id.saved_user_image:
+                    startActivityWithGoogle();
+                    break;
             }
         }
-
 
         @Override
         public boolean onLongClick(View v) {

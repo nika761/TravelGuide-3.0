@@ -57,6 +57,10 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             registerPasswordHead, registerConfirmPasswordHead,
             registerSignUpTxt, registerCancelTxt, registerNickOffer, registerNickOfferOne, registerNickOfferTwo;
 
+    public RegisterFragment() {
+
+    }
+
     public RegisterFragment(FragmentClickActions fragmentClickActions) {
         this.fragmentClickActions = fragmentClickActions;
     }
@@ -84,10 +88,7 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             registerNickOfferTwo.setVisibility(View.GONE);
         });
 
-        registerCancelTxt.setOnClickListener(v -> {
-            Objects.requireNonNull(getActivity()).onBackPressed();
-            fragmentClickActions.backToSignInFragment();
-        });
+        registerCancelTxt.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
 
         registerBirthDate.setOnClickListener(v -> showDatePickerDialog());
 

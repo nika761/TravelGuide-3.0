@@ -1,52 +1,25 @@
 package com.example.travelguide.activity;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
-import com.example.travelguide.fragments.EditProfileFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.Utils;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApi;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenu;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
@@ -113,6 +86,7 @@ public class UserPageActivity extends AppCompatActivity {
         bundlePrfFrg.putString("email", user.getEmail());
         bundlePrfFrg.putString("loginType", user.getLoginType());
         bundlePrfFrg.putSerializable("user", user);
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
@@ -179,16 +153,22 @@ public class UserPageActivity extends AppCompatActivity {
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             user.setLoginStatus("no");
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+            if (user != null) {
+                Utils.deleteUser(this, user);
+            }
         }).addOnCanceledListener(this, () -> {
             Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(this, e -> {
             e.printStackTrace();
             Toast.makeText(this, "Failure", Toast.LENGTH_SHORT).show();
         });
-//            if (user != null) {
-//                Utils.deleteUser(this, user);
-//            }
+
         finish();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

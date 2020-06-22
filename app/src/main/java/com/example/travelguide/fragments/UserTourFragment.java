@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.example.travelguide.R;
 public class UserTourFragment extends Fragment {
 
     private Context context;
+    private TextView tourRequestContent;
 
     @Nullable
     @Override
@@ -28,12 +30,13 @@ public class UserTourFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        iniUI(view);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        loadAnimation(tourRequestContent, R.anim.animation_languages, 0);
     }
 
     @Override
@@ -41,9 +44,15 @@ public class UserTourFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
     }
-    private void setAnimation(View v) {
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_languages);
-        v.setAnimation(animation);
+
+    private void iniUI(View v) {
+        tourRequestContent = v.findViewById(R.id.tour_request_background);
+    }
+
+    private void loadAnimation(View target, int animationId, int offset) {
+        Animation animation = AnimationUtils.loadAnimation(context, animationId);
+        animation.setStartOffset(offset);
+        target.startAnimation(animation);
     }
 
 }

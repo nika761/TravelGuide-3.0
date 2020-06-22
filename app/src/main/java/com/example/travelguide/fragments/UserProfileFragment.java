@@ -1,5 +1,6 @@
 package com.example.travelguide.fragments;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,10 +33,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.UserPageActivity;
+import com.example.travelguide.model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -52,6 +55,9 @@ public class UserProfileFragment extends Fragment {
     private ActionBarDrawerToggle toggle;
     private TabLayout tabLayout;
     private String loginType;
+    private Context context;
+    private User user;
+    private Bundle bundlePrfFrg;
 
     @Nullable
     @Override
@@ -72,10 +78,20 @@ public class UserProfileFragment extends Fragment {
         setClickListeners();
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
 
     private void onGetData() {
         if (checkUserData(getArguments())) {
             setUserData();
+            if (getArguments() != null && getArguments().containsKey("user")) {
+                bundlePrfFrg = new Bundle();
+                user = (User) getArguments().getSerializable("user");
+                bundlePrfFrg.putSerializable("user", user);
+            }
         } else {
             Toast.makeText(getContext(), "Data Error ", Toast.LENGTH_SHORT).show();
         }
@@ -91,6 +107,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void setUserData() {
+
         String firstName = getArguments().getString("firstName");
         String lastName = getArguments().getString("lastName");
         String url = getArguments().getString("url");
@@ -126,12 +143,11 @@ public class UserProfileFragment extends Fragment {
         userPrfImage = view.findViewById(R.id.user_prf_image);
         editProfile = view.findViewById(R.id.edit_profile);
         tourRequest = view.findViewById(R.id.tour_request_background);
-        firstPhotoConent = view.findViewById(R.id.first_photo_content_tab);
         userContentPhotoBtn = view.findViewById(R.id.user_content_photo_fr);
         userContentMiddleBtn = view.findViewById(R.id.user_content_middle_fr);
         userContentTourBtn = view.findViewById(R.id.user_content_tour_fr);
         tabLayout = view.findViewById(R.id.tabs_profile);
-        ((UserPageActivity) Objects.requireNonNull(getActivity()))
+        ((UserPageActivity) context)
                 .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
     }
 
@@ -141,7 +157,7 @@ public class UserProfileFragment extends Fragment {
         userContentTourBtn.setOnClickListener(this::onContentIconClick);
         editProfile.setOnClickListener(v -> ((UserPageActivity)
                 Objects.requireNonNull(getActivity()))
-                .loadFragment(new EditProfileFragment(), null, R.id.user_page_frg_container, false));
+                .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true));
     }
 
     private void initToolbarNav(View view) {
@@ -190,10 +206,16 @@ public class UserProfileFragment extends Fragment {
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                         .setTitle("Log out ?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            if (loginType != null && loginType.equals("facebook")) {
-                                ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
-                            } else if (loginType != null && loginType.equals("google")) {
-                                ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
+                            if (loginType != null) {
+                                String currentLoginType = loginType;
+                                switch (currentLoginType) {
+                                    case "facebook":
+                                        ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
+                                        break;
+                                    case "google":
+                                        ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
+                                        break;
+                                }
                             } else {
                                 Objects.requireNonNull(getActivity()).finish();
                             }
@@ -207,16 +229,6 @@ public class UserProfileFragment extends Fragment {
         return true;
     };
 
-    private void setAnimation(View v) {
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_languages);
-        v.setAnimation(animation);
-    }
-
-    private void setContentAnim(View v) {
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_photo_content_tab);
-        v.setAnimation(animation);
-    }
-
     private void setBackground(View view, int drawable) {
         view.setBackground(getResources().getDrawable(drawable));
     }
@@ -228,7 +240,7 @@ public class UserProfileFragment extends Fragment {
                 setBackground(userContentPhotoBtn, R.drawable.profile_photos_pressed);
                 setBackground(userContentTourBtn, R.drawable.profile_tour);
                 setBackground(userContentMiddleBtn, R.drawable.profile_liked);
-                ((UserPageActivity) Objects.requireNonNull(getActivity()))
+                ((UserPageActivity) context)
                         .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
                 break;
 
@@ -237,7 +249,8 @@ public class UserProfileFragment extends Fragment {
                 setBackground(userContentPhotoBtn, R.drawable.profile_photos);
                 setBackground(userContentTourBtn, R.drawable.profile_tour);
 
-                Toast.makeText(getContext(), "Middle Clicked", Toast.LENGTH_SHORT).show();
+                ((UserPageActivity) context)
+                        .loadFragment(new UserContentFragment(), null, R.id.on_user_prof_frg_container, false);
 
                 break;
 
@@ -246,8 +259,9 @@ public class UserProfileFragment extends Fragment {
                 setBackground(userContentPhotoBtn, R.drawable.profile_photos);
                 setBackground(userContentMiddleBtn, R.drawable.profile_liked);
 
-                ((UserPageActivity) Objects.requireNonNull(getActivity()))
+                ((UserPageActivity) context)
                         .loadFragment(new UserTourFragment(), null, R.id.on_user_prof_frg_container, false);
+
                 break;
         }
     }
