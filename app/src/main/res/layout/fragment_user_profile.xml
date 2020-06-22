@@ -157,26 +157,86 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
+            <LinearLayout
+                android:id="@+id/profile_bio"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/user_bio"
+                android:background="@drawable/content_bg"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/states" />
+                app:layout_constraintTop_toBottomOf="@id/states">
+
+                <TextView
+                    android:id="@+id/bio_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:padding="8dp"
+                    android:text="sadasdascnxcnsdljffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginStart="15dp"
+                android:background="@color/white"
+                android:elevation="1dp"
+                android:gravity="top"
+                android:text="Bio"
+                android:textColor="@color/black"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@id/profile_bio"
+                app:layout_constraintStart_toStartOf="@id/profile_bio"
+                app:layout_constraintTop_toTopOf="@id/profile_bio" />
+
+            <ImageButton
+                android:id="@+id/bio_visible_btn"
+                android:layout_width="18dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/white"
+                android:elevation="1dp"
+                android:src="@drawable/bio_see"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@id/profile_bio"
+                app:layout_constraintEnd_toEndOf="@id/profile_bio"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio" />
+
+            <ImageButton
+                android:id="@+id/bio_invisible_btn"
+                android:layout_width="18dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/white"
+                android:elevation="1dp"
+                android:src="@drawable/bio_invisbile"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/profile_bio"
+                app:layout_constraintEnd_toEndOf="@id/profile_bio"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio" />
+
 
             <LinearLayout
                 android:id="@+id/content_icon_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="17dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/states">
+                app:layout_constraintTop_toBottomOf="@id/profile_bio">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -208,36 +268,49 @@
 
                 </FrameLayout>
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabs_profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    app:tabIndicatorColor="@color/yellowTextView"
-                    app:tabIndicatorFullWidth="false"
-                    app:tabRippleColor="@android:color/transparent">
-
-                    <com.google.android.material.tabs.TabItem
-                        android:id="@+id/tab_photos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:icon="@drawable/profile_photos" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:id="@+id/tab_liked_content"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:icon="@drawable/profile_liked" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:id="@+id/tab_tours"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:icon="@drawable/profile_tour" />
-
-                </com.google.android.material.tabs.TabLayout>
-
             </LinearLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio"
+                app:tabIndicatorColor="@color/yellowTextView"
+                app:tabIndicatorFullWidth="false"
+                app:tabRippleColor="@android:color/transparent">
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tab_photos_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/profile_photos" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tab_liked_content_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/profile_liked" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tab_tours_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/profile_tour" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tabs_profile" />
 
             <LinearLayout
                 android:id="@+id/on_user_prof_frg_container"

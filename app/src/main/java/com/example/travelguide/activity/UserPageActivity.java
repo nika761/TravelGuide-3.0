@@ -1,6 +1,7 @@
 package com.example.travelguide.activity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -10,8 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.adapter.ViewPageAdapter;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.User;
@@ -21,6 +24,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
@@ -48,7 +53,6 @@ public class UserPageActivity extends AppCompatActivity {
 
     private void initUI() {
         userPhotoLeft = findViewById(R.id.user_photo_left);
-
     }
 
     public void hideBottomNavigation(Boolean visible) {
@@ -93,8 +97,7 @@ public class UserPageActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                selectedFragment = new UserHomeFragment();
-                loadFragment(selectedFragment, bundlePrfFrg, R.id.user_page_frg_container, false);
+                loadFragment(new UserHomeFragment(), bundlePrfFrg, R.id.user_page_frg_container, false);
                 break;
 
             case R.id.bot_nav_search:
@@ -110,11 +113,9 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_profile:
-                selectedFragment = new UserProfileFragment();
-                loadFragment(selectedFragment, bundlePrfFrg, R.id.user_page_frg_container, false);
+                loadFragment(new UserProfileFragment(), bundlePrfFrg, R.id.user_page_frg_container, false);
                 break;
         }
-
         return true;
     };
 

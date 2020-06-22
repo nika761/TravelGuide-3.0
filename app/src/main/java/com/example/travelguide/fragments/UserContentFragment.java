@@ -20,6 +20,7 @@ public class UserContentFragment extends Fragment {
     private TextView tabMain, tabVides, tabPhotos, tabAll;
     private View contentList;
     private Context context;
+    private boolean visible = true;
 
     @Nullable
     @Override
@@ -44,7 +45,6 @@ public class UserContentFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     private void iniUI(View v) {
@@ -68,37 +68,42 @@ public class UserContentFragment extends Fragment {
         target.startAnimation(animation);
     }
 
-    private void setTabTextColor(TextView view, int color) {
-        view.setTextColor(color);
+    private void setTabTextColor(TextView textView, int color) {
+        textView.setTextColor(getResources().getColor(color));
     }
 
     private void onTabItemClick(View v) {
         switch (v.getId()) {
 
             case R.id.tab_liked_main:
-                contentList.setVisibility(View.VISIBLE);
-                loadAnimation(contentList, R.anim.anim, 0);
+                if (visible) {
+                    contentList.setVisibility(View.VISIBLE);
+                    visible = false;
+                } else {
+                    contentList.setVisibility(View.GONE);
+                    visible = true;
+                }
                 break;
 
             case R.id.tab_liked_video:
+                tabMain.setText("Videos");
                 setTabTextColor(tabVides, R.color.yellowTextView);
                 setTabTextColor(tabPhotos, R.color.black);
                 setTabTextColor(tabAll, R.color.black);
-
                 break;
 
             case R.id.tab_liked_photo:
+                tabMain.setText("Photos");
                 setTabTextColor(tabPhotos, R.color.yellowTextView);
                 setTabTextColor(tabVides, R.color.black);
                 setTabTextColor(tabAll, R.color.black);
-
                 break;
 
             case R.id.tab_liked_all:
+                tabMain.setText("All");
                 setTabTextColor(tabAll, R.color.yellowTextView);
                 setTabTextColor(tabPhotos, R.color.black);
                 setTabTextColor(tabVides, R.color.black);
-
                 break;
         }
     }

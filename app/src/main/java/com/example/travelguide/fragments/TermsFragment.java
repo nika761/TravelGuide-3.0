@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.travelguide.R;
 
-public class TermsOfServiceFragment extends Fragment {
+public class TermsFragment extends Fragment {
 
     private Context context;
     private View layout, termsScroll;
@@ -26,7 +26,7 @@ public class TermsOfServiceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        layout = inflater.inflate(R.layout.terms_and_services_layout, container, false);
+        layout = inflater.inflate(R.layout.fragment_terms, container, false);
 
         return layout;
     }

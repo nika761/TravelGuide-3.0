@@ -77,6 +77,7 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
         } else {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.bot_nav_profile));
         }
+
     }
 
     @Override

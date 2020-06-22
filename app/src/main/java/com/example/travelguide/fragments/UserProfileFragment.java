@@ -25,6 +25,8 @@ import androidx.core.view.GravityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -33,8 +35,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.UserPageActivity;
+import com.example.travelguide.adapter.ViewPageAdapter;
 import com.example.travelguide.model.User;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
@@ -44,8 +48,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfileFragment extends Fragment {
 
-    private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent, editProfile;
-    private ImageButton userContentPhotoBtn, userContentMiddleBtn, userContentTourBtn;
+    private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent, editProfile, bioText;
+    private ImageButton userContentPhotoBtn, userContentMiddleBtn, userContentTourBtn, bioVisibleBtn, bioInvisibleBtn;
     private CircleImageView userPrfImage;
     private ImageView userBioTextState;
     private LinearLayout firstPhotoLinear, linearTour;
@@ -56,6 +60,7 @@ public class UserProfileFragment extends Fragment {
     private TabLayout tabLayout;
     private String loginType;
     private Context context;
+    private boolean visible = true;
     private User user;
     private Bundle bundlePrfFrg;
 
@@ -83,6 +88,57 @@ public class UserProfileFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    private void initTabLayout(View view) {
+
+
+        TabLayout tabLayout = view.findViewById(R.id.tabs_profile);
+        TabItem itemPhoto = view.findViewById(R.id.tab_photos_layout);
+        TabItem itemLiked = view.findViewById(R.id.tab_liked_content_layout);
+        TabItem itemTour = view.findViewById(R.id.tab_tours_layout);
+        ViewPager viewPager = view.findViewById(R.id.viewPager);
+
+        assert getFragmentManager() != null;
+        ViewPageAdapter viewPageAdapter = new ViewPageAdapter(getFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(viewPageAdapter);
+
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
+            }
+        });
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
+    }
+
 
     private void onGetData() {
         if (checkUserData(getArguments())) {
@@ -120,17 +176,6 @@ public class UserProfileFragment extends Fragment {
         if (url != null) {
             Glide.with(this)
                     .load(url)
-                    .addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
                     .into(userPrfImage);
         }
 
@@ -146,15 +191,30 @@ public class UserProfileFragment extends Fragment {
         userContentPhotoBtn = view.findViewById(R.id.user_content_photo_fr);
         userContentMiddleBtn = view.findViewById(R.id.user_content_middle_fr);
         userContentTourBtn = view.findViewById(R.id.user_content_tour_fr);
+        bioVisibleBtn = view.findViewById(R.id.bio_visible_btn);
+        bioInvisibleBtn = view.findViewById(R.id.bio_invisible_btn);
+        bioText = view.findViewById(R.id.bio_text);
         tabLayout = view.findViewById(R.id.tabs_profile);
         ((UserPageActivity) context)
                 .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
+    }
+
+    private void showBioText() {
+        if (visible) {
+            bioText.setVisibility(View.VISIBLE);
+            visible = false;
+        } else {
+            bioText.setVisibility(View.GONE);
+            visible = true;
+        }
     }
 
     private void setClickListeners() {
         userContentPhotoBtn.setOnClickListener(this::onContentIconClick);
         userContentMiddleBtn.setOnClickListener(this::onContentIconClick);
         userContentTourBtn.setOnClickListener(this::onContentIconClick);
+        bioVisibleBtn.setOnClickListener(this::onContentIconClick);
+        bioInvisibleBtn.setOnClickListener(this::onContentIconClick);
         editProfile.setOnClickListener(v -> ((UserPageActivity)
                 Objects.requireNonNull(getActivity()))
                 .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true));
@@ -179,7 +239,6 @@ public class UserProfileFragment extends Fragment {
     }
 
     private NavigationView.OnNavigationItemSelectedListener navListener = item -> {
-        Fragment selectedFragment;
 
         switch (item.getItemId()) {
             case R.id.settings_share_profile:
@@ -203,31 +262,35 @@ public class UserProfileFragment extends Fragment {
                 break;
 
             case R.id.settings_sing_out:
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                        .setTitle("Log out ?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            if (loginType != null) {
-                                String currentLoginType = loginType;
-                                switch (currentLoginType) {
-                                    case "facebook":
-                                        ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
-                                        break;
-                                    case "google":
-                                        ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
-                                        break;
-                                }
-                            } else {
-                                Objects.requireNonNull(getActivity()).finish();
-                            }
-                        })
-                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                        .create();
-                alertDialog.show();
+                logOut();
                 break;
         }
 
         return true;
     };
+
+    private void logOut() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle("Log out ?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    if (loginType != null) {
+                        String currentLoginType = loginType;
+                        switch (currentLoginType) {
+                            case "facebook":
+                                ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
+                                break;
+                            case "google":
+                                ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
+                                break;
+                        }
+                    } else {
+                        Objects.requireNonNull(getActivity()).finish();
+                    }
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .create();
+        alertDialog.show();
+    }
 
     private void setBackground(View view, int drawable) {
         view.setBackground(getResources().getDrawable(drawable));
@@ -262,6 +325,20 @@ public class UserProfileFragment extends Fragment {
                 ((UserPageActivity) context)
                         .loadFragment(new UserTourFragment(), null, R.id.on_user_prof_frg_container, false);
 
+                break;
+
+            case R.id.bio_visible_btn:
+                bioText.setVisibility(View.VISIBLE);
+                bioVisibleBtn.setVisibility(View.GONE);
+                bioInvisibleBtn.setVisibility(View.VISIBLE);
+                visible = false;
+                break;
+
+            case R.id.bio_invisible_btn:
+                bioText.setVisibility(View.GONE);
+                bioVisibleBtn.setVisibility(View.VISIBLE);
+                bioInvisibleBtn.setVisibility(View.GONE);
+                visible = true;
                 break;
         }
     }

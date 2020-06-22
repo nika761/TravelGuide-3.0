@@ -1,21 +1,15 @@
 package com.example.travelguide.activity;
 
 import android.os.Bundle;
-import android.view.ScaleGestureDetector;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.R;
-import com.example.travelguide.fragments.ForgotPswFragment;
-import com.example.travelguide.fragments.RegisterFragment;
 import com.example.travelguide.fragments.SignInFragment;
-import com.example.travelguide.fragments.TermsOfServiceFragment;
-import com.example.travelguide.interfaces.FragmentClickActions;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -41,7 +35,7 @@ public class SignInActivity extends AppCompatActivity {
 ////        fragmentHead.setText(R.string.welcome);
 //        getSupportFragmentManager()
 //                .beginTransaction()
-//                .add(R.id.register_frg_container, new TermsOfServiceFragment(), "terms")
+//                .add(R.id.register_frg_container, new TermsFragment(), "terms")
 //                .addToBackStack(null)
 //                .commit();
 //    }

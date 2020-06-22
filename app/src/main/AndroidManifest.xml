@@ -22,9 +22,14 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <!--                <data-->
+                <!--                    android:host="www.travelguide.ge"-->
+                <!--                    android:scheme="http" />-->
+
                 <data
-                    android:host="www.travelguide.ge"
+                    android:host="ec2-18-156-2-129.eu-central-1.compute.amazonaws.com"
                     android:scheme="http" />
+
             </intent-filter>
         </activity>
 

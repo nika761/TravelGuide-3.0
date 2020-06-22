@@ -283,7 +283,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
             case R.id.linear_terms:
                 ((SignInActivity) context)
-                        .loadFragment(new TermsOfServiceFragment(), null, R.id.register_frg_container, true);
+                        .loadFragment(new TermsFragment(), null, R.id.register_frg_container, true);
                 break;
 
             case R.id.forgot_password_sign_in:

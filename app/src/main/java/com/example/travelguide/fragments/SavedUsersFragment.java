@@ -3,6 +3,7 @@ package com.example.travelguide.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.swipe.util.Attributes;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.ChooseLanguageActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.adapter.SavedUsersAdapter;
+import com.example.travelguide.adapter.SwipeRecyclerViewAdapter;
 import com.example.travelguide.utils.Utils;
 
 import java.util.Objects;
@@ -49,12 +52,33 @@ public class SavedUsersFragment extends Fragment {
     }
 
     private void initRecycler(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.saved_user_recycler);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        RecyclerView.Adapter mAdapter = new SavedUsersAdapter(getContext(), Utils.getSavedUsers(Objects.requireNonNull(getContext())));
-        recyclerView.setAdapter(mAdapter);
+//        RecyclerView recyclerView = view.findViewById(R.id.saved_user_recycler);
+//        recyclerView.setHasFixedSize(true);
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+//        recyclerView.setLayoutManager(layoutManager);
+//        RecyclerView.Adapter mAdapter = new SavedUsersAdapter(getContext(), Utils.getSavedUsers(Objects.requireNonNull(getContext())));
+//        recyclerView.setAdapter(mAdapter);
+
+        SwipeRecyclerViewAdapter swipeAdapter = new SwipeRecyclerViewAdapter(getContext(), Utils.getSavedUsers(Objects.requireNonNull(getContext())));
+
+        swipeAdapter.setMode(Attributes.Mode.Single);
+
+        RecyclerView swipeRecyclerView = view.findViewById(R.id.saved_user_recycler);
+        swipeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        swipeRecyclerView.setAdapter(swipeAdapter);
+        swipeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.e("RecyclerView", "onScrollStateChanged");
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     private void setClickListeners() {
@@ -68,4 +92,5 @@ public class SavedUsersFragment extends Fragment {
             startActivity(intent);
         });
     }
+
 }
