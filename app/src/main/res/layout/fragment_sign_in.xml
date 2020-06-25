@@ -7,8 +7,9 @@
 
     <ScrollView
         android:id="@+id/container_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -17,6 +18,7 @@
             android:id="@+id/linear_container_sign_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:background="@color/splashScreenBackground"
             android:gravity="center_horizontal"
             android:orientation="vertical"
@@ -243,6 +245,7 @@
                     android:textStyle="normal" />
 
                 <TextView
+                    android:id="@+id/terms_of_services"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
@@ -261,6 +264,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/privacy_policy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/privacy_policy"

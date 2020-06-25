@@ -9,7 +9,7 @@
         android:id="@+id/main_logo_full"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="70dp"
         android:background="@drawable/main_logo_full"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,8 +19,8 @@
         android:id="@+id/choose_language_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
         android:layout_marginTop="50dp"
+        android:paddingBottom="10dp"
         android:text=" Choose the language "
         android:textColor="@color/whiteTextView"
         android:textSize="20sp"
@@ -32,120 +32,11 @@
         android:id="@+id/language_recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toTopOf="@id/start_button"
+        android:layout_marginTop="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/choose_language_text"
         app:layout_constraintStart_toStartOf="@id/choose_language_text"
         app:layout_constraintTop_toBottomOf="@id/choose_language_text" />
-
-    <LinearLayout
-        android:id="@+id/linear_for_fulls"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/start_button"
-        app:layout_constraintEnd_toStartOf="@id/linear_for_smalls"
-        app:layout_constraintStart_toStartOf="@id/choose_language_text"
-        app:layout_constraintTop_toBottomOf="@id/choose_language_text">
-
-        <TextView
-            android:id="@+id/english_full"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text=" English "
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/georgian_full"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text=" Georgian "
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/russian_full"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text=" Russian "
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linear_for_smalls"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/start_button"
-        app:layout_constraintEnd_toEndOf="@id/choose_language_text"
-        app:layout_constraintStart_toEndOf="@id/linear_for_fulls"
-        app:layout_constraintTop_toBottomOf="@id/choose_language_text">
-
-        <TextView
-            android:id="@+id/english_small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text=" eng "
-            android:textColor="@color/yellowTextView"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/georgian_small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text=" ქარ "
-            android:textColor="@color/yellowTextView"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/russian_small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text=" rus "
-            android:textColor="@color/yellowTextView"
-            android:textSize="20sp" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/start_button"
-        android:layout_width="120dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="50dp"
-        android:background="@drawable/background_start_button"
-        android:enabled="true"
-        android:text=" Start "
-        android:visibility="invisible"
-        android:textAllCaps="false"
-        android:textColor="@color/grey"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_for_fulls" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

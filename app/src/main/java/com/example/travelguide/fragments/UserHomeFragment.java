@@ -1,11 +1,13 @@
 package com.example.travelguide.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -19,17 +21,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.ChooseLanguageActivity;
 import com.example.travelguide.activity.SplashScreenActivity;
+import com.example.travelguide.utils.UtilsGlide;
 
 import java.util.Objects;
 import java.util.Random;
@@ -45,12 +51,19 @@ public class UserHomeFragment extends Fragment {
     private final int STORY_DISPLAY_ONE = 10000;
     private final int STORY_DISPLAY_TWO = 20000;
     private boolean checked = true;
+    private Context context;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_home, container, false);
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        Window window = Objects.requireNonNull(getActivity()).getWindow();
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        View decorView = window.getDecorView();
+        decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         return view;
     }
@@ -64,6 +77,12 @@ public class UserHomeFragment extends Fragment {
         startStory();
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
     private void initUI(View view) {
         storiesProgressView = view.findViewById(R.id.stories);
         userLeftImage = view.findViewById(R.id.user_photo_left);
@@ -74,9 +93,7 @@ public class UserHomeFragment extends Fragment {
     private void setClickListeners() {
         imageView.setOnClickListener(v -> startStory());
         imageView.setImageResource(setStoryPhoto());
-        storyLike.setOnClickListener(v -> {
-            storyLike.setBackground(getResources().getDrawable(R.drawable.like_presed));
-        });
+        storyLike.setOnClickListener(v -> storyLike.setBackground(getResources().getDrawable(R.drawable.heart_emoji_red)));
     }
 
 //    private void checkStory() {
@@ -90,7 +107,7 @@ public class UserHomeFragment extends Fragment {
 //    }
 
     private void startStory() {
-        storiesProgressView.setStoriesCount(4); // <- set stories
+        storiesProgressView.setStoriesCount(6); // <- set stories
         storiesProgressView.setStoryDuration(10000); // <- set a story duration
         storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
             @Override
@@ -149,9 +166,7 @@ public class UserHomeFragment extends Fragment {
         String loginType = getArguments().getString("loginType");
 
         if (url != null) {
-            Glide.with(this)
-                    .load(url)
-                    .into(userLeftImage);
+            UtilsGlide.loadPhoto(context, url, userLeftImage);
         }
     }
 

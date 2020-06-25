@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.example.travelguide.interfaces.FragmentClickActions;
 import com.example.travelguide.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.presenters.SignInPresenter;
+import com.example.travelguide.utils.UtilsGoogle;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -50,7 +52,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     private FragmentClickActions fragmentClickActions;
     private SignInPresenter signInPresenter;
-    private TextView registerTxt, signInTxt, cancelSignInTxt, enterMailHead, enterPasswordHead, forgotPassword, notHaveAccout, connectWiht;
+    private TextView registerTxt, signInTxt, cancelSignInTxt, enterMailHead, enterPasswordHead, forgotPassword, notHaveAccout, connectWiht, termsOfServices, privacyPolicy;
     private EditText enterEmail, enterPassword;
     private SignInButton signBtnGoogle;
     private Button facebookBtn, googleBtn;
@@ -113,13 +115,18 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         lineLeft = view.findViewById(R.id.line_left);
         lineRight = view.findViewById(R.id.line_right);
         terms = view.findViewById(R.id.linear_terms);
+        termsOfServices = view.findViewById(R.id.terms_of_services);
+        privacyPolicy = view.findViewById(R.id.privacy_policy);
     }
 
     private void initGoogleSignClient() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(Objects.requireNonNull(getContext()), gso);
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestEmail()
+//                .build();
+//        mGoogleSignInClient = GoogleSignIn.getClient(Objects.requireNonNull(getContext()), gso);
+
+        mGoogleSignInClient = UtilsGoogle.initGoogleSignInClient(context);
+
     }
 
     private void setClickListeners() {
@@ -128,13 +135,15 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
         signInBtn.setOnClickListener(this::onViewClick);
 
-        terms.setOnClickListener(this::onViewClick);
-
         googleBtn.setOnClickListener(this::onViewClick);
 
         forgotPassword.setOnClickListener(this::onViewClick);
 
         facebookBtn.setOnClickListener(this::onViewClick);
+
+        termsOfServices.setOnClickListener(this::onViewClick);
+
+        privacyPolicy.setOnClickListener(this::onViewClick);
 
     }
 
@@ -195,6 +204,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
             @Override
             public void onError(FacebookException error) {
+                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
                 Log.d("fbShame", error.toString());
             }
         });
@@ -281,7 +291,8 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                         .loadFragment(new RegisterFragment(), null, R.id.register_frg_container, true);
                 break;
 
-            case R.id.linear_terms:
+            case R.id.terms_of_services:
+            case R.id.privacy_policy:
                 ((SignInActivity) context)
                         .loadFragment(new TermsFragment(), null, R.id.register_frg_container, true);
                 break;

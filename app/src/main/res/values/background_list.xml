@@ -5,5 +5,7 @@
         <item>@drawable/background_2</item>
         <item>@drawable/background_3</item>
         <item>@drawable/background_4</item>
+        <item>@drawable/snow_bg</item>
+        <item>@drawable/snow_bg_second</item>
     </array>
 </resources>

@@ -22,10 +22,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
-import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.model.User;
-import com.example.travelguide.utils.Utils;
+import com.example.travelguide.utils.UtilsPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -176,7 +175,7 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
                     break;
 
                 case R.id.save_user_forgot_password:
-                    ((SavedUserActivity) context).loadForgotPswFragment();
+//                    ((SavedUserActivity) context).loadForgotPswFragment();
                     break;
 
                 case R.id.saved_user_image:
@@ -191,8 +190,8 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
             AlertDialog alertDialog = new AlertDialog.Builder(context)
                     .setTitle("გსურთ წაშლა?")
                     .setPositiveButton("OK", (dialog, which) -> {
-                        Utils.deleteUser(context, users.get(getAdapterPosition()));
-                        users = Utils.getSavedUsers(context);
+                        UtilsPref.deleteUser(context, users.get(getAdapterPosition()));
+                        users = UtilsPref.getSavedUsers(context);
                         Toast.makeText(context, "წაიშალა", Toast.LENGTH_LONG).show();
                         notifyDataSetChanged();
                         dialog.dismiss();
@@ -206,5 +205,7 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
             alertDialog.show();
             return false;
         }
+
+
     }
 }

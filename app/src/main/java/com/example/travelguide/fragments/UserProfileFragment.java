@@ -1,11 +1,14 @@
 package com.example.travelguide.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,13 +34,17 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 import com.example.travelguide.R;
+import com.example.travelguide.activity.UserFollowActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.adapter.ViewPageAdapter;
 import com.example.travelguide.model.User;
+import com.example.travelguide.utils.UtilsGlide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
@@ -61,14 +69,20 @@ public class UserProfileFragment extends Fragment {
     private String loginType;
     private Context context;
     private boolean visible = true;
+    private View followStates;
     private User user;
     private Bundle bundlePrfFrg;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
-        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        Window window = Objects.requireNonNull(getActivity()).getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//  set status text dark
+        window.setStatusBarColor(getResources().getColor(R.color.white));
 
         return view;
     }
@@ -174,9 +188,7 @@ public class UserProfileFragment extends Fragment {
         name.setText(firstName + " " + lastName);
         nickName.setText("@" + "" + firstName + lastName);
         if (url != null) {
-            Glide.with(this)
-                    .load(url)
-                    .into(userPrfImage);
+            UtilsGlide.loadPhoto(context,url,userPrfImage);
         }
 
     }
@@ -194,6 +206,7 @@ public class UserProfileFragment extends Fragment {
         bioVisibleBtn = view.findViewById(R.id.bio_visible_btn);
         bioInvisibleBtn = view.findViewById(R.id.bio_invisible_btn);
         bioText = view.findViewById(R.id.bio_text);
+        followStates = view.findViewById(R.id.states);
         tabLayout = view.findViewById(R.id.tabs_profile);
         ((UserPageActivity) context)
                 .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
@@ -210,11 +223,12 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void setClickListeners() {
-        userContentPhotoBtn.setOnClickListener(this::onContentIconClick);
-        userContentMiddleBtn.setOnClickListener(this::onContentIconClick);
-        userContentTourBtn.setOnClickListener(this::onContentIconClick);
-        bioVisibleBtn.setOnClickListener(this::onContentIconClick);
-        bioInvisibleBtn.setOnClickListener(this::onContentIconClick);
+        userContentPhotoBtn.setOnClickListener(this::onViewClick);
+        userContentMiddleBtn.setOnClickListener(this::onViewClick);
+        userContentTourBtn.setOnClickListener(this::onViewClick);
+        bioVisibleBtn.setOnClickListener(this::onViewClick);
+        bioInvisibleBtn.setOnClickListener(this::onViewClick);
+        followStates.setOnClickListener(this::onViewClick);
         editProfile.setOnClickListener(v -> ((UserPageActivity)
                 Objects.requireNonNull(getActivity()))
                 .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true));
@@ -296,7 +310,7 @@ public class UserProfileFragment extends Fragment {
         view.setBackground(getResources().getDrawable(drawable));
     }
 
-    private void onContentIconClick(View v) {
+    private void onViewClick(View v) {
         switch (v.getId()) {
 
             case R.id.user_content_photo_fr:
@@ -339,6 +353,11 @@ public class UserProfileFragment extends Fragment {
                 bioVisibleBtn.setVisibility(View.VISIBLE);
                 bioInvisibleBtn.setVisibility(View.GONE);
                 visible = true;
+                break;
+
+            case R.id.states:
+                Intent intent = new Intent(context, UserFollowActivity.class);
+                startActivity(intent);
                 break;
         }
     }

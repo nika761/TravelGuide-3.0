@@ -43,7 +43,7 @@
                 android:textSize="14sp" />
 
             <LinearLayout
-                android:id="@+id/saved_user_hide_content"
+                android:id="@+id/saved_user_hide_content_rec"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

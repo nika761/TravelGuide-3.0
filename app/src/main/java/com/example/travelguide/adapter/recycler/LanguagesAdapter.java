@@ -1,4 +1,4 @@
-package com.example.travelguide.adapter;
+package com.example.travelguide.adapter.recycler;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.ChooseLanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.utils.UtilsPref;
 
 import java.util.List;
 
@@ -36,11 +37,12 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
 
     @Override
     public void onBindViewHolder(@NonNull LanguageViewHolder holder, int position) {
-        holder.languageFullAdapter.setText(languageList.get(position).getNative_full());
-        holder.languageSmallAdapter.setText(languageList.get(position).getNative_short());
+
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.animation_languages);
         animation.setDuration(position * 500);
         holder.itemView.startAnimation(animation);
+        holder.languageFullAdapter.setText(languageList.get(position).getNative_full());
+        holder.languageSmallAdapter.setText(languageList.get(position).getNative_short());
     }
 
     @Override
@@ -67,11 +69,11 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
             languageSmallAdapter = itemView.findViewById(R.id.language_small_adapter);
         }
 
-
         private void setClickListeners() {
             languageFullAdapter.setOnLongClickListener(this);
             languageSmallAdapter.setOnLongClickListener(this);
         }
+
 
         @Override
         public boolean onLongClick(View v) {
@@ -79,6 +81,7 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
             switch (v.getId()) {
                 case R.id.language_full_adapter:
                     languageFullAdapter.setTextColor(Color.parseColor("#F3BC1E"));
+                    UtilsPref.saveLanguageId(context,languageList.get(getLayoutPosition()).getId());
                     ((ChooseLanguageActivity) context).checkSavedUsers();
                     break;
             }

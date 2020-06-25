@@ -90,6 +90,8 @@ public class UserContentFragment extends Fragment {
                 setTabTextColor(tabVides, R.color.yellowTextView);
                 setTabTextColor(tabPhotos, R.color.black);
                 setTabTextColor(tabAll, R.color.black);
+                contentList.setVisibility(View.GONE);
+                visible = true;
                 break;
 
             case R.id.tab_liked_photo:
@@ -97,6 +99,8 @@ public class UserContentFragment extends Fragment {
                 setTabTextColor(tabPhotos, R.color.yellowTextView);
                 setTabTextColor(tabVides, R.color.black);
                 setTabTextColor(tabAll, R.color.black);
+                contentList.setVisibility(View.GONE);
+                visible = true;
                 break;
 
             case R.id.tab_liked_all:
@@ -104,6 +108,8 @@ public class UserContentFragment extends Fragment {
                 setTabTextColor(tabAll, R.color.yellowTextView);
                 setTabTextColor(tabPhotos, R.color.black);
                 setTabTextColor(tabVides, R.color.black);
+                contentList.setVisibility(View.GONE);
+                visible = true;
                 break;
         }
     }

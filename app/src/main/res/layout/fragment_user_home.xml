@@ -54,7 +54,7 @@
                     android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/like" />
+                    android:background="@drawable/heart_emoji" />
 
                 <TextView
                     android:layout_width="wrap_content"

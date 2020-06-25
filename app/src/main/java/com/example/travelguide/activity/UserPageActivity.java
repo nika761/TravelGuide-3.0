@@ -1,10 +1,7 @@
 package com.example.travelguide.activity;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -14,45 +11,40 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
-import com.example.travelguide.adapter.ViewPageAdapter;
+import com.example.travelguide.adapter.BottomNavigationPageAdapter;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.User;
-import com.example.travelguide.utils.Utils;
+import com.example.travelguide.utils.UtilsPref;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
 public class UserPageActivity extends AppCompatActivity {
 
-    private Button signOutBtn;
-    private ImageView userPhotoLeft;
     private GoogleSignInClient mGoogleSignInClient;
     private Bundle bundlePrfFrg;
     private User user;
     private BottomNavigationView bottomNavigationView;
-    private Fragment selectedFragment;
 
+    private ViewPager navViewPager;
+    private BottomNavigationPageAdapter navViewPagerAdapter;
+
+    public UserPageActivity() {
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
-        initGoogleSignClient();
-        initUI();
         ongGetUserDate();
         initBtmNav();
-    }
-
-    private void initUI() {
-        userPhotoLeft = findViewById(R.id.user_photo_left);
+        initGoogleSignClient();
     }
 
     public void hideBottomNavigation(Boolean visible) {
@@ -70,7 +62,7 @@ public class UserPageActivity extends AppCompatActivity {
         String email = getIntent().getStringExtra("email");
         String loginType = getIntent().getStringExtra("loginType");
         user = new User(firstName, lastName, url, id, email, loginType);
-        Utils.saveUser(this, user);
+        UtilsPref.saveUser(this, user);
         setUserProfileData(user);
     }
 
@@ -79,6 +71,11 @@ public class UserPageActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         bottomNavigationView.setItemIconSize(60);
+
+//        navViewPager = findViewById(R.id.user_page_view_pager);
+//        navViewPagerAdapter = new BottomNavigationPageAdapter(getSupportFragmentManager());
+
+
     }
 
     private void setUserProfileData(User user) {
@@ -119,7 +116,6 @@ public class UserPageActivity extends AppCompatActivity {
         return true;
     };
 
-
     public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
         currentFragment.setArguments(data);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager()
@@ -142,9 +138,8 @@ public class UserPageActivity extends AppCompatActivity {
 
     public void signOutFromFbAccount() {
         LoginManager.getInstance().logOut();
-        user.setLoginStatus("no");
 //        if (user != null) {
-//            Utils.deleteUser(this, user);
+//            UtilsPref.deleteUser(this, user);
 //        }
         finish();
     }
@@ -152,11 +147,10 @@ public class UserPageActivity extends AppCompatActivity {
     public void signOutFromGoogleAccount() {
 
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
-            user.setLoginStatus("no");
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-            if (user != null) {
-                Utils.deleteUser(this, user);
-            }
+//            if (user != null) {
+//                UtilsPref.deleteUser(this, user);
+//            }
         }).addOnCanceledListener(this, () -> {
             Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(this, e -> {
@@ -172,4 +166,6 @@ public class UserPageActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
+
 }

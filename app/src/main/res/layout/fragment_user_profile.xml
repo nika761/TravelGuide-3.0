@@ -26,13 +26,6 @@
             tools:openDrawer="start">
 
             <TextView
-                android:id="@+id/user_prf_back_btn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/back_btn_user_profile"
-                android:visibility="gone" />
-
-            <TextView
                 android:id="@+id/drawer_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"

@@ -1,7 +1,8 @@
-package com.example.travelguide.adapter;
+package com.example.travelguide.adapter.recycler;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +14,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.travelguide.R;
+import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.SignInActivity;
+import com.example.travelguide.activity.UserPageActivity;
+import com.example.travelguide.fragments.ForgotPswFragment;
 import com.example.travelguide.model.User;
-import com.example.travelguide.utils.Utils;
+import com.example.travelguide.utils.UtilsGlide;
+import com.example.travelguide.utils.UtilsGoogle;
+import com.example.travelguide.utils.UtilsPref;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,6 +45,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
     private Context mContext;
     private List<User> userList;
     private int selectedUserPosition = -1;
+    private GoogleSignInClient googleSignInClient;
 
     public SwipeRecyclerViewAdapter(Context context, List<User> objects) {
         this.mContext = context;
@@ -80,24 +90,21 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
     private void setDataOnViews(SimpleViewHolder viewHolder, User currentUser) {
 
         if (currentUser.getUrl() != null) {
-            Glide.with(mContext)
-                    .applyDefaultRequestOptions(new RequestOptions().centerCrop())
-                    .load(currentUser.getUrl())
-                    .into(viewHolder.userImage);
+
+            UtilsGlide.loadPhoto(mContext, currentUser.getUrl(), viewHolder.userImage);
+
         } else {
-            Glide.with(mContext)
-                    .applyDefaultRequestOptions(new RequestOptions().centerCrop())
-                    .load(R.drawable.default_profile_image)
-                    .centerCrop()
-                    .into(viewHolder.userImage);
+            viewHolder.userImage.setBackground(mContext.getResources().getDrawable(R.drawable.default_profile_image));
             viewHolder.userImage.setMinimumHeight(78);
             viewHolder.userImage.setMinimumWidth(78);
         }
 
         viewHolder.userName.setText(mContext.getString(R.string.continue_as) + " " + currentUser.getName() + " " + currentUser.getLastName() + "");
         if (currentUser.getLoginType() != null && currentUser.getLoginType().equals("facebook")) {
+            viewHolder.userLoginType = currentUser.getLoginType();
             viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.facebook_little));
         } else if (currentUser.getLoginType() != null && currentUser.getLoginType().equals("google")) {
+            viewHolder.userLoginType = currentUser.getLoginType();
             viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.google_little));
         }
     }
@@ -106,7 +113,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
-        viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper1));
+//        viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper1));
 
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, viewHolder.swipeLayout.findViewById(R.id.bottom_wraper));
 
@@ -142,15 +149,25 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
             }
         });
 
-        viewHolder.swipeLayout.getSurfaceView().setOnClickListener(v -> Toast.makeText(mContext, " Click : " + currentUser.getName() + " \n" + currentUser.getLastName(), Toast.LENGTH_SHORT).show());
+//        viewHolder.swipeLayout.getSurfaceView().setOnClickListener(v -> {
+//            if (linearVisibility) {
+//                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+//                linearVisibility = false;
+//            } else {
+//                viewHolder.linearLayout.setVisibility(View.GONE);
+//                linearVisibility = true;
+//            }
+//        });
 
-        viewHolder.btnLocation.setOnClickListener(v -> Toast.makeText(v.getContext(), "Clicked on Information " + viewHolder.userName.getText().toString(), Toast.LENGTH_SHORT).show());
+//        viewHolder.btnLocation.setOnClickListener(v -> Toast.makeText(v.getContext(), "Clicked on Information " + viewHolder.userName.getText().toString(), Toast.LENGTH_SHORT).show());
 
 //        viewHolder.Share.setOnClickListener(view -> Toast.makeText(view.getContext(), "Clicked on Share " + viewHolder.userName.getText().toString(), Toast.LENGTH_SHORT).show());
 
 //        viewHolder.Edit.setOnClickListener(view -> Toast.makeText(view.getContext(), "Clicked on Edit  " + viewHolder.userName.getText().toString(), Toast.LENGTH_SHORT).show());
 
         viewHolder.deleteUser.setOnClickListener(v -> deleteUser(position, viewHolder));
+
+//        viewHolder.userImage.setOnClickListener(v -> startActivityWithGoogle());
 
     }
 
@@ -159,10 +176,10 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
                 .setTitle("Delete User?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                    Utils.deleteUser(mContext, userList.get(selectedUserPosition));
+                    UtilsPref.deleteUser(mContext, userList.get(selectedUserPosition));
                     userList.remove(selectedUserPosition);
                     notifyItemRemoved(selectedUserPosition);
-                    userList = Utils.getSavedUsers(mContext);
+                    userList = UtilsPref.getSavedUsers(mContext);
                     notifyItemRangeChanged(selectedUserPosition, userList.size());
                     mItemManger.closeAllItems();
                     Toast.makeText(mContext, "User Deleted", Toast.LENGTH_SHORT).show();
@@ -177,18 +194,45 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
         alertDialog.show();
     }
 
-    static class SimpleViewHolder extends RecyclerView.ViewHolder {
+    private void startActivityWithGoogle() {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(mContext);
+
+        if (account != null) {
+            String personPhotoUrl;
+            Uri personPhotoUri = account.getPhotoUrl();
+            if (personPhotoUri != null) {
+                personPhotoUrl = personPhotoUri.toString();
+            } else {
+                personPhotoUrl = null;
+            }
+            Intent intent = new Intent(mContext, UserPageActivity.class);
+            intent.putExtra("name", account.getGivenName());
+            intent.putExtra("lastName", account.getFamilyName());
+            intent.putExtra("email", account.getEmail());
+            intent.putExtra("url", personPhotoUrl);
+            intent.putExtra("id", account.getId());
+            intent.putExtra("loginType", "google");
+            mContext.startActivity(intent);
+        } else {
+            googleSignInClient = UtilsGoogle.initGoogleSignInClient(mContext);
+        }
+    }
+
+    class SimpleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         SwipeLayout swipeLayout;
         CircleImageView userImage;
         TextView userName, signInBtn, cancelBtn, passwordHead, forgotPassword;
-        LinearLayout linearLayout;
+        LinearLayout linearLayout, linearMainContainer;
         EditText savedUserPassword;
         ImageView loginTypeImg;
         ImageButton deleteUser, btnLocation;
+        boolean linearVisibility = true;
+        String userLoginType;
 
         SimpleViewHolder(View itemView) {
             super(itemView);
             initUI(itemView);
+            setClickListeners();
         }
 
 
@@ -198,6 +242,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
             btnLocation = itemView.findViewById(R.id.btnLocation);
             userImage = itemView.findViewById(R.id.saved_user_image);
             userName = itemView.findViewById(R.id.saved_user_name);
+            linearMainContainer = itemView.findViewById(R.id.linear_main_container);
             linearLayout = itemView.findViewById(R.id.saved_user_hide_content);
             signInBtn = itemView.findViewById(R.id.saved_user_sign_in_btn);
             cancelBtn = itemView.findViewById(R.id.saved_user_cancel_btn);
@@ -205,6 +250,58 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
             passwordHead = itemView.findViewById(R.id.saved_user_password_head);
             forgotPassword = itemView.findViewById(R.id.save_user_forgot_password);
             loginTypeImg = itemView.findViewById(R.id.saved_user_login_type);
+        }
+
+        private void setClickListeners() {
+            linearMainContainer.setOnClickListener(this);
+            signInBtn.setOnClickListener(this);
+            cancelBtn.setOnClickListener(this);
+            forgotPassword.setOnClickListener(this);
+        }
+
+        private void checkUserLoginType() {
+            if (userLoginType != null) {
+                String type = userLoginType;
+                switch (type) {
+                    case "google":
+                        startActivityWithGoogle();
+                        break;
+                    case "facebook":
+                        Toast.makeText(mContext, "With Facebook", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            } else {
+                if (linearVisibility) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                    linearVisibility = false;
+                } else {
+                    linearLayout.setVisibility(View.GONE);
+                    linearVisibility = true;
+                }
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+
+                case R.id.linear_main_container:
+                    checkUserLoginType();
+                    break;
+
+                case R.id.saved_user_cancel_btn:
+                    linearLayout.setVisibility(View.GONE);
+                    linearVisibility = true;
+                    break;
+
+                case R.id.save_user_forgot_password:
+                    ((SavedUserActivity) mContext).loadFragment(new ForgotPswFragment(), null, R.id.saved_user_fragment_container, true);
+                    break;
+
+                case R.id.saved_user_sign_in_btn:
+                    Toast.makeText(mContext, "Enter Password", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
     }

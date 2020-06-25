@@ -1,6 +1,7 @@
 package com.example.travelguide.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.animation.Animation;
@@ -14,13 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.travelguide.R;
-import com.example.travelguide.adapter.LanguagesAdapter;
+import com.example.travelguide.adapter.recycler.LanguagesAdapter;
 import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.model.User;
 import com.example.travelguide.presenters.LanguagePresenter;
-import com.example.travelguide.utils.Utils;
+import com.example.travelguide.utils.UtilsPref;
 
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class ChooseLanguageActivity extends AppCompatActivity implements ILangua
         iniUI();
         languagePresenter = new LanguagePresenter(this);
         languagePresenter.sentLanguageRequest();
-        setListeners();
+//        setListeners();
 //        setAnim();
     }
 
@@ -53,8 +55,11 @@ public class ChooseLanguageActivity extends AppCompatActivity implements ILangua
 //        englishSmall = findViewById(R.id.english_small);
 //        georgianSmall = findViewById(R.id.georgian_small);
 //        russianSmall = findViewById(R.id.russian_small);
-        startButton = findViewById(R.id.start_button);
+//        startButton = findViewById(R.id.start_button);
+
+
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setListeners() {
@@ -82,20 +87,20 @@ public class ChooseLanguageActivity extends AppCompatActivity implements ILangua
 //            startButton.setTextColor(getColor(R.color.yellowTextView));
 //            startButton.setEnabled(true);
 //        });
-
         startButton.setOnClickListener(v -> checkSavedUsers());
 
     }
 
+
     public void checkSavedUsers() {
-        currentUsers = Utils.getSavedUsers(this);
+        currentUsers = UtilsPref.getSavedUsers(this);
         if (currentUsers.size() != 0) {
             for (User currentUser : currentUsers) {
                 if (currentUser != null && currentUser.getLoginType() != null
-                        && currentUser.getLoginType().equals("google") && currentUser.getLoginStatus() != null && currentUser.getLoginStatus().equals("yes")) {
+                        && currentUser.getLoginType().equals("google")) {
                     startUserPageActivity(currentUser);
                 } else if (currentUser != null && currentUser.getLoginType() != null
-                        && currentUser.getLoginType().equals("facebook") && currentUser.getLoginStatus() != null && currentUser.getLoginStatus().equals("yes")) {
+                        && currentUser.getLoginType().equals("facebook")) {
                     startUserPageActivity(currentUser);
                 } else {
                     Intent userIntent = new Intent(this, SavedUserActivity.class);

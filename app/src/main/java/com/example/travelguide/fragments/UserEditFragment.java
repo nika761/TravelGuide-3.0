@@ -3,10 +3,13 @@ package com.example.travelguide.fragments;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +19,14 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.model.User;
+import com.example.travelguide.utils.UtilsGlide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,6 +37,9 @@ public class UserEditFragment extends Fragment {
     private CircleImageView userImage;
     private TextView toolbarBackBtn;
     private Context context;
+    private ImageView changePhotoImage, uploadPhotoBtn;
+    private View changePhotoLayout;
+    private Button changePhotoCancelBtn;
 
     @Nullable
     @Override
@@ -80,6 +88,10 @@ public class UserEditFragment extends Fragment {
         bioField = v.findViewById(R.id.edit_bio);
         userImage = v.findViewById(R.id.edit_profile_image);
         toolbarBackBtn = v.findViewById(R.id.user_prf_back_btn);
+        changePhotoLayout = v.findViewById(R.id.change_photo_layout);
+        changePhotoImage = v.findViewById(R.id.change_photo_image);
+        uploadPhotoBtn = v.findViewById(R.id.change_photo_btn);
+        changePhotoCancelBtn = v.findViewById(R.id.change_edit_profile_photo_cancel_btn);
     }
 
     private void onGetData() {
@@ -101,29 +113,19 @@ public class UserEditFragment extends Fragment {
         String loginType = currentUser.getLoginType();
 
         if (url != null) {
-            Glide.with(this)
-                    .load(url)
-                    .addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
-                    .into(userImage);
+            UtilsGlide.loadPhoto(context, url, userImage);
         }
         nameField.setText(firstName);
         surnameField.setText(lastName);
         emailField.setText(email);
         nameField.setText(firstName);
+
     }
 
     private void setClickListeners() {
         toolbarBackBtn.setOnClickListener(this::onViewClick);
+        uploadPhotoBtn.setOnClickListener(this::onViewClick);
+        changePhotoCancelBtn.setOnClickListener(this::onViewClick);
     }
 
     private void onViewClick(View v) {
@@ -133,6 +135,13 @@ public class UserEditFragment extends Fragment {
                 ((UserPageActivity) context).onBackPressed();
                 break;
 
+            case R.id.change_photo_btn:
+                changePhotoLayout.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.change_edit_profile_photo_cancel_btn:
+                changePhotoLayout.setVisibility(View.GONE);
+                break;
         }
     }
 }
