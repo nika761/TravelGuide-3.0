@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
-import com.example.travelguide.interfaces.FragmentClickActions;
 import com.example.travelguide.interfaces.IRegisterFragment;
 import com.example.travelguide.model.request.AuthRequestModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
@@ -32,6 +31,7 @@ import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.presenters.RegisterPresenter;
+import com.example.travelguide.utils.UtilsTerms;
 import com.hbb20.CountryCodePicker;
 
 import java.util.Calendar;
@@ -48,21 +48,16 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
     private AuthRequestModel authRequestModel;
     private String userName, userSurname, nickName, birthDate, email, emailForCheck,
             phoneNumber, password, passwordForCheck, confirmPassword, nickNameFirst, nickNameSecond;
-    private FragmentClickActions fragmentClickActions;
     private EditText registerName, registerSurname, registerNickName, registerEmail,
             registerPhoneNumber, registerPassword, registerConfirmPassword;
     private TextView registerNameHead, registerSurnameHead, registerNickNameHead,
             registerBirthDate, registerBirthDateHead,
             registerEmailHead, registerPhoneNumberHead,
             registerPasswordHead, registerConfirmPasswordHead,
-            registerSignUpTxt, registerCancelTxt, registerNickOffer, registerNickOfferOne, registerNickOfferTwo;
+            registerSignUpTxt, registerCancelTxt, registerNickOffer, registerNickOfferOne, registerNickOfferTwo, terms, policy;
 
     public RegisterFragment() {
 
-    }
-
-    public RegisterFragment(FragmentClickActions fragmentClickActions) {
-        this.fragmentClickActions = fragmentClickActions;
     }
 
     @Nullable
@@ -121,54 +116,13 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             setFieldsDefault(registerNickName, registerNickNameHead, " NickName ");
         });
 
+        terms.setOnClickListener(v -> UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.TERMS));
+
+        policy.setOnClickListener(v -> UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.POLICY));
+
     }
 
     private String checkEditTextData(EditText currentField, TextView currentHead, String currentHeadText, String currentStringData) {
-
-//        switch (currentHeadText) {
-//            case "Email":
-//                if (!checkEmail(currentField)) {
-//                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-//                    currentHead.setText("* " + currentHeadText);
-//                    currentHead.setTextColor(getResources().getColor(R.color.red));
-//                    YoYo.with(Techniques.Shake)
-//                            .duration(300)
-//                            .playOn(currentField);
-//                }
-//                break;
-//
-//            case "Phone Number":
-//                if (!checkNumber(currentField)) {
-//                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-//                    currentHead.setText("* " + currentHeadText);
-//                    currentHead.setTextColor(getResources().getColor(R.color.red));
-//                    YoYo.with(Techniques.Shake)
-//                            .duration(300)
-//                            .playOn(currentField);
-//                }
-//                break;
-//
-//            case "Password":
-//                if (!checkPassword(currentField)) {
-//                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-//                    currentHead.setText("* " + currentHeadText);
-//                    currentHead.setTextColor(getResources().getColor(R.color.red));
-//                    YoYo.with(Techniques.Shake)
-//                            .duration(300)
-//                            .playOn(currentField);
-//                }
-//                break;
-////            case "Confirm Password":
-////                if (!confirmPassword(currentField)){
-////                    currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-////                    currentHead.setText("* " + currentHeadText);
-////                    currentHead.setTextColor(getResources().getColor(R.color.red));
-////                    YoYo.with(Techniques.Shake)
-////                            .duration(300)
-////                            .playOn(currentField);
-////                }
-////                break
-//        }
 
         if (currentField.getText().toString().isEmpty()) {
             setFieldsWarning(currentField, currentHead, currentHeadText);
@@ -373,6 +327,8 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
         registerNickOffer = view.findViewById(R.id.nickName_offer);
         registerNickOfferOne = view.findViewById(R.id.nickName_offer_1);
         registerNickOfferTwo = view.findViewById(R.id.nickName_offer_2);
+        terms = view.findViewById(R.id.terms_register);
+        policy = view.findViewById(R.id.policy_register);
     }
 
     private void keyBoardFocusHelper(View view) {

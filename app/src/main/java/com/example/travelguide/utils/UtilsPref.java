@@ -15,6 +15,8 @@ import java.util.List;
 public class UtilsPref {
 
     private static final String LANGUAGE_KEY = "language_Id";
+    public static final String FACEBOOK = "facebook";
+    public static final String GOOGLE = "google";
 //    private static final String USER_PREFERENCES = "user_preference";
 
 

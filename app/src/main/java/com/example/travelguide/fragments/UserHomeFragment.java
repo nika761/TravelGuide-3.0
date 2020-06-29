@@ -35,6 +35,7 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.ChooseLanguageActivity;
 import com.example.travelguide.activity.SplashScreenActivity;
+import com.example.travelguide.model.User;
 import com.example.travelguide.utils.UtilsGlide;
 
 import java.util.Objects;
@@ -60,10 +61,10 @@ public class UserHomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user_home, container, false);
 
         Window window = Objects.requireNonNull(getActivity()).getWindow();
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        View decorView = window.getDecorView();
-        decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//        View decorView = window.getDecorView();
+//        decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         return view;
     }
@@ -108,7 +109,7 @@ public class UserHomeFragment extends Fragment {
 
     private void startStory() {
         storiesProgressView.setStoriesCount(6); // <- set stories
-        storiesProgressView.setStoryDuration(10000); // <- set a story duration
+        storiesProgressView.setStoryDuration(5000); // <- set a story duration
         storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
             @Override
             public void onNext() {
@@ -141,32 +142,18 @@ public class UserHomeFragment extends Fragment {
     }
 
     private void onGetData() {
-        if (checkUserData(getArguments())) {
-            setUserData();
+        if (getArguments() != null && getArguments().containsKey("user")) {
+            User user = (User) getArguments().getSerializable("user");
+            if (user != null)
+                setUserData(user);
         } else {
             Toast.makeText(getContext(), "Data Error ", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private boolean checkUserData(Bundle arguments) {
-        boolean onGetData = true;
-
-        if (arguments == null) {
-            onGetData = false;
-        }
-        return onGetData;
-    }
-
-    private void setUserData() {
-        String firstName = getArguments().getString("firstName");
-        String lastName = getArguments().getString("lastName");
-        String url = getArguments().getString("url");
-        String id = getArguments().getString("id");
-        String email = getArguments().getString("email");
-        String loginType = getArguments().getString("loginType");
-
-        if (url != null) {
-            UtilsGlide.loadPhoto(context, url, userLeftImage);
+    private void setUserData(User u) {
+        if (u.getUrl() != null) {
+            UtilsGlide.loadPhoto(context, u.getUrl(), userLeftImage);
         }
     }
 

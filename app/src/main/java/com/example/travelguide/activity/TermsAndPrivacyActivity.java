@@ -1,9 +1,6 @@
 package com.example.travelguide.activity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,18 +8,28 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.R;
-import com.example.travelguide.fragments.SignInFragment;
+import com.example.travelguide.fragments.PolicyFragment;
+import com.example.travelguide.fragments.TermsFragment;
+import com.example.travelguide.utils.UtilsTerms;
 
-public class SignInActivity extends AppCompatActivity {
+public class TermsAndPrivacyActivity extends AppCompatActivity {
 
-    private SignInFragment signInFragment;
-    private Button fragmentHead;
+    private final static int TERMS_POLICY_FRAGMENT_CONTAINER_ID = R.id.terms_policy_fragment_container;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
-        loadFragment(new SignInFragment(), null, R.id.fragment_container, false);
+        setContentView(R.layout.activity_terms_policy);
+        checkCurrentFragment();
+    }
+
+    private void checkCurrentFragment() {
+        String type = getIntent().getStringExtra(UtilsTerms.TYPE);
+        if (type != null && type.equals(UtilsTerms.TERMS)) {
+            loadFragment(new TermsFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER_ID, false);
+        } else {
+            loadFragment(new PolicyFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER_ID, false);
+        }
     }
 
     public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
@@ -35,18 +42,6 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         fragmentTransaction.replace(fragmentID, currentFragment).commit();
-    }
-
-    public void setStatusBarColor() {
-        setTheme(R.style.SecondAppTheme);
-        Window window = getWindow();
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        window.setStatusBarColor(getResources().getColor(R.color.white));
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
 }

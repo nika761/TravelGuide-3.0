@@ -1,6 +1,6 @@
 package com.example.travelguide.presenters;
 
-import com.example.travelguide.interfaces.ITermsFragment;
+import com.example.travelguide.interfaces.IPolicyFragment;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
 import com.example.travelguide.model.response.TermsPolicyResponseModel;
 import com.example.travelguide.network.ApiService;
@@ -10,24 +10,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TermsPresenter {
-    private ITermsFragment iTermsFragment;
+public class PolicyPresenter {
+    private IPolicyFragment iPolicyFragment;
     private ApiService apiService;
 
-    public TermsPresenter(ITermsFragment iTermsFragment) {
-        this.iTermsFragment = iTermsFragment;
+    public PolicyPresenter(IPolicyFragment iPolicyFragment) {
+        this.iPolicyFragment = iPolicyFragment;
         apiService = RetrofitManager.getApiservice();
     }
 
-
-    public void sendTermsResponse(TermsPolicyRequestModel termsPolicyRequestModel) {
+    public void sendPolicyResponse(TermsPolicyRequestModel termsPolicyRequestModel) {
         apiService.getTerms(termsPolicyRequestModel).enqueue(new Callback<TermsPolicyResponseModel>() {
             @Override
             public void onResponse(Call<TermsPolicyResponseModel> call, Response<TermsPolicyResponseModel> response) {
                 if (response.isSuccessful()) {
-                    iTermsFragment.onGetTermsResult(response.body());
+                    iPolicyFragment.onGetPolicyResult(response.body());
                 }
-
             }
 
             @Override
@@ -36,6 +34,5 @@ public class TermsPresenter {
             }
         });
     }
-
 
 }

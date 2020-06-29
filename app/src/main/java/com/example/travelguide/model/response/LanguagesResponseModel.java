@@ -3,6 +3,7 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class LanguagesResponseModel {
@@ -30,7 +31,8 @@ public class LanguagesResponseModel {
         this.status = status;
     }
 
-    public static class Language {
+    public static class Language implements Serializable {
+
         @Expose
         @SerializedName("flag_link")
         private String flag_link;

@@ -32,6 +32,9 @@ public class SavedUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_user);
 
+//        Window window = getWindow();
+//        window.setStatusBarColor(getResources().getColor(R.color.white));
+
         loadFragment(new UsersSavedFragment(), null, SAVED_USER_FRG_CONTAINER_ID, false);
 
     }
@@ -50,7 +53,6 @@ public class SavedUserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        setStatusBarColor();
         super.onBackPressed();
 //        Intent intent = new Intent(SavedUserActivity.this, SignInActivity.class);
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -79,7 +81,6 @@ public class SavedUserActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.blackStatusBar));
         View decorView = window.getDecorView();
         decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-
     }
 
 }

@@ -4,10 +4,10 @@
         android:id="@+id/settings_share_profile"
         android:icon="@drawable/settings_icon_share"
         android:title="Share Profile" />
-    <item
-        android:id="@+id/settings_balance"
-        android:icon="@drawable/settings_icon_balance"
-        android:title="Balance" />
+    <!--    <item-->
+    <!--        android:id="@+id/settings_balance"-->
+    <!--        android:icon="@drawable/settings_icon_balance"-->
+    <!--        android:title="Balance" />-->
     <item
         android:id="@+id/settings_language"
         android:icon="@drawable/settings_icon_language"
@@ -20,6 +20,10 @@
         android:id="@+id/settings_terms"
         android:icon="@drawable/settings_icon_terms"
         android:title="Terms and Conditions" />
+    <item
+        android:id="@+id/settings_privacy"
+        android:icon="@drawable/ic_feedback_black_24dp"
+        android:title="Privacy Policy" />
     <item
         android:id="@+id/settings_sing_out"
         android:icon="@drawable/settings_icon_sign_out"

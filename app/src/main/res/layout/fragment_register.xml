@@ -272,6 +272,7 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/terms_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/terms_of_services"
@@ -289,6 +290,7 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/policy_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"

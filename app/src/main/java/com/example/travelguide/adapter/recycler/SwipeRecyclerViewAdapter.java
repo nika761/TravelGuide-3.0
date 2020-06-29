@@ -206,12 +206,17 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
                 personPhotoUrl = null;
             }
             Intent intent = new Intent(mContext, UserPageActivity.class);
-            intent.putExtra("name", account.getGivenName());
-            intent.putExtra("lastName", account.getFamilyName());
-            intent.putExtra("email", account.getEmail());
-            intent.putExtra("url", personPhotoUrl);
-            intent.putExtra("id", account.getId());
-            intent.putExtra("loginType", "google");
+//            intent.putExtra("name", account.getGivenName());
+//            intent.putExtra("lastName", account.getFamilyName());
+//            intent.putExtra("email", account.getEmail());
+//            intent.putExtra("url", personPhotoUrl);
+//            intent.putExtra("id", account.getId());
+//            intent.putExtra("loginType", "google");
+
+            User user = new User(account.getGivenName(), account.getFamilyName(),
+                    personPhotoUrl, account.getId(), account.getEmail(), "google");
+            intent.putExtra("loggedUser", user);
+
             mContext.startActivity(intent);
         } else {
             googleSignInClient = UtilsGoogle.initGoogleSignInClient(mContext);

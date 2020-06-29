@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/search_explore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:background="@color/white"
+        android:elevation="1dp"
+        android:fontFamily="monospace"
+        android:text="Explore"
+        android:textSize="19sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/search_container_first"
+        app:layout_constraintStart_toStartOf="@id/search_container_first"
+        app:layout_constraintTop_toTopOf="@id/search_container_first" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_container_first"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/content_bg"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/search_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back_btn_user_profile"
+            app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
+            app:layout_constraintEnd_toStartOf="@id/search_edit_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/search_edit_text" />
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="210dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/content_bg"
+            android:drawableEnd="@drawable/ic_close_black_24dp"
+            android:gravity="start|center"
+            android:hint="Search"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/search_calendar_btn"
+            app:layout_constraintStart_toEndOf="@+id/search_back_btn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/search_calendar_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/calendar_btn"
+            app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
+            app:layout_constraintEnd_toStartOf="@id/search_search_btn"
+            app:layout_constraintStart_toEndOf="@id/search_edit_text"
+            app:layout_constraintTop_toTopOf="@id/search_edit_text" />
+
+        <ImageButton
+            android:id="@+id/search_search_btn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/search_btn"
+            app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/search_calendar_btn"
+            app:layout_constraintTop_toTopOf="@id/search_edit_text" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_container_second"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/search_back_btn_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/back_btn_user_profile"
+            app:layout_constraintBottom_toBottomOf="@id/search_edit_text_second"
+            app:layout_constraintEnd_toStartOf="@id/search_edit_text_second"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/search_edit_text_second" />
+
+        <EditText
+            android:id="@+id/search_edit_text_second"
+            android:layout_width="220dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/content_bg"
+            android:drawableEnd="@drawable/ic_close_black_24dp"
+            android:gravity="start|center"
+            android:hint="Search"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/search_back_btn_second"
+            app:layout_constraintStart_toEndOf="@+id/search_back_btn_second"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/search_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_edit_text_second"
+            app:tabIndicatorColor="@color/yellowTextView"
+            app:tabIndicatorFullWidth="false"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabSelectedTextColor="@color/yellowTextView">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/search_tab_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOP" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/search_tab_videos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VIDEOS" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/search_tab_go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GO !" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/search_tab_photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PHOTOS" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/search_tab_users"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="USERS" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/search_tab_hashtags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HASHTAGS" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <View
+            android:id="@+id/search_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_tabs" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

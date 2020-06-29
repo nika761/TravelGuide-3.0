@@ -16,6 +16,7 @@
         <activity android:name=".activity.ChooseLanguageActivity" />
         <activity
             android:name=".activity.UserPageActivity"
+            android:theme="@style/SecondAppTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -35,7 +36,13 @@
         </activity>
         <activity android:name=".activity.SignInActivity" />
         <activity android:name=".activity.UserFollowActivity" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:theme="@style/SecondAppTheme" />
         <activity android:name=".activity.SavedUserActivity" />
+        <activity
+            android:name=".activity.TermsAndPrivacyActivity"
+            android:theme="@style/SecondAppTheme" />
         <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -38,10 +38,11 @@ public class UsersSavedFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        window = Objects.requireNonNull(getActivity()).getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(context, R.color.blackStatusBar));
+
+//        window = Objects.requireNonNull(getActivity()).getWindow();
+//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//        window.setStatusBarColor(ContextCompat.getColor(context, R.color.blackStatusBar));
 
         View view = inflater.inflate(R.layout.fragment_saved_users, container, false);
         return view;
@@ -104,7 +105,7 @@ public class UsersSavedFragment extends Fragment {
 
     private void setClickListeners() {
         closeFragmentBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ChooseLanguageActivity.class);
+            Intent intent = new Intent(context, SignInActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });

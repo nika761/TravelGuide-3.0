@@ -40,11 +40,14 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.example.travelguide.R;
+import com.example.travelguide.activity.SignInActivity;
+import com.example.travelguide.activity.TermsAndPrivacyActivity;
 import com.example.travelguide.activity.UserFollowActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.adapter.ViewPageAdapter;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.UtilsGlide;
+import com.example.travelguide.utils.UtilsTerms;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
@@ -79,10 +82,10 @@ public class UserProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
         Window window = Objects.requireNonNull(getActivity()).getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//  set status text dark
-        window.setStatusBarColor(getResources().getColor(R.color.white));
+//        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//  set status text dark
+//        window.setStatusBarColor(getResources().getColor(R.color.white));
 
         return view;
     }
@@ -155,41 +158,23 @@ public class UserProfileFragment extends Fragment {
 
 
     private void onGetData() {
-        if (checkUserData(getArguments())) {
-            setUserData();
-            if (getArguments() != null && getArguments().containsKey("user")) {
-                bundlePrfFrg = new Bundle();
-                user = (User) getArguments().getSerializable("user");
-                bundlePrfFrg.putSerializable("user", user);
-            }
+        if (getArguments() != null && getArguments().containsKey("user")) {
+            user = (User) getArguments().getSerializable("user");
+            bundlePrfFrg = new Bundle();
+            bundlePrfFrg.putSerializable("user", user);
+            setUserData(user);
         } else {
             Toast.makeText(getContext(), "Data Error ", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private boolean checkUserData(Bundle arguments) {
-        boolean onGetData = true;
+    private void setUserData(User user) {
 
-        if (arguments == null) {
-            onGetData = false;
-        }
-        return onGetData;
-    }
-
-    private void setUserData() {
-
-        String firstName = getArguments().getString("firstName");
-        String lastName = getArguments().getString("lastName");
-        String url = getArguments().getString("url");
-        String id = getArguments().getString("id");
-        String email = getArguments().getString("email");
-        loginType = getArguments().getString("loginType");
-
-        name.setText(firstName + " " + lastName);
-        nickName.setText("@" + "" + firstName + lastName);
-        if (url != null) {
-            UtilsGlide.loadPhoto(context,url,userPrfImage);
-        }
+        name.setText(String.format("%s %s", user.getName(), user.getLastName()));
+        nickName.setText(String.format("@%s%s", user.getName(), user.getLastName()));
+        loginType = user.getLoginType();
+        if (user.getUrl() != null)
+            UtilsGlide.loadPhoto(context, user.getUrl(), userPrfImage);
 
     }
 
@@ -229,9 +214,7 @@ public class UserProfileFragment extends Fragment {
         bioVisibleBtn.setOnClickListener(this::onViewClick);
         bioInvisibleBtn.setOnClickListener(this::onViewClick);
         followStates.setOnClickListener(this::onViewClick);
-        editProfile.setOnClickListener(v -> ((UserPageActivity)
-                Objects.requireNonNull(getActivity()))
-                .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true));
+        editProfile.setOnClickListener(this::onViewClick);
     }
 
     private void initToolbarNav(View view) {
@@ -259,9 +242,9 @@ public class UserProfileFragment extends Fragment {
                 Toast.makeText(getContext(), "Share", Toast.LENGTH_SHORT).show();
                 break;
 
-            case R.id.settings_balance:
-                Toast.makeText(getContext(), "Balance", Toast.LENGTH_SHORT).show();
-                break;
+//            case R.id.settings_balance:
+//                Toast.makeText(getContext(), "Balance", Toast.LENGTH_SHORT).show();
+//                break;
 
             case R.id.settings_language:
                 Toast.makeText(getContext(), "Language", Toast.LENGTH_SHORT).show();
@@ -271,8 +254,12 @@ public class UserProfileFragment extends Fragment {
                 Toast.makeText(getContext(), "About", Toast.LENGTH_SHORT).show();
                 break;
 
+            case R.id.settings_privacy:
+                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.POLICY);
+                break;
+
             case R.id.settings_terms:
-                Toast.makeText(getContext(), "Terms", Toast.LENGTH_SHORT).show();
+                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.TERMS);
                 break;
 
             case R.id.settings_sing_out:
@@ -358,6 +345,11 @@ public class UserProfileFragment extends Fragment {
             case R.id.states:
                 Intent intent = new Intent(context, UserFollowActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.edit_profile:
+                ((UserPageActivity) context)
+                        .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true);
                 break;
         }
     }

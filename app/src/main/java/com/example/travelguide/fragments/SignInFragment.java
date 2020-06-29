@@ -26,11 +26,12 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
-import com.example.travelguide.interfaces.FragmentClickActions;
 import com.example.travelguide.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.presenters.SignInPresenter;
 import com.example.travelguide.utils.UtilsGoogle;
+import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.utils.UtilsTerms;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -41,7 +42,6 @@ import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.Task;
 
@@ -50,7 +50,6 @@ import java.util.Objects;
 
 public class SignInFragment extends Fragment implements ISignInFragment {
 
-    private FragmentClickActions fragmentClickActions;
     private SignInPresenter signInPresenter;
     private TextView registerTxt, signInTxt, cancelSignInTxt, enterMailHead, enterPasswordHead, forgotPassword, notHaveAccout, connectWiht, termsOfServices, privacyPolicy;
     private EditText enterEmail, enterPassword;
@@ -68,10 +67,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     public SignInFragment() {
 
-    }
-
-    public SignInFragment(FragmentClickActions fragmentClickActions) {
-        this.fragmentClickActions = fragmentClickActions;
     }
 
     @Nullable
@@ -148,14 +143,13 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     }
 
     private void startUserActivity(User user) {
+        User currentUser = new User(user.getName(), user.getLastName(), user.getUrl(), user.getId(), user.getEmail(), user.getLoginType());
+        UtilsPref.saveUser(context, currentUser);
+
 
         Intent intent = new Intent(getActivity(), UserPageActivity.class);
-        intent.putExtra("name", user.getName());
-        intent.putExtra("lastName", user.getLastName());
-        intent.putExtra("email", user.getEmail());
-        intent.putExtra("url", user.getUrl());
-        intent.putExtra("id", user.getId());
-        intent.putExtra("loginType", user.getLoginType());
+        intent.putExtra("loggedUser", user);
+
         startActivity(intent);
     }
 
@@ -292,14 +286,15 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 break;
 
             case R.id.terms_of_services:
+                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.TERMS);
+                break;
+
             case R.id.privacy_policy:
-                ((SignInActivity) context)
-                        .loadFragment(new TermsFragment(), null, R.id.register_frg_container, true);
+                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.POLICY);
                 break;
 
             case R.id.forgot_password_sign_in:
-                ((SignInActivity) context)
-                        .loadFragment(new ForgotPswFragment(), null, R.id.register_frg_container, true);
+                ((SignInActivity) context).loadFragment(new ForgotPswFragment(), null, R.id.register_frg_container, true);
                 break;
 
             case R.id.google:

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.travelguide.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
+import com.example.travelguide.utils.UtilsPref;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,7 +31,7 @@ public class SignInPresenter {
                     String lastName = object.getString("last_name");
                     String id = object.getString("id");
                     String email = object.getString("email");
-                    String loginType = "facebook";
+                    String loginType = UtilsPref.FACEBOOK;
                     String url = "https://graph.facebook.com/" + id + "/picture?type=large";
                     User user = new User(firstName, lastName, url, id, email, loginType);
                     iSignInFragment.onGetFbUserData(user);
@@ -54,7 +55,7 @@ public class SignInPresenter {
                 String personFamilyName = account.getFamilyName();
                 String personEmail = account.getEmail();
                 String personId = account.getId();
-                String loginType = "google";
+                String loginType = UtilsPref.GOOGLE;
                 String personPhotoUrl;
                 Uri personPhotoUri = account.getPhotoUrl();
                 if (personPhotoUri != null) {

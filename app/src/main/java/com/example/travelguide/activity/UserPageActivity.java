@@ -1,5 +1,6 @@
 package com.example.travelguide.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -21,14 +22,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Objects;
 
 public class UserPageActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
-    private Bundle bundlePrfFrg;
-    private User user;
+    private Bundle userDataForFragments;
     private BottomNavigationView bottomNavigationView;
 
     private ViewPager navViewPager;
@@ -55,15 +56,11 @@ public class UserPageActivity extends AppCompatActivity {
     }
 
     private void ongGetUserDate() {
-        String firstName = getIntent().getStringExtra("name");
-        String lastName = getIntent().getStringExtra("lastName");
-        String url = getIntent().getStringExtra("url");
-        String id = getIntent().getStringExtra("id");
-        String email = getIntent().getStringExtra("email");
-        String loginType = getIntent().getStringExtra("loginType");
-        user = new User(firstName, lastName, url, id, email, loginType);
-        UtilsPref.saveUser(this, user);
-        setUserProfileData(user);
+        User loggedUser = (User) getIntent().getSerializableExtra("loggedUser");
+        if (loggedUser != null) {
+            userDataForFragments = new Bundle();
+            userDataForFragments.putSerializable("user", loggedUser);
+        }
     }
 
     private void initBtmNav() {
@@ -78,27 +75,16 @@ public class UserPageActivity extends AppCompatActivity {
 
     }
 
-    private void setUserProfileData(User user) {
-        bundlePrfFrg = new Bundle();
-        bundlePrfFrg.putString("firstName", user.getName());
-        bundlePrfFrg.putString("lastName", user.getLastName());
-        bundlePrfFrg.putString("url", user.getUrl());
-        bundlePrfFrg.putString("id", user.getId());
-        bundlePrfFrg.putString("email", user.getEmail());
-        bundlePrfFrg.putString("loginType", user.getLoginType());
-        bundlePrfFrg.putSerializable("user", user);
-
-    }
-
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                loadFragment(new UserHomeFragment(), bundlePrfFrg, R.id.user_page_frg_container, false);
+                loadFragment(new UserHomeFragment(), userDataForFragments, R.id.user_page_frg_container, false);
                 break;
 
             case R.id.bot_nav_search:
-                Toast.makeText(this, "Search", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.bot_nav_add:
@@ -110,7 +96,7 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_profile:
-                loadFragment(new UserProfileFragment(), bundlePrfFrg, R.id.user_page_frg_container, false);
+                loadFragment(new UserProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false);
                 break;
         }
         return true;

@@ -6,24 +6,38 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.travelguide.R;
+import com.example.travelguide.interfaces.ILanguageActivity;
+import com.example.travelguide.model.User;
+import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.presenters.LanguagePresenter;
 import com.example.travelguide.utils.UtilsGoogle;
+import com.example.travelguide.utils.UtilsNetwork;
 import com.example.travelguide.utils.UtilsPref;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-public class SplashScreenActivity extends AppCompatActivity {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-    private final int SPLASH_DISPLAY_LENGTH = 3000;
+public class SplashScreenActivity extends AppCompatActivity implements ILanguageActivity {
+
+    private final int SPLASH_DISPLAY_LENGTH = 1300;
     private ImageView mainIconSun;
     private TextView mainLogoTxt, justGoTxt;
+    private LanguagePresenter languagePresenter;
+    private ArrayList<LanguagesResponseModel.Language> languages;
+    private final String INTENT_LANGUAGES = "languages";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +45,15 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         iniUI();
         setAnimation();
-        startApplication();
+        checkNetwork();
+    }
+
+    private void checkNetwork() {
+        if (UtilsNetwork.checkNetworkConnection(this)) {
+            languagePresenter.sentLanguageRequest();
+        } else {
+            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -39,6 +61,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         mainIconSun = findViewById(R.id.main_icon_sun);
         mainLogoTxt = findViewById(R.id.main_logo_text);
         justGoTxt = findViewById(R.id.just_go);
+        languagePresenter = new LanguagePresenter(this);
         new Thread(() -> Glide.get(this).clearDiskCache()).start();
         Glide.get(this).clearMemory();
     }
@@ -50,6 +73,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         sunAnimation.setStartOffset(50);
         mainIconSun.setAnimation(sunAnimation);
         justGoTxt.setAnimation(goAnimation);
+    }
+
+    private void stopAnimation(Animation animation, Animation animationSecond) {
+        animation.cancel();
+        animationSecond.cancel();
     }
 
     private void checkLastSignedUser() {
@@ -79,17 +107,26 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
 
-    private void startApplication() {
+    private void startApplication(List<LanguagesResponseModel.Language> languages) {
         new Handler().postDelayed(() -> {
 
 //            if (UtilsPref.getLanguageId(this) != 0) {
 //                checkLastSignedUser();
 //            } else {
-                Intent mainIntent = new Intent(SplashScreenActivity.this, ChooseLanguageActivity.class);
-                startActivity(mainIntent);
+            Intent mainIntent = new Intent(SplashScreenActivity.this, ChooseLanguageActivity.class);
+            mainIntent.putExtra(INTENT_LANGUAGES, (Serializable) languages);
+            startActivity(mainIntent);
 //            }
 
             finish();
         }, SPLASH_DISPLAY_LENGTH);
+    }
+
+    @Override
+    public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
+        if (languagesResponseModel.getStatus() == 0) {
+            List<LanguagesResponseModel.Language> languages = languagesResponseModel.getLanguage();
+            startApplication(languages);
+        }
     }
 }
