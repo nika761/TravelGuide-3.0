@@ -6,20 +6,34 @@ import android.util.Log;
 
 import com.example.travelguide.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
+import com.example.travelguide.model.request.LoginRequestModel;
+import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.network.ApiService;
+import com.example.travelguide.network.RetrofitManager;
 import com.example.travelguide.utils.UtilsPref;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
+import static com.example.travelguide.utils.UtilsPref.GOOGLE;
+
 public class SignInPresenter {
     private ISignInFragment iSignInFragment;
+    private ApiService apiService;
 
     public SignInPresenter(ISignInFragment iSignInFragment) {
         this.iSignInFragment = iSignInFragment;
+        apiService = RetrofitManager.getApiservice();
     }
 
 
@@ -31,7 +45,7 @@ public class SignInPresenter {
                     String lastName = object.getString("last_name");
                     String id = object.getString("id");
                     String email = object.getString("email");
-                    String loginType = UtilsPref.FACEBOOK;
+                    String loginType = FACEBOOK;
                     String url = "https://graph.facebook.com/" + id + "/picture?type=large";
                     User user = new User(firstName, lastName, url, id, email, loginType);
                     iSignInFragment.onGetFbUserData(user);
@@ -55,7 +69,7 @@ public class SignInPresenter {
                 String personFamilyName = account.getFamilyName();
                 String personEmail = account.getEmail();
                 String personId = account.getId();
-                String loginType = UtilsPref.GOOGLE;
+                String loginType = GOOGLE;
                 String personPhotoUrl;
                 Uri personPhotoUri = account.getPhotoUrl();
                 if (personPhotoUri != null) {
@@ -72,5 +86,21 @@ public class SignInPresenter {
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("tag", "signInResult:failed code=" + e.getStatusCode());
         }
+    }
+
+    public void sentLoginRequest(LoginRequestModel loginRequestModel) {
+        apiService.signIn(loginRequestModel).enqueue(new Callback<LoginResponseModel>() {
+            @Override
+            public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
+                if (response.isSuccessful()) {
+                    iSignInFragment.onGetLoginResult(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+
+            }
+        });
     }
 }

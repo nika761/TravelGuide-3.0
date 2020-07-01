@@ -24,13 +24,14 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.interfaces.IRegisterFragment;
-import com.example.travelguide.model.request.AuthRequestModel;
+import com.example.travelguide.model.request.RegisterRequestModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
-import com.example.travelguide.model.response.AuthResponseModel;
+import com.example.travelguide.model.response.RegisterResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.presenters.RegisterPresenter;
+import com.example.travelguide.utils.UtilsPref;
 import com.example.travelguide.utils.UtilsTerms;
 import com.hbb20.CountryCodePicker;
 
@@ -45,7 +46,6 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
     private CountryCodePicker countryCodePicker;
     private RegisterPresenter registerPresenter;
     private LinearLayout phoneNumberContainer;
-    private AuthRequestModel authRequestModel;
     private String userName, userSurname, nickName, birthDate, email, emailForCheck,
             phoneNumber, password, passwordForCheck, confirmPassword, nickNameFirst, nickNameSecond;
     private EditText registerName, registerSurname, registerNickName, registerEmail,
@@ -135,7 +135,7 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
 
     private void setFieldsWarning(EditText currentField, TextView currentHead, String currentHeadText) {
         currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-        currentHead.setText("* " + currentHeadText);
+        currentHead.setText(String.format("* %s", currentHeadText));
         currentHead.setTextColor(getResources().getColor(R.color.red));
         YoYo.with(Techniques.Shake)
                 .duration(300)
@@ -210,11 +210,18 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             confirmPassword = registerConfirmPassword.getText().toString();
         }
 
-        if (userName != null && userSurname != null && nickName != null && email != null
-                && phoneNumber != null && birthDate != null && password != null && confirmPassword != null) {
-            authRequestModel = new AuthRequestModel(userName, userSurname, nickName, email, password,
-                    confirmPassword, birthDate, phoneNumber);
-            registerPresenter.sendAuthResponse(authRequestModel);
+        if (userName != null &&
+                userSurname != null &&
+                nickName != null &&
+                email != null &&
+                phoneNumber != null &&
+                birthDate != null &&
+                password != null &&
+                confirmPassword != null) {
+            String languageId = String.valueOf(UtilsPref.getLanguageId(context));
+            RegisterRequestModel registerRequestModel = new RegisterRequestModel(userName, userSurname, nickName, email, password,
+                    confirmPassword, birthDate, phoneNumber,languageId);
+            registerPresenter.sendAuthResponse(registerRequestModel);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getContext(), " Error ", Toast.LENGTH_LONG).show();
@@ -279,12 +286,12 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
     }
 
     private boolean confirmPassword(EditText password, EditText confirmPassword) {
-        boolean conirmPassowrdValidate = false;
+        boolean confirmPassowrdValidate = false;
 
         if (confirmPassword.getText().toString().equals(password.getText().toString())) {
-            conirmPassowrdValidate = true;
+            confirmPassowrdValidate = true;
         }
-        return conirmPassowrdValidate;
+        return confirmPassowrdValidate;
     }
 
     private void checkNickNameToServer(String name, String surname, String nickName) {
@@ -343,9 +350,9 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
     }
 
     @Override
-    public void onGetAuthResult(AuthResponseModel authResponseModel) {
+    public void onGetAuthResult(RegisterResponseModel registerResponseModel) {
 
-        String authResultStatus = authResponseModel.getStatus();
+        String authResultStatus = registerResponseModel.getStatus();
 
         switch (authResultStatus) {
             case "0":

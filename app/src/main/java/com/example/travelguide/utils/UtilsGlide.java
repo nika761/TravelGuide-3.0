@@ -1,6 +1,7 @@
 package com.example.travelguide.utils;
 
 import android.content.Context;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -19,6 +20,13 @@ public class UtilsGlide {
                 .load(url)
 //                .signature(new ObjectKey(time / 24 * 60 * 60 * 1000))
                 .into(circleImageView);
+    }
+
+    public static void loadPhotoSquare(Context context, String url, ImageView imageView) {
+        Glide.with(context)
+                .applyDefaultRequestOptions(new RequestOptions().centerCrop())
+                .load(url)
+                .into(imageView);
     }
 
 }

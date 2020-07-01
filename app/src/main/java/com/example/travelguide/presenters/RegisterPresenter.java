@@ -1,9 +1,9 @@
 package com.example.travelguide.presenters;
 
 import com.example.travelguide.interfaces.IRegisterFragment;
-import com.example.travelguide.model.request.AuthRequestModel;
+import com.example.travelguide.model.request.RegisterRequestModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
-import com.example.travelguide.model.response.AuthResponseModel;
+import com.example.travelguide.model.response.RegisterResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
@@ -25,10 +25,10 @@ public class RegisterPresenter {
         service = RetrofitManager.getApiservice();
     }
 
-    public void sendAuthResponse(AuthRequestModel authRequestModel) {
-        service.sendUser(authRequestModel).enqueue(new Callback<AuthResponseModel>() {
+    public void sendAuthResponse(RegisterRequestModel registerRequestModel) {
+        service.sendUser(registerRequestModel).enqueue(new Callback<RegisterResponseModel>() {
             @Override
-            public void onResponse(@NotNull Call<AuthResponseModel> call, @NotNull Response<AuthResponseModel> response) {
+            public void onResponse(@NotNull Call<RegisterResponseModel> call, @NotNull Response<RegisterResponseModel> response) {
 //                String token = response.body().getAccess_token();
                 if (response.isSuccessful()) {
                     iRegisterFragment.onGetAuthResult(response.body());
@@ -36,7 +36,7 @@ public class RegisterPresenter {
             }
 
             @Override
-            public void onFailure(Call<AuthResponseModel> call, Throwable t) {
+            public void onFailure(Call<RegisterResponseModel> call, Throwable t) {
                 t.printStackTrace();
             }
         });

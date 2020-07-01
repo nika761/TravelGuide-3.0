@@ -28,7 +28,10 @@ import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
+import com.example.travelguide.model.request.LoginRequestModel;
+import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.presenters.SignInPresenter;
+import com.example.travelguide.utils.UtilsFields;
 import com.example.travelguide.utils.UtilsGoogle;
 import com.example.travelguide.utils.UtilsPref;
 import com.example.travelguide.utils.UtilsTerms;
@@ -48,6 +51,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static com.example.travelguide.utils.UtilsFields.checkEmail;
+
 public class SignInFragment extends Fragment implements ISignInFragment {
 
     private SignInPresenter signInPresenter;
@@ -64,6 +69,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     private Context context;
     private LinearLayout terms;
     private ImageView lineLeft, lineRight;
+    private String email, password;
 
     public SignInFragment() {
 
@@ -72,24 +78,20 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_sign_in, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUI(view);
-        initGoogleSignClient();
         setClickListeners();
     }
 
-//    private void checkCurrentFragment() {
-//        fragmentClickActions.backToSignInFragment();
-//    }
 
     private void initUI(View view) {
         signInPresenter = new SignInPresenter(this);
+        mGoogleSignInClient = UtilsGoogle.initGoogleSignInClient(context);
         signBtnGoogle = view.findViewById(R.id.sign_in_button_google);
         signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
         googleBtn = view.findViewById(R.id.google);
@@ -112,16 +114,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         terms = view.findViewById(R.id.linear_terms);
         termsOfServices = view.findViewById(R.id.terms_of_services);
         privacyPolicy = view.findViewById(R.id.privacy_policy);
-    }
-
-    private void initGoogleSignClient() {
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestEmail()
-//                .build();
-//        mGoogleSignInClient = GoogleSignIn.getClient(Objects.requireNonNull(getContext()), gso);
-
-        mGoogleSignInClient = UtilsGoogle.initGoogleSignInClient(context);
-
     }
 
     private void setClickListeners() {
@@ -149,30 +141,17 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
         Intent intent = new Intent(getActivity(), UserPageActivity.class);
         intent.putExtra("loggedUser", user);
-
         startActivity(intent);
     }
 
     private void signInWithAccount() {
-        if (enterEmail.getText().toString().isEmpty()) {
-            enterEmail.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            enterMailHead.setText("*" + getString(R.string.email_or_phone_number));
-            enterMailHead.setTextColor(getResources().getColor(R.color.red));
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(enterEmail);
-        }
-
-        if (enterPassword.getText().toString().isEmpty()) {
-            enterPassword.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
-            enterPasswordHead.setText("*" + getString(R.string.password));
-            enterPasswordHead.setTextColor(getResources().getColor(R.color.red));
-            YoYo.with(Techniques.Shake)
-                    .duration(300)
-                    .playOn(enterPassword);
+        email = UtilsFields.checkEditTextData(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), email, getResources().getColor(R.color.red), getResources().getColor(R.color.black));
+        password = UtilsFields.checkEditTextData(enterPassword, enterPasswordHead, getString(R.string.password), password, getResources().getColor(R.color.red), getResources().getColor(R.color.black));
+        if (email != null && UtilsFields.checkEmail(email) && password != null && UtilsFields.checkPassword(password)) {
+            LoginRequestModel loginRequestModel = new LoginRequestModel(email, password);
+            signInPresenter.sentLoginRequest(loginRequestModel);
         } else {
-            Intent intent = new Intent(getContext(), UserPageActivity.class);
-            startActivity(intent);
+            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -215,7 +194,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         }
     }
 
-
     private void keyboardFocusHelper() {
         enterEmail.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
@@ -237,6 +215,13 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     }
 
     @Override
+    public void onGetLoginResult(LoginResponseModel loginResponseModel) {
+        if (loginResponseModel.getUser() != null) {
+            Toast.makeText(context, "Signed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         if (signInPresenter != null) {
             signInPresenter = null;
@@ -249,7 +234,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         super.onAttach(context);
         this.context = context;
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

@@ -15,7 +15,7 @@
         android:fontFamily="monospace"
         android:text="Explore"
         android:textSize="19sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/search_container_first"
         app:layout_constraintStart_toStartOf="@id/search_container_first"
         app:layout_constraintTop_toTopOf="@id/search_container_first" />
@@ -24,12 +24,12 @@
         android:id="@+id/search_container_first"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="7dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="7dp"
         android:background="@drawable/content_bg"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
         android:id="@+id/search_container_second"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageButton
             android:id="@+id/search_back_btn_second"
@@ -104,7 +104,7 @@
 
         <EditText
             android:id="@+id/search_edit_text_second"
-            android:layout_width="220dp"
+            android:layout_width="280dp"
             android:layout_height="35dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="20dp"
@@ -129,7 +129,7 @@
             app:layout_constraintTop_toBottomOf="@id/search_edit_text_second"
             app:tabIndicatorColor="@color/yellowTextView"
             app:tabIndicatorFullWidth="false"
-            app:tabMode="scrollable"
+            app:tabMode="fixed"
             app:tabRippleColor="@android:color/transparent"
             app:tabSelectedTextColor="@color/yellowTextView">
 
@@ -137,28 +137,10 @@
                 android:id="@+id/search_tab_top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TOP" />
+                android:text="STORIES" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/search_tab_videos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="VIDEOS" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/search_tab_go"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="GO !" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/search_tab_photos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PHOTOS" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/search_tab_users"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="USERS" />
@@ -168,6 +150,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="HASHTAGS" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/search_tab_go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GO !" />
+
 
         </com.google.android.material.tabs.TabLayout>
 

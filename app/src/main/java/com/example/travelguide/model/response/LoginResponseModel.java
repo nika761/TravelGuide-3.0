@@ -3,7 +3,7 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class AuthResponseModel {
+public class LoginResponseModel {
 
     @Expose
     @SerializedName("access_token")
@@ -11,9 +11,6 @@ public class AuthResponseModel {
     @Expose
     @SerializedName("user")
     private User user;
-    @Expose
-    @SerializedName("status")
-    private String status;
 
     public String getAccess_token() {
         return access_token;
@@ -31,33 +28,28 @@ public class AuthResponseModel {
         this.user = user;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public static class User {
         @Expose
-        @SerializedName("id")
-        private int id;
+        @SerializedName("user_lang")
+        private String user_lang;
         @Expose
-        @SerializedName("created_at")
-        private String created_at;
-        @Expose
-        @SerializedName("updated_at")
-        private String updated_at;
-//        @Expose
-//        @SerializedName("date_of_birth")
-//        private String date_of_birth;
+        @SerializedName("date_of_birth")
+        private String date_of_birth;
         @Expose
         @SerializedName("phone_num")
         private String phone_num;
         @Expose
         @SerializedName("nickname")
         private String nickname;
+        @Expose
+        @SerializedName("updated_at")
+        private String updated_at;
+        @Expose
+        @SerializedName("created_at")
+        private String created_at;
+        @Expose
+        @SerializedName("admin")
+        private int admin;
         @Expose
         @SerializedName("email")
         private String email;
@@ -67,38 +59,25 @@ public class AuthResponseModel {
         @Expose
         @SerializedName("name")
         private String name;
+        @Expose
+        @SerializedName("id")
+        private int id;
 
-        public int getId() {
-            return id;
+        public String getUser_lang() {
+            return user_lang;
         }
 
-        public void setId(int id) {
-            this.id = id;
+        public void setUser_lang(String user_lang) {
+            this.user_lang = user_lang;
         }
 
-        public String getCreated_at() {
-            return created_at;
+        public String getDate_of_birth() {
+            return date_of_birth;
         }
 
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
+        public void setDate_of_birth(String date_of_birth) {
+            this.date_of_birth = date_of_birth;
         }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-//        public String getDate_of_birth() {
-//            return date_of_birth;
-//        }
-//
-//        public void setDate_of_birth(String date_of_birth) {
-//            this.date_of_birth = date_of_birth;
-//        }
 
         public String getPhone_num() {
             return phone_num;
@@ -114,6 +93,30 @@ public class AuthResponseModel {
 
         public void setNickname(String nickname) {
             this.nickname = nickname;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public int getAdmin() {
+            return admin;
+        }
+
+        public void setAdmin(int admin) {
+            this.admin = admin;
         }
 
         public String getEmail() {
@@ -138,6 +141,14 @@ public class AuthResponseModel {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
     }
 }

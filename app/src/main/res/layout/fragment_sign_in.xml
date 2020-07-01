@@ -57,7 +57,8 @@
                     android:background="@drawable/background_sign_in_edittexts"
                     android:gravity="center_vertical"
                     android:padding="10dp"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/enter_password_head"
@@ -77,7 +78,8 @@
                     android:gravity="center_vertical"
                     android:inputType="textPassword"
                     android:padding="10dp"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/forgot_password_sign_in"

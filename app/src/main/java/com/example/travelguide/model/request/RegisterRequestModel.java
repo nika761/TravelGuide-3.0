@@ -1,6 +1,6 @@
 package com.example.travelguide.model.request;
 
-public class AuthRequestModel {
+public class RegisterRequestModel {
 
     private String name;
     private String lastname;
@@ -10,11 +10,12 @@ public class AuthRequestModel {
     private String password_confirmation;
     private String date_of_birth;
     private String phone_num;
+    private String language_id;
 
-    public AuthRequestModel() {
+    public RegisterRequestModel() {
     }
 
-    public AuthRequestModel(String name, String lastname, String nickname, String email, String password, String password_confirmation,String birthDate,String phoneNumber) {
+    public RegisterRequestModel(String name, String lastname, String nickname, String email, String password, String password_confirmation, String birthDate, String phoneNumber, String languageID) {
         this.name = name;
         this.lastname = lastname;
         this.nickname = nickname;
@@ -23,6 +24,7 @@ public class AuthRequestModel {
         this.password_confirmation = password_confirmation;
         this.date_of_birth = birthDate;
         this.phone_num = phoneNumber;
+        this.language_id = languageID;
     }
 
     public String getName() {
@@ -87,5 +89,13 @@ public class AuthRequestModel {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phone_num = phoneNumber;
+    }
+
+    public String getLanguage_id() {
+        return language_id;
+    }
+
+    public void setLanguage_id(String language_id) {
+        this.language_id = language_id;
     }
 }

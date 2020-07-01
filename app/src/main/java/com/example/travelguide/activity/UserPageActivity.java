@@ -31,7 +31,6 @@ public class UserPageActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private Bundle userDataForFragments;
     private BottomNavigationView bottomNavigationView;
-
     private ViewPager navViewPager;
     private BottomNavigationPageAdapter navViewPagerAdapter;
 

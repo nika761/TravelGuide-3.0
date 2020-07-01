@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.fragments.ForgotPswFragment;
+import com.example.travelguide.fragments.SignInFragment;
+import com.example.travelguide.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.UtilsGlide;
 import com.example.travelguide.utils.UtilsGoogle;
@@ -41,6 +44,9 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
+import static com.example.travelguide.utils.UtilsPref.GOOGLE;
+
 public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecyclerViewAdapter.SimpleViewHolder> {
     private Context mContext;
     private List<User> userList;
@@ -51,7 +57,6 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
         this.mContext = context;
         this.userList = objects;
     }
-
 
     @NotNull
     @Override
@@ -88,24 +93,28 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
     }
 
     private void setDataOnViews(SimpleViewHolder viewHolder, User currentUser) {
-
         if (currentUser.getUrl() != null) {
-
             UtilsGlide.loadPhoto(mContext, currentUser.getUrl(), viewHolder.userImage);
-
         } else {
-            viewHolder.userImage.setBackground(mContext.getResources().getDrawable(R.drawable.default_profile_image));
-            viewHolder.userImage.setMinimumHeight(78);
-            viewHolder.userImage.setMinimumWidth(78);
+            viewHolder.userImage.setMinimumHeight(72);
+            viewHolder.userImage.setMinimumWidth(72);
+            viewHolder.userImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            viewHolder.userImage.setBackground(mContext.getResources().getDrawable(R.drawable.account_image));
         }
+        viewHolder.userName.setText(String.format("%s %s %s", mContext.getString(R.string.continue_as), currentUser.getName(), currentUser.getLastName()));
 
-        viewHolder.userName.setText(mContext.getString(R.string.continue_as) + " " + currentUser.getName() + " " + currentUser.getLastName() + "");
-        if (currentUser.getLoginType() != null && currentUser.getLoginType().equals("facebook")) {
-            viewHolder.userLoginType = currentUser.getLoginType();
-            viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.facebook_little));
-        } else if (currentUser.getLoginType() != null && currentUser.getLoginType().equals("google")) {
-            viewHolder.userLoginType = currentUser.getLoginType();
-            viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.google_little));
+        if (currentUser.getLoginType() != null) {
+            switch (currentUser.getLoginType()) {
+                case FACEBOOK:
+                    viewHolder.userLoginType = currentUser.getLoginType();
+                    viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.facebook_little));
+                    break;
+
+                case GOOGLE:
+                    viewHolder.userLoginType = currentUser.getLoginType();
+                    viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.google_little));
+                    break;
+            }
         }
     }
 
@@ -180,7 +189,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
                     userList.remove(selectedUserPosition);
                     notifyItemRemoved(selectedUserPosition);
                     userList = UtilsPref.getSavedUsers(mContext);
-                    notifyItemRangeChanged(selectedUserPosition, userList.size());
+//                    notifyItemRangeChanged(selectedUserPosition, userList.size());
                     mItemManger.closeAllItems();
                     Toast.makeText(mContext, "User Deleted", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
@@ -196,7 +205,6 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
 
     private void startActivityWithGoogle() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(mContext);
-
         if (account != null) {
             String personPhotoUrl;
             Uri personPhotoUri = account.getPhotoUrl();
@@ -206,18 +214,11 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
                 personPhotoUrl = null;
             }
             Intent intent = new Intent(mContext, UserPageActivity.class);
-//            intent.putExtra("name", account.getGivenName());
-//            intent.putExtra("lastName", account.getFamilyName());
-//            intent.putExtra("email", account.getEmail());
-//            intent.putExtra("url", personPhotoUrl);
-//            intent.putExtra("id", account.getId());
-//            intent.putExtra("loginType", "google");
-
-            User user = new User(account.getGivenName(), account.getFamilyName(),
-                    personPhotoUrl, account.getId(), account.getEmail(), "google");
+            User user = new User(account.getGivenName(), account.getFamilyName(), personPhotoUrl, account.getId(), account.getEmail(), "google");
             intent.putExtra("loggedUser", user);
 
             mContext.startActivity(intent);
+
         } else {
             googleSignInClient = UtilsGoogle.initGoogleSignInClient(mContext);
         }
@@ -266,12 +267,11 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
 
         private void checkUserLoginType() {
             if (userLoginType != null) {
-                String type = userLoginType;
-                switch (type) {
-                    case "google":
+                switch (userLoginType) {
+                    case GOOGLE:
                         startActivityWithGoogle();
                         break;
-                    case "facebook":
+                    case FACEBOOK:
                         Toast.makeText(mContext, "With Facebook", Toast.LENGTH_SHORT).show();
                         break;
                 }

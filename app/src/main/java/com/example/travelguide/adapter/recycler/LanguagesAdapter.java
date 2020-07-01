@@ -64,12 +64,12 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
             setClickListeners();
         }
 
-        private void iniUI() {
+        void iniUI() {
             languageFullAdapter = itemView.findViewById(R.id.language_full_adapter);
             languageSmallAdapter = itemView.findViewById(R.id.language_small_adapter);
         }
 
-        private void setClickListeners() {
+        void setClickListeners() {
             languageFullAdapter.setOnLongClickListener(this);
             languageSmallAdapter.setOnLongClickListener(this);
         }

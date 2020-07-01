@@ -1,13 +1,15 @@
 package com.example.travelguide.network;
 
-import com.example.travelguide.model.request.AuthRequestModel;
+import com.example.travelguide.model.request.RegisterRequestModel;
+import com.example.travelguide.model.request.LoginRequestModel;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
-import com.example.travelguide.model.response.AuthResponseModel;
+import com.example.travelguide.model.response.RegisterResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.model.response.TermsPolicyResponseModel;
 
 import retrofit2.Call;
@@ -18,7 +20,7 @@ import retrofit2.http.POST;
 public interface ApiService {
 
     @POST("register")
-    Call<AuthResponseModel> sendUser(@Body AuthRequestModel authRequestModel);
+    Call<RegisterResponseModel> sendUser(@Body RegisterRequestModel registerRequestModel);
 
     @POST("check_email")
     Call<CheckMailResponseModel> checkEmail(@Body CheckMailRequestModel checkMailRequestModel);
@@ -31,4 +33,8 @@ public interface ApiService {
 
     @POST("get_terms_policy")
     Call<TermsPolicyResponseModel> getTerms(@Body TermsPolicyRequestModel termsPolicyRequestModel);
+
+    @POST("login")
+    Call<LoginResponseModel> signIn(@Body LoginRequestModel loginRequestModel);
+
 }

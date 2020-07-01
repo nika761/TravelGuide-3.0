@@ -28,10 +28,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -45,19 +49,28 @@ import com.example.travelguide.activity.TermsAndPrivacyActivity;
 import com.example.travelguide.activity.UserFollowActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.adapter.ViewPageAdapter;
+import com.example.travelguide.adapter.recycler.ChangeLanguageAdapter;
+import com.example.travelguide.adapter.recycler.LanguagesAdapter;
+import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.User;
+import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.presenters.LanguagePresenter;
 import com.example.travelguide.utils.UtilsGlide;
 import com.example.travelguide.utils.UtilsTerms;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserProfileFragment extends Fragment {
+import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
+import static com.example.travelguide.utils.UtilsPref.GOOGLE;
+
+public class UserProfileFragment extends Fragment implements ILanguageActivity {
 
     private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent, editProfile, bioText;
     private ImageButton userContentPhotoBtn, userContentMiddleBtn, userContentTourBtn, bioVisibleBtn, bioInvisibleBtn;
@@ -75,6 +88,9 @@ public class UserProfileFragment extends Fragment {
     private View followStates;
     private User user;
     private Bundle bundlePrfFrg;
+    private LanguagePresenter languagePresenter;
+    private LottieAnimationView lottieAnimationView;
+    private RecyclerView recyclerView;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Nullable
@@ -156,7 +172,6 @@ public class UserProfileFragment extends Fragment {
 
     }
 
-
     private void onGetData() {
         if (getArguments() != null && getArguments().containsKey("user")) {
             user = (User) getArguments().getSerializable("user");
@@ -169,16 +184,15 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void setUserData(User user) {
-
         name.setText(String.format("%s %s", user.getName(), user.getLastName()));
         nickName.setText(String.format("@%s%s", user.getName(), user.getLastName()));
         loginType = user.getLoginType();
         if (user.getUrl() != null)
             UtilsGlide.loadPhoto(context, user.getUrl(), userPrfImage);
-
     }
 
     private void initUI(View view) {
+        languagePresenter = new LanguagePresenter(this);
         name = view.findViewById(R.id.user_prf_name);
         drawerBtn = view.findViewById(R.id.drawer_button);
         nickName = view.findViewById(R.id.user_prf_nickName);
@@ -247,7 +261,7 @@ public class UserProfileFragment extends Fragment {
 //                break;
 
             case R.id.settings_language:
-                Toast.makeText(getContext(), "Language", Toast.LENGTH_SHORT).show();
+                changeLanguage();
                 break;
 
             case R.id.settings_about:
@@ -266,21 +280,39 @@ public class UserProfileFragment extends Fragment {
                 logOut();
                 break;
         }
-
         return true;
     };
 
+    private void initLanguageRecycler(List updatedLanguagesList) {
+        ChangeLanguageAdapter adapter = new ChangeLanguageAdapter(context);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        adapter.setLanguageList(updatedLanguagesList);
+    }
+
+    private void changeLanguage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final View customLayout = getLayoutInflater().inflate(R.layout.language_chooser, null);
+        lottieAnimationView = customLayout.findViewById(R.id.loading_languages);
+        recyclerView = customLayout.findViewById(R.id.language_chooser_recycler);
+        builder.setView(customLayout);
+        AlertDialog dialog = builder.create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_background));
+        dialog.show();
+        languagePresenter.sentLanguageRequest();
+    }
+
     private void logOut() {
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                .setTitle("Log out ?")
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle("Sign out ?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     if (loginType != null) {
-                        String currentLoginType = loginType;
-                        switch (currentLoginType) {
-                            case "facebook":
+                        switch (loginType) {
+                            case FACEBOOK:
                                 ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
                                 break;
-                            case "google":
+                            case GOOGLE:
                                 ((UserPageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
                                 break;
                         }
@@ -315,7 +347,6 @@ public class UserProfileFragment extends Fragment {
 
                 ((UserPageActivity) context)
                         .loadFragment(new UserContentFragment(), null, R.id.on_user_prof_frg_container, false);
-
                 break;
 
             case R.id.user_content_tour_fr:
@@ -325,7 +356,6 @@ public class UserProfileFragment extends Fragment {
 
                 ((UserPageActivity) context)
                         .loadFragment(new UserTourFragment(), null, R.id.on_user_prof_frg_container, false);
-
                 break;
 
             case R.id.bio_visible_btn:
@@ -352,5 +382,21 @@ public class UserProfileFragment extends Fragment {
                         .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true);
                 break;
         }
+    }
+
+    @Override
+    public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
+        if (languagesResponseModel.getStatus() == 0) {
+            initLanguageRecycler(languagesResponseModel.getLanguage());
+            lottieAnimationView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (languagePresenter != null) {
+            languagePresenter = null;
+        }
+        super.onDestroy();
     }
 }

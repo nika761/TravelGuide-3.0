@@ -15,6 +15,5 @@ public class UtilsTerms {
         Intent termsIntent = new Intent(context, TermsAndPrivacyActivity.class);
         termsIntent.putExtra(TYPE, requestFor);
         context.startActivity(termsIntent);
-
     }
 }
