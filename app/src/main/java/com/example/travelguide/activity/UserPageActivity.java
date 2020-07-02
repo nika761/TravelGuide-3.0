@@ -16,6 +16,7 @@ import com.example.travelguide.adapter.BottomNavigationPageAdapter;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.User;
+import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.utils.UtilsPref;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -55,11 +56,17 @@ public class UserPageActivity extends AppCompatActivity {
     }
 
     private void ongGetUserDate() {
-        User loggedUser = (User) getIntent().getSerializableExtra("loggedUser");
-        if (loggedUser != null) {
+        LoginResponseModel.User serverUser = (LoginResponseModel.User) getIntent().getSerializableExtra("server_user");
+        if (serverUser != null) {
             userDataForFragments = new Bundle();
-            userDataForFragments.putSerializable("user", loggedUser);
+            userDataForFragments.putSerializable("user", serverUser);
         }
+//
+//        User loggedUser = (User) getIntent().getSerializableExtra("loggedUser");
+//        if (loggedUser != null) {
+//            userDataForFragments = new Bundle();
+//            userDataForFragments.putSerializable("user", loggedUser);
+//        }
     }
 
     private void initBtmNav() {

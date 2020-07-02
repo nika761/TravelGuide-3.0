@@ -9,6 +9,7 @@ public class UtilsTerms {
 
     public static final String TERMS = "terms";
     public static final String POLICY = "policy";
+    public static final String ABOUT = "about";
     public static final String TYPE = "type";
 
     public static void startTermsAndPolicyActivity(Context context, String requestFor) {

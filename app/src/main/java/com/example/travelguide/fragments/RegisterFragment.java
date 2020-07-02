@@ -56,9 +56,6 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
             registerPasswordHead, registerConfirmPasswordHead,
             registerSignUpTxt, registerCancelTxt, registerNickOffer, registerNickOfferOne, registerNickOfferTwo, terms, policy;
 
-    public RegisterFragment() {
-
-    }
 
     @Nullable
     @Override
@@ -220,7 +217,7 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
                 confirmPassword != null) {
             String languageId = String.valueOf(UtilsPref.getLanguageId(context));
             RegisterRequestModel registerRequestModel = new RegisterRequestModel(userName, userSurname, nickName, email, password,
-                    confirmPassword, birthDate, phoneNumber,languageId);
+                    confirmPassword, birthDate, phoneNumber, languageId);
             registerPresenter.sendAuthResponse(registerRequestModel);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {

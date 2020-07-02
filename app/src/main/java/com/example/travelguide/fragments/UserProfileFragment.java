@@ -2,7 +2,6 @@ package com.example.travelguide.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,30 +29,19 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.ObjectKey;
 import com.example.travelguide.R;
-import com.example.travelguide.activity.SignInActivity;
-import com.example.travelguide.activity.TermsAndPrivacyActivity;
 import com.example.travelguide.activity.UserFollowActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.adapter.ViewPageAdapter;
-import com.example.travelguide.adapter.recycler.ChangeLanguageAdapter;
-import com.example.travelguide.adapter.recycler.LanguagesAdapter;
+import com.example.travelguide.adapter.recycler.ChangeLangAdapter;
 import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.User;
 import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.presenters.LanguagePresenter;
-import com.example.travelguide.utils.UtilsGlide;
 import com.example.travelguide.utils.UtilsTerms;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
@@ -63,14 +49,13 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
 import static com.example.travelguide.utils.UtilsPref.GOOGLE;
 
-public class UserProfileFragment extends Fragment implements ILanguageActivity {
+public class UserProfileFragment extends Fragment {
 
     private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent, editProfile, bioText;
     private ImageButton userContentPhotoBtn, userContentMiddleBtn, userContentTourBtn, bioVisibleBtn, bioInvisibleBtn;
@@ -173,26 +158,35 @@ public class UserProfileFragment extends Fragment implements ILanguageActivity {
     }
 
     private void onGetData() {
+//        if (getArguments() != null && getArguments().containsKey("user")) {
+//            user = (User) getArguments().getSerializable("user");
+//            bundlePrfFrg = new Bundle();
+//            bundlePrfFrg.putSerializable("user", user);
+//            setUserData(user);
+//        }
+
         if (getArguments() != null && getArguments().containsKey("user")) {
-            user = (User) getArguments().getSerializable("user");
-            bundlePrfFrg = new Bundle();
-            bundlePrfFrg.putSerializable("user", user);
-            setUserData(user);
+            LoginResponseModel.User serverUser = (LoginResponseModel.User) getArguments().getSerializable("user");
+            if (serverUser != null)
+                setUserData(serverUser);
         } else {
             Toast.makeText(getContext(), "Data Error ", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void setUserData(User user) {
-        name.setText(String.format("%s %s", user.getName(), user.getLastName()));
-        nickName.setText(String.format("@%s%s", user.getName(), user.getLastName()));
-        loginType = user.getLoginType();
-        if (user.getUrl() != null)
-            UtilsGlide.loadPhoto(context, user.getUrl(), userPrfImage);
+    private void setUserData(LoginResponseModel.User user) {
+//        name.setText(String.format("%s %s", user.getName(), user.getLastName()));
+//        nickName.setText(String.format("@%s%s", user.getName(), user.getLastName()));
+//        loginType = user.getLoginType();
+//        if (user.getUrl() != null)
+//            UtilsGlide.loadPhoto(context, user.getUrl(), userPrfImage);
+
+        name.setText(String.format("%s %s", user.getName(), user.getLastname()));
+        nickName.setText(String.format("@%s%s", user.getName(), user.getLastname()));
+
     }
 
     private void initUI(View view) {
-        languagePresenter = new LanguagePresenter(this);
         name = view.findViewById(R.id.user_prf_name);
         drawerBtn = view.findViewById(R.id.drawer_button);
         nickName = view.findViewById(R.id.user_prf_nickName);
@@ -261,11 +255,12 @@ public class UserProfileFragment extends Fragment implements ILanguageActivity {
 //                break;
 
             case R.id.settings_language:
-                changeLanguage();
+                ChangeLangFragment f = new ChangeLangFragment();
+                f.show(getChildFragmentManager(), "fr");
                 break;
 
             case R.id.settings_about:
-                Toast.makeText(getContext(), "About", Toast.LENGTH_SHORT).show();
+                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.ABOUT);
                 break;
 
             case R.id.settings_privacy:
@@ -283,13 +278,13 @@ public class UserProfileFragment extends Fragment implements ILanguageActivity {
         return true;
     };
 
-    private void initLanguageRecycler(List updatedLanguagesList) {
-        ChangeLanguageAdapter adapter = new ChangeLanguageAdapter(context);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-        adapter.setLanguageList(updatedLanguagesList);
-    }
+//    private void initLanguageRecycler(List updatedLanguagesList) {
+//        ChangeLangAdapter adapter = new ChangeLangAdapter(context);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setAdapter(adapter);
+//        adapter.setLanguageList(updatedLanguagesList);
+//    }
 
     private void changeLanguage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -381,14 +376,6 @@ public class UserProfileFragment extends Fragment implements ILanguageActivity {
                 ((UserPageActivity) context)
                         .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true);
                 break;
-        }
-    }
-
-    @Override
-    public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
-        if (languagesResponseModel.getStatus() == 0) {
-            initLanguageRecycler(languagesResponseModel.getLanguage());
-            lottieAnimationView.setVisibility(View.GONE);
         }
     }
 

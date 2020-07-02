@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,9 +22,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
+import com.example.travelguide.activity.RegisterActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.interfaces.ISignInFragment;
@@ -132,22 +135,26 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
         privacyPolicy.setOnClickListener(this::onViewClick);
 
+        enterEmail.setOnFocusChangeListener(this::onFocusChange);
+
+        enterPassword.setOnFocusChangeListener(this::onFocusChange);
+
+
     }
 
     private void startUserActivity(User user) {
         User currentUser = new User(user.getName(), user.getLastName(), user.getUrl(), user.getId(), user.getEmail(), user.getLoginType());
         UtilsPref.saveUser(context, currentUser);
-
-
         Intent intent = new Intent(getActivity(), UserPageActivity.class);
         intent.putExtra("loggedUser", user);
         startActivity(intent);
     }
 
     private void signInWithAccount() {
-        email = UtilsFields.checkEditTextData(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), email, getResources().getColor(R.color.red), getResources().getColor(R.color.black));
-        password = UtilsFields.checkEditTextData(enterPassword, enterPasswordHead, getString(R.string.password), password, getResources().getColor(R.color.red), getResources().getColor(R.color.black));
+        email = UtilsFields.checkEditTextData(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), email, getResources().getColor(R.color.red), getResources().getColor(R.color.white));
+        password = UtilsFields.checkEditTextData(enterPassword, enterPasswordHead, getString(R.string.password), password, getResources().getColor(R.color.red), getResources().getColor(R.color.white));
         if (email != null && UtilsFields.checkEmail(email) && password != null && UtilsFields.checkPassword(password)) {
+            ((SignInActivity) context).startLoader();
             LoginRequestModel loginRequestModel = new LoginRequestModel(email, password);
             signInPresenter.sentLoginRequest(loginRequestModel);
         } else {
@@ -161,7 +168,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     }
 
     private void signInWithFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email", "user_friends"));
         signBtnFacebook.performClick();
         callbackManager = CallbackManager.Factory.create();
         signBtnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -194,14 +201,12 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         }
     }
 
-    private void keyboardFocusHelper() {
-        enterEmail.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                InputMethodManager inputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
-                assert inputMethodManager != null;
-                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-            }
-        });
+    private void onFocusChange(View v, boolean hasFocus) {
+        if (!hasFocus) {
+            InputMethodManager inputMethodManager = (InputMethodManager) (context.getSystemService(Context.INPUT_METHOD_SERVICE));
+            assert inputMethodManager != null;
+            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -217,8 +222,18 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     @Override
     public void onGetLoginResult(LoginResponseModel loginResponseModel) {
         if (loginResponseModel.getUser() != null) {
+            userDataFromServer(loginResponseModel.getUser());
+            UtilsPref.saveAccessToken(context, loginResponseModel.getAccess_token());
             Toast.makeText(context, "Signed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void userDataFromServer(LoginResponseModel.User userFromServer) {
+        UtilsPref.saveServerUser(context, userFromServer);
+        Intent intent = new Intent(context, UserPageActivity.class);
+        intent.putExtra("server_user", userFromServer);
+        ((SignInActivity) context).stopLoader();
+        context.startActivity(intent);
     }
 
     @Override
@@ -265,8 +280,9 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     private void onViewClick(View v) {
         switch (v.getId()) {
             case R.id.register_now:
-                ((SignInActivity) context)
-                        .loadFragment(new RegisterFragment(), null, R.id.register_frg_container, true);
+                onFocusChange(v, false);
+                Intent intent = new Intent(context, RegisterActivity.class);
+                context.startActivity(intent);
                 break;
 
             case R.id.terms_of_services:
@@ -278,7 +294,9 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 break;
 
             case R.id.forgot_password_sign_in:
-                ((SignInActivity) context).loadFragment(new ForgotPswFragment(), null, R.id.register_frg_container, true);
+                onFocusChange(v, false);
+                ((SignInActivity) context)
+                        .loadFragment(new ForgotPswFragment(), null, R.id.register_frg_container, true);
                 break;
 
             case R.id.google:
@@ -290,6 +308,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 break;
 
             case R.id.sign_in_button_main:
+                onFocusChange(v, false);
                 signInWithAccount();
                 break;
         }

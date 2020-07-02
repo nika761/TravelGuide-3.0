@@ -3,6 +3,9 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 public class LoginResponseModel {
 
     @Expose
@@ -28,7 +31,7 @@ public class LoginResponseModel {
         this.user = user;
     }
 
-    public static class User {
+    public static class User implements Serializable {
         @Expose
         @SerializedName("user_lang")
         private String user_lang;
@@ -150,5 +153,29 @@ public class LoginResponseModel {
         public void setId(int id) {
             this.id = id;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof User)) return false;
+            User user = (User) o;
+            return getAdmin() == user.getAdmin() &&
+                    getId() == user.getId() &&
+                    Objects.equals(getUser_lang(), user.getUser_lang()) &&
+                    Objects.equals(getDate_of_birth(), user.getDate_of_birth()) &&
+                    Objects.equals(getPhone_num(), user.getPhone_num()) &&
+                    Objects.equals(getNickname(), user.getNickname()) &&
+                    Objects.equals(getUpdated_at(), user.getUpdated_at()) &&
+                    Objects.equals(getCreated_at(), user.getCreated_at()) &&
+                    Objects.equals(getEmail(), user.getEmail()) &&
+                    Objects.equals(getLastname(), user.getLastname()) &&
+                    Objects.equals(getName(), user.getName());
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
     }
+
 }

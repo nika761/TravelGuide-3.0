@@ -36,6 +36,7 @@ import com.example.travelguide.R;
 import com.example.travelguide.activity.ChooseLanguageActivity;
 import com.example.travelguide.activity.SplashScreenActivity;
 import com.example.travelguide.model.User;
+import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.utils.UtilsGlide;
 
 import java.util.Objects;
@@ -143,18 +144,22 @@ public class UserHomeFragment extends Fragment {
 
     private void onGetData() {
         if (getArguments() != null && getArguments().containsKey("user")) {
-            User user = (User) getArguments().getSerializable("user");
-            if (user != null)
-                setUserData(user);
+            LoginResponseModel.User serverUser = (LoginResponseModel.User) getArguments().getSerializable("user");
+            if (serverUser != null) {
+                setUserData(serverUser);
+            }
+//            User user = (User) getArguments().getSerializable("user");
+//            if (user != null)
+//                setUserData(user);
         } else {
             Toast.makeText(getContext(), "Data Error ", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void setUserData(User u) {
-        if (u.getUrl() != null) {
-            UtilsGlide.loadPhoto(context, u.getUrl(), userLeftImage);
-        }
+    private void setUserData(LoginResponseModel.User u) {
+//        if (u.getUrl() != null) {
+//            UtilsGlide.loadPhoto(context, u.getUrl(), userLeftImage);
+//        }
     }
 
     @Override

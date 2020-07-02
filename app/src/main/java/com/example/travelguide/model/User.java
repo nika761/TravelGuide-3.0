@@ -1,5 +1,10 @@
 package com.example.travelguide.model;
 
+import androidx.annotation.Nullable;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -81,4 +86,7 @@ public class User implements Serializable {
                 Objects.equals(getEmail(), user.getEmail()) &&
                 Objects.equals(getLoginType(), user.getLoginType());
     }
+
+
+
 }

@@ -1,8 +1,12 @@
 package com.example.travelguide.network;
 
+import com.example.travelguide.model.request.AboutRequestModel;
+import com.example.travelguide.model.request.ChangeLangRequestModel;
 import com.example.travelguide.model.request.RegisterRequestModel;
 import com.example.travelguide.model.request.LoginRequestModel;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
+import com.example.travelguide.model.response.AboutResponseModel;
+import com.example.travelguide.model.response.ChangeLangResponseModel;
 import com.example.travelguide.model.response.RegisterResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
@@ -15,6 +19,8 @@ import com.example.travelguide.model.response.TermsPolicyResponseModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface ApiService {
@@ -36,5 +42,12 @@ public interface ApiService {
 
     @POST("login")
     Call<LoginResponseModel> signIn(@Body LoginRequestModel loginRequestModel);
+
+    @POST("get_about")
+    Call<AboutResponseModel> getAbout(@Body AboutRequestModel aboutRequestModel);
+
+    @Headers({"Accept: application/json"})
+    @POST("change_language")
+    Call<ChangeLangResponseModel> changeLang(@Header("Authorization") String token, @Body ChangeLangRequestModel changeLangRequestModel);
 
 }

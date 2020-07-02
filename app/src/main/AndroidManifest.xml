@@ -35,7 +35,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.SignInActivity" />
-        <activity android:name=".activity.UserFollowActivity" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:theme="@style/SecondAppTheme" />
+
+        <activity android:name=".activity.UserFollowActivity" android:theme="@style/SecondAppTheme"/>
+
         <activity
             android:name=".activity.SearchActivity"
             android:theme="@style/SecondAppTheme" />
@@ -43,12 +48,12 @@
         <activity
             android:name=".activity.TermsAndPrivacyActivity"
             android:theme="@style/SecondAppTheme" />
-        <activity android:name=".activity.SplashScreenActivity">
+        <activity
+            android:name=".activity.SplashScreenActivity"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>

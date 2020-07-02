@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <ImageView
             android:id="@+id/main_logo_full"
             android:layout_width="wrap_content"
@@ -56,5 +57,22 @@
             android:layout_height="match_parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view_sign"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading" />
+
+    <FrameLayout
+        android:id="@+id/frame_sign_loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainColorTransparent"
+        android:visibility="gone" />
 
 </FrameLayout>

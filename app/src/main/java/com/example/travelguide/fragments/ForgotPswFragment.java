@@ -31,9 +31,7 @@ public class ForgotPswFragment extends Fragment {
 //
 //        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//  set status text dark
 //        window.setStatusBarColor(getResources().getColor(R.color.white));
-
-        View view = inflater.inflate(R.layout.fragment_forgot_psw, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_forgot_psw, container, false);
     }
 
     @Override
