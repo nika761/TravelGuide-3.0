@@ -8,25 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.swipe.util.Attributes;
 import com.example.travelguide.R;
-import com.example.travelguide.activity.ChooseLanguageActivity;
 import com.example.travelguide.activity.SignInActivity;
-import com.example.travelguide.adapter.recycler.SwipeRecyclerViewAdapter;
+import com.example.travelguide.adapter.recycler.SavedUserAdapter;
 import com.example.travelguide.utils.UtilsPref;
-
-import java.util.Objects;
 
 public class UsersSavedFragment extends Fragment {
 
@@ -76,10 +71,8 @@ public class UsersSavedFragment extends Fragment {
 //        RecyclerView.Adapter mAdapter = new SavedUsersAdapter(getContext(), UtilsPref.getSavedUsers(Objects.requireNonNull(getContext())));
 //        recyclerView.setAdapter(mAdapter);
 
-        SwipeRecyclerViewAdapter swipeAdapter = new SwipeRecyclerViewAdapter(context, UtilsPref.getSavedUsers(context));
-
+        SavedUserAdapter swipeAdapter = new SavedUserAdapter(context, UtilsPref.getSavedUsers(context));
         swipeAdapter.setMode(Attributes.Mode.Single);
-
         RecyclerView swipeRecyclerView = view.findViewById(R.id.saved_user_recycler);
         swipeRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 

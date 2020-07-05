@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ChooseLanguageActivity" />
+        <activity android:name=".activity.LanguageActivity" />
         <activity
             android:name=".activity.UserPageActivity"
             android:theme="@style/SecondAppTheme"
@@ -36,15 +36,20 @@
         </activity>
         <activity android:name=".activity.SignInActivity" />
         <activity
-            android:name=".activity.RegisterActivity"
+            android:name=".activity.SignUpActivity"
             android:theme="@style/SecondAppTheme" />
 
-        <activity android:name=".activity.UserFollowActivity" android:theme="@style/SecondAppTheme"/>
+        <activity
+            android:name=".activity.UserFollowActivity"
+            android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name=".activity.SearchActivity"
             android:theme="@style/SecondAppTheme" />
         <activity android:name=".activity.SavedUserActivity" />
+        <activity
+            android:name=".activity.ForgotPasswordActivity"
+            android:theme="@style/SecondAppTheme" />
         <activity
             android:name=".activity.TermsAndPrivacyActivity"
             android:theme="@style/SecondAppTheme" />

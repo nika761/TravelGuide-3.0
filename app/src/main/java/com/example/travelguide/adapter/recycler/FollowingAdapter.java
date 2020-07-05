@@ -45,7 +45,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Foll
     }
 
     private void setDataIntoViews(FollowingViewHolder viewHolder, User currentUser) {
-        UtilsGlide.loadPhoto(context, currentUser.getUrl(), viewHolder.followingUserImage);
+        UtilsGlide.loadCirclePhoto(context, currentUser.getUrl(), viewHolder.followingUserImage);
         viewHolder.followingUserName.setText(currentUser.getName());
         viewHolder.followingUserLastName.setText(currentUser.getLastName());
         viewHolder.followingUserNickName.setText(currentUser.getEmail());

@@ -1,9 +1,9 @@
 package com.example.travelguide.presenters;
 
-import com.example.travelguide.interfaces.IRegisterFragment;
-import com.example.travelguide.model.request.RegisterRequestModel;
+import com.example.travelguide.interfaces.ISignUpFragment;
+import com.example.travelguide.model.request.SignUpRequestModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
-import com.example.travelguide.model.response.RegisterResponseModel;
+import com.example.travelguide.model.response.SignUpResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
@@ -16,27 +16,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterPresenter {
-    private IRegisterFragment iRegisterFragment;
+public class SignUpPresenter {
+    private ISignUpFragment iSignUpFragment;
     private ApiService service;
 
-    public RegisterPresenter(IRegisterFragment iRegisterFragment) {
-        this.iRegisterFragment = iRegisterFragment;
-        service = RetrofitManager.getApiservice();
+    public SignUpPresenter(ISignUpFragment iSignUpFragment) {
+        this.iSignUpFragment = iSignUpFragment;
+        service = RetrofitManager.getApiService();
     }
 
-    public void sendAuthResponse(RegisterRequestModel registerRequestModel) {
-        service.sendUser(registerRequestModel).enqueue(new Callback<RegisterResponseModel>() {
+    public void sendAuthResponse(SignUpRequestModel signUpRequestModel) {
+        service.sendUser(signUpRequestModel).enqueue(new Callback<SignUpResponseModel>() {
             @Override
-            public void onResponse(@NotNull Call<RegisterResponseModel> call, @NotNull Response<RegisterResponseModel> response) {
+            public void onResponse(@NotNull Call<SignUpResponseModel> call, @NotNull Response<SignUpResponseModel> response) {
 //                String token = response.body().getAccess_token();
                 if (response.isSuccessful()) {
-                    iRegisterFragment.onGetAuthResult(response.body());
+                    iSignUpFragment.onGetAuthResult(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<RegisterResponseModel> call, Throwable t) {
+            public void onFailure(Call<SignUpResponseModel> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -47,7 +47,7 @@ public class RegisterPresenter {
             @Override
             public void onResponse(Call<CheckMailResponseModel> call, Response<CheckMailResponseModel> response) {
                 if (response.isSuccessful()) {
-                    iRegisterFragment.onGetEmailCheckResult(response.body());
+                    iSignUpFragment.onGetEmailCheckResult(response.body());
                 }
             }
 
@@ -63,7 +63,7 @@ public class RegisterPresenter {
             @Override
             public void onResponse(Call<CheckNickResponseModel> call, Response<CheckNickResponseModel> response) {
                 if (response.isSuccessful()) {
-                    iRegisterFragment.onGetNickCheckResult(response.body());
+                    iSignUpFragment.onGetNickCheckResult(response.body());
                 }
             }
 

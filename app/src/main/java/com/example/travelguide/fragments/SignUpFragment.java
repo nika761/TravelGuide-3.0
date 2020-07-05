@@ -23,14 +23,14 @@ import androidx.fragment.app.Fragment;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
-import com.example.travelguide.interfaces.IRegisterFragment;
-import com.example.travelguide.model.request.RegisterRequestModel;
+import com.example.travelguide.interfaces.ISignUpFragment;
+import com.example.travelguide.model.request.SignUpRequestModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
-import com.example.travelguide.model.response.RegisterResponseModel;
+import com.example.travelguide.model.response.SignUpResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
-import com.example.travelguide.presenters.RegisterPresenter;
+import com.example.travelguide.presenters.SignUpPresenter;
 import com.example.travelguide.utils.UtilsPref;
 import com.example.travelguide.utils.UtilsTerms;
 import com.hbb20.CountryCodePicker;
@@ -38,13 +38,13 @@ import com.hbb20.CountryCodePicker;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class RegisterFragment extends Fragment implements IRegisterFragment {
+public class SignUpFragment extends Fragment implements ISignUpFragment {
 
-    private static final String TAG = "RegisterFragment";
+    private static final String TAG = "SignUpFragment";
     private Context context;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
-    private RegisterPresenter registerPresenter;
+    private SignUpPresenter signUpPresenter;
     private LinearLayout phoneNumberContainer;
     private String userName, userSurname, nickName, birthDate, email, emailForCheck,
             phoneNumber, password, passwordForCheck, confirmPassword, nickNameFirst, nickNameSecond;
@@ -60,7 +60,7 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         return view;
     }
 
@@ -99,7 +99,7 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
 //            if (!hasFocus && registerEmail.getText() != null) {
 //                CheckMailRequestModel checkMailRequestModel = new CheckMailRequestModel();
 //                checkMailRequestModel.setEmail(registerEmail.getText().toString());
-//                registerPresenter.checkEmail(checkMailRequestModel);
+//                signUpPresenter.checkEmail(checkMailRequestModel);
 //            }
 //        });
 
@@ -216,9 +216,9 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
                 password != null &&
                 confirmPassword != null) {
             String languageId = String.valueOf(UtilsPref.getLanguageId(context));
-            RegisterRequestModel registerRequestModel = new RegisterRequestModel(userName, userSurname, nickName, email, password,
+            SignUpRequestModel signUpRequestModel = new SignUpRequestModel(userName, userSurname, nickName, email, password,
                     confirmPassword, birthDate, phoneNumber, languageId);
-            registerPresenter.sendAuthResponse(registerRequestModel);
+            signUpPresenter.sendAuthResponse(signUpRequestModel);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getContext(), " Error ", Toast.LENGTH_LONG).show();
@@ -296,18 +296,18 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
         checkNickRequestModel.setName(name);
         checkNickRequestModel.setSurname(surname);
         checkNickRequestModel.setNickname(nickName);
-        registerPresenter.checkNick(checkNickRequestModel);
+        signUpPresenter.checkNick(checkNickRequestModel);
     }
 
     private void checkEmailToServer(String email) {
         CheckMailRequestModel checkMailRequestModel = new CheckMailRequestModel();
         checkMailRequestModel.setEmail(email);
-        registerPresenter.checkEmail(checkMailRequestModel);
+        signUpPresenter.checkEmail(checkMailRequestModel);
     }
 
     private void iniUI(View view) {
         context = getContext();
-        registerPresenter = new RegisterPresenter(this);
+        signUpPresenter = new SignUpPresenter(this);
         countryCodePicker = view.findViewById(R.id.ccp);
         phoneNumberContainer = view.findViewById(R.id.register_phone_number_container);
         registerName = view.findViewById(R.id.register_name);
@@ -347,9 +347,9 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
     }
 
     @Override
-    public void onGetAuthResult(RegisterResponseModel registerResponseModel) {
+    public void onGetAuthResult(SignUpResponseModel signUpResponseModel) {
 
-        String authResultStatus = registerResponseModel.getStatus();
+        String authResultStatus = signUpResponseModel.getStatus();
 
         switch (authResultStatus) {
             case "0":
@@ -391,8 +391,8 @@ public class RegisterFragment extends Fragment implements IRegisterFragment {
 
     @Override
     public void onDestroy() {
-        if (registerPresenter != null) {
-            registerPresenter = null;
+        if (signUpPresenter != null) {
+            signUpPresenter = null;
         }
         super.onDestroy();
     }

@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,11 +21,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
-import com.example.travelguide.activity.RegisterActivity;
+import com.example.travelguide.activity.ForgotPasswordActivity;
+import com.example.travelguide.activity.SignUpActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.interfaces.ISignInFragment;
@@ -52,9 +49,6 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.Task;
 
 import java.util.Arrays;
-import java.util.Objects;
-
-import static com.example.travelguide.utils.UtilsFields.checkEmail;
 
 public class SignInFragment extends Fragment implements ISignInFragment {
 
@@ -74,9 +68,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     private ImageView lineLeft, lineRight;
     private String email, password;
 
-    public SignInFragment() {
-
-    }
 
     @Nullable
     @Override
@@ -138,7 +129,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         enterEmail.setOnFocusChangeListener(this::onFocusChange);
 
         enterPassword.setOnFocusChangeListener(this::onFocusChange);
-
 
     }
 
@@ -281,7 +271,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         switch (v.getId()) {
             case R.id.register_now:
                 onFocusChange(v, false);
-                Intent intent = new Intent(context, RegisterActivity.class);
+                Intent intent = new Intent(context, SignUpActivity.class);
                 context.startActivity(intent);
                 break;
 
@@ -295,8 +285,8 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
             case R.id.forgot_password_sign_in:
                 onFocusChange(v, false);
-                ((SignInActivity) context)
-                        .loadFragment(new ForgotPswFragment(), null, R.id.register_frg_container, true);
+                Intent intent1 = new Intent(context, ForgotPasswordActivity.class);
+                context.startActivity(intent1);
                 break;
 
             case R.id.google:

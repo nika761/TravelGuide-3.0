@@ -13,17 +13,20 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.BottomNavigationPageAdapter;
+import com.example.travelguide.fragments.NotificationsFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.utils.UtilsUI;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Objects;
 
@@ -85,7 +88,7 @@ public class UserPageActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                loadFragment(new UserHomeFragment(), userDataForFragments, R.id.user_page_frg_container, false);
+                UtilsUI.loadFragment(new UserHomeFragment(),userDataForFragments,R.id.user_page_frg_container,false,this);
                 break;
 
             case R.id.bot_nav_search:
@@ -98,11 +101,12 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_ntf:
-                Toast.makeText(this, "Notification", Toast.LENGTH_LONG).show();
+                NotificationsFragment notificationsFragment = new NotificationsFragment();
+                notificationsFragment.show(getSupportFragmentManager(),"tag");
                 break;
 
             case R.id.bot_nav_profile:
-                loadFragment(new UserProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false);
+                UtilsUI.loadFragment(new UserProfileFragment(), userDataForFragments,R.id.user_page_frg_container,false,this);
                 break;
         }
         return true;

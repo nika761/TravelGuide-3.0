@@ -16,7 +16,7 @@ public class AboutPresenter {
 
     public AboutPresenter(IAboutFragment iAboutFragment) {
         this.iAboutFragment = iAboutFragment;
-        apiService = RetrofitManager.getApiservice();
+        apiService = RetrofitManager.getApiService();
     }
 
     public void sendAboutRequest(AboutRequestModel aboutRequestModel){

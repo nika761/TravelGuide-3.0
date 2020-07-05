@@ -44,7 +44,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.Foll
     }
 
     private void setDataIntoViews(FollowersViewHolder viewHolder, User currentUser) {
-        UtilsGlide.loadPhoto(context, currentUser.getUrl(), viewHolder.followersUserImage);
+        UtilsGlide.loadCirclePhoto(context, currentUser.getUrl(), viewHolder.followersUserImage);
         viewHolder.followersUserName.setText(currentUser.getName());
         viewHolder.followersUserLastName.setText(currentUser.getLastName());
         viewHolder.followersUserNickName.setText(currentUser.getEmail());

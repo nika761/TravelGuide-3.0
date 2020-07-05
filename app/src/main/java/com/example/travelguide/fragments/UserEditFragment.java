@@ -113,7 +113,7 @@ public class UserEditFragment extends Fragment {
         String loginType = currentUser.getLoginType();
 
         if (url != null) {
-            UtilsGlide.loadPhoto(context, url, userImage);
+            UtilsGlide.loadCirclePhoto(context, url, userImage);
         }
         nameField.setText(firstName);
         surnameField.setText(lastName);

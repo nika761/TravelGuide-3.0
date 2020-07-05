@@ -1,6 +1,6 @@
 package com.example.travelguide.model.request;
 
-public class RegisterRequestModel {
+public class SignUpRequestModel {
 
     private String name;
     private String lastname;
@@ -12,10 +12,10 @@ public class RegisterRequestModel {
     private String phone_num;
     private String language_id;
 
-    public RegisterRequestModel() {
+    public SignUpRequestModel() {
     }
 
-    public RegisterRequestModel(String name, String lastname, String nickname, String email, String password, String password_confirmation, String birthDate, String phoneNumber, String languageID) {
+    public SignUpRequestModel(String name, String lastname, String nickname, String email, String password, String password_confirmation, String birthDate, String phoneNumber, String languageID) {
         this.name = name;
         this.lastname = lastname;
         this.nickname = nickname;

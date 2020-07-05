@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -16,13 +15,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.travelguide.R;
 import com.example.travelguide.interfaces.ILanguageActivity;
-import com.example.travelguide.model.User;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.presenters.LanguagePresenter;
-import com.example.travelguide.utils.UtilsGoogle;
 import com.example.travelguide.utils.UtilsNetwork;
-import com.example.travelguide.utils.UtilsPref;
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
@@ -113,7 +108,7 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
 //            if (UtilsPref.getLanguageId(this) != 0) {
 //                checkLastSignedUser();
 //            } else {
-            Intent mainIntent = new Intent(SplashScreenActivity.this, ChooseLanguageActivity.class);
+            Intent mainIntent = new Intent(SplashScreenActivity.this, LanguageActivity.class);
             mainIntent.putExtra(INTENT_LANGUAGES, (Serializable) languages);
             startActivity(mainIntent);
 //            }

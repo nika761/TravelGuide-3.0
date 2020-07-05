@@ -1,21 +1,14 @@
 package com.example.travelguide.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.LanguagesAdapter;
 import com.example.travelguide.interfaces.ILanguageActivity;
@@ -27,22 +20,22 @@ import com.example.travelguide.utils.UtilsPref;
 import java.util.List;
 
 
-public class ChooseLanguageActivity extends AppCompatActivity implements ILanguageActivity {
+public class LanguageActivity extends AppCompatActivity implements ILanguageActivity {
 
     private Button startButton;
     private List<User> currentUsers;
     private RecyclerView recyclerView;
     private LanguagePresenter languagePresenter;
     private List<LanguagesResponseModel.Language> languages;
-    private final String INTENT_LANGUAGES = "languages";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_language);
+        setContentView(R.layout.activity_language);
         recyclerView = findViewById(R.id.language_recycler);
         languagePresenter = new LanguagePresenter(this);
 //        languagePresenter.sentLanguageRequest();
+        String INTENT_LANGUAGES = "languages";
         languages = (List<LanguagesResponseModel.Language>) getIntent().getSerializableExtra(INTENT_LANGUAGES);
         if (languages != null) {
             iniRecyclerAdapter(languages);

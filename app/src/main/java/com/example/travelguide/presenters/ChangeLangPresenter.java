@@ -17,7 +17,7 @@ public class ChangeLangPresenter {
 
     public ChangeLangPresenter(IChangeLangFragment iChangeLangFragment) {
         this.iChangeLangFragment = iChangeLangFragment;
-        apiService = RetrofitManager.getApiservice();
+        apiService = RetrofitManager.getApiService();
     }
 
     public void sentLanguageRequest() {

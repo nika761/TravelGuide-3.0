@@ -43,7 +43,6 @@ public class UtilsFields {
                 .playOn(currentField);
     }
 
-    @SuppressLint("ResourceAsColor")
     private static void setFieldsDefault(EditText currentField, TextView currentHead, String currentHeadText,int color) {
         currentField.setBackgroundResource(BACKGROUND_DEFAULT);
         currentHead.setText(currentHeadText);

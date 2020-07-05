@@ -8,5 +8,6 @@ public interface IChangeLangFragment {
 
     void onLanguageChange(ChangeLangResponseModel changeLangResponseModel);
 
+    void onLanguageChoose(int langId);
 
 }

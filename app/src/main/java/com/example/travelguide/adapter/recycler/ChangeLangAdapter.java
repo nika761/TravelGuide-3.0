@@ -5,31 +5,27 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
-import com.example.travelguide.interfaces.IChangeLangClickActions;
+import com.example.travelguide.interfaces.IChangeLangFragment;
 import com.example.travelguide.model.response.LanguagesResponseModel;
-import com.example.travelguide.utils.UtilsPref;
 
 import java.util.List;
 
 public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.ChangeLanguageViewHolder> {
 
     private Context context;
-    private IChangeLangClickActions iChangeLangClickActions;
+    private IChangeLangFragment iChangeLangFragment;
     private List<LanguagesResponseModel.Language> languages;
     private int currentLanguage;
 
-    public ChangeLangAdapter(Context context, IChangeLangClickActions ichangeLangClickActions) {
+    public ChangeLangAdapter(Context context, IChangeLangFragment iChangeLangFragment) {
         this.context = context;
-        this.iChangeLangClickActions = ichangeLangClickActions;
+        this.iChangeLangFragment = iChangeLangFragment;
     }
 
     @NonNull
@@ -41,6 +37,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
 
     @Override
     public void onBindViewHolder(@NonNull ChangeLanguageViewHolder holder, int position) {
+
 //        currentLanguage = UtilsPref.getLanguageId(context);
 //        if (languages.get(position).getId() == currentLanguage) {
 //            holder.language.setText(languages.get(position).getNative_full());
@@ -56,7 +53,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
         holder.language.setOnClickListener(v -> {
 //            currentLanguage = languages.get(position).getId();
             holder.language.setTextColor(Color.parseColor("#F3BC1E"));
-            iChangeLangClickActions.onLanguageChoose(languages.get(position).getId());
+            iChangeLangFragment.onLanguageChoose(languages.get(position).getId());
         });
     }
 

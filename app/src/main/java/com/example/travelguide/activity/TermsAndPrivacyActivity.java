@@ -12,6 +12,7 @@ import com.example.travelguide.fragments.AboutFragment;
 import com.example.travelguide.fragments.PolicyFragment;
 import com.example.travelguide.fragments.TermsFragment;
 import com.example.travelguide.utils.UtilsTerms;
+import com.example.travelguide.utils.UtilsUI;
 
 import static com.example.travelguide.utils.UtilsTerms.ABOUT;
 import static com.example.travelguide.utils.UtilsTerms.POLICY;
@@ -19,7 +20,7 @@ import static com.example.travelguide.utils.UtilsTerms.TERMS;
 
 public class TermsAndPrivacyActivity extends AppCompatActivity {
 
-    private final static int TERMS_POLICY_FRAGMENT_CONTAINER_ID = R.id.terms_policy_fragment_container;
+    private final static int TERMS_POLICY_FRAGMENT_CONTAINER = R.id.terms_policy_fragment_container;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,30 +34,17 @@ public class TermsAndPrivacyActivity extends AppCompatActivity {
         if (type != null) {
             switch (type) {
                 case TERMS:
-                    loadFragment(new TermsFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER_ID, false);
+                    UtilsUI.loadFragment(new TermsFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
                     break;
 
                 case POLICY:
-                    loadFragment(new PolicyFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER_ID, false);
+                    UtilsUI.loadFragment(new PolicyFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
                     break;
 
                 case ABOUT:
-                    loadFragment(new AboutFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER_ID, false);
+                    UtilsUI.loadFragment(new AboutFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
                     break;
             }
         }
     }
-
-    public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
-        currentFragment.setArguments(data);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                .beginTransaction();
-
-        if (backStack) {
-            fragmentTransaction.addToBackStack(null);
-        }
-
-        fragmentTransaction.replace(fragmentID, currentFragment).commit();
-    }
-
 }

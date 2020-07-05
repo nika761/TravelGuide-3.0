@@ -9,11 +9,13 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.fragments.SignInFragment;
+import com.example.travelguide.utils.UtilsUI;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -27,13 +29,13 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         initUI();
-        loadFragment(new SignInFragment(), null, R.id.fragment_container, false);
+//        loadFragment(new SignInFragment(), null, R.id.fragment_container, false);
+        UtilsUI.loadFragment(new SignInFragment(), null, R.id.fragment_container, false, this);
     }
 
     public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
         currentFragment.setArguments(data);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                .beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         if (backStack) {
             fragmentTransaction.addToBackStack(null);
@@ -41,6 +43,7 @@ public class SignInActivity extends AppCompatActivity {
 
         fragmentTransaction.replace(fragmentID, currentFragment).commit();
     }
+
 
     private void initUI() {
         animationView = findViewById(R.id.animation_view_sign);

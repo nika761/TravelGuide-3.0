@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
-import com.example.travelguide.activity.ChooseLanguageActivity;
+import com.example.travelguide.activity.LanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.utils.UtilsPref;
 
@@ -82,7 +82,7 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
                 case R.id.language_full_adapter:
                     languageFullAdapter.setTextColor(Color.parseColor("#F3BC1E"));
                     UtilsPref.saveLanguageId(context,languageList.get(getLayoutPosition()).getId());
-                    ((ChooseLanguageActivity) context).checkSavedUsers();
+                    ((LanguageActivity) context).checkSavedUsers();
                     break;
             }
             return false;

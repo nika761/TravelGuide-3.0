@@ -1,14 +1,8 @@
 package com.example.travelguide.activity;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -16,12 +10,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.R;
-import com.example.travelguide.fragments.ForgotPswFragment;
 import com.example.travelguide.fragments.UsersSavedFragment;
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
+import com.example.travelguide.utils.UtilsUI;
 
-import java.util.Objects;
 
 public class SavedUserActivity extends AppCompatActivity {
 
@@ -31,25 +22,8 @@ public class SavedUserActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_user);
-
-//        Window window = getWindow();
-//        window.setStatusBarColor(getResources().getColor(R.color.white));
-
-        loadFragment(new UsersSavedFragment(), null, SAVED_USER_FRG_CONTAINER_ID, false);
-
+        UtilsUI.loadFragment(new UsersSavedFragment(),null,SAVED_USER_FRG_CONTAINER_ID,false,this);
     }
-
-    public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
-        currentFragment.setArguments(data);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        if (backStack) {
-            fragmentTransaction.addToBackStack(null);
-        }
-
-        fragmentTransaction.add(fragmentID, currentFragment).commit();
-    }
-
 
     @Override
     public void onBackPressed() {

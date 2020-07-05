@@ -15,7 +15,7 @@ public class LanguagePresenter {
 
     public LanguagePresenter(ILanguageActivity iLanguageActivity) {
         this.iLanguageActivity = iLanguageActivity;
-        service = RetrofitManager.getApiservice();
+        service = RetrofitManager.getApiService();
     }
 
     public void sentLanguageRequest() {

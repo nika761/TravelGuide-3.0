@@ -11,7 +11,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UtilsGlide {
 
-    public static void loadPhoto(Context context, String url, CircleImageView circleImageView) {
+    public static void loadCirclePhoto(Context context, String url, CircleImageView circleImageView) {
 
         long time = System.currentTimeMillis();
 
@@ -22,7 +22,7 @@ public class UtilsGlide {
                 .into(circleImageView);
     }
 
-    public static void loadPhotoSquare(Context context, String url, ImageView imageView) {
+    public static void loadPhoto(Context context, String url, ImageView imageView) {
         Glide.with(context)
                 .applyDefaultRequestOptions(new RequestOptions().centerCrop())
                 .load(url)

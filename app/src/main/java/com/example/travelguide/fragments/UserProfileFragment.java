@@ -2,6 +2,8 @@ package com.example.travelguide.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -43,6 +45,7 @@ import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.presenters.LanguagePresenter;
 import com.example.travelguide.utils.UtilsTerms;
+import com.example.travelguide.utils.UtilsUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
@@ -285,18 +288,6 @@ public class UserProfileFragment extends Fragment {
 //        recyclerView.setAdapter(adapter);
 //        adapter.setLanguageList(updatedLanguagesList);
 //    }
-
-    private void changeLanguage() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        final View customLayout = getLayoutInflater().inflate(R.layout.language_chooser, null);
-        lottieAnimationView = customLayout.findViewById(R.id.loading_languages);
-        recyclerView = customLayout.findViewById(R.id.language_chooser_recycler);
-        builder.setView(customLayout);
-        AlertDialog dialog = builder.create();
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_background));
-        dialog.show();
-        languagePresenter.sentLanguageRequest();
-    }
 
     private void logOut() {
         AlertDialog alertDialog = new AlertDialog.Builder(context)

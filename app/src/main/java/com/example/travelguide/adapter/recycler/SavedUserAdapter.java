@@ -10,26 +10,19 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.ObjectKey;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.travelguide.R;
+import com.example.travelguide.activity.ForgotPasswordActivity;
 import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
-import com.example.travelguide.fragments.ForgotPswFragment;
-import com.example.travelguide.fragments.SignInFragment;
-import com.example.travelguide.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.UtilsGlide;
 import com.example.travelguide.utils.UtilsGoogle;
@@ -47,13 +40,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
 import static com.example.travelguide.utils.UtilsPref.GOOGLE;
 
-public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecyclerViewAdapter.SimpleViewHolder> {
+public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.SimpleViewHolder> {
     private Context mContext;
     private List<User> userList;
     private int selectedUserPosition = -1;
     private GoogleSignInClient googleSignInClient;
 
-    public SwipeRecyclerViewAdapter(Context context, List<User> objects) {
+    public SavedUserAdapter(Context context, List<User> objects) {
         this.mContext = context;
         this.userList = objects;
     }
@@ -61,7 +54,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
     @NotNull
     @Override
     public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_user_item, parent, false);
         return new SimpleViewHolder(view);
     }
 
@@ -94,7 +87,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
 
     private void setDataOnViews(SimpleViewHolder viewHolder, User currentUser) {
         if (currentUser.getUrl() != null) {
-            UtilsGlide.loadPhoto(mContext, currentUser.getUrl(), viewHolder.userImage);
+            UtilsGlide.loadCirclePhoto(mContext, currentUser.getUrl(), viewHolder.userImage);
         } else {
             viewHolder.userImage.setMinimumHeight(72);
             viewHolder.userImage.setMinimumWidth(72);
@@ -300,7 +293,8 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
                     break;
 
                 case R.id.save_user_forgot_password:
-                    ((SavedUserActivity) mContext).loadFragment(new ForgotPswFragment(), null, R.id.saved_user_fragment_container, true);
+                    Intent intent = new Intent(mContext, ForgotPasswordActivity.class);
+                    mContext.startActivity(intent);
                     break;
 
                 case R.id.saved_user_sign_in_btn:

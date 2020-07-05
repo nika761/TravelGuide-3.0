@@ -2,12 +2,12 @@ package com.example.travelguide.network;
 
 import com.example.travelguide.model.request.AboutRequestModel;
 import com.example.travelguide.model.request.ChangeLangRequestModel;
-import com.example.travelguide.model.request.RegisterRequestModel;
+import com.example.travelguide.model.request.SignUpRequestModel;
 import com.example.travelguide.model.request.LoginRequestModel;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
 import com.example.travelguide.model.response.AboutResponseModel;
 import com.example.travelguide.model.response.ChangeLangResponseModel;
-import com.example.travelguide.model.response.RegisterResponseModel;
+import com.example.travelguide.model.response.SignUpResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
@@ -26,7 +26,7 @@ import retrofit2.http.POST;
 public interface ApiService {
 
     @POST("register")
-    Call<RegisterResponseModel> sendUser(@Body RegisterRequestModel registerRequestModel);
+    Call<SignUpResponseModel> sendUser(@Body SignUpRequestModel signUpRequestModel);
 
     @POST("check_email")
     Call<CheckMailResponseModel> checkEmail(@Body CheckMailRequestModel checkMailRequestModel);

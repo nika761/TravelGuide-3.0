@@ -16,7 +16,7 @@ public class PolicyPresenter {
 
     public PolicyPresenter(IPolicyFragment iPolicyFragment) {
         this.iPolicyFragment = iPolicyFragment;
-        apiService = RetrofitManager.getApiservice();
+        apiService = RetrofitManager.getApiService();
     }
 
     public void sendPolicyResponse(TermsPolicyRequestModel termsPolicyRequestModel) {

@@ -16,9 +16,8 @@ public class TermsPresenter {
 
     public TermsPresenter(ITermsFragment iTermsFragment) {
         this.iTermsFragment = iTermsFragment;
-        apiService = RetrofitManager.getApiservice();
+        apiService = RetrofitManager.getApiService();
     }
-
 
     public void sendTermsResponse(TermsPolicyRequestModel termsPolicyRequestModel) {
         apiService.getTerms(termsPolicyRequestModel).enqueue(new Callback<TermsPolicyResponseModel>() {
@@ -36,6 +35,5 @@ public class TermsPresenter {
             }
         });
     }
-
 
 }

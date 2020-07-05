@@ -17,21 +17,15 @@ public class RetrofitManager {
     private static HttpLoggingInterceptor interceptor;
 
 
-    private static Retrofit getRetrofit (){
+    private static Retrofit getRetrofit() {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor( new HttpLoggingInterceptor.Logger()
-        {
-            @Override public void log(String message)
-            {
-              Log.e("asdsadsdasd",message);
-            }
-        });
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Log.e("asdsadsdasd", message));
 
-        if (retrofit==null){
+        if (retrofit == null) {
             interceptor = new HttpLoggingInterceptor();
             interceptor.level(HttpLoggingInterceptor.Level.BODY);
             okHttpClient = new OkHttpClient.Builder()
@@ -46,7 +40,7 @@ public class RetrofitManager {
         return retrofit;
     }
 
-    public static ApiService getApiservice (){
+    public static ApiService getApiService() {
         return getRetrofit().create(ApiService.class);
     }
 }

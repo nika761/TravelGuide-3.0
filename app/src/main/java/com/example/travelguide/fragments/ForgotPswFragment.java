@@ -22,6 +22,7 @@ import java.util.Objects;
 public class ForgotPswFragment extends Fragment {
 
     private TextView backBtn;
+    private Context context;
 
     @Nullable
     @Override
@@ -47,5 +48,11 @@ public class ForgotPswFragment extends Fragment {
 
     private void setClickListeners() {
         backBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
     }
 }
