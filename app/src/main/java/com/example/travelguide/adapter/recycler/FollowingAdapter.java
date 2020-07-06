@@ -9,9 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.travelguide.R;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.UtilsGlide;
@@ -33,7 +30,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Foll
     @NonNull
     @Override
     public FollowingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.following_recycler_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_recycler, parent, false);
         return new FollowingViewHolder(view);
     }
 

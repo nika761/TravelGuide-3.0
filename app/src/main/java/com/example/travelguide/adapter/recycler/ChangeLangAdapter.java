@@ -31,7 +31,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
     @NonNull
     @Override
     public ChangeLanguageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chooser_language_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chooser_language, parent, false);
         return new ChangeLanguageViewHolder(view);
     }
 

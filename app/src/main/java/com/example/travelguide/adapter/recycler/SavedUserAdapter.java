@@ -20,7 +20,6 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.ForgotPasswordActivity;
-import com.example.travelguide.activity.SavedUserActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.model.User;
@@ -54,7 +53,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
     @NotNull
     @Override
     public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_user_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_saved_user, parent, false);
         return new SimpleViewHolder(view);
     }
 

@@ -75,7 +75,7 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
     }
 
     private void iniRecyclerAdapter(List updatedLanguagesList) {
-        LanguagesAdapter adapter = new LanguagesAdapter(this);
+        LanguagesAdapter adapter = new LanguagesAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -85,5 +85,10 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
     @Override
     public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
         iniRecyclerAdapter(languagesResponseModel.getLanguage());
+    }
+
+    @Override
+    public void onChooseLanguage() {
+        checkSavedUsers();
     }
 }

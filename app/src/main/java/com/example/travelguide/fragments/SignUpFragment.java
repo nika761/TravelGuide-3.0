@@ -228,7 +228,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
 
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        final View customLayout = getLayoutInflater().inflate(R.layout.registration_confirm, null);
+        final View customLayout = getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
         builder.setView(customLayout);
         AlertDialog dialog = builder.create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_background));

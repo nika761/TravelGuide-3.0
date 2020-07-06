@@ -51,7 +51,7 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_users_recycler_item, parent, false));
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_saved_users_recycler, parent, false));
     }
 
     @Override

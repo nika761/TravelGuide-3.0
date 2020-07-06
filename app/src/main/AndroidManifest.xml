@@ -3,6 +3,7 @@
     package="com.example.travelguide">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,6 +15,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".activity.LanguageActivity" />
+        <activity
+            android:name=".activity.UploadStoryActivity"
+            android:theme="@style/SecondAppTheme" />
         <activity
             android:name=".activity.UserPageActivity"
             android:theme="@style/SecondAppTheme"

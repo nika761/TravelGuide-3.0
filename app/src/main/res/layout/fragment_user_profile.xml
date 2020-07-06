@@ -330,7 +330,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/header_layout_settings_nav"
+        app:headerLayout="@layout/c_nav_header_title"
         app:menu="@menu/user_settings_nav_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

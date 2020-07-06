@@ -124,4 +124,9 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
             startApplication(languages);
         }
     }
+
+    @Override
+    public void onChooseLanguage() {
+
+    }
 }

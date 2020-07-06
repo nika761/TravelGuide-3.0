@@ -38,7 +38,6 @@ import com.example.travelguide.R;
 import com.example.travelguide.activity.UserFollowActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.adapter.ViewPageAdapter;
-import com.example.travelguide.adapter.recycler.ChangeLangAdapter;
 import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.User;
 import com.example.travelguide.model.response.LanguagesResponseModel;

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.activity.LanguageActivity;
+import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.utils.UtilsPref;
 
@@ -23,15 +24,17 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
 
     private List<LanguagesResponseModel.Language> languageList;
     private Context context;
+    private ILanguageActivity iLanguageActivity;
 
-    public LanguagesAdapter(Context context) {
+    public LanguagesAdapter(Context context, ILanguageActivity iLanguageActivity) {
         this.context = context;
+        this.iLanguageActivity = iLanguageActivity;
     }
 
     @NonNull
     @Override
     public LanguageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.language_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_language, parent, false);
         return new LanguageViewHolder(view);
     }
 
@@ -55,7 +58,7 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
         notifyDataSetChanged();
     }
 
-    class LanguageViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    class LanguageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView languageFullAdapter, languageSmallAdapter;
 
         LanguageViewHolder(@NonNull View itemView) {
@@ -70,22 +73,19 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
         }
 
         void setClickListeners() {
-            languageFullAdapter.setOnLongClickListener(this);
-            languageSmallAdapter.setOnLongClickListener(this);
+            languageFullAdapter.setOnClickListener(this);
+            languageSmallAdapter.setOnClickListener(this);
         }
 
-
         @Override
-        public boolean onLongClick(View v) {
-
+        public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.language_full_adapter:
                     languageFullAdapter.setTextColor(Color.parseColor("#F3BC1E"));
-                    UtilsPref.saveLanguageId(context,languageList.get(getLayoutPosition()).getId());
-                    ((LanguageActivity) context).checkSavedUsers();
+                    UtilsPref.saveLanguageId(context, languageList.get(getLayoutPosition()).getId());
+                    iLanguageActivity.onChooseLanguage();
                     break;
             }
-            return false;
         }
     }
 }

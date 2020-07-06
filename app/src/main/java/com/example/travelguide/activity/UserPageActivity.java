@@ -3,6 +3,8 @@ package com.example.travelguide.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -16,17 +18,13 @@ import com.example.travelguide.adapter.BottomNavigationPageAdapter;
 import com.example.travelguide.fragments.NotificationsFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
-import com.example.travelguide.model.User;
 import com.example.travelguide.model.response.LoginResponseModel;
-import com.example.travelguide.utils.UtilsPref;
 import com.example.travelguide.utils.UtilsUI;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Objects;
 
@@ -37,6 +35,8 @@ public class UserPageActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private ViewPager navViewPager;
     private BottomNavigationPageAdapter navViewPagerAdapter;
+    private LinearLayout addStoryContainer;
+    private TextView addStory;
 
     public UserPageActivity() {
     }
@@ -80,15 +80,13 @@ public class UserPageActivity extends AppCompatActivity {
 
 //        navViewPager = findViewById(R.id.user_page_view_pager);
 //        navViewPagerAdapter = new BottomNavigationPageAdapter(getSupportFragmentManager());
-
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                UtilsUI.loadFragment(new UserHomeFragment(),userDataForFragments,R.id.user_page_frg_container,false,this);
+                UtilsUI.loadFragment(new UserHomeFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
                 break;
 
             case R.id.bot_nav_search:
@@ -97,16 +95,17 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_add:
-                Toast.makeText(this, "Add", Toast.LENGTH_LONG).show();
+                Intent intent1 = new Intent(UserPageActivity.this, UploadStoryActivity.class);
+                startActivity(intent1);
                 break;
 
             case R.id.bot_nav_ntf:
                 NotificationsFragment notificationsFragment = new NotificationsFragment();
-                notificationsFragment.show(getSupportFragmentManager(),"tag");
+                notificationsFragment.show(getSupportFragmentManager(), "tag");
                 break;
 
             case R.id.bot_nav_profile:
-                UtilsUI.loadFragment(new UserProfileFragment(), userDataForFragments,R.id.user_page_frg_container,false,this);
+                UtilsUI.loadFragment(new UserProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
                 break;
         }
         return true;
