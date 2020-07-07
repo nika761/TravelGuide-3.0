@@ -1,8 +1,8 @@
 package com.example.travelguide.presenters;
 
 import com.example.travelguide.interfaces.IUploadStory;
-import com.example.travelguide.model.request.UploadStoryRequest;
-import com.example.travelguide.model.response.UploadStoryResponse;
+import com.example.travelguide.model.request.UploadStoryRequestModel;
+import com.example.travelguide.model.response.UploadStoryResponseModel;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
@@ -19,17 +19,17 @@ public class UploadStoryPresenter {
         apiService = RetrofitManager.getApiService();
     }
 
-    public void uploadStory(String accessToken, UploadStoryRequest uploadStoryRequest) {
-        apiService.uploadStory(accessToken, uploadStoryRequest).enqueue(new Callback<UploadStoryResponse>() {
+    public void uploadStory(String accessToken, UploadStoryRequestModel uploadStoryRequestModel) {
+        apiService.uploadStory(accessToken, uploadStoryRequestModel).enqueue(new Callback<UploadStoryResponseModel>() {
             @Override
-            public void onResponse(Call<UploadStoryResponse> call, Response<UploadStoryResponse> response) {
+            public void onResponse(Call<UploadStoryResponseModel> call, Response<UploadStoryResponseModel> response) {
                 if (response.isSuccessful()) {
                     iUploadStory.onStoryUploaded(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<UploadStoryResponse> call, Throwable t) {
+            public void onFailure(Call<UploadStoryResponseModel> call, Throwable t) {
 
             }
         });

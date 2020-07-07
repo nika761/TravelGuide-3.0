@@ -55,7 +55,7 @@
                     android:layout_width="282dp"
                     android:layout_height="42dp"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/background_sign_in_edittexts"
+                    android:background="@drawable/bg_sign_in_fields"
                     android:gravity="center_vertical"
                     android:padding="10dp"
                     android:textColor="@color/white"
@@ -75,7 +75,7 @@
                     android:layout_width="282dp"
                     android:layout_height="42dp"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/background_sign_in_edittexts"
+                    android:background="@drawable/bg_sign_in_fields"
                     android:gravity="center_vertical"
                     android:inputType="textPassword"
                     android:padding="10dp"
@@ -131,7 +131,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="35dp"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/background_start_button"
+                android:background="@drawable/bg_start_btn"
                 android:text="@string/sign_in_btn"
                 android:textAllCaps="true"
                 android:textColor="@color/yellowTextView"
@@ -150,7 +150,7 @@
                     android:id="@+id/line_left"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/line_bckg" />
+                    android:background="@drawable/bg_line_second" />
 
                 <TextView
                     android:id="@+id/connect_with"
@@ -166,7 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:background="@drawable/line_bckg" />
+                    android:background="@drawable/bg_line_second" />
 
             </LinearLayout>
 
@@ -189,7 +189,7 @@
                     android:layout_width="100dp"
                     android:layout_height="35dp"
                     android:layout_marginEnd="10dp"
-                    android:background="@drawable/background_fb_btn"
+                    android:background="@drawable/bg_fb_btn"
                     android:drawableStart="@drawable/facebook_text"
                     android:padding="6dp"
                     android:text="facebook"
@@ -207,28 +207,12 @@
                     android:id="@+id/google"
                     android:layout_width="100dp"
                     android:layout_height="35dp"
-                    android:background="@drawable/background_google_btn"
+                    android:background="@drawable/bg_google_btn"
                     android:drawableStart="@drawable/google_text"
                     android:padding="6dp"
                     android:text="Google"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
-
-                <ImageView
-                    android:id="@+id/instagram"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/instagram"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/pinterest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/pinterest"
-                    android:visibility="gone" />
 
             </LinearLayout>
 

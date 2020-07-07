@@ -34,7 +34,7 @@ import com.example.travelguide.presenters.SignInPresenter;
 import com.example.travelguide.utils.UtilsFields;
 import com.example.travelguide.utils.UtilsGoogle;
 import com.example.travelguide.utils.UtilsPref;
-import com.example.travelguide.utils.UtilsTerms;
+import com.example.travelguide.utils.UtilsUI;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -244,20 +244,20 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        loadAnimation(enterMailHead, R.anim.swipe_from_bottom_anim, 0);
-        loadAnimation(enterEmail, R.anim.swipe_from_bottom_anim, 50);
-        loadAnimation(enterPasswordHead, R.anim.swipe_from_bottom_anim, 100);
-        loadAnimation(enterPassword, R.anim.swipe_from_bottom_anim, 150);
-        loadAnimation(forgotPassword, R.anim.swipe_from_bottom_anim, 200);
-        loadAnimation(notHaveAccout, R.anim.swipe_from_bottom_anim, 250);
-        loadAnimation(registerTxt, R.anim.swipe_from_bottom_anim, 250);
-        loadAnimation(signInBtn, R.anim.swipe_from_bottom_anim, 300);
-        loadAnimation(lineLeft, R.anim.swipe_from_left_anim, 400);
-        loadAnimation(lineRight, R.anim.swipe_from_right_anim, 400);
-        loadAnimation(connectWiht, R.anim.swipe_from_bottom_anim, 350);
-        loadAnimation(facebookBtn, R.anim.swipe_from_left_anim, 450);
-        loadAnimation(googleBtn, R.anim.swipe_from_right_anim, 450);
-        loadAnimation(terms, R.anim.swipe_from_bottom_anim, 500);
+        loadAnimation(enterMailHead, R.anim.anim_swipe_bottom, 0);
+        loadAnimation(enterEmail, R.anim.anim_swipe_bottom, 50);
+        loadAnimation(enterPasswordHead, R.anim.anim_swipe_bottom, 100);
+        loadAnimation(enterPassword, R.anim.anim_swipe_bottom, 150);
+        loadAnimation(forgotPassword, R.anim.anim_swipe_bottom, 200);
+        loadAnimation(notHaveAccout, R.anim.anim_swipe_bottom, 250);
+        loadAnimation(registerTxt, R.anim.anim_swipe_bottom, 250);
+        loadAnimation(signInBtn, R.anim.anim_swipe_bottom, 300);
+        loadAnimation(lineLeft, R.anim.anim_swipe_left, 400);
+        loadAnimation(lineRight, R.anim.anim_swipe_right, 400);
+        loadAnimation(connectWiht, R.anim.anim_swipe_bottom, 350);
+        loadAnimation(facebookBtn, R.anim.anim_swipe_left, 450);
+        loadAnimation(googleBtn, R.anim.anim_swipe_right, 450);
+        loadAnimation(terms, R.anim.anim_swipe_bottom, 500);
 
     }
 
@@ -276,11 +276,11 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 break;
 
             case R.id.terms_of_services:
-                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.TERMS);
+                UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.TERMS);
                 break;
 
             case R.id.privacy_policy:
-                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.POLICY);
+                UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.POLICY);
                 break;
 
             case R.id.forgot_password_sign_in:

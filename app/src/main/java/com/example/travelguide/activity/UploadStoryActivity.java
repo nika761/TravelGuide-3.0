@@ -1,6 +1,5 @@
 package com.example.travelguide.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,31 +18,25 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.ChangeBounds;
-import androidx.transition.TransitionManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.FilterAdapter;
 import com.example.travelguide.adapter.recycler.UploadStoryAdapter;
-import com.example.travelguide.interfaces.FilterListener;
+import com.example.travelguide.interfaces.IFilterListener;
 import com.example.travelguide.interfaces.IUploadStory;
-import com.example.travelguide.model.request.UploadStoryRequest;
-import com.example.travelguide.model.response.UploadStoryResponse;
+import com.example.travelguide.model.request.UploadStoryRequestModel;
+import com.example.travelguide.model.response.UploadStoryResponseModel;
 import com.example.travelguide.presenters.UploadStoryPresenter;
 import com.example.travelguide.utils.UtilsMedia;
 import com.example.travelguide.utils.UtilsPermissions;
 import com.example.travelguide.utils.UtilsPref;
-import com.google.android.gms.common.internal.Objects;
 import com.opensooq.supernova.gligar.GligarPicker;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -53,17 +45,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
-import ja.burhanrashid52.photoeditor.ViewType;
 
-public class UploadStoryActivity extends AppCompatActivity implements IUploadStory, FilterListener {
+public class UploadStoryActivity extends AppCompatActivity implements IUploadStory, IFilterListener {
     private static final int SELECT_IMAGE = 111;
     private static final int PICKER_REQUEST_CODE = 333;
-    private TextView btnNext, btnBack;
-    private ArrayList<Uri> uriArrayList;
+    private TextView btnNext;
+    private ImageView btnBack;
+    private ArrayList<Uri> uriArrayList = new ArrayList<>();
     private UploadStoryAdapter adapter;
     private int adapterPosition;
     private PhotoEditor photoEditor;
@@ -92,11 +83,12 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 
     private void setClickListeners() {
         btnBack.setOnClickListener(v -> onBackPressed());
-        btnNext.setOnClickListener(v -> startUpload());
+        btnNext.setOnClickListener(v -> {
+                    lottieAnimationView.setVisibility(View.VISIBLE);
+                    startUpload();});
     }
 
     private void startUpload() {
-        lottieAnimationView.setVisibility(View.VISIBLE);
         for (int i = 0; i < uriArrayList.size(); i++) {
             final Uri itemUri = uriArrayList.get(i);
             final InputStream imageStream;
@@ -110,8 +102,8 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
             }
         }
         if (photos != null) {
-            UploadStoryRequest uploadStoryRequest = new UploadStoryRequest(17, photos, null);
-            uploadStoryPresenter.uploadStory("Bearer" + " " + UtilsPref.getCurrentAccessToken(this), uploadStoryRequest);
+            UploadStoryRequestModel uploadStoryRequestModel = new UploadStoryRequestModel(17, photos, null);
+            uploadStoryPresenter.uploadStory("Bearer" + " " + UtilsPref.getCurrentAccessToken(this), uploadStoryRequestModel);
         }
     }
 
@@ -171,7 +163,6 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 
     private void pickImages(Intent data) {
         if (data.getClipData() != null) {
-            uriArrayList = new ArrayList<>();
             int count = data.getClipData().getItemCount();
             for (int i = 0; i < count; i++) {
                 Uri itemUri = data.getClipData().getItemAt(i).getUri();
@@ -199,7 +190,6 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
             String[] pathsList = data.getExtras().getStringArray(GligarPicker.IMAGES_RESULT);
             if (pathsList != null) {
                 List<String> stringList = new ArrayList<>(Arrays.asList(pathsList));
-                uriArrayList = new ArrayList<>();
                 for (String s : stringList) {
                     File imgFile = new File(s);
                     if (imgFile.exists()) {
@@ -262,11 +252,11 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
     }
 
     @Override
-    public void onStoryUploaded(UploadStoryResponse uploadStoryResponse) {
+    public void onStoryUploaded(UploadStoryResponseModel uploadStoryResponseModel) {
         lottieAnimationView.setVisibility(View.GONE);
-        if (uploadStoryResponse.getStatus() == 0) {
+        if (uploadStoryResponseModel.getStatus() == 0) {
             Toast.makeText(this, "uploaded", Toast.LENGTH_SHORT).show();
-        } else if (uploadStoryResponse.getStatus() == 1) {
+        } else if (uploadStoryResponseModel.getStatus() == 1) {
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Some error", Toast.LENGTH_SHORT).show();

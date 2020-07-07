@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_confirmation"
+        android:background="@drawable/bg_confirmation"
         android:gravity="center_vertical|center_horizontal"
         android:orientation="vertical">
 

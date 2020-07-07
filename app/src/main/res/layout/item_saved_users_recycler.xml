@@ -23,7 +23,7 @@
             android:layout_marginTop="6dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="6dp"
-            android:background="@drawable/background_saved_user_item"
+            android:background="@drawable/bg_saved_user_container"
             android:minHeight="53dp"
             android:orientation="vertical"
             android:paddingStart="5dp"
@@ -62,7 +62,7 @@
                     android:id="@+id/saved_user_password_edit"
                     android:layout_width="282dp"
                     android:layout_height="42dp"
-                    android:background="@drawable/background_signup_edittexts"
+                    android:background="@drawable/bg_signup_fields"
                     android:padding="10dp"
                     android:textSize="14sp" />
 

@@ -28,7 +28,7 @@
         <EditText
             android:layout_width="280dp"
             android:layout_height="37dp"
-            android:background="@drawable/background_signup_edittexts" />
+            android:background="@drawable/bg_signup_fields" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -40,14 +40,14 @@
         <EditText
             android:layout_width="280dp"
             android:layout_height="37dp"
-            android:background="@drawable/background_signup_edittexts" />
+            android:background="@drawable/bg_signup_fields" />
 
         <Button
             android:layout_width="200dp"
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="35dp"
-            android:background="@drawable/background_signin_button"
+            android:background="@drawable/bg_btn"
             android:text=" Save "
             android:textAllCaps="false"
             android:textColor="@color/white" />

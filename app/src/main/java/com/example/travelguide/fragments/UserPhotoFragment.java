@@ -36,7 +36,7 @@ public class UserPhotoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadAnimation(firstPhotoContent, R.anim.animation_photo_content_tab,0);
+        loadAnimation(firstPhotoContent, R.anim.anim_photo_content_tab,0);
     }
 
     @Override

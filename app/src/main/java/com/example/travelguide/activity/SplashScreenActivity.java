@@ -62,8 +62,8 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
     }
 
     private void setAnimation() {
-        Animation sunAnimation = AnimationUtils.loadAnimation(this, R.anim.animation_main_icon_sun);
-        Animation goAnimation = AnimationUtils.loadAnimation(this, R.anim.animation_just_go);
+        Animation sunAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_sun);
+        Animation goAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_just_go);
         goAnimation.setStartOffset(50);
         sunAnimation.setStartOffset(50);
         mainIconSun.setAnimation(sunAnimation);

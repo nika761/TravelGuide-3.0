@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
-import com.example.travelguide.activity.LanguageActivity;
 import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.utils.UtilsPref;
@@ -41,7 +40,7 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
     @Override
     public void onBindViewHolder(@NonNull LanguageViewHolder holder, int position) {
 
-        Animation animation = AnimationUtils.loadAnimation(context, R.anim.animation_languages);
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_languages);
         animation.setDuration(position * 500);
         holder.itemView.startAnimation(animation);
         holder.languageFullAdapter.setText(languageList.get(position).getNative_full());

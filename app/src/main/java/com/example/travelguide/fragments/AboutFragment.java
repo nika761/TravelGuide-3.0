@@ -20,11 +20,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.interfaces.IAboutFragment;
 import com.example.travelguide.model.request.AboutRequestModel;
-import com.example.travelguide.model.request.TermsPolicyRequestModel;
 import com.example.travelguide.model.response.AboutResponseModel;
-import com.example.travelguide.model.response.TermsPolicyResponseModel;
 import com.example.travelguide.presenters.AboutPresenter;
-import com.example.travelguide.presenters.PolicyPresenter;
 import com.example.travelguide.utils.UtilsPref;
 
 import java.util.Objects;
@@ -49,7 +46,7 @@ public class AboutFragment extends Fragment implements IAboutFragment {
         super.onViewCreated(view, savedInstanceState);
         initUI(view);
         setClickListeners();
-        loadAnimation(cancelBtn, R.anim.swipe_from_left_anim, 50);
+        loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
         if (UtilsPref.getLanguageId(context) != 0) {
             AboutRequestModel aboutRequestModel = new AboutRequestModel(String.valueOf(UtilsPref.getLanguageId(context)));
             aboutPresenter.sendAboutRequest(aboutRequestModel);

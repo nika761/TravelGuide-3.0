@@ -8,7 +8,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
-import com.example.travelguide.interfaces.FilterListener;
+import com.example.travelguide.interfaces.IFilterListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,11 +25,11 @@ import java.util.List;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
-    private FilterListener mFilterListener;
+    private IFilterListener mIFilterListener;
     private List<Pair<String, PhotoFilter>> mPairList = new ArrayList<>();
 
-    public FilterAdapter(FilterListener filterListener) {
-        mFilterListener = filterListener;
+    public FilterAdapter(IFilterListener IFilterListener) {
+        mIFilterListener = IFilterListener;
         setupFilters();
     }
 
@@ -70,7 +69,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.imgFilterView:
-                    mFilterListener.onFilterSelected(mPairList.get(getLayoutPosition()).second);
+                    mIFilterListener.onFilterSelected(mPairList.get(getLayoutPosition()).second);
                     break;
 
             }

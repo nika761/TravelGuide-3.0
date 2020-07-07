@@ -5,7 +5,7 @@ import com.example.travelguide.model.request.ChangeLangRequestModel;
 import com.example.travelguide.model.request.SignUpRequestModel;
 import com.example.travelguide.model.request.LoginRequestModel;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
-import com.example.travelguide.model.request.UploadStoryRequest;
+import com.example.travelguide.model.request.UploadStoryRequestModel;
 import com.example.travelguide.model.response.AboutResponseModel;
 import com.example.travelguide.model.response.ChangeLangResponseModel;
 import com.example.travelguide.model.response.SignUpResponseModel;
@@ -16,7 +16,7 @@ import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.model.response.TermsPolicyResponseModel;
-import com.example.travelguide.model.response.UploadStoryResponse;
+import com.example.travelguide.model.response.UploadStoryResponseModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -28,7 +28,7 @@ import retrofit2.http.POST;
 public interface ApiService {
 
     @POST("register")
-    Call<SignUpResponseModel> sendUser(@Body SignUpRequestModel signUpRequestModel);
+    Call<SignUpResponseModel> signUp(@Body SignUpRequestModel signUpRequestModel);
 
     @POST("check_email")
     Call<CheckMailResponseModel> checkEmail(@Body CheckMailRequestModel checkMailRequestModel);
@@ -54,6 +54,6 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("upload_content")
-    Call<UploadStoryResponse> uploadStory(@Header("Authorization") String token, @Body UploadStoryRequest uploadStoryRequest);
+    Call<UploadStoryResponseModel> uploadStory(@Header("Authorization") String token, @Body UploadStoryRequestModel uploadStoryRequestModel);
 
 }

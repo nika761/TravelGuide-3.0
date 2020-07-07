@@ -79,7 +79,7 @@ public class UserHomeFragment extends Fragment {
     private void setClickListeners() {
         imageView.setOnClickListener(v -> startStory());
         imageView.setImageResource(setStoryPhoto());
-        storyLike.setOnClickListener(v -> storyLike.setBackground(getResources().getDrawable(R.drawable.heart_emoji_red)));
+        storyLike.setOnClickListener(v -> storyLike.setBackground(getResources().getDrawable(R.drawable.emoji_heart_red)));
     }
 
 //    private void checkStory() {

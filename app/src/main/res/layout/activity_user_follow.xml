@@ -19,7 +19,7 @@
             android:id="@+id/follower_page_back_btn"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@drawable/back_btn_user_profile"
+            android:background="@drawable/icon_back"
             android:visibility="visible" />
 
         <TextView

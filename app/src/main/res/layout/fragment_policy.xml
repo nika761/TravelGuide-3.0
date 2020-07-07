@@ -29,7 +29,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/term_services_bg"
+        android:background="@drawable/bg_terms"
         android:padding="7dp"
         app:layout_constraintBottom_toTopOf="@+id/cancel_btn_policy"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/loading" />
+        app:lottie_rawRes="@raw/loading_yellow" />
 
 
     <!--    <Button-->
@@ -63,7 +63,7 @@
     <!--        android:layout_height="36dp"-->
     <!--        android:layout_marginEnd="76dp"-->
     <!--        android:layout_marginBottom="25dp"-->
-    <!--        android:background="@drawable/agree_btn_bg"-->
+    <!--        android:background="@drawable/bg_agree"-->
     <!--        android:text="Agree"-->
     <!--        android:textAllCaps="false"-->
     <!--        android:textColor="#fff"-->
@@ -75,7 +75,7 @@
         android:layout_width="83dp"
         android:layout_height="36dp"
         android:layout_marginBottom="25dp"
-        android:background="@drawable/cancel_btn_bg"
+        android:background="@drawable/bg_cancel_btn"
         android:text="Back"
         android:textAllCaps="false"
         android:textColor="#000"

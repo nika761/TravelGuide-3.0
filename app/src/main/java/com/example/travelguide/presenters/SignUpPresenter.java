@@ -26,7 +26,7 @@ public class SignUpPresenter {
     }
 
     public void sendAuthResponse(SignUpRequestModel signUpRequestModel) {
-        service.sendUser(signUpRequestModel).enqueue(new Callback<SignUpResponseModel>() {
+        service.signUp(signUpRequestModel).enqueue(new Callback<SignUpResponseModel>() {
             @Override
             public void onResponse(@NotNull Call<SignUpResponseModel> call, @NotNull Response<SignUpResponseModel> response) {
 //                String token = response.body().getAccess_token();

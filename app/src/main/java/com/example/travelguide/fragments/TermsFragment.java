@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
@@ -62,8 +61,8 @@ public class TermsFragment extends Fragment implements ITermsFragment {
         initUI(view);
         setClickListeners();
 //        loadAnimation(termsScroll, R.anim.fade_in_center_anim, 0);
-        loadAnimation(cancelBtn, R.anim.swipe_from_left_anim, 50);
-//        loadAnimation(agreeBtn, R.anim.swipe_from_right_anim, 50);
+        loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
+//        loadAnimation(agreeBtn, R.anim.anim_swipe_right, 50);
 
         if (UtilsPref.getLanguageId(context) != 0)
             termsPolicyRequestModel.setLanguage_id(UtilsPref.getLanguageId(context));

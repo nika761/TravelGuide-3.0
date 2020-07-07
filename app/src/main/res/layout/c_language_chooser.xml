@@ -37,14 +37,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/loading" />
+        app:lottie_rawRes="@raw/loading_yellow" />
 
     <!--    <Button-->
     <!--        android:id="@+id/language_save"-->
     <!--        android:layout_width="wrap_content"-->
     <!--        android:layout_height="wrap_content"-->
     <!--        android:layout_marginTop="20dp"-->
-    <!--        android:background="@drawable/agree_btn_bg"-->
+    <!--        android:background="@drawable/bg_agree"-->
     <!--        android:text="Save"-->
     <!--        android:textAllCaps="false"-->
     <!--        android:textColor="@color/white"-->

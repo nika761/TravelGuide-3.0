@@ -11,12 +11,11 @@ import com.example.travelguide.R;
 import com.example.travelguide.fragments.AboutFragment;
 import com.example.travelguide.fragments.PolicyFragment;
 import com.example.travelguide.fragments.TermsFragment;
-import com.example.travelguide.utils.UtilsTerms;
 import com.example.travelguide.utils.UtilsUI;
 
-import static com.example.travelguide.utils.UtilsTerms.ABOUT;
-import static com.example.travelguide.utils.UtilsTerms.POLICY;
-import static com.example.travelguide.utils.UtilsTerms.TERMS;
+import static com.example.travelguide.utils.UtilsUI.ABOUT;
+import static com.example.travelguide.utils.UtilsUI.POLICY;
+import static com.example.travelguide.utils.UtilsUI.TERMS;
 
 public class TermsAndPrivacyActivity extends AppCompatActivity {
 
@@ -30,7 +29,7 @@ public class TermsAndPrivacyActivity extends AppCompatActivity {
     }
 
     private void checkCurrentFragment() {
-        String type = getIntent().getStringExtra(UtilsTerms.TYPE);
+        String type = getIntent().getStringExtra(UtilsUI.TYPE);
         if (type != null) {
             switch (type) {
                 case TERMS:

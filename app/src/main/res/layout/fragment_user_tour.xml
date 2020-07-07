@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:background="@drawable/background_edit_profile"
+        android:background="@drawable/bg_field_profile"
         android:padding="12dp"
         android:text="Send Request"
         android:textColor="@color/yellowTextView"

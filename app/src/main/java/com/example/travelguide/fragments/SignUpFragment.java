@@ -32,7 +32,7 @@ import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.presenters.SignUpPresenter;
 import com.example.travelguide.utils.UtilsPref;
-import com.example.travelguide.utils.UtilsTerms;
+import com.example.travelguide.utils.UtilsUI;
 import com.hbb20.CountryCodePicker;
 
 import java.util.Calendar;
@@ -113,9 +113,9 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
             setFieldsDefault(registerNickName, registerNickNameHead, " NickName ");
         });
 
-        terms.setOnClickListener(v -> UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.TERMS));
+        terms.setOnClickListener(v -> UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.TERMS));
 
-        policy.setOnClickListener(v -> UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.POLICY));
+        policy.setOnClickListener(v -> UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.POLICY));
 
     }
 
@@ -131,7 +131,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
     }
 
     private void setFieldsWarning(EditText currentField, TextView currentHead, String currentHeadText) {
-        currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+        currentField.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
         currentHead.setText(String.format("* %s", currentHeadText));
         currentHead.setTextColor(getResources().getColor(R.color.red));
         YoYo.with(Techniques.Shake)
@@ -140,7 +140,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
     }
 
     private void setFieldsDefault(EditText currentField, TextView currentHead, String currentHeadText) {
-        currentField.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
+        currentField.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
         currentHead.setText(currentHeadText);
         currentHead.setTextColor(getResources().getColor(R.color.black));
     }
@@ -161,7 +161,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
         }
 
         if (registerPhoneNumber.getText().toString().isEmpty() || !checkNumber(registerPhoneNumber)) {
-            phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+            phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
             registerPhoneNumberHead.setText("* Phone Number ");
             registerPhoneNumberHead.setTextColor(getResources().getColor(R.color.red));
 //            StyleableToast.makeText(getContext(), " Number is incorrect !", Toast.LENGTH_LONG, R.style.errorToast).show();
@@ -169,7 +169,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
                     .duration(300)
                     .playOn(phoneNumberContainer);
         } else {
-            phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
+            phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
             registerPhoneNumberHead.setText(" Phone Number ");
             registerPhoneNumberHead.setTextColor(getResources().getColor(R.color.black));
             phoneNumber = registerPhoneNumber.getText().toString();
@@ -177,14 +177,14 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
         }
 
         if (registerBirthDate.getText().toString().isEmpty()) {
-            registerBirthDate.setBackground(getResources().getDrawable(R.drawable.background_signup_edittext_worning));
+            registerBirthDate.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
             registerBirthDateHead.setText("* Birth Date ");
             registerBirthDateHead.setTextColor(getResources().getColor(R.color.red));
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(registerBirthDate);
         } else {
-            registerBirthDate.setBackground(getResources().getDrawable(R.drawable.background_signup_edittexts));
+            registerBirthDate.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
             registerBirthDateHead.setText(" Birth Date ");
             registerBirthDateHead.setTextColor(getResources().getColor(R.color.black));
             birthDate = registerBirthDate.getText().toString();
@@ -231,7 +231,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
         final View customLayout = getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
         builder.setView(customLayout);
         AlertDialog dialog = builder.create();
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_background));
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_transparent));
         dialog.show();
 
     }

@@ -36,7 +36,7 @@ public class UserTourFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadAnimation(tourRequestContent, R.anim.animation_languages, 0);
+        loadAnimation(tourRequestContent, R.anim.anim_languages, 0);
     }
 
     @Override

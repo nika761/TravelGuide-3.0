@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="50dp"
-        android:background="@drawable/background_saved_user_fragment"
+        android:background="@drawable/bg_fragment"
         android:orientation="vertical"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_linear"
@@ -34,7 +34,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end"
-            android:background="@drawable/ic_close_black_24dp" />
+            android:background="@drawable/icon_close" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/saved_user_recycler"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:background="?attr/selectableItemBackground"
-            android:drawableStart="@drawable/ic_add_black_24dp"
+            android:drawableStart="@drawable/icon_add_black"
             android:text=" Add account"
             android:textSize="16sp" />
 

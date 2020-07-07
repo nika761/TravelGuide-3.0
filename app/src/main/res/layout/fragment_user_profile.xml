@@ -32,7 +32,7 @@
                 android:layout_height="30dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/menu_btn_user_profile"
+                android:background="@drawable/icon_menu"
                 android:visibility="invisible" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/background_edit_profile"
+                android:background="@drawable/bg_field_profile"
                 android:gravity="center_vertical|center_horizontal"
                 android:padding="10dp"
                 android:text="Edit Profile"
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/content_bg"
+                android:background="@drawable/bg_content"
                 android:paddingStart="10dp"
                 android:paddingTop="3dp"
                 android:paddingEnd="10dp"
@@ -158,7 +158,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/content_bg"
+                android:background="@drawable/bg_content"
                 android:orientation="horizontal"
                 android:padding="5dp"
                 android:visibility="visible"

@@ -91,7 +91,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
             viewHolder.userImage.setMinimumHeight(72);
             viewHolder.userImage.setMinimumWidth(72);
             viewHolder.userImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            viewHolder.userImage.setBackground(mContext.getResources().getDrawable(R.drawable.account_image));
+            viewHolder.userImage.setBackground(mContext.getResources().getDrawable(R.drawable.image_account));
         }
         viewHolder.userName.setText(String.format("%s %s %s", mContext.getString(R.string.continue_as), currentUser.getName(), currentUser.getLastName()));
 

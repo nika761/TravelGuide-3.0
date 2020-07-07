@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_main"
+    android:background="@drawable/e_image_5"
     android:orientation="vertical">
 
     <ImageView
@@ -46,7 +46,7 @@
                     android:layout_height="17dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="-10dp"
-                    android:background="@drawable/add_btn_on_image" />
+                    android:background="@drawable/icon_follow" />
 
                 <ImageButton
                     android:id="@+id/story_like"
@@ -54,7 +54,7 @@
                     android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/heart_emoji" />
+                    android:background="@drawable/emoji_heart" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
                     android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/user_pst_react_icon_comment" />
+                    android:background="@drawable/emoji_comment" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
                     android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/user_pst_react_share" />
+                    android:background="@drawable/emoji_share" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
                     android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/user_pst_react_link" />
+                    android:background="@drawable/emoji_link" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -43,7 +43,6 @@ import com.example.travelguide.model.User;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.presenters.LanguagePresenter;
-import com.example.travelguide.utils.UtilsTerms;
 import com.example.travelguide.utils.UtilsUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
@@ -56,6 +55,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
 import static com.example.travelguide.utils.UtilsPref.GOOGLE;
+import static com.example.travelguide.utils.UtilsUI.ABOUT;
+import static com.example.travelguide.utils.UtilsUI.POLICY;
+import static com.example.travelguide.utils.UtilsUI.TERMS;
 
 public class UserProfileFragment extends Fragment {
 
@@ -262,15 +264,15 @@ public class UserProfileFragment extends Fragment {
                 break;
 
             case R.id.settings_about:
-                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.ABOUT);
+                UtilsUI.startTermsAndPolicyActivity(context, ABOUT);
                 break;
 
             case R.id.settings_privacy:
-                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.POLICY);
+                UtilsUI.startTermsAndPolicyActivity(context, POLICY);
                 break;
 
             case R.id.settings_terms:
-                UtilsTerms.startTermsAndPolicyActivity(context, UtilsTerms.TERMS);
+                UtilsUI.startTermsAndPolicyActivity(context, TERMS);
                 break;
 
             case R.id.settings_sing_out:

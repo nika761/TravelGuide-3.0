@@ -1,6 +1,5 @@
 package com.example.travelguide.utils;
 
-import android.annotation.SuppressLint;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -10,8 +9,8 @@ import com.example.travelguide.R;
 
 public class UtilsFields {
 
-    private static final int BACKGROUND_WARNING = R.drawable.background_signup_edittext_worning;
-    private static final int BACKGROUND_DEFAULT = R.drawable.background_sign_in_edittexts;
+    private static final int BACKGROUND_WARNING = R.drawable.bg_fields_warning;
+    private static final int BACKGROUND_DEFAULT = R.drawable.bg_sign_in_fields;
 
     public static boolean checkEmail(String enteredEmail) {
         boolean emailValidate = false;

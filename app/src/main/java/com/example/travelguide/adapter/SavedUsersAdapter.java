@@ -74,7 +74,7 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
         } else if (users.get(position).getLoginType() != null && users.get(position).getLoginType().equals("google")) {
             holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.google_little));
         } else {
-            holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.bot_nav_profile));
+            holder.loginTypeImg.setBackground(context.getDrawable(R.drawable.icon_profile));
         }
 
     }
