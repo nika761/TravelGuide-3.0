@@ -18,5 +18,17 @@
     <color name="blackTone">#1A1A1A1A</color>
     <color name="colorPrimaryRipple">#423F51B5</color>
     <color name="blackStatusBar">#BA000000</color>
+    <color name="counter_bg">#F3BC1E</color>
+    <color name="counter_color">#FFFFFF</color>
+    <color name="selector_color">#2E314C</color>
+    <color name="toolbar_bg">#F3BC1E</color>
+    <color name="done">#FFFFFF</color>
+    <color name="change_album_color">#FFFFFF</color>
+    <color name="camera_icon_color">#2E314C</color>
+    <color name="camera_text_color">#2E314C</color>
+    <color name="permission_alert_bg">#2E314C</color>
+
+
+
 
 </resources>

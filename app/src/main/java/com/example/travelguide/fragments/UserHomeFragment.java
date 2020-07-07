@@ -154,14 +154,19 @@ public class UserHomeFragment extends Fragment {
 
     @Override
     public void onPause() {
-        storiesProgressView.pause();
-        checked = false;
+        storiesProgressView.destroy();
         super.onPause();
     }
 
     @Override
+    public void onStop() {
+        storiesProgressView.destroy();
+        super.onStop();
+    }
+
+    @Override
     public void onResume() {
-        storiesProgressView.resume();
+        storiesProgressView.startStories();
         super.onResume();
     }
 }

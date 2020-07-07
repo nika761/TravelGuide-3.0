@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="2dp">
 
     <ImageView
         android:id="@+id/photo_item"
-        android:layout_width="350dp"
-        android:layout_height="400dp"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
         android:scaleType="centerCrop"
         android:src="@drawable/snow_bg"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,16 +17,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/edit_photo_item_btn"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/mainColorTransparent"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/agree_btn_bg"
         android:elevation="1dp"
-        android:src="@drawable/edit_on_photo"
-        app:layout_constraintBottom_toBottomOf="@id/photo_item"
-        app:layout_constraintStart_toStartOf="@id/photo_item" />
+        android:text="Photo Editor"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/photo_item"
+        app:layout_constraintStart_toStartOf="@id/photo_item"
+        app:layout_constraintTop_toBottomOf="@id/photo_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

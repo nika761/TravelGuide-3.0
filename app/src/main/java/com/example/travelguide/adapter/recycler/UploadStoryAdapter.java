@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -12,7 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
+import com.example.travelguide.activity.UploadStoryActivity;
+import com.example.travelguide.interfaces.IUploadStory;
 import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +25,12 @@ import java.util.List;
 public class UploadStoryAdapter extends RecyclerView.Adapter<UploadStoryAdapter.UploadStoryViewHolder> {
     private Context context;
     private ArrayList<Uri> uriArrayList;
+    private IUploadStory iUploadStory;
+    private UploadStoryViewHolder holder;
 
-    public UploadStoryAdapter(Context context) {
+    public UploadStoryAdapter(Context context, IUploadStory iUploadStory) {
         this.context = context;
+        this.iUploadStory = iUploadStory;
     }
 
     @NonNull
@@ -34,7 +42,9 @@ public class UploadStoryAdapter extends RecyclerView.Adapter<UploadStoryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull UploadStoryViewHolder holder, int position) {
+        this.holder = holder;
         holder.photoItem.setImageURI(uriArrayList.get(position));
+        holder.editPhotoItemBtn.setOnClickListener(v -> iUploadStory.onGetItem(uriArrayList.get(position), position));
     }
 
     @Override
@@ -42,20 +52,26 @@ public class UploadStoryAdapter extends RecyclerView.Adapter<UploadStoryAdapter.
         return uriArrayList.size();
     }
 
+
     public void setUriArrayList(ArrayList<Uri> uriArrayList) {
         this.uriArrayList = uriArrayList;
         notifyDataSetChanged();
     }
 
+    public void onCropResult(Uri uri, int adapterPosition) {
+            uriArrayList.set(adapterPosition, uri);
+            notifyDataSetChanged();
+    }
+
+
     class UploadStoryViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView photoItem;
-        private ImageButton editPhotoItemBtn;
+        private Button editPhotoItemBtn;
 
         UploadStoryViewHolder(@NonNull View itemView) {
             super(itemView);
             initUI(itemView);
-            setClickListeners();
         }
 
         private void initUI(View itemView) {
@@ -63,10 +79,11 @@ public class UploadStoryAdapter extends RecyclerView.Adapter<UploadStoryAdapter.
             editPhotoItemBtn = itemView.findViewById(R.id.edit_photo_item_btn);
         }
 
-        private void setClickListeners() {
-            editPhotoItemBtn.setOnClickListener(v -> {
+//        private void setClickListeners() {
+//            editPhotoItemBtn.setOnClickListener(v -> {
+//                iUploadStory.onGetItem(uriArrayList.get(getLayoutPosition()),getLayoutPosition());
+//            });
+//        }
 
-            });
-        }
     }
 }

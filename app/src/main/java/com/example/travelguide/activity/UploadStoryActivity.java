@@ -4,10 +4,15 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,19 +20,57 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.ChangeBounds;
+import androidx.transition.TransitionManager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
+import com.example.travelguide.adapter.recycler.FilterAdapter;
 import com.example.travelguide.adapter.recycler.UploadStoryAdapter;
+import com.example.travelguide.interfaces.FilterListener;
+import com.example.travelguide.interfaces.IUploadStory;
+import com.example.travelguide.model.request.UploadStoryRequest;
+import com.example.travelguide.model.response.UploadStoryResponse;
+import com.example.travelguide.presenters.UploadStoryPresenter;
+import com.example.travelguide.utils.UtilsMedia;
+import com.example.travelguide.utils.UtilsPermissions;
+import com.example.travelguide.utils.UtilsPref;
+import com.google.android.gms.common.internal.Objects;
+import com.opensooq.supernova.gligar.GligarPicker;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class UploadStoryActivity extends AppCompatActivity {
+import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
+import ja.burhanrashid52.photoeditor.PhotoEditor;
+import ja.burhanrashid52.photoeditor.PhotoEditorView;
+import ja.burhanrashid52.photoeditor.PhotoFilter;
+import ja.burhanrashid52.photoeditor.ViewType;
+
+public class UploadStoryActivity extends AppCompatActivity implements IUploadStory, FilterListener {
     private static final int SELECT_IMAGE = 111;
-    private static final int EXTERNAL_STORE_CODE = 222;
+    private static final int PICKER_REQUEST_CODE = 333;
     private TextView btnNext, btnBack;
+    private ArrayList<Uri> uriArrayList;
+    private UploadStoryAdapter adapter;
+    private int adapterPosition;
+    private PhotoEditor photoEditor;
+    private PhotoEditorView photoEditorView;
+    private List<String> photos = new ArrayList<>();
+    private UploadStoryPresenter uploadStoryPresenter;
+    private LottieAnimationView lottieAnimationView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,16 +78,41 @@ public class UploadStoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upload_story);
         initUI();
         setClickListeners();
-        checkExStoragePermission();
+        checkPermission();
     }
 
     private void initUI() {
+        uploadStoryPresenter = new UploadStoryPresenter(this);
+        photoEditorView = findViewById(R.id.photo_editor_view);
+        photoEditor = new PhotoEditor.Builder(this, photoEditorView).setPinchTextScalable(true).build();
         btnNext = findViewById(R.id.btn_next_upload_story);
         btnBack = findViewById(R.id.btn_back_upload_story);
+        lottieAnimationView = findViewById(R.id.animation_view_upload);
     }
 
     private void setClickListeners() {
         btnBack.setOnClickListener(v -> onBackPressed());
+        btnNext.setOnClickListener(v -> startUpload());
+    }
+
+    private void startUpload() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
+        for (int i = 0; i < uriArrayList.size(); i++) {
+            final Uri itemUri = uriArrayList.get(i);
+            final InputStream imageStream;
+            try {
+                imageStream = getContentResolver().openInputStream(itemUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                String encodedImage = UtilsMedia.encodeImage(selectedImage);
+                photos.add(encodedImage);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        if (photos != null) {
+            UploadStoryRequest uploadStoryRequest = new UploadStoryRequest(17, photos, null);
+            uploadStoryPresenter.uploadStory("Bearer" + " " + UtilsPref.getCurrentAccessToken(this), uploadStoryRequest);
+        }
     }
 
     private void openGallery() {
@@ -57,81 +125,158 @@ public class UploadStoryActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_IMAGE && data != null) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    pickImages(data);
-                    break;
+        switch (requestCode) {
+            case SELECT_IMAGE:
+                if (data != null) {
+                    switch (resultCode) {
+                        case Activity.RESULT_OK:
+                            pickImages(data);
+                            break;
 
-                case Activity.RESULT_CANCELED:
-                    Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+                        case Activity.RESULT_CANCELED:
+                            Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
                     break;
+                }
+
+
+            case PICKER_REQUEST_CODE: {
+                if (data != null && data.getExtras() != null) {
+                    pickImages(data);
+//                    String[] pathsList = data.getExtras().getStringArray(GligarPicker.IMAGES_RESULT);
+//                    if (pathsList != null) {
+//                        Toast.makeText(this, "Number of " + pathsList.length, Toast.LENGTH_SHORT).show();
+//                    }
+                }
             }
+            break;
+
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (result != null) {
+                    switch (resultCode) {
+                        case RESULT_OK:
+                            adapter.onCropResult(result.getUri(), adapterPosition);
+                            Toast.makeText(this, "Image Crop Successful", Toast.LENGTH_LONG).show();
+                            break;
+                        case RESULT_CANCELED:
+                            Toast.makeText(this, "Image Crop Error", Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                    break;
+                }
         }
-//            Uri uri = data.getData();
-//                    Uri contentUri = MediaStore.Images.Media.getContentUri(data.getDataString());
-//                    Toast.makeText(this, data.getDataString(), Toast.LENGTH_SHORT).show();
     }
 
     private void pickImages(Intent data) {
         if (data.getClipData() != null) {
-            ArrayList<Uri> uriArrayList = new ArrayList<>();
+            uriArrayList = new ArrayList<>();
             int count = data.getClipData().getItemCount();
             for (int i = 0; i < count; i++) {
                 Uri itemUri = data.getClipData().getItemAt(i).getUri();
                 uriArrayList.add(itemUri);
             }
             if (uriArrayList.size() <= 10) {
-                iniRecyclerAdapter(uriArrayList);
+                initContentRecyclerAdapter(uriArrayList);
+                initFiltersAdapter();
             } else {
                 Toast.makeText(this, "Max photos is 10", Toast.LENGTH_LONG).show();
                 openGallery();
             }
-        } else {
-            Toast.makeText(this, "Data null", Toast.LENGTH_SHORT).show();
+        } else if (data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                Drawable d = new BitmapDrawable(getResources(), bitmap);
+                photoEditorView.getSource().setImageBitmap(bitmap);
+//                photoEditorView.getSource().setImageBitmap(bitmap);
+                initFiltersAdapter();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (data.getExtras() != null) {
+            String[] pathsList = data.getExtras().getStringArray(GligarPicker.IMAGES_RESULT);
+            if (pathsList != null) {
+                List<String> stringList = new ArrayList<>(Arrays.asList(pathsList));
+                uriArrayList = new ArrayList<>();
+                for (String s : stringList) {
+                    File imgFile = new File(s);
+                    if (imgFile.exists()) {
+                        Uri uri = Uri.fromFile(imgFile);
+                        uriArrayList.add(uri);
+                    }
+                    if (uriArrayList.size() <= 10) {
+                        initContentRecyclerAdapter(uriArrayList);
+                        initFiltersAdapter();
+                    }
+                }
+            }
         }
     }
 
-    private void iniRecyclerAdapter(ArrayList<Uri> uris) {
+    private void initContentRecyclerAdapter(ArrayList<Uri> uris) {
         RecyclerView recyclerView = findViewById(R.id.recycler_post);
-        UploadStoryAdapter adapter = new UploadStoryAdapter(this);
+        adapter = new UploadStoryAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         adapter.setUriArrayList(uris);
     }
 
-    private void requestExStoragePermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                EXTERNAL_STORE_CODE);
+    private void initFiltersAdapter() {
+        RecyclerView recyclerView = findViewById(R.id.story_tools_container);
+        FilterAdapter filterAdapter = new FilterAdapter(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(filterAdapter);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case EXTERNAL_STORE_CODE:
+            case UtilsPermissions.READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openGallery();
+                    new GligarPicker().requestCode(PICKER_REQUEST_CODE).withActivity(this).show();
                 }
                 break;
         }
     }
 
-    private boolean isExStoragePermissionGranted() {
-        boolean permissionGranted = false;
-        int result = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            permissionGranted = true;
+    public void checkPermission() {
+        if (UtilsPermissions.isExStoragePermissionGranted(this)) {
+            new GligarPicker().requestCode(PICKER_REQUEST_CODE).withActivity(this).show();
+//            openGallery();
+        } else {
+            UtilsPermissions.requestExStoragePermission(this);
         }
-        return permissionGranted;
     }
 
-    public void checkExStoragePermission() {
-        if (isExStoragePermissionGranted()) {
-            openGallery();
+    @Override
+    public void onGetItem(Uri uri, int position) {
+        this.adapterPosition = position;
+        CropImage.activity(uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true).start(this);
+    }
+
+    @Override
+    public void onStoryUploaded(UploadStoryResponse uploadStoryResponse) {
+        lottieAnimationView.setVisibility(View.GONE);
+        if (uploadStoryResponse.getStatus() == 0) {
+            Toast.makeText(this, "uploaded", Toast.LENGTH_SHORT).show();
+        } else if (uploadStoryResponse.getStatus() == 1) {
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
         } else {
-            requestExStoragePermission();
+            Toast.makeText(this, "Some error", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onFilterSelected(PhotoFilter photoFilter) {
+        photoEditor.setFilterEffect(photoFilter);
+    }
+
+
 }
