@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,10 +21,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.travelguide.R;
+import com.example.travelguide.adapter.recycler.PostAdapter;
+import com.example.travelguide.model.Post;
 import com.example.travelguide.model.response.LoginResponseModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -38,6 +48,9 @@ public class UserHomeFragment extends Fragment {
     private final int STORY_DISPLAY_TWO = 20000;
     private boolean checked = true;
     private Context context;
+    private List<Bitmap> postList = new ArrayList<>();
+    private ViewPager2 viewPager2;
+    private TypedArray myImages;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
@@ -57,16 +70,35 @@ public class UserHomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initUI(view);
-        onGetData();
-        setClickListeners();
-        startStory();
+        viewPager2 = view.findViewById(R.id.post_view_pager);
+        myImages = getResources().obtainTypedArray(R.array.background_images);
+        setPostsData();
     }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+    }
+
+    private void setPostsData() {
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_1);
+        postList.add(bitmap);
+        Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_2);
+        postList.add(bitmap1);
+        Bitmap bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_3);
+        postList.add(bitmap2);
+        Bitmap bitmap3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_4);
+        postList.add(bitmap3);
+        Bitmap bitmap4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_5);
+        postList.add(bitmap4);
+        Bitmap bitmap5 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_6);
+        postList.add(bitmap5);
+
+        if (postList != null) {
+            viewPager2.setAdapter(new PostAdapter(postList));
+        }
     }
 
     private void initUI(View view) {
@@ -117,13 +149,9 @@ public class UserHomeFragment extends Fragment {
     }
 
     private int setStoryPhoto() {
-        Resources res = getResources();
-        @SuppressLint("Recycle") final TypedArray myImages = res.obtainTypedArray(R.array.background_images);
         final Random random = new Random();
         int randomInt = random.nextInt(myImages.length());
-        int drawableID = myImages.getResourceId(randomInt, -1);
-
-        return drawableID;
+        return myImages.getResourceId(randomInt, -1);
     }
 
     private void onGetData() {
@@ -148,25 +176,25 @@ public class UserHomeFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        storiesProgressView.destroy();
+//        storiesProgressView.destroy();
         super.onDestroy();
     }
 
     @Override
     public void onPause() {
-        storiesProgressView.destroy();
+//        storiesProgressView.destroy();
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        storiesProgressView.destroy();
+//        storiesProgressView.destroy();
         super.onStop();
     }
 
     @Override
     public void onResume() {
-        storiesProgressView.startStories();
+//        storiesProgressView.startStories();
         super.onResume();
     }
 }

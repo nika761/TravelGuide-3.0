@@ -3,6 +3,7 @@ package com.example.travelguide.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.FilterAdapter;
 import com.example.travelguide.adapter.recycler.UploadStoryAdapter;
@@ -43,7 +45,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
@@ -62,6 +66,8 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
     private List<String> photos = new ArrayList<>();
     private UploadStoryPresenter uploadStoryPresenter;
     private LottieAnimationView lottieAnimationView;
+    private UploadStoryRequestModel uploadStoryRequestModel;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +76,8 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
         initUI();
         setClickListeners();
         checkPermission();
+
+
     }
 
     private void initUI() {
@@ -84,11 +92,12 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
     private void setClickListeners() {
         btnBack.setOnClickListener(v -> onBackPressed());
         btnNext.setOnClickListener(v -> {
-                    lottieAnimationView.setVisibility(View.VISIBLE);
-                    startUpload();});
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            startUpload();
+        });
     }
 
-    private void startUpload() {
+    private void setPhotosForUpload() {
         for (int i = 0; i < uriArrayList.size(); i++) {
             final Uri itemUri = uriArrayList.get(i);
             final InputStream imageStream;
@@ -102,9 +111,12 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
             }
         }
         if (photos != null) {
-            UploadStoryRequestModel uploadStoryRequestModel = new UploadStoryRequestModel(17, photos, null);
-            uploadStoryPresenter.uploadStory("Bearer" + " " + UtilsPref.getCurrentAccessToken(this), uploadStoryRequestModel);
+            uploadStoryRequestModel = new UploadStoryRequestModel(17, photos, null);
         }
+    }
+
+    private void startUpload() {
+        uploadStoryPresenter.uploadStory("Bearer" + " " + UtilsPref.getCurrentAccessToken(this), uploadStoryRequestModel);
     }
 
     private void openGallery() {
@@ -122,7 +134,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
                 if (data != null) {
                     switch (resultCode) {
                         case Activity.RESULT_OK:
-                            pickImages(data);
+//                            pickImages(data);
                             break;
 
                         case Activity.RESULT_CANCELED:
@@ -135,7 +147,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 
             case PICKER_REQUEST_CODE: {
                 if (data != null && data.getExtras() != null) {
-                    pickImages(data);
+//                    pickImages(data);
 //                    String[] pathsList = data.getExtras().getStringArray(GligarPicker.IMAGES_RESULT);
 //                    if (pathsList != null) {
 //                        Toast.makeText(this, "Number of " + pathsList.length, Toast.LENGTH_SHORT).show();
@@ -159,51 +171,53 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
                     break;
                 }
         }
+
     }
 
-    private void pickImages(Intent data) {
-        if (data.getClipData() != null) {
-            int count = data.getClipData().getItemCount();
-            for (int i = 0; i < count; i++) {
-                Uri itemUri = data.getClipData().getItemAt(i).getUri();
-                uriArrayList.add(itemUri);
-            }
-            if (uriArrayList.size() <= 10) {
-                initContentRecyclerAdapter(uriArrayList);
-                initFiltersAdapter();
-            } else {
-                Toast.makeText(this, "Max photos is 10", Toast.LENGTH_LONG).show();
-                openGallery();
-            }
-        } else if (data.getData() != null) {
-            Uri uri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                Drawable d = new BitmapDrawable(getResources(), bitmap);
-                photoEditorView.getSource().setImageBitmap(bitmap);
+//    private void pickImages(Intent data) {
+//        if (data.getClipData() != null) {
+//            int count = data.getClipData().getItemCount();
+//            for (int i = 0; i < count; i++) {
+//                Uri itemUri = data.getClipData().getItemAt(i).getUri();
+//                uriArrayList.add(itemUri);
+//            }
+//            if (uriArrayList.size() <= 10) {
+//                initContentRecyclerAdapter(uriArrayList);
+//                initFiltersAdapter();
+//            } else {
+//                Toast.makeText(this, "Max photos is 10", Toast.LENGTH_LONG).show();
+//                openGallery();
+//            }
+//        } else if (data.getData() != null) {
+//            Uri uri = data.getData();
+//            try {
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+//                Drawable d = new BitmapDrawable(getResources(), bitmap);
 //                photoEditorView.getSource().setImageBitmap(bitmap);
-                initFiltersAdapter();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (data.getExtras() != null) {
-            String[] pathsList = data.getExtras().getStringArray(GligarPicker.IMAGES_RESULT);
-            if (pathsList != null) {
-                List<String> stringList = new ArrayList<>(Arrays.asList(pathsList));
-                for (String s : stringList) {
-                    File imgFile = new File(s);
-                    if (imgFile.exists()) {
-                        Uri uri = Uri.fromFile(imgFile);
-                        uriArrayList.add(uri);
-                    }
-                    if (uriArrayList.size() <= 10) {
-                        initContentRecyclerAdapter(uriArrayList);
-                        initFiltersAdapter();
-                    }
-                }
-            }
-        }
-    }
+////                photoEditorView.getSource().setImageBitmap(bitmap);
+//                initFiltersAdapter();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else if (data.getExtras() != null) {
+//            String[] pathsList = data.getExtras().getStringArray(GligarPicker.IMAGES_RESULT);
+//            if (pathsList != null) {
+//                List<String> stringList = new ArrayList<>(Arrays.asList(pathsList));
+//                for (String s : stringList) {
+//                    File imgFile = new File(s);
+//                    if (imgFile.exists()) {
+//                        Uri uri = Uri.fromFile(imgFile);
+//                        uriArrayList.add(uri);
+//                    }
+//                    if (uriArrayList.size() <= 10) {
+//                        initContentRecyclerAdapter(uriArrayList);
+//                        initFiltersAdapter();
+//                        new Thread(this::setPhotosForUpload).start();
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private void initContentRecyclerAdapter(ArrayList<Uri> uris) {
         RecyclerView recyclerView = findViewById(R.id.recycler_post);
@@ -236,8 +250,22 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 
     public void checkPermission() {
         if (UtilsPermissions.isExStoragePermissionGranted(this)) {
-            new GligarPicker().requestCode(PICKER_REQUEST_CODE).withActivity(this).show();
+//            new GligarPicker().requestCode(PICKER_REQUEST_CODE).withActivity(this).show();
 //            openGallery();
+
+            List<String> stringList = fetchMedia(3);
+            for (String s : stringList) {
+                File imgFile = new File(s);
+                if (imgFile.exists()) {
+                    Uri uri = Uri.fromFile(imgFile);
+                    uriArrayList.add(uri);
+                }
+
+                initContentRecyclerAdapter(uriArrayList);
+                initFiltersAdapter();
+////                new Thread(this::setPhotosForUpload).start();
+
+            }
         } else {
             UtilsPermissions.requestExStoragePermission(this);
         }
@@ -266,6 +294,41 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
         photoEditor.setFilterEffect(photoFilter);
+    }
+
+
+    private ArrayList<String> fetchMedia(int type) {
+        ArrayList<String> listOfAllImages = new ArrayList<>();
+
+        if (type == 1) {
+            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            String absolutePathOfImage = null;
+
+
+            String[] projection = {MediaStore.MediaColumns.DATA};
+            Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+
+            while (cursor.moveToNext()) {
+                absolutePathOfImage = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
+                listOfAllImages.add(absolutePathOfImage);
+            }
+            return listOfAllImages;
+        }
+
+
+        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        String absolutePathOfImage = null;
+
+
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+
+        while (cursor.moveToNext()) {
+            absolutePathOfImage = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
+            listOfAllImages.add(absolutePathOfImage);
+        }
+
+        return listOfAllImages;
     }
 
 

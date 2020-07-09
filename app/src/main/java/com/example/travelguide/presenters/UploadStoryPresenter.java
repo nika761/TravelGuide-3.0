@@ -1,5 +1,7 @@
 package com.example.travelguide.presenters;
 
+import android.util.Log;
+
 import com.example.travelguide.interfaces.IUploadStory;
 import com.example.travelguide.model.request.UploadStoryRequestModel;
 import com.example.travelguide.model.response.UploadStoryResponseModel;
@@ -24,6 +26,8 @@ public class UploadStoryPresenter {
             @Override
             public void onResponse(Call<UploadStoryResponseModel> call, Response<UploadStoryResponseModel> response) {
                 if (response.isSuccessful()) {
+                    Log.v("esa", response.message());
+
                     iUploadStory.onStoryUploaded(response.body());
                 }
             }

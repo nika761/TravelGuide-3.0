@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.opensooq.supernova.gligar.GligarPicker;
 
 import java.util.Objects;
 
@@ -95,7 +96,7 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_add:
-                Intent intent1 = new Intent(UserPageActivity.this, UploadStoryActivity.class);
+                Intent intent1 = new Intent(UserPageActivity.this, MediaActivity.class);
                 startActivity(intent1);
                 break;
 

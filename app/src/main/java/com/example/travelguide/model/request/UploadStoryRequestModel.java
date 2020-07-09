@@ -6,7 +6,7 @@ import java.util.List;
 
 public class UploadStoryRequestModel {
     private int music_id;
-    public List<String> photo;
+    private List<String> photo;
     private List<String> video;
 
     public UploadStoryRequestModel(int music_id, List<String> photo, List<String> video) {
@@ -38,4 +38,5 @@ public class UploadStoryRequestModel {
     public void setVideo(List<String> video) {
         this.video = video;
     }
+
 }
