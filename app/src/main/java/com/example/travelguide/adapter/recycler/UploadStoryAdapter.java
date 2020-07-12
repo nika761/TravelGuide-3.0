@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.UploadStoryActivity;
 import com.example.travelguide.interfaces.IUploadStory;
@@ -24,7 +26,7 @@ import java.util.List;
 
 public class UploadStoryAdapter extends RecyclerView.Adapter<UploadStoryAdapter.UploadStoryViewHolder> {
     private Context context;
-    private ArrayList<Uri> uriArrayList;
+    private ArrayList<String> uriArrayList;
     private IUploadStory iUploadStory;
     private UploadStoryViewHolder holder;
 
@@ -43,8 +45,12 @@ public class UploadStoryAdapter extends RecyclerView.Adapter<UploadStoryAdapter.
     @Override
     public void onBindViewHolder(@NonNull UploadStoryViewHolder holder, int position) {
         this.holder = holder;
-        holder.photoItem.setImageURI(uriArrayList.get(position));
-        holder.editPhotoItemBtn.setOnClickListener(v -> iUploadStory.onGetItem(uriArrayList.get(position), position));
+        Glide.with(holder.photoItem.getContext())
+                .load(uriArrayList.get(position))
+                .apply(new RequestOptions().centerCrop())
+                .into(holder.photoItem);
+//        holder.photoItem.setImageURI(uriArrayList.get(position));
+//        holder.editPhotoItemBtn.setOnClickListener(v -> iUploadStory.onGetItem(uriArrayList.get(position), position));
     }
 
     @Override
@@ -53,13 +59,13 @@ public class UploadStoryAdapter extends RecyclerView.Adapter<UploadStoryAdapter.
     }
 
 
-    public void setUriArrayList(ArrayList<Uri> uriArrayList) {
+    public void setUriArrayList(ArrayList<String> uriArrayList) {
         this.uriArrayList = uriArrayList;
         notifyDataSetChanged();
     }
 
-    public void onCropResult(Uri uri, int adapterPosition) {
-            uriArrayList.set(adapterPosition, uri);
+    public void onCropResult(String croppedPhoto, int adapterPosition) {
+            uriArrayList.set(adapterPosition, croppedPhoto);
             notifyDataSetChanged();
     }
 

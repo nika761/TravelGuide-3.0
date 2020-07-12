@@ -18,6 +18,7 @@ import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.presenters.LanguagePresenter;
 import com.example.travelguide.utils.UtilsNetwork;
+import com.example.travelguide.utils.UtilsPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
@@ -45,7 +46,11 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
 
     private void checkNetwork() {
         if (UtilsNetwork.checkNetworkConnection(this)) {
-            languagePresenter.sentLanguageRequest();
+            if (UtilsPref.getLanguageId(this) != 0) {
+                openApp();
+            } else {
+                languagePresenter.sentLanguageRequest();
+            }
         } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
@@ -109,10 +114,20 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
 //                checkLastSignedUser();
 //            } else {
             Intent mainIntent = new Intent(SplashScreenActivity.this, LanguageActivity.class);
+            mainIntent.setFlags(mainIntent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
             mainIntent.putExtra(INTENT_LANGUAGES, (Serializable) languages);
             startActivity(mainIntent);
 //            }
 
+            finish();
+        }, SPLASH_DISPLAY_LENGTH);
+    }
+
+    private void openApp() {
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(SplashScreenActivity.this, SignInActivity.class);
+            intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
             finish();
         }, SPLASH_DISPLAY_LENGTH);
     }

@@ -10,7 +10,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Base64OutputStream;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,10 +44,20 @@ import com.opensooq.supernova.gligar.GligarPicker;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -64,6 +79,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
     private PhotoEditor photoEditor;
     private PhotoEditorView photoEditorView;
     private List<String> photos = new ArrayList<>();
+    private List<String> videos = new ArrayList<>();
     private UploadStoryPresenter uploadStoryPresenter;
     private LottieAnimationView lottieAnimationView;
     private UploadStoryRequestModel uploadStoryRequestModel;
@@ -75,8 +91,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
         setContentView(R.layout.activity_upload_story);
         initUI();
         setClickListeners();
-        checkPermission();
-
+        initContentRecyclerAdapter(getIntent().getStringArrayListExtra("selectedPaths"));
 
     }
 
@@ -93,26 +108,73 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
         btnBack.setOnClickListener(v -> onBackPressed());
         btnNext.setOnClickListener(v -> {
             lottieAnimationView.setVisibility(View.VISIBLE);
-            startUpload();
+            Log.v("asdasdasd", "1");
+            setPhotosForUpload();
         });
     }
 
     private void setPhotosForUpload() {
-        for (int i = 0; i < uriArrayList.size(); i++) {
-            final Uri itemUri = uriArrayList.get(i);
-            final InputStream imageStream;
-            try {
-                imageStream = getContentResolver().openInputStream(itemUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                String encodedImage = UtilsMedia.encodeImage(selectedImage);
-                photos.add(encodedImage);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+
+        ArrayList<String> paths = getIntent().getStringArrayListExtra("selectedPaths");
+
+        UtilsMedia.reduceVideoQuality(paths, new UtilsMedia.VideoQualityCallBaack() {
+            @Override
+            public void onQualityReduced(String destPath) {
+                Toast.makeText(UploadStoryActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(UploadStoryActivity.this, DetailActivity.class);
+                intent.putExtra("path", destPath);
+                startActivity(intent);
             }
-        }
-        if (photos != null) {
-            uploadStoryRequestModel = new UploadStoryRequestModel(17, photos, null);
-        }
+
+            @Override
+            public void onStart() {
+                Toast.makeText(UploadStoryActivity.this, "Start", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFail() {
+                Toast.makeText(UploadStoryActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onProgress() {
+                Toast.makeText(UploadStoryActivity.this, "Progress", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(UploadStoryActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
+
+            }
+        }, this);
+
+//            for (String current : paths) {
+//                if (current.endsWith(".mp4")) {
+//                    String videoBinary = getVideoStream(current);
+//                    videos.add(videoBinary);
+//                } else {
+//                    final Uri itemUri = Uri.parse(current);
+//                    final InputStream imageStream;
+//                    try {
+//                        imageStream = getContentResolver().openInputStream(itemUri);
+//                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//                        String encodedImage = UtilsMedia.encodeImage(selectedImage);
+//                        photos.add(encodedImage);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//
+//                }
+//
+//            }
+//            uploadStoryRequestModel = new UploadStoryRequestModel(17, photos, videos);
+//
+//            startUpload();
+
     }
 
     private void startUpload() {
@@ -161,7 +223,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
                 if (result != null) {
                     switch (resultCode) {
                         case RESULT_OK:
-                            adapter.onCropResult(result.getUri(), adapterPosition);
+                            adapter.onCropResult(result.toString(), adapterPosition);
                             Toast.makeText(this, "Image Crop Successful", Toast.LENGTH_LONG).show();
                             break;
                         case RESULT_CANCELED:
@@ -219,13 +281,13 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 //        }
 //    }
 
-    private void initContentRecyclerAdapter(ArrayList<Uri> uris) {
+    private void initContentRecyclerAdapter(ArrayList<String> photos) {
         RecyclerView recyclerView = findViewById(R.id.recycler_post);
         adapter = new UploadStoryAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        adapter.setUriArrayList(uris);
+        adapter.setUriArrayList(photos);
     }
 
     private void initFiltersAdapter() {
@@ -261,7 +323,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
                     uriArrayList.add(uri);
                 }
 
-                initContentRecyclerAdapter(uriArrayList);
+//                initContentRecyclerAdapter(uriArrayList);
                 initFiltersAdapter();
 ////                new Thread(this::setPhotosForUpload).start();
 
@@ -270,6 +332,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
             UtilsPermissions.requestExStoragePermission(this);
         }
     }
+
 
     @Override
     public void onGetItem(Uri uri, int position) {
@@ -296,18 +359,14 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
         photoEditor.setFilterEffect(photoFilter);
     }
 
-
     private ArrayList<String> fetchMedia(int type) {
         ArrayList<String> listOfAllImages = new ArrayList<>();
 
         if (type == 1) {
             Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             String absolutePathOfImage = null;
-
-
             String[] projection = {MediaStore.MediaColumns.DATA};
             Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-
             while (cursor.moveToNext()) {
                 absolutePathOfImage = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
                 listOfAllImages.add(absolutePathOfImage);
@@ -315,10 +374,8 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
             return listOfAllImages;
         }
 
-
         Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         String absolutePathOfImage = null;
-
 
         String[] projection = {MediaStore.MediaColumns.DATA};
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
@@ -331,5 +388,46 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
         return listOfAllImages;
     }
 
+    private String getVideoStream(String path) {
+        File tempFile = new File(path);
+        String encodedString = null;
 
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(tempFile);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        byte[] bytes;
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try {
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                output.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bytes = output.toByteArray();
+        encodedString = com.migcomponents.migbase64.Base64.encodeToString(bytes, true);
+        Log.e("Strng", encodedString);
+
+        return encodedString;
+//        byte[] decodedBytes = com.migcomponents.migbase64.Base64.decodeFast(encodedString.getBytes());
+//
+//        try {
+//
+//            FileOutputStream out = new FileOutputStream(
+//                    Environment.getExternalStorageDirectory()
+//                            + path);
+//            out.write(decodedBytes);
+//            out.close();
+//        } catch (Exception e) {
+//            // TODO: handle exception
+//            Log.e("Error", e.toString());
+//
+//        }
+
+    }
 }

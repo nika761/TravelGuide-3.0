@@ -8,6 +8,8 @@ import com.example.travelguide.model.response.UploadStoryResponseModel;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,15 +27,15 @@ public class UploadStoryPresenter {
         apiService.uploadStory(accessToken, uploadStoryRequestModel).enqueue(new Callback<UploadStoryResponseModel>() {
             @Override
             public void onResponse(Call<UploadStoryResponseModel> call, Response<UploadStoryResponseModel> response) {
-                if (response.isSuccessful()) {
-                    Log.v("esa", response.message());
 
+                Log.e("asdasdasd", String.valueOf(response.code()));
+                if (response.isSuccessful())
                     iUploadStory.onStoryUploaded(response.body());
-                }
             }
 
             @Override
             public void onFailure(Call<UploadStoryResponseModel> call, Throwable t) {
+                Log.e("ssssss", t.getMessage());
 
             }
         });

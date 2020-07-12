@@ -91,4 +91,5 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
     public void onChooseLanguage() {
         checkSavedUsers();
     }
+
 }

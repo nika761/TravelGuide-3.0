@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:layout_margin="5dp">
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:layout_marginStart="3dp"
+    android:layout_marginTop="7dp"
+    android:layout_marginBottom="2dp">
 
     <ImageView
-        android:id="@+id/media_photo"
+        android:id="@+id/media_photo_min"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionName="image_transition" />
 
-    <TextView
-        android:id="@+id/selected_image_item_cont"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+    <ImageButton
+        android:id="@+id/cut_media_photo_min"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_gravity="end"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
-        android:background="@drawable/selected_image_circle"
+        android:background="@color/transparent"
         android:gravity="center"
-        android:textColor="#000"
+        android:src="@drawable/icon_close_white"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/duration"
+        android:id="@+id/duration_min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:visibility="gone"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="3dp"
-        android:textSize="10sp"
         android:background="@color/mainColorTransparent"
         android:text="00:12"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="9sp"
+        android:visibility="gone" />
 
 </FrameLayout>
