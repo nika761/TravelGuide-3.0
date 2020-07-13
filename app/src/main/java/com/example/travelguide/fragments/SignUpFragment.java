@@ -54,7 +54,8 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
             registerBirthDate, registerBirthDateHead,
             registerEmailHead, registerPhoneNumberHead,
             registerPasswordHead, registerConfirmPasswordHead,
-            registerSignUpTxt, registerCancelTxt, registerNickOffer, registerNickOfferOne, registerNickOfferTwo, terms, policy;
+            registerSignUpTxt, registerCancelTxt, registerNickOffer,
+            registerNickOfferOne, registerNickOfferTwo, terms, policy;
 
 
     @Nullable
@@ -233,7 +234,6 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
         AlertDialog dialog = builder.create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_transparent));
         dialog.show();
-
     }
 
     private void showDatePickerDialog() {
@@ -383,10 +383,8 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
         registerNickOfferTwo.setVisibility(View.VISIBLE);
         nickNameFirst = checkNickResponseModel.getNicknames_to_offer().get(0);
         nickNameSecond = checkNickResponseModel.getNicknames_to_offer().get(1);
-
         registerNickOfferOne.setText(nickNameFirst);
         registerNickOfferTwo.setText(nickNameSecond);
-
     }
 
     @Override

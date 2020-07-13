@@ -8,12 +8,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class FollowersPagerAdapter extends FragmentPagerAdapter {
-
+public class SearchPagerAdapter extends FragmentPagerAdapter {
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ArrayList<String> fragmentsTitle = new ArrayList<>();
 
-    public FollowersPagerAdapter(@NonNull FragmentManager fm) {
+    public SearchPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
 
@@ -38,6 +37,4 @@ public class FollowersPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return fragmentsTitle.get(position);
     }
-
-
 }

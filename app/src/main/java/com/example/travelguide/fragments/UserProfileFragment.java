@@ -254,10 +254,6 @@ public class UserProfileFragment extends Fragment {
                 Toast.makeText(getContext(), "Share", Toast.LENGTH_SHORT).show();
                 break;
 
-//            case R.id.settings_balance:
-//                Toast.makeText(getContext(), "Balance", Toast.LENGTH_SHORT).show();
-//                break;
-
             case R.id.settings_language:
                 ChangeLangFragment f = new ChangeLangFragment();
                 f.show(getChildFragmentManager(), "fr");

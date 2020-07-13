@@ -1,7 +1,9 @@
 package com.example.travelguide.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -9,6 +11,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
@@ -19,13 +23,14 @@ import com.example.travelguide.fragments.NotificationsFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.utils.UtilsPermissions;
+import com.example.travelguide.utils.UtilsPref;
 import com.example.travelguide.utils.UtilsUI;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.opensooq.supernova.gligar.GligarPicker;
 
 import java.util.Objects;
 
@@ -36,15 +41,12 @@ public class UserPageActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private ViewPager navViewPager;
     private BottomNavigationPageAdapter navViewPagerAdapter;
-    private LinearLayout addStoryContainer;
-    private TextView addStory;
 
     public UserPageActivity() {
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
         ongGetUserDate();
@@ -78,7 +80,6 @@ public class UserPageActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         bottomNavigationView.setItemIconSize(60);
-
 //        navViewPager = findViewById(R.id.user_page_view_pager);
 //        navViewPagerAdapter = new BottomNavigationPageAdapter(getSupportFragmentManager());
     }
@@ -96,13 +97,12 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_add:
-                Intent intent1 = new Intent(UserPageActivity.this, MediaActivity.class);
+                Intent intent1 = new Intent(UserPageActivity.this, GalleryPickerActivity.class);
                 startActivity(intent1);
                 break;
 
             case R.id.bot_nav_ntf:
-                NotificationsFragment notificationsFragment = new NotificationsFragment();
-                notificationsFragment.show(getSupportFragmentManager(), "tag");
+                UtilsUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, this);
                 break;
 
             case R.id.bot_nav_profile:
@@ -141,7 +141,6 @@ public class UserPageActivity extends AppCompatActivity {
     }
 
     public void signOutFromGoogleAccount() {
-
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
 //            if (user != null) {
@@ -153,15 +152,11 @@ public class UserPageActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Failure", Toast.LENGTH_SHORT).show();
         });
-
         finish();
-
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+            super.onBackPressed();
     }
-
-
 }

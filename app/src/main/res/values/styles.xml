@@ -31,18 +31,18 @@
     </style>
 
     <style name="GalleryTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
-
         <item name="colorPrimary">@color/yellowTextView</item>
         <item name="colorPrimaryDark">@color/yellowTextView</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
 
-
     <style name="Bottom_Navigation_View_Style" parent="Theme.AppCompat.Light.NoActionBar">
-
         <item name="colorControlHighlight">@android:color/transparent</item>
+    </style>
 
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@color/mainColorTransparent</item>
+        <item name="android:minHeight">500dp</item>
     </style>
 
     <style name="errorToast">

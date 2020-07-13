@@ -33,10 +33,9 @@ public class UtilsUI {
         if (backStack) {
             fragmentTransaction.addToBackStack(null);
         }
-
         fragmentTransaction
                 .replace(fragmentID, currentFragment)
                 .commit();
     }
-
 }
+

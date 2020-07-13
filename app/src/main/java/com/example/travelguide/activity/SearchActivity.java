@@ -1,20 +1,27 @@
 package com.example.travelguide.activity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.adapter.pager.SearchPagerAdapter;
+import com.example.travelguide.fragments.SearchGoFragment;
+import com.example.travelguide.fragments.SearchHashtagsFragment;
+import com.example.travelguide.fragments.SearchStoriesFragment;
+import com.example.travelguide.fragments.SearchUsersFragment;
+import com.example.travelguide.utils.UtilsUI;
+import com.google.android.material.tabs.TabLayout;
 
 public class SearchActivity extends AppCompatActivity {
 
     private ImageButton searchBtn;
-    private TextView explore;
-    private View searchContainerFirst, searchContainerSecond, searchLine;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ImageButton backBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,22 +29,32 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         initUI();
         setClickListeners();
+        setViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void initUI() {
-        searchBtn = findViewById(R.id.search_search_btn);
-        explore = findViewById(R.id.search_explore);
-        searchContainerFirst = findViewById(R.id.search_container_first);
-        searchContainerSecond = findViewById(R.id.search_container_second);
-        searchLine = findViewById(R.id.search_line);
+        tabLayout = findViewById(R.id.search_tabs);
+        viewPager = findViewById(R.id.search_view_pager);
+        backBtn = findViewById(R.id.search_back_btn_second);
+        searchBtn = findViewById(R.id.search_btn);
     }
 
     private void setClickListeners() {
-        searchBtn.setOnClickListener(v -> {
-            explore.setVisibility(View.GONE);
-            searchContainerFirst.setVisibility(View.GONE);
-            searchContainerSecond.setVisibility(View.VISIBLE);
-            searchLine.setVisibility(View.VISIBLE);
-        });
+        backBtn.setOnClickListener(v -> finish());
+    }
+
+    private void setViewPager(ViewPager viewPager) {
+        SearchPagerAdapter searchPagerAdapter = new SearchPagerAdapter(getSupportFragmentManager());
+        searchPagerAdapter.addFragment(new SearchStoriesFragment(), "STORIES");
+        searchPagerAdapter.addFragment(new SearchUsersFragment(), "USERS");
+        searchPagerAdapter.addFragment(new SearchHashtagsFragment(), "HASHTAGS");
+        searchPagerAdapter.addFragment(new SearchGoFragment(), "GO !");
+        viewPager.setAdapter(searchPagerAdapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

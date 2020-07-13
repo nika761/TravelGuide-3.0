@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -48,11 +49,10 @@ public class UserHomeFragment extends Fragment {
     private final int STORY_DISPLAY_TWO = 20000;
     private boolean checked = true;
     private Context context;
-    private List<Bitmap> postList = new ArrayList<>();
+    private ArrayList<String> postList = new ArrayList<>();
     private ViewPager2 viewPager2;
     private TypedArray myImages;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,18 +83,29 @@ public class UserHomeFragment extends Fragment {
     }
 
     private void setPostsData() {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_1);
-        postList.add(bitmap);
-        Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_2);
-        postList.add(bitmap1);
-        Bitmap bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_3);
-        postList.add(bitmap2);
-        Bitmap bitmap3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_4);
-        postList.add(bitmap3);
-        Bitmap bitmap4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_5);
-        postList.add(bitmap4);
-        Bitmap bitmap5 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_6);
-        postList.add(bitmap5);
+//        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_1);
+//        postList.add(bitmap);
+//        Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_2);
+//        postList.add(bitmap1);
+//        Bitmap bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_3);
+//        postList.add(bitmap2);
+//        Bitmap bitmap3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_4);
+//        postList.add(bitmap3);
+//        Bitmap bitmap4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_5);
+//        postList.add(bitmap4);
+//        Bitmap bitmap5 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_6);
+//        postList.add(bitmap5);
+//
+        String videoUri = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
+        String videoUri1 = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
+        String videoUri4 = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
+        String videoUri3 = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
+
+        postList.add(videoUri);
+        postList.add(videoUri1);
+        postList.add(videoUri3);
+        postList.add(videoUri4);
+
 
         if (postList != null) {
             viewPager2.setAdapter(new PostAdapter(postList));
@@ -172,29 +183,5 @@ public class UserHomeFragment extends Fragment {
 //        if (u.getUrl() != null) {
 //            UtilsGlide.loadPhoto(context, u.getUrl(), userLeftImage);
 //        }
-    }
-
-    @Override
-    public void onDestroy() {
-//        storiesProgressView.destroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onPause() {
-//        storiesProgressView.destroy();
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-//        storiesProgressView.destroy();
-        super.onStop();
-    }
-
-    @Override
-    public void onResume() {
-//        storiesProgressView.startStories();
-        super.onResume();
     }
 }

@@ -109,7 +109,6 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
 
     private void startApplication(List<LanguagesResponseModel.Language> languages) {
         new Handler().postDelayed(() -> {
-
 //            if (UtilsPref.getLanguageId(this) != 0) {
 //                checkLastSignedUser();
 //            } else {
@@ -126,7 +125,6 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
     private void openApp() {
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(SplashScreenActivity.this, SignInActivity.class);
-            intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             finish();
         }, SPLASH_DISPLAY_LENGTH);

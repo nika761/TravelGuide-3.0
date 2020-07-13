@@ -1,5 +1,6 @@
 package com.example.travelguide.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -224,6 +225,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         intent.putExtra("server_user", userFromServer);
         ((SignInActivity) context).stopLoader();
         context.startActivity(intent);
+        ((SignInActivity) context).finish();
     }
 
     @Override

@@ -2,41 +2,37 @@ package com.example.travelguide.adapter.recycler;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
-import com.example.travelguide.model.Post;
-import com.genius.multiprogressbar.MultiProgressBar;
+import com.example.travelguide.utils.UtilsMedia;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import jp.shts.android.storiesprogressview.StoriesProgressView;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements MultiProgressBar.ProgressStepChangeListener {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
     private Context context;
-    private List<Bitmap> posts;
-    private StoriesProgressView storiesProgressView;
-
+    private ArrayList<String> posts;
 
 //    public PostAdapter(Context context) {
 //        this.context = context;
 //    }
 
-    public PostAdapter(List<Bitmap> posts) {
+    public PostAdapter(ArrayList<String> posts) {
         this.posts = posts;
     }
 
@@ -48,8 +44,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        this.storiesProgressView = holder.storiesProgressView;
-        holder.imageView.setImageBitmap(posts.get(position));
+        holder.videoView.setVisibility(View.VISIBLE);
+        holder.videoView.setVideoPath(posts.get(position));
+        holder.storiesProgressView.setStoriesCount(1);
+        holder.storiesProgressView.setStoryDuration(UtilsMedia.getVideoDurationInt(posts.get(position)));
+        holder.videoView.start();
+        holder.storiesProgressView.startStories();
     }
 
     @Override
@@ -57,49 +57,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return posts.size();
     }
 
-    private void startStory(PostViewHolder holder, int position) {
-        storiesProgressView.setStoriesCount(posts.size()); // <- set stories
-        storiesProgressView.setStoryDuration(5000); // <- set a story duration
-        storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
-            @Override
-            public void onNext() {
-            }
-
-            @Override
-            public void onPrev() {
-
-            }
-
-            @Override
-            public void onComplete() {
-                Toast.makeText(context, "Completed", Toast.LENGTH_SHORT).show();
-                storiesProgressView.destroy();
-            }
-        }); // <- set listener
-        storiesProgressView.startStories();
-    }
-
-    public void setPosts(List<Bitmap> posts) {
+    public void setPosts(ArrayList<String> posts) {
         this.posts = posts;
         notifyDataSetChanged();
     }
 
-    @Override
-    public void onProgressStepChange(int i) {
-
-    }
-
     class PostViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        VideoView videoView;
         StoriesProgressView storiesProgressView;
-        MultiProgressBar multiProgressBar;
 
         PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.image_story);
+            videoView = itemView.findViewById(R.id.image_story);
             storiesProgressView = itemView.findViewById(R.id.stories);
-            multiProgressBar = itemView.findViewById(R.id.mpb_main);
-            multiProgressBar.start();
         }
     }
 }

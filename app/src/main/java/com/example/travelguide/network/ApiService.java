@@ -55,6 +55,7 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("upload_content")
-    Call<UploadStoryResponseModel> uploadStory(@Header("Authorization") String token, @Body UploadStoryRequestModel uploadStoryRequestModel);
+    Call<UploadStoryResponseModel> uploadStory(@Header("Authorization") String token,
+                                               @Body UploadStoryRequestModel uploadStoryRequestModel);
 
 }

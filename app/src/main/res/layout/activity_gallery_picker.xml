@@ -31,7 +31,7 @@
         android:id="@+id/media_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,7 @@
         android:id="@+id/media_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/container_next_btn"
+        app:layout_constraintBottom_toTopOf="@id/choosed_photos_min_recycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/media_tab" />
@@ -68,7 +68,6 @@
         android:id="@+id/choosed_photos_min_recycler"
         android:layout_width="0dp"
         android:layout_height="80dp"
-        android:layout_marginBottom="1dp"
         android:background="@color/whiteNone"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/container_next_btn"
@@ -83,15 +82,15 @@
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/media_view_pager">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You can select both videos and photos"
-            android:textSize="14sp"
+            android:gravity="center"
+            android:text="You can select both videos and photos. \n max item number is 10. "
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/next_btn"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,11 +98,12 @@
 
         <Button
             android:id="@+id/next_btn"
-            android:layout_width="70dp"
+            android:layout_width="80dp"
             android:layout_height="30dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/bg_agree"
-            android:text="Next"
+            android:text="Next (5)"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

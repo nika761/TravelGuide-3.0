@@ -8,13 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.travelguide.fragments.MediaFragment;
+import com.example.travelguide.fragments.GalleryFragment;
 
-import java.util.ArrayList;
+public class GalleryPagerAdapter extends FragmentPagerAdapter {
 
-public class MediaPagerAdapter extends FragmentPagerAdapter {
-
-    public MediaPagerAdapter(@NonNull FragmentManager fm) {
+    public GalleryPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
 
@@ -23,9 +21,9 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("is_image", position == 0 ? false : true);
-        MediaFragment mediaFragment = new MediaFragment();
-        mediaFragment.setArguments(bundle);
-        return mediaFragment;
+        GalleryFragment galleryFragment = new GalleryFragment();
+        galleryFragment.setArguments(bundle);
+        return galleryFragment;
     }
 
     @Override

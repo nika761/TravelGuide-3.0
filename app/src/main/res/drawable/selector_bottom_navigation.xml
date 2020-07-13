@@ -3,5 +3,4 @@
     <item android:color="@color/yellowTextView"
         android:state_checked="true" />
     <item android:color="@color/white" />
-
 </selector>

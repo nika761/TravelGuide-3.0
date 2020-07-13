@@ -1,12 +1,9 @@
 package com.example.travelguide.utils;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -19,8 +16,9 @@ import com.abedelazizshe.lightcompressorlibrary.VideoQuality;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +34,51 @@ public class UtilsMedia {
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
-    public static String setVideoDuration(String path) {
+    public static String encodeVideo(String path) {
+        File tempFile = new File(path);
+        String encodedString = null;
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(tempFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        byte[] bytes;
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try {
+            if (inputStream != null) {
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bytes = output.toByteArray();
+        encodedString = com.migcomponents.migbase64.Base64.encodeToString(bytes, true);
+        Log.e("Strng", encodedString);
+
+        return encodedString;
+//        byte[] decodedBytes = com.migcomponents.migbase64.Base64.decodeFast(encodedString.getBytes());
+//
+//        try {
+//
+//            FileOutputStream out = new FileOutputStream(
+//                    Environment.getExternalStorageDirectory()
+//                            + path);
+//            out.write(decodedBytes);
+//            out.close();
+//        } catch (Exception e) {
+//            // TODO: handle exception
+//            Log.e("Error", e.toString());
+//
+//        }
+
+    }
+
+    public static String getVideoDuration(String path) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(path);
         long duration = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
@@ -47,6 +89,14 @@ public class UtilsMedia {
                 TimeUnit.MILLISECONDS.toSeconds(duration) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
         );
+    }
+    public static int getVideoDurationInt(String path) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(path);
+        long duration = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+        retriever.release();
+        int i = (int) duration;
+        return i;
     }
 
     public static ArrayList<String> getImagesPathByDate(Context context) {
@@ -104,45 +154,56 @@ public class UtilsMedia {
         return listOfAllPaths;
     }
 
-    public static void reduceVideoQuality(ArrayList<String> paths, VideoQualityCallBaack videoQualityCallBaack, Context context) {
+    public static void reduceVideoQuality(ArrayList<String> paths, VideoQualityCallBack videoQualityCallBack, Context context) {
         int size = paths.size();
         for (int i = 0; i < size; i++) {
-            String path = paths.get(i);
-            String destPath = Environment.getExternalStorageDirectory().toString() + File.separator + "temp" + File.separator + "Videos" + File.separator;
-            VideoCompressor.INSTANCE.start(path, destPath, new CompressionListener() {
+            File file = new File(paths.get(i));
+            File downloadsPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            File desFile = new File(downloadsPath, "es" + file.getName());
+            if (desFile.exists()) {
+                desFile.delete();
+                try {
+                    desFile.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+//            String destPath = Environment.getExternalStorageDirectory().toString() + File.separator + "temp" + File.separator + "compressed.mp4";
+            VideoCompressor.INSTANCE.start(paths.get(i), desFile.getPath(), new CompressionListener() {
                 @Override
                 public void onStart() {
-                    videoQualityCallBaack.onStart();
+                    videoQualityCallBack.onStart();
                     // Compression start
                 }
 
                 @Override
                 public void onSuccess() {
-                    videoQualityCallBaack.onQualityReduced(destPath);
+                    videoQualityCallBack.onQualityReduced(desFile.getPath());
                 }
 
                 @Override
                 public void onFailure() {
-                    videoQualityCallBaack.onFail();
+                    videoQualityCallBack.onFail();
                     // On Failure
                 }
 
                 @Override
                 public void onProgress(float v) {
-                    videoQualityCallBaack.onProgress();
+                    videoQualityCallBack.onProgress();
                     // Update UI with progress value
                 }
 
                 @Override
                 public void onCancelled() {
-                    videoQualityCallBaack.onCancel();
+                    videoQualityCallBack.onCancel();
                     // On Cancelled
                 }
-            }, VideoQuality.LOW, false);
+            }, VideoQuality.MEDIUM, true);
         }
     }
 
-    public interface VideoQualityCallBaack {
+    public interface VideoQualityCallBack {
         void onQualityReduced(String destPath);
 
         void onStart();

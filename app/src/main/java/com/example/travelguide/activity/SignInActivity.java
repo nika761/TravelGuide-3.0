@@ -19,8 +19,6 @@ import com.example.travelguide.utils.UtilsUI;
 
 public class SignInActivity extends AppCompatActivity {
 
-    private SignInFragment signInFragment;
-    private Button fragmentHead;
     private LottieAnimationView animationView;
     private FrameLayout frameLayout;
 
@@ -32,18 +30,6 @@ public class SignInActivity extends AppCompatActivity {
 //        loadFragment(new SignInFragment(), null, R.id.fragment_container, false);
         UtilsUI.loadFragment(new SignInFragment(), null, R.id.fragment_container, false, this);
     }
-
-    public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
-        currentFragment.setArguments(data);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        if (backStack) {
-            fragmentTransaction.addToBackStack(null);
-        }
-
-        fragmentTransaction.replace(fragmentID, currentFragment).commit();
-    }
-
 
     private void initUI() {
         animationView = findViewById(R.id.animation_view_sign);
