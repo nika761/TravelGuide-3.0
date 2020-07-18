@@ -18,6 +18,7 @@ import com.example.travelguide.adapter.recycler.GalleryAdapterMin;
 import com.example.travelguide.fragments.GalleryFragment;
 import com.google.android.material.tabs.TabLayout;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class GalleryPickerActivity extends AppCompatActivity implements GalleryFragment.ItemCountChangeListener {
@@ -93,7 +94,7 @@ public class GalleryPickerActivity extends AppCompatActivity implements GalleryF
             if (pickedItems.size() == 0) {
                 setViewVisibility(false);
             }
-            nextBtn.setText("Next" + " " + "(" + (pickedItems.size()) + ")");
+            nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
             galleryAdapterMin.setItemsPath(pickedItems);
 
         } else {
@@ -106,7 +107,7 @@ public class GalleryPickerActivity extends AppCompatActivity implements GalleryF
                 nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_next_btn_grey));
             }
             setViewVisibility(true);
-            nextBtn.setText("Next" + " " + "(" + (pickedItems.size()) + ")");
+            nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
             galleryAdapterMin.setItemsPath(pickedItems);
         }
     }
@@ -116,7 +117,7 @@ public class GalleryPickerActivity extends AppCompatActivity implements GalleryF
         if (list.size() == 0) {
             setViewVisibility(false);
         } else {
-            nextBtn.setText("Next" + " " + "(" + (list.size()) + ")");
+            nextBtn.setText(MessageFormat.format("Next ({0})", list.size()));
         }
     }
 }

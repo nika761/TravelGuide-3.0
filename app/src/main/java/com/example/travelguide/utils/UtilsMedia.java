@@ -90,13 +90,13 @@ public class UtilsMedia {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
         );
     }
-    public static int getVideoDurationInt(String path) {
+    public static long getVideoDurationInt(String path) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(path);
         long duration = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
         retriever.release();
         int i = (int) duration;
-        return i;
+        return duration;
     }
 
     public static ArrayList<String> getImagesPathByDate(Context context) {

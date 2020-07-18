@@ -1,66 +1,51 @@
 package com.example.travelguide.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.SnapHelper;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.PostAdapter;
+import com.example.travelguide.adapter.recycler.VideoPlayerRecyclerAdapter;
 import com.example.travelguide.model.Post;
 import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.utils.UtilsMedia;
+import com.example.travelguide.utils.VideoPlayerRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-import jp.shts.android.storiesprogressview.StoriesProgressView;
 
 public class UserHomeFragment extends Fragment {
-    private CircleImageView userLeftImage;
-    private StoriesProgressView storiesProgressView;
-    private ImageButton storyLike;
-    private ImageView imageView;
-    private final int STORY_DISPLAY_ONE = 10000;
-    private final int STORY_DISPLAY_TWO = 20000;
-    private boolean checked = true;
-    private Context context;
-    private ArrayList<String> postList = new ArrayList<>();
     private ViewPager2 viewPager2;
-    private TypedArray myImages;
+    private int oldPosition;
+    private int currentPosition;
+    private List<Post> posts = new ArrayList<>();
+    private VideoPlayerRecyclerView videoPlayerRecyclerView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_home, container, false);
-
         Window window = Objects.requireNonNull(getActivity()).getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
 //        View decorView = window.getDecorView();
 //        decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
@@ -70,106 +55,57 @@ public class UserHomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewPager2 = view.findViewById(R.id.post_view_pager);
-        myImages = getResources().obtainTypedArray(R.array.background_images);
-        setPostsData();
+//        viewPager2 = view.findViewById(R.id.post_view_pager);
+        videoPlayerRecyclerView = view.findViewById(R.id.recycler_view);
+        initRecyclerView();
     }
 
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.context = context;
     }
 
     private void setPostsData() {
-//        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_1);
-//        postList.add(bitmap);
-//        Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_2);
-//        postList.add(bitmap1);
-//        Bitmap bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_3);
-//        postList.add(bitmap2);
-//        Bitmap bitmap3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_4);
-//        postList.add(bitmap3);
-//        Bitmap bitmap4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_5);
-//        postList.add(bitmap4);
-//        Bitmap bitmap5 = BitmapFactory.decodeResource(context.getResources(), R.drawable.e_image_6);
-//        postList.add(bitmap5);
-//
-        String videoUri = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
-        String videoUri1 = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
-        String videoUri4 = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
-        String videoUri3 = "/storage/emulated/0/Download/1594545831519_20200711_004519.mp4";
+        String path = "/storage/emulated/0/DCIM/Camera/2020-07-12-104752811.mp4";
 
-        postList.add(videoUri);
-        postList.add(videoUri1);
-        postList.add(videoUri3);
-        postList.add(videoUri4);
+        ArrayList<String> arrayList = UtilsMedia.getVideosPathByDate(viewPager2.getContext());
+        viewPager2.setAdapter(new PostAdapter(arrayList));
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                scrollListener(position);
+            }
 
-        if (postList != null) {
-            viewPager2.setAdapter(new PostAdapter(postList));
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
+    }
+
+    private void scrollListener(int position) {
+        oldPosition = currentPosition;
+        currentPosition = position;
+        if (oldPosition > currentPosition) {
+            Log.e("scroll", String.valueOf(position));
+            Log.e("scroll", String.valueOf(oldPosition));
+        } else {
+            Log.e("scroll", String.valueOf(position));
+            Log.e("scroll", String.valueOf(currentPosition));
         }
-    }
-
-    private void initUI(View view) {
-        storiesProgressView = view.findViewById(R.id.stories);
-        userLeftImage = view.findViewById(R.id.user_photo_left);
-        imageView = view.findViewById(R.id.image_story);
-        storyLike = view.findViewById(R.id.story_like);
-    }
-
-    private void setClickListeners() {
-        imageView.setOnClickListener(v -> startStory());
-        imageView.setImageResource(setStoryPhoto());
-        storyLike.setOnClickListener(v -> storyLike.setBackground(getResources().getDrawable(R.drawable.emoji_heart_red)));
-    }
-
-//    private void checkStory() {
-//        if (checked) {
-//            new Handler().postDelayed(this::startStory, STORY_DISPLAY_ONE);
-//        }
-//
-//        if (checked) {
-//            new Handler().postDelayed(this::startStory, STORY_DISPLAY_TWO);
-//        }
-//    }
-
-    private void startStory() {
-        storiesProgressView.setStoriesCount(6); // <- set stories
-        storiesProgressView.setStoryDuration(5000); // <- set a story duration
-        storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
-            @Override
-            public void onNext() {
-                imageView.setImageResource(setStoryPhoto());
-                storiesProgressView.destroy();
-            }
-
-            @Override
-            public void onPrev() {
-
-            }
-
-            @Override
-            public void onComplete() {
-                Toast.makeText(getContext(), "Completed", Toast.LENGTH_SHORT).show();
-                storiesProgressView.destroy();
-            }
-        }); // <- set listener
-        storiesProgressView.startStories();
-    }
-
-    private int setStoryPhoto() {
-        final Random random = new Random();
-        int randomInt = random.nextInt(myImages.length());
-        return myImages.getResourceId(randomInt, -1);
     }
 
     private void onGetData() {
         if (getArguments() != null && getArguments().containsKey("user")) {
             LoginResponseModel.User serverUser = (LoginResponseModel.User) getArguments().getSerializable("user");
             if (serverUser != null) {
-                setUserData(serverUser);
             }
 //            User user = (User) getArguments().getSerializable("user");
 //            if (user != null)
@@ -179,9 +115,30 @@ public class UserHomeFragment extends Fragment {
         }
     }
 
-    private void setUserData(LoginResponseModel.User u) {
-//        if (u.getUrl() != null) {
-//            UtilsGlide.loadPhoto(context, u.getUrl(), userLeftImage);
-//        }
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        videoPlayerRecyclerView.setLayoutManager(layoutManager);
+        ArrayList<String> mediaObjects = UtilsMedia.getVideosPathByDate(getContext());
+        videoPlayerRecyclerView.setMediaObjects(mediaObjects);
+        VideoPlayerRecyclerAdapter adapter = new VideoPlayerRecyclerAdapter(mediaObjects, initGlide());
+
+        SnapHelper helper = new PagerSnapHelper();
+        helper.attachToRecyclerView(videoPlayerRecyclerView);
+        videoPlayerRecyclerView.setAdapter(adapter);
+    }
+
+
+    private RequestManager initGlide() {
+
+        RequestOptions options = new RequestOptions();
+        return Glide.with(this).setDefaultRequestOptions(options);
+
+    }
+
+    @Override
+    public void onPause() {
+        if (videoPlayerRecyclerView != null)
+            videoPlayerRecyclerView.releasePlayer();
+        super.onPause();
     }
 }

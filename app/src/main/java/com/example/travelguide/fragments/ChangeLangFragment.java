@@ -64,22 +64,26 @@ public class ChangeLangFragment extends DialogFragment implements IChangeLangFra
 
     @Override
     public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
+
         if (languagesResponseModel.getStatus() == 0) {
             initLanguageRecycler(languagesResponseModel.getLanguage());
             lottieAnimationView.setVisibility(View.GONE);
         } else {
             Toast.makeText(context, "Error Language", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
     public void onLanguageChange(ChangeLangResponseModel changeLangResponseModel) {
+
         if (changeLangResponseModel.getStatus() == 0) {
             Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
             Objects.requireNonNull(getDialog()).dismiss();
         } else {
             Toast.makeText(context, "Error Language Change", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void initUI(View view) {

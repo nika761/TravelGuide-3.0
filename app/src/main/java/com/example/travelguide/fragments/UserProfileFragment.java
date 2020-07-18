@@ -65,7 +65,6 @@ public class UserProfileFragment extends Fragment {
     private ImageButton userContentPhotoBtn, userContentMiddleBtn, userContentTourBtn, bioVisibleBtn, bioInvisibleBtn;
     private CircleImageView userPrfImage;
     private ImageView userBioTextState;
-    private LinearLayout firstPhotoLinear, linearTour;
     private NestedScrollView nestedScrollView;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -81,7 +80,6 @@ public class UserProfileFragment extends Fragment {
     private LottieAnimationView lottieAnimationView;
     private RecyclerView recyclerView;
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -205,8 +203,9 @@ public class UserProfileFragment extends Fragment {
         bioText = view.findViewById(R.id.bio_text);
         followStates = view.findViewById(R.id.states);
         tabLayout = view.findViewById(R.id.tabs_profile);
-        ((UserPageActivity) context)
-                .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
+        UtilsUI.loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false, ((UserPageActivity) context));
+//        ((UserPageActivity) context)
+//                .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
     }
 
     private void showBioText() {
@@ -319,26 +318,21 @@ public class UserProfileFragment extends Fragment {
                 setBackground(userContentPhotoBtn, R.drawable.profile_photos_pressed);
                 setBackground(userContentTourBtn, R.drawable.profile_tour);
                 setBackground(userContentMiddleBtn, R.drawable.profile_liked);
-                ((UserPageActivity) context)
-                        .loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false);
+                UtilsUI.loadFragment(new UserPhotoFragment(), null, R.id.on_user_prof_frg_container, false, ((UserPageActivity) context));
                 break;
 
             case R.id.user_content_middle_fr:
                 setBackground(userContentMiddleBtn, R.drawable.profile_liked_pressed);
                 setBackground(userContentPhotoBtn, R.drawable.profile_photos);
                 setBackground(userContentTourBtn, R.drawable.profile_tour);
-
-                ((UserPageActivity) context)
-                        .loadFragment(new UserContentFragment(), null, R.id.on_user_prof_frg_container, false);
+                UtilsUI.loadFragment(new UserContentFragment(), null, R.id.on_user_prof_frg_container, false, ((UserPageActivity) context));
                 break;
 
             case R.id.user_content_tour_fr:
                 setBackground(userContentTourBtn, R.drawable.profile_tour_pressed);
                 setBackground(userContentPhotoBtn, R.drawable.profile_photos);
                 setBackground(userContentMiddleBtn, R.drawable.profile_liked);
-
-                ((UserPageActivity) context)
-                        .loadFragment(new UserTourFragment(), null, R.id.on_user_prof_frg_container, false);
+                UtilsUI.loadFragment(new UserTourFragment(), null, R.id.on_user_prof_frg_container, false, ((UserPageActivity) context));
                 break;
 
             case R.id.bio_visible_btn:
@@ -346,6 +340,7 @@ public class UserProfileFragment extends Fragment {
                 bioVisibleBtn.setVisibility(View.GONE);
                 bioInvisibleBtn.setVisibility(View.VISIBLE);
                 visible = false;
+
                 break;
 
             case R.id.bio_invisible_btn:
@@ -353,16 +348,17 @@ public class UserProfileFragment extends Fragment {
                 bioVisibleBtn.setVisibility(View.VISIBLE);
                 bioInvisibleBtn.setVisibility(View.GONE);
                 visible = true;
+
                 break;
 
             case R.id.states:
                 Intent intent = new Intent(context, UserFollowActivity.class);
                 startActivity(intent);
+
                 break;
 
             case R.id.edit_profile:
-                ((UserPageActivity) context)
-                        .loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true);
+                UtilsUI.loadFragment(new UserEditFragment(), bundlePrfFrg, R.id.user_page_frg_container, true, ((UserPageActivity) context));
                 break;
         }
     }

@@ -1,191 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.travelguide.utils.ScalableVideoView
-        android:id="@+id/image_story"
+    <LinearLayout
+        android:id="@+id/layout_post"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY" />
-
-    <jp.shts.android.storiesprogressview.StoriesProgressView
-        android:id="@+id/stories"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_gravity="top"
-        android:layout_marginTop="22dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/story_react_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/post_desc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/stories">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_photo_left"
-                android:layout_width="58dp"
-                android:layout_height="58dp"
-                app:civ_border_color="@color/white"
-                app:civ_border_width="2dp" />
-
-            <ImageButton
-                android:layout_width="17dp"
-                android:layout_height="17dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="-10dp"
-                android:background="@drawable/icon_follow" />
-
-            <ImageButton
-                android:id="@+id/story_like"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/emoji_heart" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="0"
-                android:textColor="@color/white" />
-
-            <ImageButton
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/emoji_comment" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="0"
-                android:textColor="@color/white" />
-
-            <ImageButton
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/emoji_share" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="0"
-                android:textColor="@color/white" />
-
-            <ImageButton
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/emoji_link" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="0"
-                android:textColor="@color/white" />
-        </LinearLayout>
-
-    </FrameLayout>
+        android:background="@color/blackStatusBar"
+        android:orientation="vertical" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/post_desc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/go"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/story_react_container">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/nickname_post"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="NikaButskhrikidze"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/new_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <com.example.travelguide.utils.ScalableVideoView
+            android:id="@+id/video_story"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/image_story"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/blackStatusBar"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
+
+        <jp.shts.android.storiesprogressview.StoriesProgressView
+            android:id="@+id/stories"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_gravity="top"
+            android:layout_marginTop="22dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/journey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:text="Unforgetable journey in the world of luxury cars Modena , Italy"
-            android:textColor="@color/white"
-            android:textSize="14sp"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/post_desc"
+            app:layout_constraintEnd_toStartOf="@id/story_react_container"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nickname_post" />
+            app:layout_constraintTop_toBottomOf="@id/stories">
 
-        <TextView
-            android:id="@+id/hashtags"
+            <View
+                android:id="@+id/reverse_post"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <View
+                android:id="@+id/skip_post"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/story_react_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:text="#lamborghini #ferrari #maserati #Pagani #modena #italy #automotive #autotour"
-            android:textColor="@color/white"
-            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/post_desc"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/stories">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_photo_left"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="2dp" />
+
+                <ImageButton
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-10dp"
+                    android:background="@drawable/icon_follow" />
+
+                <ImageButton
+                    android:id="@+id/story_like"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/emoji_heart" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0"
+                    android:textColor="@color/white" />
+
+                <ImageButton
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/emoji_comment" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0"
+                    android:textColor="@color/white" />
+
+                <ImageButton
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/emoji_share" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0"
+                    android:textColor="@color/white" />
+
+                <ImageButton
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/emoji_link" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/post_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/go"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/journey" />
+            app:layout_constraintTop_toBottomOf="@+id/story_react_container">
 
-        <ImageView
-            android:id="@+id/music_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/icon_music"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/hashtags" />
+            <TextView
+                android:id="@+id/nickname_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NikaButskhrikidze"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/music_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="Colonne sonore Ferrari ca"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@id/music_icon"
-            app:layout_constraintStart_toEndOf="@id/music_icon"
-            app:layout_constraintTop_toTopOf="@id/music_icon" />
+            <TextView
+                android:id="@+id/journey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="Unforgetable journey in the world of luxury cars Modena , Italy"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nickname_post" />
+
+            <TextView
+                android:id="@+id/hashtags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="#lamborghini #ferrari #maserati #Pagani #modena #italy #automotive #autotour"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/journey" />
+
+            <ImageView
+                android:id="@+id/music_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/icon_music"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hashtags" />
+
+            <TextView
+                android:id="@+id/music_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="Colonne sonore Ferrari ca"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/music_icon"
+                app:layout_constraintStart_toEndOf="@id/music_icon"
+                app:layout_constraintTop_toTopOf="@id/music_icon" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageButton
+            android:id="@+id/go"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/go_icon"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/post_desc"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageButton
-        android:id="@+id/go"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/go_icon"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/post_desc"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

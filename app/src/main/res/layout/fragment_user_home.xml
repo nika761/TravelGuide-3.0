@@ -6,8 +6,15 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/post_view_pager"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <com.example.travelguide.utils.VideoPlayerRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
 
 </FrameLayout>

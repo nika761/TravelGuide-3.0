@@ -1,30 +1,21 @@
 package com.example.travelguide.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
-import com.example.travelguide.adapter.BottomNavigationPageAdapter;
 import com.example.travelguide.fragments.NotificationsFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.response.LoginResponseModel;
-import com.example.travelguide.utils.UtilsPermissions;
-import com.example.travelguide.utils.UtilsPref;
 import com.example.travelguide.utils.UtilsUI;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -40,7 +31,6 @@ public class UserPageActivity extends AppCompatActivity {
     private Bundle userDataForFragments;
     private BottomNavigationView bottomNavigationView;
     private ViewPager navViewPager;
-    private BottomNavigationPageAdapter navViewPagerAdapter;
 
     public UserPageActivity() {
     }
@@ -111,18 +101,6 @@ public class UserPageActivity extends AppCompatActivity {
         }
         return true;
     };
-
-    public void loadFragment(Fragment currentFragment, Bundle data, int fragmentID, boolean backStack) {
-        currentFragment.setArguments(data);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                .beginTransaction();
-
-        if (backStack) {
-            fragmentTransaction.addToBackStack(null);
-        }
-
-        fragmentTransaction.replace(fragmentID, currentFragment).commit();
-    }
 
     private void initGoogleSignClient() {
         GoogleSignInOptions gso = new GoogleSignInOptions
