@@ -23,7 +23,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
 
         <activity
-            android:name=".activity.PrepareStoryActivity"
+            android:name=".activity.UploadStoryActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity android:name=".activity.StoryActivity" />
@@ -47,6 +47,11 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
         <activity android:name=".activity.SignInActivity" />
         <activity
             android:name=".activity.SignUpActivity"
@@ -102,6 +107,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.FilterActivity" />
     </application>
 
 </manifest>

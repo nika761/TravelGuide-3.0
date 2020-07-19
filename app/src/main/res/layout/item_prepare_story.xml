@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,9 +9,8 @@
     <ImageView
         android:id="@+id/photo_item"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="400dp"
         android:background="@color/black"
-        android:scaleType="center"
         android:src="@drawable/e_image_2"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +20,7 @@
     <com.example.travelguide.utils.ScalableVideoView
         android:id="@+id/video_item"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="400dp"
         android:scaleType="center"
         android:src="@drawable/e_image_2"
         android:visibility="invisible"
@@ -29,20 +28,55 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/edit_photo_item_btn"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/bg_agree"
-        android:elevation="1dp"
-        android:text="Photo Editor"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/photo_item"
-        app:layout_constraintStart_toStartOf="@id/photo_item"
-        app:layout_constraintTop_toBottomOf="@id/photo_item" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="10dp"
+        android:background="@color/mainColorTransparent"
+        android:paddingBottom="15dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:paddingTop="15dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/crop_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_crop"
+            app:layout_constraintEnd_toEndOf="@id/filter_text"
+            app:layout_constraintStart_toStartOf="@id/filter_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/crop_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crop"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/filter_text"
+            app:layout_constraintStart_toStartOf="@id/filter_text"
+            app:layout_constraintTop_toBottomOf="@+id/crop_image" />
+
+        <ImageButton
+            android:id="@+id/filter_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/icon_filter"
+            app:layout_constraintEnd_toEndOf="@id/filter_text"
+            app:layout_constraintStart_toStartOf="@id/filter_text"
+            app:layout_constraintTop_toBottomOf="@id/crop_text" />
+
+        <TextView
+            android:id="@+id/filter_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filters"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/filter_image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

@@ -16,6 +16,7 @@ import com.example.travelguide.fragments.NotificationsFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.utils.UtilsPermissions;
 import com.example.travelguide.utils.UtilsUI;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -78,7 +79,9 @@ public class UserPageActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                UtilsUI.loadFragment(new UserHomeFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+                if (UtilsPermissions.isReadStoragePermission(this))
+                    UtilsUI.loadFragment(new UserHomeFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+                else UtilsPermissions.requestReadStoragePermission(this);
                 break;
 
             case R.id.bot_nav_search:
@@ -135,6 +138,6 @@ public class UserPageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            super.onBackPressed();
+        super.onBackPressed();
     }
 }

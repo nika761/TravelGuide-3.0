@@ -90,6 +90,7 @@ public class UtilsMedia {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
         );
     }
+
     public static long getVideoDurationInt(String path) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(path);

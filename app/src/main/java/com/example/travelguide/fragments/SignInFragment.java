@@ -32,7 +32,7 @@ import com.example.travelguide.model.request.LoginRequestModel;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.presenters.SignInPresenter;
 import com.example.travelguide.utils.UtilsFields;
-import com.example.travelguide.utils.UtilsGoogle;
+import com.example.travelguide.utils.UtilsClients;
 import com.example.travelguide.utils.UtilsPref;
 import com.example.travelguide.utils.UtilsUI;
 import com.facebook.AccessTokenTracker;
@@ -85,7 +85,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     private void initUI(View view) {
         signInPresenter = new SignInPresenter(this);
-        mGoogleSignInClient = UtilsGoogle.initGoogleSignInClient(context);
+        mGoogleSignInClient = UtilsClients.googleSignInClient(context);
         signBtnGoogle = view.findViewById(R.id.sign_in_button_google);
         signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
         googleBtn = view.findViewById(R.id.google);

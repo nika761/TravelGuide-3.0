@@ -24,7 +24,7 @@ import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
 import com.example.travelguide.model.User;
 import com.example.travelguide.utils.UtilsGlide;
-import com.example.travelguide.utils.UtilsGoogle;
+import com.example.travelguide.utils.UtilsClients;
 import com.example.travelguide.utils.UtilsPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -212,7 +212,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
             mContext.startActivity(intent);
 
         } else {
-            googleSignInClient = UtilsGoogle.initGoogleSignInClient(mContext);
+            googleSignInClient = UtilsClients.googleSignInClient(mContext);
         }
     }
 

@@ -1,13 +1,21 @@
 package com.example.travelguide.presenters;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.services.s3.UploadObjectObserver;
 import com.example.travelguide.interfaces.IUploadStory;
 import com.example.travelguide.model.request.UploadStoryRequestModel;
 import com.example.travelguide.model.response.UploadStoryResponseModel;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
+import com.example.travelguide.utils.UtilsClients;
 
+import java.io.File;
 import java.io.IOException;
 
 import retrofit2.Call;
@@ -39,5 +47,30 @@ public class UploadStoryPresenter {
 
             }
         });
+    }
+
+
+    public void uploadToS3(TransferObserver transferObserver) {
+        transferObserver.setTransferListener(new TransferListener() {
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                if (TransferState.COMPLETED == state) {
+                    iUploadStory.onFileUploaded();
+                } else if (TransferState.FAILED == state) {
+                    iUploadStory.onFileUploadError();
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                iUploadStory.onFileUploadError();
+            }
+        });
+
     }
 }

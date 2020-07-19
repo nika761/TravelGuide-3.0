@@ -37,7 +37,7 @@ public class GalleryFragment extends Fragment {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(adapter);
-            if (UtilsPermissions.isExStoragePermissionGranted(getActivity())) {
+            if (UtilsPermissions.isReadStoragePermission(getActivity())) {
                 adapter.setItems(fetchMedia(getArguments().getBoolean("is_image") ? 1 : 2));
             }
         }

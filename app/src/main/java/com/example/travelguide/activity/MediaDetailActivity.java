@@ -12,6 +12,7 @@ import android.widget.VideoView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.travelguide.R;
 import com.example.travelguide.utils.UtilsGlide;
 
@@ -38,7 +39,11 @@ public class MediaDetailActivity extends AppCompatActivity {
         String path = getIntent().getStringExtra("path");
 
         if (getIntent().getBooleanExtra("is_image", true)) {
-            UtilsGlide.loadPhoto(this, path, imageView);
+            Glide.with(this)
+                    .load(path)
+                    .centerInside()
+                    .into(imageView);
+//            UtilsGlide.loadPhoto(this, path, imageView);
         } else {
             Uri video = Uri.parse(path);
             imageView.setVisibility(View.GONE);

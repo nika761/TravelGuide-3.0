@@ -1,21 +1,15 @@
 package com.example.travelguide.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,48 +17,35 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
-import com.example.travelguide.adapter.recycler.FilterAdapter;
-import com.example.travelguide.adapter.recycler.PrepareStoryAdapter;
-import com.example.travelguide.interfaces.IFilterListener;
+import com.example.travelguide.adapter.recycler.UploadStoryAdapter;
 import com.example.travelguide.interfaces.IUploadStory;
 import com.example.travelguide.model.request.UploadStoryRequestModel;
 import com.example.travelguide.model.response.UploadStoryResponseModel;
 import com.example.travelguide.presenters.UploadStoryPresenter;
-import com.example.travelguide.utils.UtilsMedia;
+import com.example.travelguide.utils.UtilsClients;
 import com.example.travelguide.utils.UtilsPermissions;
 import com.example.travelguide.utils.UtilsPref;
-import com.opensooq.supernova.gligar.GligarPicker;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import ja.burhanrashid52.photoeditor.PhotoEditor;
-import ja.burhanrashid52.photoeditor.PhotoEditorView;
-import ja.burhanrashid52.photoeditor.PhotoFilter;
 
-public class PrepareStoryActivity extends AppCompatActivity implements IUploadStory, IFilterListener {
-    private static final int PICKER_REQUEST_CODE = 333;
+public class UploadStoryActivity extends AppCompatActivity implements IUploadStory {
+    private static final int FILTER_ACTIVITY = 1;
     private TextView btnNext;
     private ImageView btnBack;
     private ArrayList<Uri> uriArrayList = new ArrayList<>();
-    private PrepareStoryAdapter adapter;
+    private UploadStoryAdapter adapter;
     private int adapterPosition;
-    private PhotoEditor photoEditor;
-    private PhotoEditorView photoEditorView;
     private List<String> photos = new ArrayList<>();
     private List<String> videos = new ArrayList<>();
     private UploadStoryPresenter uploadStoryPresenter;
     private LottieAnimationView lottieAnimationView;
     private UploadStoryRequestModel uploadStoryRequestModel;
-
+    private File fileForUpload;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,8 +58,6 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
 
     private void initUI() {
         uploadStoryPresenter = new UploadStoryPresenter(this);
-        photoEditorView = findViewById(R.id.photo_editor_view);
-        photoEditor = new PhotoEditor.Builder(this, photoEditorView).setPinchTextScalable(true).build();
         btnNext = findViewById(R.id.btn_next_upload_story);
         btnBack = findViewById(R.id.btn_back_upload_story);
         lottieAnimationView = findViewById(R.id.animation_view_upload);
@@ -88,7 +67,6 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
         btnBack.setOnClickListener(v -> onBackPressed());
         btnNext.setOnClickListener(v -> {
             lottieAnimationView.setVisibility(View.VISIBLE);
-            Log.v("asdasdasd", "1");
             setItemsForUpload();
         });
     }
@@ -96,44 +74,47 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
     private void setItemsForUpload() {
         ArrayList<String> paths = getIntent().getStringArrayListExtra("selectedPaths");
         if (paths != null) {
-            UtilsMedia.reduceVideoQuality(paths, new UtilsMedia.VideoQualityCallBack() {
-                @Override
-                public void onQualityReduced(String destPath) {
-                    Toast.makeText(PrepareStoryActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(PrepareStoryActivity.this, MediaDetailActivity.class);
-                    intent.putExtra("path", destPath);
-                    startActivity(intent);
-                }
 
-                @Override
-                public void onStart() {
-                    Toast.makeText(PrepareStoryActivity.this, "Start", Toast.LENGTH_SHORT).show();
-
-                }
-
-                @Override
-                public void onFail() {
-                    Toast.makeText(PrepareStoryActivity.this, "Fail", Toast.LENGTH_SHORT).show();
-
-                }
-
-                @Override
-                public void onProgress() {
-                    Toast.makeText(PrepareStoryActivity.this, "Progress", Toast.LENGTH_SHORT).show();
-
-                }
-
-                @Override
-                public void onCancel() {
-                    Toast.makeText(PrepareStoryActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
-
-                }
-            }, this);
-//            for (String current : paths) {
-//                if (current.endsWith(".mp4")) {
+            //            UtilsMedia.reduceVideoQuality(paths, new UtilsMedia.VideoQualityCallBack() {
+//                @Override
+//                public void onQualityReduced(String destPath) {
+//                    Toast.makeText(UploadStoryActivity.this, "Success", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(UploadStoryActivity.this, MediaDetailActivity.class);
+//                    intent.putExtra("path", destPath);
+//                    startActivity(intent);
+//                }
+//
+//                @Override
+//                public void onStart() {
+//                    Toast.makeText(UploadStoryActivity.this, "Start", Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                @Override
+//                public void onFail() {
+//                    Toast.makeText(UploadStoryActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                @Override
+//                public void onProgress() {
+//                    Toast.makeText(UploadStoryActivity.this, "Progress", Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                @Override
+//                public void onCancel() {
+//                    Toast.makeText(UploadStoryActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
+//
+//                }
+//            }, this);
+            for (String current : paths) {
+                if (current.endsWith(".mp4")) {
+                    uploadFile(current);
 //                    String videoBinary = UtilsMedia.encodeVideo(current);
 //                    videos.add(videoBinary);
-//                } else {
+                } else {
+                    uploadFile(current);
 //                    final Uri itemUri = Uri.parse(current);
 //                    final InputStream imageStream;
 //                    try {
@@ -144,12 +125,14 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
 //                    } catch (FileNotFoundException e) {
 //                        e.printStackTrace();
 //                    }
-//                }
-//
-//            }
+                }
+
+            }
+
+
 //            uploadStoryRequestModel = new UploadStoryRequestModel(17, photos, videos);
 //            startUpload();
-//
+
         }
 
     }
@@ -162,21 +145,12 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                if (result != null) {
-                    switch (resultCode) {
-                        case RESULT_OK:
-                            adapter.onCropResult(result.toString(), adapterPosition);
-                            Toast.makeText(this, "Image Crop Successful", Toast.LENGTH_LONG).show();
-                            break;
-                        case RESULT_CANCELED:
-                            Toast.makeText(this, "Image Crop Error", Toast.LENGTH_LONG).show();
-                            break;
-                    }
-                    break;
-                }
+                onCropFinish(resultCode, data);
+                break;
+            case FILTER_ACTIVITY:
+                onFilterFinish(resultCode, data);
+                break;
         }
-
     }
 
 //    private void pickImages(Intent data) {
@@ -226,26 +200,17 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
 
     private void initContentRecyclerAdapter(ArrayList<String> photos) {
         RecyclerView recyclerView = findViewById(R.id.recycler_post);
-        adapter = new PrepareStoryAdapter(this, this);
+        adapter = new UploadStoryAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         adapter.setUriArrayList(photos);
     }
 
-    private void initFiltersAdapter() {
-        RecyclerView recyclerView = findViewById(R.id.story_tools_container);
-        FilterAdapter filterAdapter = new FilterAdapter(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(filterAdapter);
-    }
-
     public void checkPermission() {
-        if (UtilsPermissions.isExStoragePermissionGranted(this)) {
+        if (UtilsPermissions.isReadStoragePermission(this)) {
 //            new GligarPicker().requestCode(PICKER_REQUEST_CODE).withActivity(this).show();
 //            openGallery();
-
             List<String> stringList = fetchMedia(3);
             for (String s : stringList) {
                 File imgFile = new File(s);
@@ -255,21 +220,60 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
                 }
 
 //                initContentRecyclerAdapter(uriArrayList);
-                initFiltersAdapter();
 ////                new Thread(this::setPhotosForUpload).start();
 
             }
         } else {
-            UtilsPermissions.requestExStoragePermission(this);
+            UtilsPermissions.requestReadStoragePermission(this);
         }
     }
 
     @Override
-    public void onGetItem(Uri uri, int position) {
+    public void onCropChoose(String path, int position) {
         this.adapterPosition = position;
-        CropImage.activity(uri)
+        CropImage.activity(Uri.fromFile(new File(path)))
                 .setGuidelines(CropImageView.Guidelines.ON)
-                .setMultiTouchEnabled(true).start(this);
+                .setMultiTouchEnabled(true)
+                .start(this);
+    }
+
+    @Override
+    public void onFilterChoose(String path, int position) {
+        this.adapterPosition = position;
+        Intent i = new Intent(this, FilterActivity.class);
+        i.putExtra("image_for_filter", path);
+        i.putExtra("position_for_image", position);
+        startActivityForResult(i, FILTER_ACTIVITY);
+    }
+
+    public void onCropFinish(int resultCode, Intent data) {
+        CropImage.ActivityResult result = CropImage.getActivityResult(data);
+        if (result != null) {
+            switch (resultCode) {
+                case RESULT_OK:
+                    String path = result.getUri().getPath();
+                    adapter.onCropFinish(path, adapterPosition);
+                    Toast.makeText(this, "Image Crop Successful", Toast.LENGTH_LONG).show();
+                    break;
+                case RESULT_CANCELED:
+                    Toast.makeText(this, "Image Crop Error", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    }
+
+    private void onFilterFinish(int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_OK:
+                String path = data.getStringExtra("filtered_path");
+                int position = data.getIntExtra("filtered_position", 0);
+                adapter.onFilterFinish(path, position);
+                Toast.makeText(this, "Image Filter Successful", Toast.LENGTH_LONG).show();
+                break;
+            case RESULT_CANCELED:
+                Toast.makeText(this, "Image Filter Error", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 
     @Override
@@ -285,8 +289,18 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
     }
 
     @Override
-    public void onFilterSelected(PhotoFilter photoFilter) {
-        photoEditor.setFilterEffect(photoFilter);
+    public void onFileUploaded() {
+        lottieAnimationView.setVisibility(View.GONE);
+        Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+        finish();
+        String url = UtilsClients.amazonS3Client(this).getResourceUrl(UtilsClients.BUCKET, fileForUpload.getName());
+//        String url = UtilsClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
+//        Log.e("link", url);
+    }
+
+    @Override
+    public void onFileUploadError() {
+        Toast.makeText(getApplicationContext(), "error while", Toast.LENGTH_SHORT).show();
     }
 
     private ArrayList<String> fetchMedia(int type) {
@@ -317,5 +331,71 @@ public class PrepareStoryActivity extends AppCompatActivity implements IUploadSt
 
         return listOfAllImages;
     }
+
+    private void uploadFile(String fileName) {
+        fileForUpload = new File(fileName);
+//        final Uri itemUri = Uri.parse(fileName);
+
+//        createFile(getApplicationContext(), itemUri, file);
+//
+//        PutObjectRequest putObjectRequest = new PutObjectRequest("travel-guide-3", file.getName(), file)
+//                .withCannedAcl(CannedAccessControlList.PublicRead);
+
+//        transferUtility.upload("travel-guide-3", file.getName(), file, CannedAccessControlList.PublicRead);
+
+////        s3Client.putObject(putObjectRequest);
+//        TransferManager tm = new TransferManager(credentials);
+//        MultipleFileUpload upload = tm.uploadFileList(myBucket, myKeyPrefix, rootDirectory, fileList);
+        uploadStoryPresenter.uploadToS3(UtilsClients.uploadObserver(this, fileForUpload));
+//        uploadObserver.setTransferListener(new TransferListener() {
+//
+//            @Override
+//            public void onStateChanged(int id, TransferState state) {
+//                if (TransferState.COMPLETED == state) {
+//                    lottieAnimationView.setVisibility(View.GONE);
+//                    Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+//                    String url = UtilsClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
+//                    Log.e("link", url);
+////                    file.delete();
+//                } else if (TransferState.FAILED == state) {
+////                    file.delete();
+//                }
+//            }
+//
+//            @Override
+//            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+//                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+//                int percentDone = (int) percentDonef;
+//
+////                tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+//            }
+//
+//            @Override
+//            public void onError(int id, Exception er) {
+//                Toast.makeText(getApplicationContext(), "error while", Toast.LENGTH_SHORT).show();
+//                Log.e("fatalerror  ", "" + er);
+//            }
+//
+//        });
+    }
+
+//    private void createFile(Context context, Uri srcUri, File dstFile) {
+//        try {
+//            InputStream inputStream = context.getContentResolver().openInputStream(srcUri);
+//            if (inputStream == null) return;
+//            OutputStream outputStream = new FileOutputStream(dstFile);
+//            IOUtils.copy(inputStream, outputStream);
+//            inputStream.close();
+//            outputStream.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private String getFileExtension(Uri uri) {
+//        ContentResolver contentResolver = getContentResolver();
+//        MimeTypeMap mime = MimeTypeMap.getSingleton();
+//        return mime.getExtensionFromMimeType(contentResolver.getType(uri));
+//    }
 
 }

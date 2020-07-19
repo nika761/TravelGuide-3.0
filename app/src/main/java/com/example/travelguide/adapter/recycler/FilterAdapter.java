@@ -110,8 +110,5 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
         mPairList.add(new Pair<>("filters/vignette.png", PhotoFilter.VIGNETTE));
         mPairList.add(new Pair<>("filters/cross_process.png", PhotoFilter.CROSS_PROCESS));
         mPairList.add(new Pair<>("filters/b_n_w.png", PhotoFilter.BLACK_WHITE));
-        mPairList.add(new Pair<>("filters/flip_horizental.png", PhotoFilter.FLIP_HORIZONTAL));
-        mPairList.add(new Pair<>("filters/flip_vertical.png", PhotoFilter.FLIP_VERTICAL));
-        mPairList.add(new Pair<>("filters/rotate.png", PhotoFilter.ROTATE));
     }
 }

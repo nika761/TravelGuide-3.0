@@ -27,6 +27,7 @@ import com.example.travelguide.adapter.recycler.VideoPlayerRecyclerAdapter;
 import com.example.travelguide.model.Post;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.utils.UtilsMedia;
+import com.example.travelguide.utils.UtilsPermissions;
 import com.example.travelguide.utils.VideoPlayerRecyclerView;
 
 import java.util.ArrayList;
@@ -121,7 +122,6 @@ public class UserHomeFragment extends Fragment {
         ArrayList<String> mediaObjects = UtilsMedia.getVideosPathByDate(getContext());
         videoPlayerRecyclerView.setMediaObjects(mediaObjects);
         VideoPlayerRecyclerAdapter adapter = new VideoPlayerRecyclerAdapter(mediaObjects, initGlide());
-
         SnapHelper helper = new PagerSnapHelper();
         helper.attachToRecyclerView(videoPlayerRecyclerView);
         videoPlayerRecyclerView.setAdapter(adapter);
