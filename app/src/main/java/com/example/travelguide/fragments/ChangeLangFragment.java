@@ -19,12 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.ChangeLangAdapter;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.interfaces.IChangeLangFragment;
 import com.example.travelguide.model.request.ChangeLangRequestModel;
 import com.example.travelguide.model.response.ChangeLangResponseModel;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.presenters.ChangeLangPresenter;
-import com.example.travelguide.utils.UtilsPref;
 
 import java.util.List;
 import java.util.Objects;
@@ -103,8 +103,9 @@ public class ChangeLangFragment extends DialogFragment implements IChangeLangFra
 
     @Override
     public void onLanguageChoose(int langId) {
-        UtilsPref.saveLanguageId(context, langId);
-        ChangeLangRequestModel changeLangRequestModel = new ChangeLangRequestModel(String.valueOf(UtilsPref.getLanguageId(context)));
-        changeLangPresenter.sentChangeLanguageRequest(changeLangRequestModel, "Bearer" + " " + UtilsPref.getCurrentAccessToken(context));
+        HelperPref.saveLanguageId(context, langId);
+        ChangeLangRequestModel changeLangRequestModel = new ChangeLangRequestModel(String.valueOf(HelperPref.getLanguageId(context)));
+        changeLangPresenter.sentChangeLanguageRequest(changeLangRequestModel,
+                "Bearer" + " " + HelperPref.getCurrentAccessToken(context));
     }
 }

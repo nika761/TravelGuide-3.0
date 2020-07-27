@@ -1,4 +1,4 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-public class UtilsNetwork {
+public class HelperNetwork {
 
     public static boolean checkNetworkConnection(Context context) {
         boolean wifiConnected = false;

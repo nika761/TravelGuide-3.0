@@ -1,10 +1,10 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.VideoView;
 
-public class ScalableVideoView extends VideoView {
+public class ScaledVideoView extends VideoView {
 
     private int mVideoWidth;
     private int mVideoHeight;
@@ -16,15 +16,15 @@ public class ScalableVideoView extends VideoView {
         ZOOM            // zoom in
     }
 
-    public ScalableVideoView(Context context) {
+    public ScaledVideoView(Context context) {
         super(context);
     }
 
-    public ScalableVideoView(Context context, AttributeSet attrs) {
+    public ScaledVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ScalableVideoView(Context context, AttributeSet attrs, int defStyle) {
+    public ScaledVideoView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mVideoWidth = 0;
         mVideoHeight = 0;

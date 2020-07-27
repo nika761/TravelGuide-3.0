@@ -6,12 +6,10 @@ import android.view.Window;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.R;
 import com.example.travelguide.fragments.UsersSavedFragment;
-import com.example.travelguide.utils.UtilsUI;
+import com.example.travelguide.helper.HelperUI;
 
 
 public class SavedUserActivity extends AppCompatActivity {
@@ -22,7 +20,7 @@ public class SavedUserActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_user);
-        UtilsUI.loadFragment(new UsersSavedFragment(),null,SAVED_USER_FRG_CONTAINER_ID,false,this);
+        HelperUI.loadFragment(new UsersSavedFragment(),null,SAVED_USER_FRG_CONTAINER_ID,false,this);
     }
 
     @Override

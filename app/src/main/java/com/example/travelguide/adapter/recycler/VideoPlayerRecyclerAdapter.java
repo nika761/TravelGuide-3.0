@@ -10,41 +10,42 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.RequestManager;
 import com.example.travelguide.R;
 import com.example.travelguide.model.Post;
+import com.example.travelguide.model.response.PostResponseModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class VideoPlayerRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<String> mediaObjects;
+    private List<PostResponseModel.Post_stories> stories;
     private RequestManager requestManager;
 
 
-    public VideoPlayerRecyclerAdapter(ArrayList<String> mediaObjects, RequestManager requestManager) {
-        this.mediaObjects = mediaObjects;
-        this.requestManager = requestManager;
+    VideoPlayerRecyclerAdapter(List<PostResponseModel.Post_stories> stories) {
+        this.stories = stories;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         return new VideoPlayerViewHolder(
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_post, viewGroup, false));
+                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.video_view, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        ((VideoPlayerViewHolder) viewHolder).onBind(mediaObjects, requestManager);
+        ((VideoPlayerViewHolder) viewHolder).onBind(stories);
     }
 
     @Override
     public int getItemCount() {
-        return mediaObjects.size();
+        return stories.size();
     }
-
 
     public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
 
@@ -65,8 +66,7 @@ public class VideoPlayerRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 //            volumeControl = itemView.findViewById(R.id.volume_control);
         }
 
-        void onBind(ArrayList<String> mediaObject, RequestManager requestManager) {
-            this.requestManager = requestManager;
+        void onBind(List<PostResponseModel.Post_stories> stories) {
             parent.setTag(this);
 //            title.setText(mediaObject.getTitle());
 //            this.requestManager

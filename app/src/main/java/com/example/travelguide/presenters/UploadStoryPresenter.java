@@ -1,22 +1,15 @@
 package com.example.travelguide.presenters;
 
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.services.s3.UploadObjectObserver;
 import com.example.travelguide.interfaces.IUploadStory;
 import com.example.travelguide.model.request.UploadStoryRequestModel;
 import com.example.travelguide.model.response.UploadStoryResponseModel;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
-import com.example.travelguide.utils.UtilsClients;
-
-import java.io.File;
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;

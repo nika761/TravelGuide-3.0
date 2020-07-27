@@ -17,8 +17,8 @@ import com.example.travelguide.R;
 import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.presenters.LanguagePresenter;
-import com.example.travelguide.utils.UtilsNetwork;
-import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.helper.HelperNetwork;
+import com.example.travelguide.helper.HelperPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
@@ -45,9 +45,13 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
     }
 
     private void checkNetwork() {
-        if (UtilsNetwork.checkNetworkConnection(this)) {
-            if (UtilsPref.getLanguageId(this) != 0) {
-                openApp();
+        if (HelperNetwork.checkNetworkConnection(this)) {
+            if (HelperPref.getLanguageId(this) != 0) {
+                if (HelperPref.getSavedUsers(this).size() > 0) {
+                    openSaved();
+                } else {
+                    openApp();
+                }
             } else {
                 languagePresenter.sentLanguageRequest();
             }
@@ -109,7 +113,7 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
 
     private void startApplication(List<LanguagesResponseModel.Language> languages) {
         new Handler().postDelayed(() -> {
-//            if (UtilsPref.getLanguageId(this) != 0) {
+//            if (HelperPref.getLanguageId(this) != 0) {
 //                checkLastSignedUser();
 //            } else {
             Intent mainIntent = new Intent(SplashScreenActivity.this, LanguageActivity.class);
@@ -125,6 +129,14 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
     private void openApp() {
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(SplashScreenActivity.this, SignInActivity.class);
+            startActivity(intent);
+            finish();
+        }, SPLASH_DISPLAY_LENGTH);
+    }
+
+    private void openSaved() {
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(SplashScreenActivity.this, SavedUserActivity.class);
             startActivity(intent);
             finish();
         }, SPLASH_DISPLAY_LENGTH);

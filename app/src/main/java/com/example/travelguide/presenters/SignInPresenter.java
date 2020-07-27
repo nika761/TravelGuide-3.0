@@ -22,8 +22,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
-import static com.example.travelguide.utils.UtilsPref.GOOGLE;
+import static com.example.travelguide.helper.HelperPref.FACEBOOK;
+import static com.example.travelguide.helper.HelperPref.GOOGLE;
 
 public class SignInPresenter {
     private ISignInFragment iSignInFragment;

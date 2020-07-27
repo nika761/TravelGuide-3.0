@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.LanguagesAdapter;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.interfaces.ILanguageActivity;
 import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.model.User;
 import com.example.travelguide.presenters.LanguagePresenter;
-import com.example.travelguide.utils.UtilsPref;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
     }
 
     public void checkSavedUsers() {
-        currentUsers = UtilsPref.getSavedUsers(this);
+        currentUsers = HelperPref.getSavedUsers(this);
         if (currentUsers.size() != 0) {
 //            for (User currentUser : currentUsers) {
 //                if (currentUser != null && currentUser.getLoginType() != null

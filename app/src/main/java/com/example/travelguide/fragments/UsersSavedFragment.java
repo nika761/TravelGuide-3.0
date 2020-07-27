@@ -21,7 +21,7 @@ import com.daimajia.swipe.util.Attributes;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.adapter.recycler.SavedUserAdapter;
-import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.helper.HelperPref;
 
 public class UsersSavedFragment extends Fragment {
 
@@ -68,10 +68,10 @@ public class UsersSavedFragment extends Fragment {
 //        recyclerView.setHasFixedSize(true);
 //        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 //        recyclerView.setLayoutManager(layoutManager);
-//        RecyclerView.Adapter mAdapter = new SavedUsersAdapter(getContext(), UtilsPref.getSavedUsers(Objects.requireNonNull(getContext())));
+//        RecyclerView.Adapter mAdapter = new SavedUsersAdapter(getContext(), HelperPref.getSavedUsers(Objects.requireNonNull(getContext())));
 //        recyclerView.setAdapter(mAdapter);
 
-        SavedUserAdapter swipeAdapter = new SavedUserAdapter(context, UtilsPref.getSavedUsers(context));
+        SavedUserAdapter swipeAdapter = new SavedUserAdapter(context, HelperPref.getSavedUsers(context));
         swipeAdapter.setMode(Attributes.Mode.Single);
         RecyclerView swipeRecyclerView = view.findViewById(R.id.saved_user_recycler);
         swipeRecyclerView.setLayoutManager(new LinearLayoutManager(context));

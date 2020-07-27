@@ -9,10 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.travelguide.R;
-import com.example.travelguide.utils.UtilsGlide;
+import com.example.travelguide.helper.HelperGlide;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import jp.shts.android.storiesprogressview.StoriesProgressView;
 
@@ -67,12 +66,12 @@ public class StoryActivity extends AppCompatActivity implements StoriesProgressV
 
     @Override
     public void onNext() {
-        UtilsGlide.loadPhoto(this, items.get(++counter), storyPhoto);
+        HelperGlide.loadPhoto(this, items.get(++counter), storyPhoto);
     }
 
     @Override
     public void onPrev() {
-        UtilsGlide.loadPhoto(this, items.get(--counter), storyPhoto);
+        HelperGlide.loadPhoto(this, items.get(--counter), storyPhoto);
 
     }
 
@@ -104,6 +103,6 @@ public class StoryActivity extends AppCompatActivity implements StoriesProgressV
         storiesProgressView.setStoryDuration(5000L);
         storiesProgressView.setStoriesListener(StoryActivity.this);
         storiesProgressView.startStories(counter);
-        UtilsGlide.loadPhoto(this, items.get(counter), storyPhoto);
+        HelperGlide.loadPhoto(this, items.get(counter), storyPhoto);
     }
 }

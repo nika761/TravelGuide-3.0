@@ -1,15 +1,14 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.ObjectKey;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UtilsGlide {
+public class HelperGlide {
 
     public static void loadCirclePhoto(Context context, String url, CircleImageView circleImageView) {
 

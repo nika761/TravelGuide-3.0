@@ -18,11 +18,11 @@ import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.interfaces.ITermsFragment;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
 import com.example.travelguide.model.response.TermsPolicyResponseModel;
 import com.example.travelguide.presenters.TermsPresenter;
-import com.example.travelguide.utils.UtilsPref;
 
 import java.util.Objects;
 
@@ -64,8 +64,8 @@ public class TermsFragment extends Fragment implements ITermsFragment {
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 //        loadAnimation(agreeBtn, R.anim.anim_swipe_right, 50);
 
-        if (UtilsPref.getLanguageId(context) != 0)
-            termsPolicyRequestModel.setLanguage_id(UtilsPref.getLanguageId(context));
+        if (HelperPref.getLanguageId(context) != 0)
+            termsPolicyRequestModel.setLanguage_id(HelperPref.getLanguageId(context));
         termsPresenter.sendTermsResponse(termsPolicyRequestModel);
 
     }

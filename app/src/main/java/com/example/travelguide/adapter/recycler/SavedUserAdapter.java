@@ -22,10 +22,10 @@ import com.example.travelguide.R;
 import com.example.travelguide.activity.ForgotPasswordActivity;
 import com.example.travelguide.activity.SignInActivity;
 import com.example.travelguide.activity.UserPageActivity;
+import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.model.User;
-import com.example.travelguide.utils.UtilsGlide;
-import com.example.travelguide.utils.UtilsClients;
-import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.helper.HelperGlide;
+import com.example.travelguide.helper.HelperPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -36,8 +36,8 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.example.travelguide.utils.UtilsPref.FACEBOOK;
-import static com.example.travelguide.utils.UtilsPref.GOOGLE;
+import static com.example.travelguide.helper.HelperPref.FACEBOOK;
+import static com.example.travelguide.helper.HelperPref.GOOGLE;
 
 public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.SimpleViewHolder> {
     private Context mContext;
@@ -86,7 +86,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
 
     private void setDataOnViews(SimpleViewHolder viewHolder, User currentUser) {
         if (currentUser.getUrl() != null) {
-            UtilsGlide.loadCirclePhoto(mContext, currentUser.getUrl(), viewHolder.userImage);
+            HelperGlide.loadCirclePhoto(mContext, currentUser.getUrl(), viewHolder.userImage);
         } else {
             viewHolder.userImage.setMinimumHeight(72);
             viewHolder.userImage.setMinimumWidth(72);
@@ -177,10 +177,10 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
                 .setTitle("Delete User?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                    UtilsPref.deleteUser(mContext, userList.get(selectedUserPosition));
+                    HelperPref.deleteUser(mContext, userList.get(selectedUserPosition));
                     userList.remove(selectedUserPosition);
                     notifyItemRemoved(selectedUserPosition);
-                    userList = UtilsPref.getSavedUsers(mContext);
+                    userList = HelperPref.getSavedUsers(mContext);
 //                    notifyItemRangeChanged(selectedUserPosition, userList.size());
                     mItemManger.closeAllItems();
                     Toast.makeText(mContext, "User Deleted", Toast.LENGTH_SHORT).show();
@@ -212,7 +212,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
             mContext.startActivity(intent);
 
         } else {
-            googleSignInClient = UtilsClients.googleSignInClient(mContext);
+            googleSignInClient = HelperClients.googleSignInClient(mContext);
         }
     }
 

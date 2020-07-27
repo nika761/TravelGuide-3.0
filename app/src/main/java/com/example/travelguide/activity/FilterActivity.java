@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,8 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.FilterAdapter;
 import com.example.travelguide.interfaces.IFilterListener;
-import com.example.travelguide.utils.UtilsPermissions;
-import com.facebook.appevents.suggestedevents.ViewOnClickListener;
+import com.example.travelguide.helper.HelperPermissions;
 
 import java.io.File;
 
@@ -81,7 +78,7 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
     }
 
     public void saveFilterImage() {
-        if (UtilsPermissions.isWriteStoragePermission(this)) {
+        if (HelperPermissions.isWriteStoragePermission(this)) {
             File newFile = new File(path);
             String parent = newFile.getParent();
 
@@ -102,7 +99,7 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
                 }
             });
         } else {
-            UtilsPermissions.requestWriteStoragePermission(this);
+            HelperPermissions.requestWriteStoragePermission(this);
         }
     }
 

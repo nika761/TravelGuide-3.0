@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperFields;
 import com.example.travelguide.interfaces.ISignUpFragment;
 import com.example.travelguide.model.request.SignUpRequestModel;
 import com.example.travelguide.model.request.CheckNickRequestModel;
@@ -31,8 +32,8 @@ import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
 import com.example.travelguide.model.response.CheckNickResponseModel;
 import com.example.travelguide.presenters.SignUpPresenter;
-import com.example.travelguide.utils.UtilsPref;
-import com.example.travelguide.utils.UtilsUI;
+import com.example.travelguide.helper.HelperPref;
+import com.example.travelguide.helper.HelperUI;
 import com.hbb20.CountryCodePicker;
 
 import java.util.Calendar;
@@ -46,14 +47,14 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
     private CountryCodePicker countryCodePicker;
     private SignUpPresenter signUpPresenter;
     private LinearLayout phoneNumberContainer;
-    private String userName, userSurname, nickName, birthDate, email, emailForCheck,
-            phoneNumber, password, passwordForCheck, confirmPassword, nickNameFirst, nickNameSecond;
-    private EditText registerName, registerSurname, registerNickName, registerEmail,
-            registerPhoneNumber, registerPassword, registerConfirmPassword;
-    private TextView registerNameHead, registerSurnameHead, registerNickNameHead,
+    private String userName, userSurname, nickName, birthDate, email,
+            phoneNumber, password, confirmPassword, nickNameFirst, nickNameSecond;
+    private EditText eName, eSurname, eNickName, eMail,
+            ePhoneNumber, ePassword, eConfirmPassword;
+    private TextView eNameHead, eSurnameHead, eNickNameHead,
             registerBirthDate, registerBirthDateHead,
-            registerEmailHead, registerPhoneNumberHead,
-            registerPasswordHead, registerConfirmPasswordHead,
+            eEmailHead, ePhoneNumberHead,
+            ePasswordHead, eConfirmPasswordHead,
             registerSignUpTxt, registerCancelTxt, registerNickOffer,
             registerNickOfferOne, registerNickOfferTwo, terms, policy;
 
@@ -61,8 +62,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_sign_up, container, false);
     }
 
     @Override
@@ -105,75 +105,77 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
 //        });
 
         registerNickOfferOne.setOnClickListener(v -> {
-            registerNickName.setText(nickNameFirst);
-            setFieldsDefault(registerNickName, registerNickNameHead, " NickName ");
+            eNickName.setText(nickNameFirst);
+            HelperFields.setFieldsDefault(eNickName, eNickNameHead, "NickName",
+                    HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
         });
 
         registerNickOfferTwo.setOnClickListener(v -> {
-            registerNickName.setText(nickNameSecond);
-            setFieldsDefault(registerNickName, registerNickNameHead, " NickName ");
+            eNickName.setText(nickNameSecond);
+            HelperFields.setFieldsDefault(eNickName, eNickNameHead, "NickName",
+                    HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
         });
 
-        terms.setOnClickListener(v -> UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.TERMS));
+        terms.setOnClickListener(v -> HelperUI.startTermsAndPolicyActivity(context, HelperUI.TERMS));
 
-        policy.setOnClickListener(v -> UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.POLICY));
+        policy.setOnClickListener(v -> HelperUI.startTermsAndPolicyActivity(context, HelperUI.POLICY));
 
-    }
-
-    private String checkEditTextData(EditText currentField, TextView currentHead, String currentHeadText, String currentStringData) {
-
-        if (currentField.getText().toString().isEmpty()) {
-            setFieldsWarning(currentField, currentHead, currentHeadText);
-        } else {
-            setFieldsDefault(currentField, currentHead, currentHeadText);
-            currentStringData = currentField.getText().toString();
-        }
-        return currentStringData;
-    }
-
-    private void setFieldsWarning(EditText currentField, TextView currentHead, String currentHeadText) {
-        currentField.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
-        currentHead.setText(String.format("* %s", currentHeadText));
-        currentHead.setTextColor(getResources().getColor(R.color.red));
-        YoYo.with(Techniques.Shake)
-                .duration(300)
-                .playOn(currentField);
-    }
-
-    private void setFieldsDefault(EditText currentField, TextView currentHead, String currentHeadText) {
-        currentField.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
-        currentHead.setText(currentHeadText);
-        currentHead.setTextColor(getResources().getColor(R.color.black));
     }
 
     private void onGetData() {
 
-        userName = checkEditTextData(registerName, registerNameHead, "Name", userName);
-        userSurname = checkEditTextData(registerSurname, registerSurnameHead, "Surname", userSurname);
-        nickName = checkEditTextData(registerNickName, registerNickNameHead, "NickName", nickName);
-        emailForCheck = checkEditTextData(registerEmail, registerEmailHead, "Email", emailForCheck);
-        if (emailForCheck != null) {
-            if (!checkEmail(emailForCheck)) {
-                setFieldsWarning(registerEmail, registerEmailHead, "Email");
-            } else {
-                setFieldsDefault(registerEmail, registerEmailHead, "Email");
-                email = emailForCheck;
-            }
+        userName = HelperFields.checkEditTextData(eName, eNameHead, "Name",
+                HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+
+        userSurname = HelperFields.checkEditTextData(eSurname, eSurnameHead, "Surname",
+                HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+
+        nickName = HelperFields.checkEditTextData(eNickName, eNickNameHead, "NickName",
+                HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+
+        email = HelperFields.checkEditTextData(eMail, eEmailHead, "Email",
+                HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+
+        if (email != null && HelperFields.checkEmail(email)) {
+            HelperFields.setFieldsDefault(eMail, eEmailHead, "Email",
+                    HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+        } else {
+            HelperFields.setFieldsWarning(eMail, eEmailHead, "Email");
         }
 
-        if (registerPhoneNumber.getText().toString().isEmpty() || !checkNumber(registerPhoneNumber)) {
+        password = HelperFields.checkEditTextData(ePassword, ePasswordHead, "Password",
+                HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+
+        if (password != null && HelperFields.checkPassword(password)) {
+            HelperFields.setFieldsDefault(ePassword, ePasswordHead, "Password",
+                    HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+        } else {
+            HelperFields.setFieldsWarning(ePassword, ePasswordHead, "Password");
+        }
+
+        confirmPassword = HelperFields.checkEditTextData(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",
+                HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+
+        if (password != null && confirmPassword != null && HelperFields.confirmPassword(password, confirmPassword)) {
+            HelperFields.setFieldsDefault(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",
+                    HelperFields.BLACK, HelperFields.BACKGROUND_DEF_BLACK);
+        } else {
+            HelperFields.setFieldsWarning(eConfirmPassword, eConfirmPasswordHead, "Confirm Password");
+        }
+
+        if (ePhoneNumber.getText().toString().isEmpty() || !checkNumber(ePhoneNumber)) {
             phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
-            registerPhoneNumberHead.setText("* Phone Number ");
-            registerPhoneNumberHead.setTextColor(getResources().getColor(R.color.red));
+            ePhoneNumberHead.setText("* Phone Number ");
+            ePhoneNumberHead.setTextColor(getResources().getColor(R.color.red));
 //            StyleableToast.makeText(getContext(), " Number is incorrect !", Toast.LENGTH_LONG, R.style.errorToast).show();
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(phoneNumberContainer);
         } else {
             phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
-            registerPhoneNumberHead.setText(" Phone Number ");
-            registerPhoneNumberHead.setTextColor(getResources().getColor(R.color.black));
-            phoneNumber = registerPhoneNumber.getText().toString();
+            ePhoneNumberHead.setText(" Phone Number ");
+            ePhoneNumberHead.setTextColor(getResources().getColor(R.color.black));
+            phoneNumber = ePhoneNumber.getText().toString();
             //registerPhoneNumber.getText().clear();
         }
 
@@ -191,23 +193,6 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
             birthDate = registerBirthDate.getText().toString();
         }
 
-        passwordForCheck = checkEditTextData(registerPassword, registerPasswordHead, "Password", passwordForCheck);
-        if (passwordForCheck != null) {
-            if (!checkPassword(passwordForCheck)) {
-                setFieldsWarning(registerPassword, registerPasswordHead, "Password");
-            } else {
-                setFieldsDefault(registerPassword, registerPasswordHead, "Password");
-                password = passwordForCheck;
-            }
-        }
-
-        if (registerConfirmPassword.getText().toString().isEmpty() || !confirmPassword(registerPassword, registerConfirmPassword)) {
-            setFieldsWarning(registerConfirmPassword, registerConfirmPasswordHead, "Confirm Password");
-        } else {
-            setFieldsDefault(registerConfirmPassword, registerConfirmPasswordHead, "Confirm Password");
-            confirmPassword = registerConfirmPassword.getText().toString();
-        }
-
         if (userName != null &&
                 userSurname != null &&
                 nickName != null &&
@@ -216,9 +201,8 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
                 birthDate != null &&
                 password != null &&
                 confirmPassword != null) {
-            String languageId = String.valueOf(UtilsPref.getLanguageId(context));
             SignUpRequestModel signUpRequestModel = new SignUpRequestModel(userName, userSurname, nickName, email, password,
-                    confirmPassword, birthDate, phoneNumber, languageId);
+                    confirmPassword, birthDate, phoneNumber, String.valueOf(HelperPref.getLanguageId(context)));
             signUpPresenter.sendAuthResponse(signUpRequestModel);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {
@@ -250,45 +234,14 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
         dialog.show();
     }
 
-    private boolean checkEmail(String enteredEmail) {
-        boolean emailValidate = false;
-
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        String email = enteredEmail.trim();
-
-        if (email.matches(emailPattern)) {
-            emailValidate = true;
-        }
-        return emailValidate;
-    }
-
     private boolean checkNumber(EditText enteredNumber) {
         boolean numberValidate = false;
 
         countryCodePicker.registerCarrierNumberEditText(enteredNumber);
-
         if (countryCodePicker.isValidFullNumber()) {
             numberValidate = true;
         }
         return numberValidate;
-    }
-
-    private boolean checkPassword(String enteredPassword) {
-        boolean passwordValidate = true;
-
-        if (enteredPassword.trim().length() < 8) {
-            passwordValidate = false;
-        }
-        return passwordValidate;
-    }
-
-    private boolean confirmPassword(EditText password, EditText confirmPassword) {
-        boolean confirmPassowrdValidate = false;
-
-        if (confirmPassword.getText().toString().equals(password.getText().toString())) {
-            confirmPassowrdValidate = true;
-        }
-        return confirmPassowrdValidate;
     }
 
     private void checkNickNameToServer(String name, String surname, String nickName) {
@@ -310,22 +263,22 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
         signUpPresenter = new SignUpPresenter(this);
         countryCodePicker = view.findViewById(R.id.ccp);
         phoneNumberContainer = view.findViewById(R.id.register_phone_number_container);
-        registerName = view.findViewById(R.id.register_name);
-        registerNameHead = view.findViewById(R.id.register_name_head);
-        registerSurname = view.findViewById(R.id.register_surname);
-        registerSurnameHead = view.findViewById(R.id.register_surname_head);
-        registerNickName = view.findViewById(R.id.register_nick_name);
-        registerNickNameHead = view.findViewById(R.id.register_nick_name_head);
+        eName = view.findViewById(R.id.register_name);
+        eNameHead = view.findViewById(R.id.register_name_head);
+        eSurname = view.findViewById(R.id.register_surname);
+        eSurnameHead = view.findViewById(R.id.register_surname_head);
+        eNickName = view.findViewById(R.id.register_nick_name);
+        eNickNameHead = view.findViewById(R.id.register_nick_name_head);
         registerBirthDate = view.findViewById(R.id.register_birth_date);
         registerBirthDateHead = view.findViewById(R.id.register_birth_date_head);
-        registerEmail = view.findViewById(R.id.register_email);
-        registerEmailHead = view.findViewById(R.id.register_mail_head);
-        registerPhoneNumber = view.findViewById(R.id.register_phone_number);
-        registerPhoneNumberHead = view.findViewById(R.id.register_phone_number_head);
-        registerPassword = view.findViewById(R.id.register_password);
-        registerPasswordHead = view.findViewById(R.id.register_password_head);
-        registerConfirmPassword = view.findViewById(R.id.register_confirm_password);
-        registerConfirmPasswordHead = view.findViewById(R.id.register_confirm_password_head);
+        eMail = view.findViewById(R.id.register_email);
+        eEmailHead = view.findViewById(R.id.register_mail_head);
+        ePhoneNumber = view.findViewById(R.id.register_phone_number);
+        ePhoneNumberHead = view.findViewById(R.id.register_phone_number_head);
+        ePassword = view.findViewById(R.id.register_password);
+        ePasswordHead = view.findViewById(R.id.register_password_head);
+        eConfirmPassword = view.findViewById(R.id.register_confirm_password);
+        eConfirmPasswordHead = view.findViewById(R.id.register_confirm_password_head);
         registerSignUpTxt = view.findViewById(R.id.register_sign_btn);
         registerCancelTxt = view.findViewById(R.id.register_cancel_btn);
         registerNickOffer = view.findViewById(R.id.nickName_offer);
@@ -357,12 +310,12 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
                 break;
 
             case "2":
-                setFieldsWarning(registerNickName, registerNickNameHead, "NickName");
+                HelperFields.setFieldsWarning(eNickName, eNickNameHead, "NickName");
                 checkNickNameToServer(userName, userSurname, nickName);
                 break;
 
             case "4":
-                setFieldsWarning(registerEmail, registerEmailHead, "Email");
+                HelperFields.setFieldsWarning(eMail, eEmailHead, "Email");
 //                checkEmailToServer(email);
                 break;
 
@@ -372,7 +325,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment {
     @Override
     public void onGetEmailCheckResult(CheckMailResponseModel checkMailResponseModel) {
         if (checkMailResponseModel.getStasus().equals("1")) {
-            setFieldsWarning(registerEmail, registerEmailHead, "Email");
+            HelperFields.setFieldsWarning(eMail, eEmailHead, "Email");
         }
     }
 

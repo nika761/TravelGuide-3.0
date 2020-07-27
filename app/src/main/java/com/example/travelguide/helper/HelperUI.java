@@ -1,4 +1,4 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.activity.TermsAndPrivacyActivity;
 
-public class UtilsUI {
+public class HelperUI {
 
     public static final String TERMS = "terms";
     public static final String POLICY = "policy";

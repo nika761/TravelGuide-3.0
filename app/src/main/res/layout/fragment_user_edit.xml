@@ -212,7 +212,7 @@
                     app:ccp_textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/register_phone_number"
+                    android:id="@+id/edit_phone_number"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"

@@ -1,10 +1,9 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.travelguide.model.User;
-import com.example.travelguide.model.response.LanguagesResponseModel;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,7 +12,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UtilsPref {
+public class HelperPref {
     private static final String LANGUAGE_PREFERENCES = "language_preference";
     private static final String LANGUAGE_KEY = "language_Id";
 
@@ -25,6 +24,9 @@ public class UtilsPref {
 
     private static final String SERVER_USER_PREFERENCES = "server_user_preference";
     private static final String SERVER_USER_KEY = "server_user_list";
+
+    private static final String LOGGED_USER_PREFERENCES = "logged_user_preference";
+    private static final String LOGGED_USER_KEY = "logged_user";
 
     private static final String ACCESS_TOKEN_PREFERENCES = "access_preference";
     private static final String ACCESS_KEY = "access_token";
@@ -47,6 +49,17 @@ public class UtilsPref {
         return user;
     }
 
+
+    public static void deleteUser(Context context, User user) {
+        List<User> users = getSavedUsers(context);
+        users.remove(user);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USER_KEY, new Gson().toJson(users));
+        editor.apply();
+    }
+
+
     public static List<User> getSavedUsers(Context context) {
         List<User> users = new ArrayList<>();
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
@@ -57,15 +70,6 @@ public class UtilsPref {
             users = gson.fromJson(sharedPreferences.getString(USER_KEY, null), listType);
         }
         return users;
-    }
-
-    public static void deleteUser(Context context, User user) {
-        List<User> users = getSavedUsers(context);
-        users.remove(user);
-        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(USER_KEY, new Gson().toJson(users));
-        editor.apply();
     }
 
     public static void saveServerUser(Context context, LoginResponseModel.User user) {
@@ -89,6 +93,14 @@ public class UtilsPref {
             users = gson.fromJson(sharedPreferences.getString(SERVER_USER_KEY, null), listType);
         }
         return users;
+    }
+
+    public static LoginResponseModel.User getCurrentLoggedUser(Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGGED_USER_PREFERENCES, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+
+        return gson.fromJson(sharedPreferences.getString(LOGGED_USER_KEY, null), LoginResponseModel.User.class);
     }
 
     public static void deleteServerUser(Context context, LoginResponseModel.User user) {

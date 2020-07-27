@@ -2,12 +2,14 @@ package com.example.travelguide.network;
 
 import com.example.travelguide.model.request.AboutRequestModel;
 import com.example.travelguide.model.request.ChangeLangRequestModel;
+import com.example.travelguide.model.request.PostRequestModel;
 import com.example.travelguide.model.request.SignUpRequestModel;
 import com.example.travelguide.model.request.LoginRequestModel;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
 import com.example.travelguide.model.request.UploadStoryRequestModel;
 import com.example.travelguide.model.response.AboutResponseModel;
 import com.example.travelguide.model.response.ChangeLangResponseModel;
+import com.example.travelguide.model.response.PostResponseModel;
 import com.example.travelguide.model.response.SignUpResponseModel;
 import com.example.travelguide.model.request.CheckMailRequestModel;
 import com.example.travelguide.model.response.CheckMailResponseModel;
@@ -51,11 +53,19 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("change_language")
-    Call<ChangeLangResponseModel> changeLang(@Header("Authorization") String token, @Body ChangeLangRequestModel changeLangRequestModel);
+    Call<ChangeLangResponseModel> changeLang(@Header("Authorization") String token,
+                                             @Body ChangeLangRequestModel changeLangRequestModel);
 
     @Headers({"Accept: application/json"})
     @POST("upload_content")
     Call<UploadStoryResponseModel> uploadStory(@Header("Authorization") String token,
                                                @Body UploadStoryRequestModel uploadStoryRequestModel);
+
+    @Headers({"Accept: application/json"})
+    @POST("get/posts_by_user")
+    Call<PostResponseModel> getPosts(@Header("Authorization") String token,
+                                        @Body PostRequestModel postRequestModel);
+
+
 
 }

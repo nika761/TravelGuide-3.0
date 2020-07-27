@@ -23,7 +23,7 @@ public class UserTourFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_tour, container, false);
+        View view = inflater.inflate(R.layout.fragment_p_tour, container, false);
         return view;
     }
 

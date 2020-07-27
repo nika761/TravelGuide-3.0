@@ -18,11 +18,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.MediaDetailActivity;
 import com.example.travelguide.fragments.GalleryFragment;
-import com.example.travelguide.utils.UtilsMedia;
+import com.example.travelguide.helper.HelperMedia;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageViewHolder> {
@@ -60,7 +59,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                     .apply(new RequestOptions().centerCrop())
                     .into(holder.imageView);
             holder.duration.setVisibility(View.VISIBLE);
-            holder.duration.setText(UtilsMedia.getVideoDuration(uris.get(position)));
+            holder.duration.setText(HelperMedia.getVideoDuration(uris.get(position)));
         }
 
         if (selectedItemPositions.containsKey(position)) {

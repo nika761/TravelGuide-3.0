@@ -1,4 +1,4 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 
@@ -16,9 +16,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import java.io.File;
-import java.util.Objects;
 
-public class UtilsClients {
+public class HelperClients {
     private static final String KEY = "AKIAVWUTGVROTZGHURQ4";
     private static final String SECRET = "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";
     private static final String AMAZONS3_END_POINT = "https://travel-guide-3.s3.eu-central-1.amazonaws.com";
@@ -68,7 +67,7 @@ public class UtilsClients {
     }
 
     public static TransferObserver uploadObserver(Context context, File file) {
-        return UtilsClients.transferUtility(context, amazonS3Client(context))
-                .upload(UtilsClients.BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
+        return HelperClients.transferUtility(context, amazonS3Client(context))
+                .upload(HelperClients.BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
     }
 }

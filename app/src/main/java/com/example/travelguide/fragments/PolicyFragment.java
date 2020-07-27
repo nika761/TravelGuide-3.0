@@ -22,7 +22,7 @@ import com.example.travelguide.interfaces.IPolicyFragment;
 import com.example.travelguide.model.request.TermsPolicyRequestModel;
 import com.example.travelguide.model.response.TermsPolicyResponseModel;
 import com.example.travelguide.presenters.PolicyPresenter;
-import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.helper.HelperPref;
 
 import java.util.Objects;
 
@@ -51,8 +51,8 @@ public class PolicyFragment extends Fragment implements IPolicyFragment {
         setClickListeners();
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
-        if (UtilsPref.getLanguageId(context) != 0)
-            termsPolicyRequestModel.setLanguage_id(UtilsPref.getLanguageId(context));
+        if (HelperPref.getLanguageId(context) != 0)
+            termsPolicyRequestModel.setLanguage_id(HelperPref.getLanguageId(context));
         policyPresenter.sendPolicyResponse(termsPolicyRequestModel);
 
     }

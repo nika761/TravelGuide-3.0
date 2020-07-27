@@ -4,18 +4,16 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.R;
 import com.example.travelguide.fragments.AboutFragment;
 import com.example.travelguide.fragments.PolicyFragment;
 import com.example.travelguide.fragments.TermsFragment;
-import com.example.travelguide.utils.UtilsUI;
+import com.example.travelguide.helper.HelperUI;
 
-import static com.example.travelguide.utils.UtilsUI.ABOUT;
-import static com.example.travelguide.utils.UtilsUI.POLICY;
-import static com.example.travelguide.utils.UtilsUI.TERMS;
+import static com.example.travelguide.helper.HelperUI.ABOUT;
+import static com.example.travelguide.helper.HelperUI.POLICY;
+import static com.example.travelguide.helper.HelperUI.TERMS;
 
 public class TermsAndPrivacyActivity extends AppCompatActivity {
 
@@ -29,19 +27,19 @@ public class TermsAndPrivacyActivity extends AppCompatActivity {
     }
 
     private void checkCurrentFragment() {
-        String type = getIntent().getStringExtra(UtilsUI.TYPE);
+        String type = getIntent().getStringExtra(HelperUI.TYPE);
         if (type != null) {
             switch (type) {
                 case TERMS:
-                    UtilsUI.loadFragment(new TermsFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
+                    HelperUI.loadFragment(new TermsFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
                     break;
 
                 case POLICY:
-                    UtilsUI.loadFragment(new PolicyFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
+                    HelperUI.loadFragment(new PolicyFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
                     break;
 
                 case ABOUT:
-                    UtilsUI.loadFragment(new AboutFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
+                    HelperUI.loadFragment(new AboutFragment(), null, TERMS_POLICY_FRAGMENT_CONTAINER, false, this);
                     break;
             }
         }

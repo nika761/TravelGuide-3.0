@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.FollowingAdapter;
-import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.helper.HelperPref;
 
 public class UserFollowingFragment extends Fragment {
     private Context context;
@@ -42,7 +42,7 @@ public class UserFollowingFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.following_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
-        RecyclerView.Adapter mAdapter = new FollowingAdapter(context, UtilsPref.getSavedUsers(context));
+        RecyclerView.Adapter mAdapter = new FollowingAdapter(context, HelperPref.getSavedUsers(context));
         recyclerView.setAdapter(mAdapter);
     }
 }

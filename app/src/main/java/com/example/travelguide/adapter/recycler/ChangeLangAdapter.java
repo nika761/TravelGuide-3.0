@@ -38,7 +38,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
     @Override
     public void onBindViewHolder(@NonNull ChangeLanguageViewHolder holder, int position) {
 
-//        currentLanguage = UtilsPref.getLanguageId(context);
+//        currentLanguage = HelperPref.getLanguageId(context);
 //        if (languages.get(position).getId() == currentLanguage) {
 //            holder.language.setText(languages.get(position).getNative_full());
 //            holder.language.setTextColor(context.getColor(R.color.yellowTextView));

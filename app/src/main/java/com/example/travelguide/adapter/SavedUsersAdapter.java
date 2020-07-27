@@ -23,8 +23,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.UserPageActivity;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.User;
-import com.example.travelguide.utils.UtilsPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -190,8 +190,8 @@ public class SavedUsersAdapter extends RecyclerView.Adapter<SavedUsersAdapter.My
             AlertDialog alertDialog = new AlertDialog.Builder(context)
                     .setTitle("გსურთ წაშლა?")
                     .setPositiveButton("OK", (dialog, which) -> {
-                        UtilsPref.deleteUser(context, users.get(getAdapterPosition()));
-                        users = UtilsPref.getSavedUsers(context);
+                        HelperPref.deleteUser(context, users.get(getAdapterPosition()));
+                        users = HelperPref.getSavedUsers(context);
                         Toast.makeText(context, "წაიშალა", Toast.LENGTH_LONG).show();
                         notifyDataSetChanged();
                         dialog.dismiss();

@@ -37,4 +37,5 @@ public class GalleryPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return position == 0 ? "Video" : "Photos";
     }
+
 }

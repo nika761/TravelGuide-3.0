@@ -4,12 +4,10 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelguide.R;
 import com.example.travelguide.fragments.ForgotPswFragment;
-import com.example.travelguide.utils.UtilsUI;
+import com.example.travelguide.helper.HelperUI;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -20,7 +18,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 //        loadFragment(new ForgotPswFragment(), null, FORGOT_PASS_FRAGMENT_CONTAINER_ID, false);
-        UtilsUI.loadFragment(new ForgotPswFragment(),null,FORGOT_PASS_FRAGMENT_CONTAINER_ID,false,this);
+        HelperUI.loadFragment(new ForgotPswFragment(),null,FORGOT_PASS_FRAGMENT_CONTAINER_ID,false,this);
     }
 
     @Override

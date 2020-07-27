@@ -1,4 +1,4 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class UtilsMedia {
+public class HelperMedia {
     static int current = 0;
 
 

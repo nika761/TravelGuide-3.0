@@ -7,8 +7,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
@@ -16,8 +14,8 @@ import com.example.travelguide.fragments.NotificationsFragment;
 import com.example.travelguide.fragments.UserHomeFragment;
 import com.example.travelguide.fragments.UserProfileFragment;
 import com.example.travelguide.model.response.LoginResponseModel;
-import com.example.travelguide.utils.UtilsPermissions;
-import com.example.travelguide.utils.UtilsUI;
+import com.example.travelguide.helper.HelperPermissions;
+import com.example.travelguide.helper.HelperUI;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,7 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
-public class UserPageActivity extends AppCompatActivity {
+public class UserPageActivity extends AppCompatActivity  {
 
     private GoogleSignInClient mGoogleSignInClient;
     private Bundle userDataForFragments;
@@ -53,10 +51,10 @@ public class UserPageActivity extends AppCompatActivity {
     }
 
     private void ongGetUserDate() {
-        LoginResponseModel.User serverUser = (LoginResponseModel.User) getIntent().getSerializableExtra("server_user");
-        if (serverUser != null) {
+        LoginResponseModel.User loggedUser = (LoginResponseModel.User) getIntent().getSerializableExtra("server_user");
+        if (loggedUser != null) {
             userDataForFragments = new Bundle();
-            userDataForFragments.putSerializable("user", serverUser);
+            userDataForFragments.putSerializable("user", loggedUser);
         }
 //
 //        User loggedUser = (User) getIntent().getSerializableExtra("loggedUser");
@@ -79,9 +77,9 @@ public class UserPageActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                if (UtilsPermissions.isReadStoragePermission(this))
-                    UtilsUI.loadFragment(new UserHomeFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
-                else UtilsPermissions.requestReadStoragePermission(this);
+                if (HelperPermissions.isReadStoragePermission(this))
+                    HelperUI.loadFragment(new UserHomeFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+                else HelperPermissions.requestReadStoragePermission(this);
                 break;
 
             case R.id.bot_nav_search:
@@ -95,11 +93,11 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_ntf:
-                UtilsUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, this);
+                HelperUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, this);
                 break;
 
             case R.id.bot_nav_profile:
-                UtilsUI.loadFragment(new UserProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new UserProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
                 break;
         }
         return true;
@@ -116,7 +114,7 @@ public class UserPageActivity extends AppCompatActivity {
     public void signOutFromFbAccount() {
         LoginManager.getInstance().logOut();
 //        if (user != null) {
-//            UtilsPref.deleteUser(this, user);
+//            HelperPref.deleteUser(this, user);
 //        }
         finish();
     }
@@ -125,7 +123,7 @@ public class UserPageActivity extends AppCompatActivity {
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
 //            if (user != null) {
-//                UtilsPref.deleteUser(this, user);
+//                HelperPref.deleteUser(this, user);
 //            }
         }).addOnCanceledListener(this, () -> {
             Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
@@ -140,4 +138,5 @@ public class UserPageActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }

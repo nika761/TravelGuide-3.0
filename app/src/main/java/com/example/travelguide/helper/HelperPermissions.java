@@ -1,4 +1,4 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
 
-public class UtilsPermissions {
+public class HelperPermissions {
 
     public static final int READ_EXTERNAL_STORAGE = 111;
     public static final int WRITE_EXTERNAL_STORAGE = 222;
@@ -25,12 +25,12 @@ public class UtilsPermissions {
     }
 
     public static boolean isWriteStoragePermission(Activity activity) {
-        boolean perrmisionGranted = false;
+        boolean permissionGranted = false;
         int result = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
-            perrmisionGranted = true;
+            permissionGranted = true;
         }
-        return perrmisionGranted;
+        return permissionGranted;
     }
 
     public static void requestWriteStoragePermission(Activity activity) {

@@ -1,9 +1,7 @@
 package com.example.travelguide.fragments;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,25 +15,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.example.travelguide.R;
 import com.example.travelguide.activity.UserPageActivity;
-import com.example.travelguide.model.User;
-import com.example.travelguide.utils.UtilsGlide;
+import com.example.travelguide.helper.HelperPref;
+import com.example.travelguide.model.response.LoginResponseModel;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserEditFragment extends Fragment {
 
-    private EditText nameField,
-            surnameField, nickaNameField, birthDateField, emailField, phoneNumberField, countryField, passwordField, bioField;
+    private EditText name,
+            surName, nickName, email, phoneNumber, country, password, bio;
     private CircleImageView userImage;
-    private TextView toolbarBackBtn;
+    private TextView toolbarBackBtn, birthDate;
     private Context context;
     private ImageView changePhotoImage, uploadPhotoBtn;
     private View changePhotoLayout;
@@ -45,6 +39,29 @@ public class UserEditFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_edit, container, false);
+
+        name = view.findViewById(R.id.edit_name);
+        surName = view.findViewById(R.id.edit_surname);
+        nickName = view.findViewById(R.id.edit_nick_name);
+        email = view.findViewById(R.id.edit_email);
+        country = view.findViewById(R.id.edit_country);
+        password = view.findViewById(R.id.edit_password);
+        bio = view.findViewById(R.id.edit_bio);
+        userImage = view.findViewById(R.id.edit_profile_image);
+        birthDate = view.findViewById(R.id.edit_birth_date);
+        phoneNumber = view.findViewById(R.id.edit_phone_number);
+
+        toolbarBackBtn = view.findViewById(R.id.user_prf_back_btn);
+        toolbarBackBtn.setOnClickListener(this::onViewClick);
+
+        changePhotoLayout = view.findViewById(R.id.change_photo_layout);
+        changePhotoImage = view.findViewById(R.id.change_photo_image);
+
+        uploadPhotoBtn = view.findViewById(R.id.change_photo_btn);
+        uploadPhotoBtn.setOnClickListener(this::onViewClick);
+
+        changePhotoCancelBtn = view.findViewById(R.id.change_edit_profile_photo_cancel_btn);
+        changePhotoCancelBtn.setOnClickListener(this::onViewClick);
 
         return view;
     }
@@ -60,17 +77,9 @@ public class UserEditFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        iniUI(view);
-        onGetData();
-        setClickListeners();
+        setUserData();
     }
 
-    @Override
-    public void onDestroy() {
-        if (getContext() != null)
-            ((UserPageActivity) getContext()).hideBottomNavigation(true);
-        super.onDestroy();
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -78,54 +87,21 @@ public class UserEditFragment extends Fragment {
         this.context = context;
     }
 
-    private void iniUI(View v) {
-        nameField = v.findViewById(R.id.edit_name);
-        surnameField = v.findViewById(R.id.edit_surname);
-        nickaNameField = v.findViewById(R.id.edit_nick_name);
-        emailField = v.findViewById(R.id.edit_email);
-        countryField = v.findViewById(R.id.edit_country);
-        passwordField = v.findViewById(R.id.edit_password);
-        bioField = v.findViewById(R.id.edit_bio);
-        userImage = v.findViewById(R.id.edit_profile_image);
-        toolbarBackBtn = v.findViewById(R.id.user_prf_back_btn);
-        changePhotoLayout = v.findViewById(R.id.change_photo_layout);
-        changePhotoImage = v.findViewById(R.id.change_photo_image);
-        uploadPhotoBtn = v.findViewById(R.id.change_photo_btn);
-        changePhotoCancelBtn = v.findViewById(R.id.change_edit_profile_photo_cancel_btn);
-    }
+    private void setUserData() {
+        if (HelperPref.getCurrentAccessToken(context) != null) {
 
-    private void onGetData() {
-        if (getArguments() != null && getArguments().containsKey("user")) {
-            User user = (User) getArguments().getSerializable("user");
-            if (user != null)
-                setUserData(user);
+            List<LoginResponseModel.User> loggedUsers = HelperPref.getServerSavedUsers(context);
+            name.setText(loggedUsers.get(0).getName());
+            surName.setText(loggedUsers.get(0).getLastname());
+            nickName.setText(loggedUsers.get(0).getNickname());
+            email.setText(loggedUsers.get(0).getEmail());
+            birthDate.setText(loggedUsers.get(0).getDate_of_birth());
+            phoneNumber.setText(loggedUsers.get(0).getPhone_num());
+
         } else {
             Toast.makeText(getContext(), "Data Error ", Toast.LENGTH_SHORT).show();
         }
-    }
 
-    private void setUserData(User currentUser) {
-        String firstName = currentUser.getName();
-        String lastName = currentUser.getLastName();
-        String url = currentUser.getUrl();
-        String id = currentUser.getId();
-        String email = currentUser.getEmail();
-        String loginType = currentUser.getLoginType();
-
-        if (url != null) {
-            UtilsGlide.loadCirclePhoto(context, url, userImage);
-        }
-        nameField.setText(firstName);
-        surnameField.setText(lastName);
-        emailField.setText(email);
-        nameField.setText(firstName);
-
-    }
-
-    private void setClickListeners() {
-        toolbarBackBtn.setOnClickListener(this::onViewClick);
-        uploadPhotoBtn.setOnClickListener(this::onViewClick);
-        changePhotoCancelBtn.setOnClickListener(this::onViewClick);
     }
 
     private void onViewClick(View v) {
@@ -144,4 +120,12 @@ public class UserEditFragment extends Fragment {
                 break;
         }
     }
+
+    @Override
+    public void onDestroy() {
+        if (getContext() != null)
+            ((UserPageActivity) getContext()).hideBottomNavigation(true);
+        super.onDestroy();
+    }
+
 }

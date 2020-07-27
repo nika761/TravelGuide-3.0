@@ -1,4 +1,4 @@
-package com.example.travelguide.utils;
+package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -9,9 +9,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -23,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.VideoPlayerRecyclerAdapter;
-import com.example.travelguide.model.Post;
+import com.example.travelguide.model.response.PostResponseModel;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -47,6 +45,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class VideoPlayerRecyclerView extends RecyclerView {
 
@@ -54,19 +53,17 @@ public class VideoPlayerRecyclerView extends RecyclerView {
 
     private enum VolumeState {ON, OFF}
 
-    ;
-
     // ui
     private ImageView thumbnail, volumeControl;
     private ProgressBar progressBar;
     private View viewHolderParent;
     //    private FrameLayout frameLayout;
-    private LinearLayout constraintLayout;
+    private ConstraintLayout constraintLayout;
     private PlayerView videoSurfaceView;
     private SimpleExoPlayer videoPlayer;
 
     // vars
-    private ArrayList<String> mediaObjects = new ArrayList<>();
+    private List<PostResponseModel.Post_stories> stories = new ArrayList<>();
     private int videoSurfaceDefaultHeight = 0;
     private int screenDefaultHeight = 0;
     private Context context;
@@ -259,7 +256,7 @@ public class VideoPlayerRecyclerView extends RecyclerView {
                 targetPosition = startPosition;
             }
         } else {
-            targetPosition = mediaObjects.size() - 1;
+            targetPosition = stories.size() - 1;
         }
 
         Log.d(TAG, "playVideo: target position: " + targetPosition);
@@ -295,10 +292,11 @@ public class VideoPlayerRecyclerView extends RecyclerView {
 //        progressBar = holder.progressBar;
 //        volumeControl = holder.volumeControl;
         viewHolderParent = holder.itemView;
-//        videoSurfaceView = holder.itemView.findViewById(R.id.new_player);
+
+        videoSurfaceView = holder.itemView.findViewById(R.id.new_player_test);
 //        requestManager = holder.requestManager;
 //        frameLayout = holder.itemView.findViewById(R.id.layout_post);
-        constraintLayout = holder.itemView.findViewById(R.id.layout_post);
+        constraintLayout = holder.itemView.findViewById(R.id.layout_post_test);
 
         videoSurfaceView.setPlayer(videoPlayer);
 
@@ -306,7 +304,7 @@ public class VideoPlayerRecyclerView extends RecyclerView {
 
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
                 context, Util.getUserAgent(context, "RecyclerView VideoPlayer"));
-        String mediaUrl = mediaObjects.get(targetPosition);
+        String mediaUrl = stories.get(targetPosition).getUrl();
         if (mediaUrl != null) {
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(Uri.parse(mediaUrl));
@@ -432,7 +430,7 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         }
     }
 
-    public void setMediaObjects(ArrayList<String> mediaObjects) {
-        this.mediaObjects = mediaObjects;
+    public void setStories(List<PostResponseModel.Post_stories> stories) {
+        this.stories = stories;
     }
 }

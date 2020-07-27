@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperGlide;
 import com.example.travelguide.model.User;
-import com.example.travelguide.utils.UtilsGlide;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.Foll
     }
 
     private void setDataIntoViews(FollowersViewHolder viewHolder, User currentUser) {
-        UtilsGlide.loadCirclePhoto(context, currentUser.getUrl(), viewHolder.followersUserImage);
+        HelperGlide.loadCirclePhoto(context, currentUser.getUrl(), viewHolder.followersUserImage);
         viewHolder.followersUserName.setText(currentUser.getName());
         viewHolder.followersUserLastName.setText(currentUser.getLastName());
         viewHolder.followersUserNickName.setText(currentUser.getEmail());

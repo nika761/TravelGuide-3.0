@@ -3,19 +3,15 @@ package com.example.travelguide.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.fragments.SignInFragment;
-import com.example.travelguide.utils.UtilsUI;
+import com.example.travelguide.helper.HelperUI;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -28,7 +24,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
         initUI();
 //        loadFragment(new SignInFragment(), null, R.id.fragment_container, false);
-        UtilsUI.loadFragment(new SignInFragment(), null, R.id.fragment_container, false, this);
+        HelperUI.loadFragment(new SignInFragment(), null, R.id.fragment_container, false, this);
     }
 
     private void initUI() {

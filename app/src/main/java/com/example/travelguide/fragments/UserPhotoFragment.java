@@ -23,20 +23,18 @@ public class UserPhotoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_photo, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_p_photo, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        iniUI(view);
+//        iniUI(view);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadAnimation(firstPhotoContent, R.anim.anim_photo_content_tab,0);
     }
 
     @Override
@@ -46,7 +44,7 @@ public class UserPhotoFragment extends Fragment {
     }
 
     private void iniUI(View v) {
-        firstPhotoContent = v.findViewById(R.id.first_photo_content);
+//        firstPhotoContent = v.findViewById(R.id.first_photo_content);
     }
 
     private void loadAnimation(View target, int animationId, int offset) {

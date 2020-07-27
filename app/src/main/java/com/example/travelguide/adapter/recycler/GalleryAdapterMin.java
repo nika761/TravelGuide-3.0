@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.travelguide.R;
 import com.example.travelguide.fragments.GalleryFragment;
-import com.example.travelguide.utils.UtilsMedia;
+import com.example.travelguide.helper.HelperMedia;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ public class GalleryAdapterMin extends RecyclerView.Adapter<GalleryAdapterMin.Vi
                     .apply(new RequestOptions().centerCrop())
                     .into(holder.imageView);
             holder.duration.setVisibility(View.VISIBLE);
-            holder.duration.setText(UtilsMedia.getVideoDuration(selectedItemsPath.get(position)));
+            holder.duration.setText(HelperMedia.getVideoDuration(selectedItemsPath.get(position)));
         } else {
             holder.duration.setVisibility(View.GONE);
             Glide.with(holder.imageView.getContext())

@@ -13,7 +13,6 @@ import com.example.travelguide.fragments.SearchGoFragment;
 import com.example.travelguide.fragments.SearchHashtagsFragment;
 import com.example.travelguide.fragments.SearchStoriesFragment;
 import com.example.travelguide.fragments.SearchUsersFragment;
-import com.example.travelguide.utils.UtilsUI;
 import com.google.android.material.tabs.TabLayout;
 
 public class SearchActivity extends AppCompatActivity {

@@ -18,13 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.adapter.recycler.UploadStoryAdapter;
+import com.example.travelguide.helper.HelperClients;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.interfaces.IUploadStory;
 import com.example.travelguide.model.request.UploadStoryRequestModel;
 import com.example.travelguide.model.response.UploadStoryResponseModel;
 import com.example.travelguide.presenters.UploadStoryPresenter;
-import com.example.travelguide.utils.UtilsClients;
-import com.example.travelguide.utils.UtilsPermissions;
-import com.example.travelguide.utils.UtilsPref;
+import com.example.travelguide.helper.HelperPermissions;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -75,7 +75,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
         ArrayList<String> paths = getIntent().getStringArrayListExtra("selectedPaths");
         if (paths != null) {
 
-            //            UtilsMedia.reduceVideoQuality(paths, new UtilsMedia.VideoQualityCallBack() {
+            //            HelperMedia.reduceVideoQuality(paths, new HelperMedia.VideoQualityCallBack() {
 //                @Override
 //                public void onQualityReduced(String destPath) {
 //                    Toast.makeText(UploadStoryActivity.this, "Success", Toast.LENGTH_SHORT).show();
@@ -111,7 +111,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
             for (String current : paths) {
                 if (current.endsWith(".mp4")) {
                     uploadFile(current);
-//                    String videoBinary = UtilsMedia.encodeVideo(current);
+//                    String videoBinary = HelperMedia.encodeVideo(current);
 //                    videos.add(videoBinary);
                 } else {
                     uploadFile(current);
@@ -120,7 +120,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 //                    try {
 //                        imageStream = getContentResolver().openInputStream(itemUri);
 //                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//                        String encodedImage = UtilsMedia.encodeImage(selectedImage);
+//                        String encodedImage = HelperMedia.encodeImage(selectedImage);
 //                        photos.add(encodedImage);
 //                    } catch (FileNotFoundException e) {
 //                        e.printStackTrace();
@@ -138,7 +138,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
     }
 
     private void startUpload() {
-        uploadStoryPresenter.uploadStory("Bearer" + " " + UtilsPref.getCurrentAccessToken(this), uploadStoryRequestModel);
+        uploadStoryPresenter.uploadStory("Bearer" + " " + HelperPref.getCurrentAccessToken(this), uploadStoryRequestModel);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -208,7 +208,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
     }
 
     public void checkPermission() {
-        if (UtilsPermissions.isReadStoragePermission(this)) {
+        if (HelperPermissions.isReadStoragePermission(this)) {
 //            new GligarPicker().requestCode(PICKER_REQUEST_CODE).withActivity(this).show();
 //            openGallery();
             List<String> stringList = fetchMedia(3);
@@ -224,7 +224,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 
             }
         } else {
-            UtilsPermissions.requestReadStoragePermission(this);
+            HelperPermissions.requestReadStoragePermission(this);
         }
     }
 
@@ -293,8 +293,8 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
         lottieAnimationView.setVisibility(View.GONE);
         Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
         finish();
-        String url = UtilsClients.amazonS3Client(this).getResourceUrl(UtilsClients.BUCKET, fileForUpload.getName());
-//        String url = UtilsClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
+        String url = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.BUCKET, fileForUpload.getName());
+//        String url = HelperClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
 //        Log.e("link", url);
     }
 
@@ -346,7 +346,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 ////        s3Client.putObject(putObjectRequest);
 //        TransferManager tm = new TransferManager(credentials);
 //        MultipleFileUpload upload = tm.uploadFileList(myBucket, myKeyPrefix, rootDirectory, fileList);
-        uploadStoryPresenter.uploadToS3(UtilsClients.uploadObserver(this, fileForUpload));
+        uploadStoryPresenter.uploadToS3(HelperClients.uploadObserver(this, fileForUpload));
 //        uploadObserver.setTransferListener(new TransferListener() {
 //
 //            @Override
@@ -354,7 +354,7 @@ public class UploadStoryActivity extends AppCompatActivity implements IUploadSto
 //                if (TransferState.COMPLETED == state) {
 //                    lottieAnimationView.setVisibility(View.GONE);
 //                    Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-//                    String url = UtilsClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
+//                    String url = HelperClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
 //                    Log.e("link", url);
 ////                    file.delete();
 //                } else if (TransferState.FAILED == state) {

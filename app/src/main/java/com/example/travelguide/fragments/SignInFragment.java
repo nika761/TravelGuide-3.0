@@ -31,10 +31,9 @@ import com.example.travelguide.model.User;
 import com.example.travelguide.model.request.LoginRequestModel;
 import com.example.travelguide.model.response.LoginResponseModel;
 import com.example.travelguide.presenters.SignInPresenter;
-import com.example.travelguide.utils.UtilsFields;
-import com.example.travelguide.utils.UtilsClients;
-import com.example.travelguide.utils.UtilsPref;
-import com.example.travelguide.utils.UtilsUI;
+import com.example.travelguide.helper.HelperClients;
+import com.example.travelguide.helper.HelperPref;
+import com.example.travelguide.helper.HelperUI;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -79,13 +78,12 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUI(view);
-        setClickListeners();
     }
 
 
     private void initUI(View view) {
         signInPresenter = new SignInPresenter(this);
-        mGoogleSignInClient = UtilsClients.googleSignInClient(context);
+        mGoogleSignInClient = HelperClients.googleSignInClient(context);
         signBtnGoogle = view.findViewById(R.id.sign_in_button_google);
         signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
         googleBtn = view.findViewById(R.id.google);
@@ -108,48 +106,46 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         terms = view.findViewById(R.id.linear_terms);
         termsOfServices = view.findViewById(R.id.terms_of_services);
         privacyPolicy = view.findViewById(R.id.privacy_policy);
-    }
-
-    private void setClickListeners() {
-
         registerTxt.setOnClickListener(this::onViewClick);
-
         signInBtn.setOnClickListener(this::onViewClick);
-
         googleBtn.setOnClickListener(this::onViewClick);
-
         forgotPassword.setOnClickListener(this::onViewClick);
-
         facebookBtn.setOnClickListener(this::onViewClick);
-
         termsOfServices.setOnClickListener(this::onViewClick);
-
         privacyPolicy.setOnClickListener(this::onViewClick);
-
         enterEmail.setOnFocusChangeListener(this::onFocusChange);
-
         enterPassword.setOnFocusChangeListener(this::onFocusChange);
-
     }
 
     private void startUserActivity(User user) {
         User currentUser = new User(user.getName(), user.getLastName(), user.getUrl(), user.getId(), user.getEmail(), user.getLoginType());
-        UtilsPref.saveUser(context, currentUser);
+        HelperPref.saveUser(context, currentUser);
         Intent intent = new Intent(getActivity(), UserPageActivity.class);
         intent.putExtra("loggedUser", user);
         startActivity(intent);
     }
 
     private void signInWithAccount() {
-        email = UtilsFields.checkEditTextData(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), email, getResources().getColor(R.color.red), getResources().getColor(R.color.white));
-        password = UtilsFields.checkEditTextData(enterPassword, enterPasswordHead, getString(R.string.password), password, getResources().getColor(R.color.red), getResources().getColor(R.color.white));
-        if (email != null && UtilsFields.checkEmail(email) && password != null && UtilsFields.checkPassword(password)) {
-            ((SignInActivity) context).startLoader();
-            LoginRequestModel loginRequestModel = new LoginRequestModel(email, password);
-            signInPresenter.sentLoginRequest(loginRequestModel);
-        } else {
-            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
-        }
+//        email = HelperFields.checkEditTextData(enterEmail, enterMailHead,
+//                getString(R.string.email_or_phone_number), email,
+//                getResources().getColor(R.color.red), getResources().getColor(R.color.white));
+//        password = HelperFields.checkEditTextData(enterPassword,
+//                enterPasswordHead, getString(R.string.password), password,
+//                getResources().getColor(R.color.red), getResources().getColor(R.color.white));
+        email = enterEmail.getText().toString();
+        password = enterPassword.getText().toString();
+
+        ((SignInActivity) context).startLoader();
+        LoginRequestModel loginRequestModel = new LoginRequestModel(email, password);
+        signInPresenter.sentLoginRequest(loginRequestModel);
+//
+//        if (email != null && HelperFields.checkEmail(email) && password != null && HelperFields.checkPassword(password)) {
+//            ((SignInActivity) context).startLoader();
+//            LoginRequestModel loginRequestModel = new LoginRequestModel(email, password);
+//            signInPresenter.sentLoginRequest(loginRequestModel);
+//        } else {
+//            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private void signInWithGoogle() {
@@ -212,16 +208,16 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     @Override
     public void onGetLoginResult(LoginResponseModel loginResponseModel) {
         if (loginResponseModel.getUser() != null) {
-            userDataFromServer(loginResponseModel.getUser());
-            UtilsPref.saveAccessToken(context, loginResponseModel.getAccess_token());
+            onUserLogged(loginResponseModel.getUser());
+            HelperPref.saveAccessToken(context, loginResponseModel.getAccess_token());
             Toast.makeText(context, "Signed", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void userDataFromServer(LoginResponseModel.User userFromServer) {
-        UtilsPref.saveServerUser(context, userFromServer);
+    private void onUserLogged(LoginResponseModel.User loggedUser) {
+        HelperPref.saveServerUser(context, loggedUser);
         Intent intent = new Intent(context, UserPageActivity.class);
-        intent.putExtra("server_user", userFromServer);
+        intent.putExtra("server_user", loggedUser);
         ((SignInActivity) context).stopLoader();
         context.startActivity(intent);
         ((SignInActivity) context).finish();
@@ -277,11 +273,11 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 break;
 
             case R.id.terms_of_services:
-                UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.TERMS);
+                HelperUI.startTermsAndPolicyActivity(context, HelperUI.TERMS);
                 break;
 
             case R.id.privacy_policy:
-                UtilsUI.startTermsAndPolicyActivity(context, UtilsUI.POLICY);
+                HelperUI.startTermsAndPolicyActivity(context, HelperUI.POLICY);
                 break;
 
             case R.id.forgot_password_sign_in:
