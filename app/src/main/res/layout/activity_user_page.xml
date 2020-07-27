@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/splashScreenBackground"
     android:orientation="vertical"
-    tools:context=".activity.UserPageActivity">
+    tools:context=".home.activity.UserPageActivity">
 
     <FrameLayout
         android:id="@+id/user_page_frg_container"

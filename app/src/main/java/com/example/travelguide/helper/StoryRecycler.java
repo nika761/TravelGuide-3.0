@@ -21,7 +21,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.RequestManager;
 import com.example.travelguide.R;
-import com.example.travelguide.adapter.recycler.VideoPlayerRecyclerAdapter;
+import com.example.travelguide.home.adapter.recycler.VideoPlayerRecyclerAdapter;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;

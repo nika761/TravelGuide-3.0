@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.travelguide.activity.TermsAndPrivacyActivity;
+import com.example.travelguide.login.activity.TermsAndPrivacyActivity;
 
 public class HelperUI {
 
