@@ -21,20 +21,20 @@ import java.util.ArrayList;
 
 import jp.shts.android.storiesprogressview.StoriesProgressView;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class Example extends RecyclerView.Adapter<Example.PostViewHolder> {
 
     private ArrayList<String> posts;
     private int oldPosition;
     private int currentPosition;
 
-    public PostAdapter(ArrayList<String> posts) {
+    public Example(ArrayList<String> posts) {
         this.posts = posts;
     }
 
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PostViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false));
+        return new PostViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_story, parent, false));
     }
 
     @Override
@@ -105,8 +105,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         PostViewHolder(@NonNull View itemView) {
             super(itemView);
 //            imageView = itemView.findViewById(R.id.image_story);
-            storiesProgressView = itemView.findViewById(R.id.stories);
-            videoView = itemView.findViewById(R.id.video_story);
+//            storiesProgressView = itemView.findViewById(R.id.stories);
+//            videoView = itemView.findViewById(R.id.video_story);
             objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0, 100);
 
             objectAnimator.addListener(new AnimatorListenerAdapter() {

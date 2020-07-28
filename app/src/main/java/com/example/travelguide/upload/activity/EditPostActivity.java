@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
-import com.example.travelguide.upload.adapter.recycler.UploadStoryAdapter;
+import com.example.travelguide.upload.adapter.recycler.EditPostAdapter;
 import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.upload.interfaces.IUploadStory;
@@ -33,82 +34,86 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UploadPostActivity extends AppCompatActivity implements IUploadStory {
+public class EditPostActivity extends AppCompatActivity implements IUploadStory {
     private static final int FILTER_ACTIVITY = 1;
     private TextView btnNext;
     private ImageView btnBack;
     private ArrayList<Uri> uriArrayList = new ArrayList<>();
-    private UploadStoryAdapter adapter;
+    private ArrayList<String> storiesPath = new ArrayList<>();
+    private EditPostAdapter adapter;
     private int adapterPosition;
-    private List<String> photos = new ArrayList<>();
-    private List<String> videos = new ArrayList<>();
     private UploadPostPresenter uploadPostPresenter;
     private LottieAnimationView lottieAnimationView;
     private UploadStoryRequestModel uploadStoryRequestModel;
     private File fileForUpload;
+    private RecyclerView recyclerEditStories;
+    private Button postBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prepare_story);
+        setContentView(R.layout.activity_edit_post);
         initUI();
         setClickListeners();
-        initContentRecyclerAdapter(getIntent().getStringArrayListExtra("selectedPaths"));
+        this.storiesPath = getIntent().getStringArrayListExtra("selectedPaths");
+        initStoriesEditRecycler(storiesPath);
     }
 
     private void initUI() {
         uploadPostPresenter = new UploadPostPresenter(this);
-        btnNext = findViewById(R.id.btn_next_upload_story);
-        btnBack = findViewById(R.id.btn_back_upload_story);
+        btnNext = findViewById(R.id.edit_post_next_btn);
+        btnBack = findViewById(R.id.edit_post_back_btn);
+        recyclerEditStories = findViewById(R.id.recycler_post);
         lottieAnimationView = findViewById(R.id.animation_view_upload);
     }
 
     private void setClickListeners() {
         btnBack.setOnClickListener(v -> onBackPressed());
         btnNext.setOnClickListener(v -> {
-            lottieAnimationView.setVisibility(View.VISIBLE);
-            setItemsForUpload();
+//            lottieAnimationView.setVisibility(View.VISIBLE);
+//            setItemsForUpload();
+            Intent intent = new Intent(this, DescribePostActivity.class);
+            intent.putStringArrayListExtra("stories", storiesPath);
+            startActivity(intent);
         });
     }
 
     private void setItemsForUpload() {
-        ArrayList<String> paths = getIntent().getStringArrayListExtra("selectedPaths");
-        if (paths != null) {
-
+        if (storiesPath != null) {
             //            HelperMedia.reduceVideoQuality(paths, new HelperMedia.VideoQualityCallBack() {
 //                @Override
 //                public void onQualityReduced(String destPath) {
-//                    Toast.makeText(UploadPostActivity.this, "Success", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(UploadPostActivity.this, MediaDetailActivity.class);
+//                    Toast.makeText(EditPostActivity.this, "Success", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(EditPostActivity.this, MediaDetailActivity.class);
 //                    intent.putExtra("path", destPath);
 //                    startActivity(intent);
 //                }
 //
 //                @Override
 //                public void onStart() {
-//                    Toast.makeText(UploadPostActivity.this, "Start", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(EditPostActivity.this, "Start", Toast.LENGTH_SHORT).show();
 //
 //                }
 //
 //                @Override
 //                public void onFail() {
-//                    Toast.makeText(UploadPostActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(EditPostActivity.this, "Fail", Toast.LENGTH_SHORT).show();
 //
 //                }
 //
 //                @Override
 //                public void onProgress() {
-//                    Toast.makeText(UploadPostActivity.this, "Progress", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(EditPostActivity.this, "Progress", Toast.LENGTH_SHORT).show();
 //
 //                }
 //
 //                @Override
 //                public void onCancel() {
-//                    Toast.makeText(UploadPostActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(EditPostActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
 //
 //                }
 //            }, this);
-            for (String current : paths) {
+            for (String current : storiesPath) {
                 if (current.endsWith(".mp4")) {
                     uploadFile(current);
 //                    String videoBinary = HelperMedia.encodeVideo(current);
@@ -128,13 +133,9 @@ public class UploadPostActivity extends AppCompatActivity implements IUploadStor
                 }
 
             }
-
-
 //            uploadStoryRequestModel = new UploadStoryRequestModel(17, photos, videos);
 //            startUpload();
-
         }
-
     }
 
     private void startUpload() {
@@ -198,14 +199,14 @@ public class UploadPostActivity extends AppCompatActivity implements IUploadStor
 //        }
 //    }
 
-    private void initContentRecyclerAdapter(ArrayList<String> photos) {
-        RecyclerView recyclerView = findViewById(R.id.recycler_post);
-        adapter = new UploadStoryAdapter(this, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+    private void initStoriesEditRecycler(ArrayList<String> photos) {
+        adapter = new EditPostAdapter(this, this);
+        recyclerEditStories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        recyclerEditStories.setHasFixedSize(true);
+        recyclerEditStories.setAdapter(adapter);
         adapter.setUriArrayList(photos);
     }
+
 
     public void checkPermission() {
         if (HelperPermissions.isReadStoragePermission(this)) {
@@ -221,7 +222,6 @@ public class UploadPostActivity extends AppCompatActivity implements IUploadStor
 
 //                initContentRecyclerAdapter(uriArrayList);
 ////                new Thread(this::setPhotosForUpload).start();
-
             }
         } else {
             HelperPermissions.requestReadStoragePermission(this);
@@ -244,6 +244,11 @@ public class UploadPostActivity extends AppCompatActivity implements IUploadStor
         i.putExtra("image_for_filter", path);
         i.putExtra("position_for_image", position);
         startActivityForResult(i, FILTER_ACTIVITY);
+    }
+
+    @Override
+    public void onStoryDeleted(ArrayList<String> storiesPath) {
+        this.storiesPath = storiesPath;
     }
 
     public void onCropFinish(int resultCode, Intent data) {

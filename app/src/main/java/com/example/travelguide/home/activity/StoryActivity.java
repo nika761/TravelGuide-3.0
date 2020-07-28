@@ -72,7 +72,6 @@ public class StoryActivity extends AppCompatActivity implements StoriesProgressV
     @Override
     public void onPrev() {
         HelperGlide.loadPhoto(this, items.get(--counter), storyPhoto);
-
     }
 
     @Override

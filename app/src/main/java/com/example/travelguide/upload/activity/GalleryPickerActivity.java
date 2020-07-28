@@ -46,7 +46,7 @@ public class GalleryPickerActivity extends AppCompatActivity implements GalleryF
 
     private void setClickListeners() {
         nextBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(GalleryPickerActivity.this, UploadPostActivity.class);
+            Intent intent = new Intent(GalleryPickerActivity.this, EditPostActivity.class);
             intent.putStringArrayListExtra("selectedPaths", pickedItems);
             startActivity(intent);
         });

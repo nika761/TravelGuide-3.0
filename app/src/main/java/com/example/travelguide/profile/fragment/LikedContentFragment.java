@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.travelguide.R;
 
-public class UserLikedFragment extends Fragment {
+public class LikedContentFragment extends Fragment {
 
     private TextView tabMain, tabVides, tabPhotos, tabAll;
     private View contentList;

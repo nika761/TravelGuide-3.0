@@ -1,6 +1,7 @@
 package com.example.travelguide.profile.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,21 +20,20 @@ import com.example.travelguide.R;
 import com.example.travelguide.home.activity.UserPageActivity;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.profile.activity.ChangePhotoActivity;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserEditFragment extends Fragment {
+public class EditProfileFragment extends Fragment {
 
     private EditText name,
             surName, nickName, email, phoneNumber, country, password, bio;
     private CircleImageView userImage;
     private TextView toolbarBackBtn, birthDate;
     private Context context;
-    private ImageView changePhotoImage, uploadPhotoBtn;
-    private View changePhotoLayout;
-    private Button changePhotoCancelBtn;
+    private ImageView changePhotoBtn;
 
     @Nullable
     @Override
@@ -54,14 +54,8 @@ public class UserEditFragment extends Fragment {
         toolbarBackBtn = view.findViewById(R.id.user_prf_back_btn);
         toolbarBackBtn.setOnClickListener(this::onViewClick);
 
-        changePhotoLayout = view.findViewById(R.id.change_photo_layout);
-        changePhotoImage = view.findViewById(R.id.change_photo_image);
-
-        uploadPhotoBtn = view.findViewById(R.id.change_photo_btn);
-        uploadPhotoBtn.setOnClickListener(this::onViewClick);
-
-        changePhotoCancelBtn = view.findViewById(R.id.change_edit_profile_photo_cancel_btn);
-        changePhotoCancelBtn.setOnClickListener(this::onViewClick);
+        changePhotoBtn = view.findViewById(R.id.change_photo_btn);
+        changePhotoBtn.setOnClickListener(this::onViewClick);
 
         return view;
     }
@@ -112,12 +106,10 @@ public class UserEditFragment extends Fragment {
                 break;
 
             case R.id.change_photo_btn:
-                changePhotoLayout.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(context, ChangePhotoActivity.class);
+                context.startActivity(intent);
                 break;
 
-            case R.id.change_edit_profile_photo_cancel_btn:
-                changePhotoLayout.setVisibility(View.GONE);
-                break;
         }
     }
 

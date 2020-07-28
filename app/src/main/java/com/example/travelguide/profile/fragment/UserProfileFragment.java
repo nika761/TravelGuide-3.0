@@ -135,7 +135,7 @@ public class UserProfileFragment extends Fragment {
     private void setupTabWithViewPager(ViewPager viewPager) {
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
         profilePagerAdapter.addFragment(new UserPhotoFragment());
-        profilePagerAdapter.addFragment(new UserLikedFragment());
+        profilePagerAdapter.addFragment(new LikedContentFragment());
         profilePagerAdapter.addFragment(new UserTourFragment());
         viewPager.setAdapter(profilePagerAdapter);
 
@@ -220,7 +220,7 @@ public class UserProfileFragment extends Fragment {
                 break;
 
             case R.id.edit_profile:
-                HelperUI.loadFragment(new UserEditFragment(), null, R.id.user_page_frg_container, true, ((UserPageActivity) context));
+                HelperUI.loadFragment(new EditProfileFragment(), null, R.id.user_page_frg_container, true, ((UserPageActivity) context));
                 break;
         }
     }

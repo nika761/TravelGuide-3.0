@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".upload.activity.UploadPostActivity">
+    tools:context=".upload.activity.EditPostActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_post"
+        android:id="@+id/edit_post_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_gravity="start"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,14 +17,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/btn_back_upload_story"
+            android:id="@+id/edit_post_back_btn"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@drawable/icon_back"
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/btn_next_upload_story"
+            android:id="@+id/edit_post_next_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -46,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_post" />
+        app:layout_constraintTop_toBottomOf="@id/edit_post_toolbar" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view_upload"

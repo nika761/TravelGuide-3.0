@@ -8,8 +8,9 @@
     <ImageButton
         android:id="@+id/search_back_btn_second"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/icon_back"
         app:layout_constraintBottom_toBottomOf="@id/search_edit_text_second"
         app:layout_constraintEnd_toStartOf="@id/search_edit_text_second"
@@ -20,7 +21,6 @@
         android:id="@+id/search_edit_text_second"
         android:layout_width="280dp"
         android:layout_height="35dp"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_content"
         android:drawableEnd="@drawable/icon_close"
@@ -35,8 +35,8 @@
 
     <ImageButton
         android:id="@+id/search_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="31dp"
+        android:layout_height="31dp"
         android:background="@drawable/icon_search_yellow"
         app:layout_constraintBottom_toBottomOf="@id/search_edit_text_second"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +99,9 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_line" />
+        app:layout_constraintTop_toBottomOf="@id/search_line"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

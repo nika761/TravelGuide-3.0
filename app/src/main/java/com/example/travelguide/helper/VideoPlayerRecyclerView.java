@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.example.travelguide.R;
-import com.example.travelguide.home.adapter.recycler.VideoPlayerRecyclerAdapter;
+import com.example.travelguide.home.adapter.recycler.StoryRecyclerAdapter;
 import com.example.travelguide.model.response.PostResponseModel;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -282,21 +282,21 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         if (child == null) {
             return;
         }
-
-        VideoPlayerRecyclerAdapter.VideoPlayerViewHolder holder = (VideoPlayerRecyclerAdapter.VideoPlayerViewHolder) child.getTag();
-        if (holder == null) {
-            playPosition = -1;
-            return;
-        }
+//
+//        StoryRecyclerAdapter.VideoPlayerViewHolder holder = (StoryRecyclerAdapter.VideoPlayerViewHolder) child.getTag();
+//        if (holder == null) {
+//            playPosition = -1;
+//            return;
+//        }
 //        thumbnail = holder.thumbnail;
 //        progressBar = holder.progressBar;
 //        volumeControl = holder.volumeControl;
-        viewHolderParent = holder.itemView;
+//        viewHolderParent = holder.itemView;
 
-        videoSurfaceView = holder.itemView.findViewById(R.id.new_player_test);
+//        videoSurfaceView = holder.itemView.findViewById(R.id.new_player_test);
 //        requestManager = holder.requestManager;
 //        frameLayout = holder.itemView.findViewById(R.id.layout_post);
-        constraintLayout = holder.itemView.findViewById(R.id.layout_post_test);
+//        constraintLayout = holder.itemView.findViewById(R.id.layout_post_test);
 
         videoSurfaceView.setPlayer(videoPlayer);
 
