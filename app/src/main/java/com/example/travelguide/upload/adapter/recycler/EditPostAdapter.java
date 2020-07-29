@@ -58,7 +58,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<EditPostAdapter.Upload
                     holder.videoItem.setVisibility(View.GONE);
                     Glide.with(holder.photoItem.getContext())
                             .load(itemPaths.get(position))
-                            .apply(new RequestOptions().centerInside())
+                            .apply(new RequestOptions().centerCrop())
                             .into(holder.photoItem);
 //        holder.photoItem.setImageURI(uriArrayList.get(position));
 //        holder.editPhotoItemBtn.setOnClickListener(v -> iUploadStory.onGetItem(uriArrayList.get(position), position));
@@ -110,6 +110,9 @@ public class EditPostAdapter extends RecyclerView.Adapter<EditPostAdapter.Upload
             ImageButton delete = itemView.findViewById(R.id.delete_image);
             delete.setOnClickListener(this);
 
+            ImageButton sort = itemView.findViewById(R.id.sort_image);
+            sort.setOnClickListener(this);
+
             photoItem = itemView.findViewById(R.id.photo_item);
             videoItem = itemView.findViewById(R.id.video_item);
         }
@@ -120,12 +123,20 @@ public class EditPostAdapter extends RecyclerView.Adapter<EditPostAdapter.Upload
                 case R.id.crop_image:
                     iUploadStory.onCropChoose(itemPaths.get(getLayoutPosition()), getLayoutPosition());
                     break;
+
                 case R.id.filter_image:
                     iUploadStory.onFilterChoose(itemPaths.get(getLayoutPosition()), getLayoutPosition());
                     break;
+
+                case R.id.sort_image:
+                    iUploadStory.onSortChoose(itemPaths);
+                    break;
+
                 case R.id.delete_image:
                     itemPaths.remove(getLayoutPosition());
                     notifyItemRemoved(getLayoutPosition());
+                    iUploadStory.onStoryDeleted(itemPaths);
+
                     if (itemPaths.size() == 0) {
                         Intent intent = new Intent(context, GalleryPickerActivity.class);
                         context.startActivity(intent);

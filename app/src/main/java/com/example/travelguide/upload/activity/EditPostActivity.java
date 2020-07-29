@@ -36,6 +36,8 @@ import java.util.List;
 
 public class EditPostActivity extends AppCompatActivity implements IUploadStory {
     private static final int FILTER_ACTIVITY = 1;
+    private static final int SORT_ACTIVITY = 2;
+    public static final String STORIES_PATHS = "selectedPaths";
     private TextView btnNext;
     private ImageView btnBack;
     private ArrayList<Uri> uriArrayList = new ArrayList<>();
@@ -55,7 +57,7 @@ public class EditPostActivity extends AppCompatActivity implements IUploadStory 
         setContentView(R.layout.activity_edit_post);
         initUI();
         setClickListeners();
-        this.storiesPath = getIntent().getStringArrayListExtra("selectedPaths");
+        this.storiesPath = getIntent().getStringArrayListExtra(STORIES_PATHS);
         initStoriesEditRecycler(storiesPath);
     }
 
@@ -72,8 +74,8 @@ public class EditPostActivity extends AppCompatActivity implements IUploadStory 
         btnNext.setOnClickListener(v -> {
 //            lottieAnimationView.setVisibility(View.VISIBLE);
 //            setItemsForUpload();
-            Intent intent = new Intent(this, DescribePostActivity.class);
-            intent.putStringArrayListExtra("stories", storiesPath);
+            Intent intent = new Intent(this, ChooseMusicActivity.class);
+            intent.putStringArrayListExtra(STORIES_PATHS, storiesPath);
             startActivity(intent);
         });
     }
@@ -150,6 +152,10 @@ public class EditPostActivity extends AppCompatActivity implements IUploadStory 
                 break;
             case FILTER_ACTIVITY:
                 onFilterFinish(resultCode, data);
+                break;
+
+            case SORT_ACTIVITY:
+                onSortFinish(resultCode, data);
                 break;
         }
     }
@@ -247,6 +253,14 @@ public class EditPostActivity extends AppCompatActivity implements IUploadStory 
     }
 
     @Override
+    public void onSortChoose(ArrayList<String> stories) {
+        this.storiesPath = stories;
+        Intent intent = new Intent(this, SortStoriesActivity.class);
+        intent.putStringArrayListExtra(STORIES_PATHS, storiesPath);
+        startActivityForResult(intent, SORT_ACTIVITY);
+    }
+
+    @Override
     public void onStoryDeleted(ArrayList<String> storiesPath) {
         this.storiesPath = storiesPath;
     }
@@ -278,6 +292,21 @@ public class EditPostActivity extends AppCompatActivity implements IUploadStory 
             case RESULT_CANCELED:
                 Toast.makeText(this, "Image Filter Error", Toast.LENGTH_LONG).show();
                 break;
+        }
+    }
+
+    private void onSortFinish(int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_OK:
+                this.storiesPath = data.getStringArrayListExtra(STORIES_PATHS);
+                adapter.setUriArrayList(storiesPath);
+                Toast.makeText(this, "Item Sort Successful", Toast.LENGTH_LONG).show();
+                break;
+
+            case RESULT_CANCELED:
+                Toast.makeText(this, "Item Sort Error", Toast.LENGTH_LONG).show();
+                break;
+
         }
     }
 

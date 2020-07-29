@@ -36,7 +36,7 @@
             android:text="Undo"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/filter_close"
@@ -60,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/transparent"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

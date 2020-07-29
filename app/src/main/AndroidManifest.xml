@@ -116,7 +116,15 @@
         <activity
             android:name=".profile.activity.ChangePhotoActivity"
             android:theme="@style/SecondAppTheme" />
-        <activity android:name=".upload.activity.DescribePostActivity"  android:theme="@style/SecondAppTheme"/>
+        <activity
+            android:name=".upload.activity.DescribePostActivity"
+            android:theme="@style/SecondAppTheme" />
+        <activity
+            android:name=".upload.activity.ChooseMusicActivity"
+            android:theme="@style/SecondAppTheme" />
+        <activity
+            android:name=".upload.activity.SortStoriesActivity"
+            android:theme="@style/SecondAppTheme" />
     </application>
 
 </manifest>

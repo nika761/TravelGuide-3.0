@@ -62,6 +62,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
             super(itemView);
             mImageFilterView = itemView.findViewById(R.id.imgFilterView);
             mImageFilterView.setOnClickListener(this);
+
             mTxtFilterName = itemView.findViewById(R.id.txtFilterName);
         }
 

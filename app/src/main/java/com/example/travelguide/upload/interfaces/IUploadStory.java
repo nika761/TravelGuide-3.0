@@ -12,6 +12,8 @@ public interface IUploadStory {
 
     void onFilterChoose(String path, int position);
 
+    void onSortChoose(ArrayList<String> stories);
+
     void onStoryDeleted(ArrayList<String> stories);
 
     void onStoryUploaded(UploadStoryResponseModel uploadStoryResponseModel);

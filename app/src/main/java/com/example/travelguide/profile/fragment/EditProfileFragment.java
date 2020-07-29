@@ -33,7 +33,7 @@ public class EditProfileFragment extends Fragment {
     private CircleImageView userImage;
     private TextView toolbarBackBtn, birthDate;
     private Context context;
-    private ImageView changePhotoBtn;
+    private View changePhotoBtn;
 
     @Nullable
     @Override

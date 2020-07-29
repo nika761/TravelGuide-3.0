@@ -85,20 +85,25 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
 
         ImageView imageView;
         TextView selectedItemCount, duration;
+        View selectItems;
 
         ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.media_photo);
-            duration = itemView.findViewById(R.id.duration);
-            selectedItemCount = itemView.findViewById(R.id.selected_image_item_cont);
             imageView.setOnClickListener(this);
-            selectedItemCount.setOnClickListener(this);
+
+            duration = itemView.findViewById(R.id.duration);
+
+            selectedItemCount = itemView.findViewById(R.id.selected_image_item_cont);
+
+            selectItems = itemView.findViewById(R.id.selected_image_item_count_view);
+            selectItems.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.selected_image_item_cont:
+                case R.id.selected_image_item_count_view:
                     if (selectedItemPositions.containsKey(getLayoutPosition())) {
                         for (Map.Entry<Integer, Integer> integerIntegerEntry : selectedItemPositions.entrySet()) {
                             if (selectedItemPositions.get(getLayoutPosition()) < (int) ((Map.Entry) integerIntegerEntry).getValue())

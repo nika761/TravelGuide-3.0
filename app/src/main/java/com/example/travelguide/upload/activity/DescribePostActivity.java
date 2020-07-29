@@ -14,7 +14,9 @@ import com.example.travelguide.upload.adapter.recycler.DescribePostAdapter;
 
 import java.util.ArrayList;
 
-public class DescribePostActivity extends AppCompatActivity implements View.OnClickListener{
+import static com.example.travelguide.upload.activity.EditPostActivity.STORIES_PATHS;
+
+public class DescribePostActivity extends AppCompatActivity implements View.OnClickListener {
     private ArrayList<String> storiesPath = new ArrayList<>();
     private ImageButton backBtn;
 
@@ -22,7 +24,7 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_describe_post);
-        this.storiesPath = getIntent().getStringArrayListExtra("stories");
+        this.storiesPath = getIntent().getStringArrayListExtra(STORIES_PATHS);
         backBtn = findViewById(R.id.describe_post_back_btn);
         backBtn.setOnClickListener(this);
         initStoriesDescribeRecycler(storiesPath);
@@ -40,7 +42,7 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.describe_post_back_btn:
                 finish();
                 break;

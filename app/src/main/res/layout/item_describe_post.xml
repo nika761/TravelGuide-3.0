@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:background="@color/white"
-        android:elevation="1dp"
-        android:text="Story - 1"
+        android:elevation="2dp"
+        android:text="Post"
         app:layout_constraintBottom_toTopOf="@id/describe_story_container"
         app:layout_constraintStart_toStartOf="@id/describe_story_container"
         app:layout_constraintTop_toTopOf="@id/describe_story_container" />

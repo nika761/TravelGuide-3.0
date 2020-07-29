@@ -75,8 +75,14 @@
                     android:layout_gravity="center"
                     android:src="@drawable/e_image_6" />
 
-                <ImageView
+                <View
                     android:id="@+id/change_photo_btn"
+                    android:layout_width="80dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="bottom|center">
+                </View>
+
+                <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"

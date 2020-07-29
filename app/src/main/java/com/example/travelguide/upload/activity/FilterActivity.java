@@ -107,11 +107,13 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.filter_done:
+
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("filtered_path", newPath);
                 resultIntent.putExtra("filtered_position", position);
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
+
                 break;
 
             case R.id.filter_close:

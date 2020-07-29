@@ -1,10 +1,14 @@
 package com.example.travelguide.profile.activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,11 +39,14 @@ public class ChangePhotoActivity extends AppCompatActivity implements View.OnCli
     private void initUI() {
         takePhotoBtn = findViewById(R.id.take_photo);
         takePhotoBtn.setOnClickListener(this);
+
         choosePhotoBtn = findViewById(R.id.choose_from_gallery);
         choosePhotoBtn.setOnClickListener(this);
+
         cancelBtn = findViewById(R.id.change_photo_cancel);
         cancelBtn.setOnClickListener(this);
-        imageView.findViewById(R.id.change_photo_image);
+
+        imageView = findViewById(R.id.change_photo_image);
     }
 
     @Override
@@ -47,7 +54,7 @@ public class ChangePhotoActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.take_photo:
 
-                if (!HelperPermissions.isCameraPermission(this)) {
+                if (HelperPermissions.isCameraPermission(this)) {
                     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(cameraIntent, TAKE_PHOTO_REQUEST);
                 } else {
@@ -70,9 +77,21 @@ public class ChangePhotoActivity extends AppCompatActivity implements View.OnCli
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == HelperPermissions.CAMERA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, TAKE_PHOTO_REQUEST);
+
+//                ContentValues values = new ContentValues();
+//                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+//                values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+//                Uri imageUri = getContentResolver().insert(
+//                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                startActivityForResult(intent, TAKE_PHOTO_REQUEST);
+
+
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
@@ -83,8 +102,13 @@ public class ChangePhotoActivity extends AppCompatActivity implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TAKE_PHOTO_REQUEST && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            imageView.setImageBitmap(photo);
+            try {
+                BitmapDrawable photo = (BitmapDrawable) data.getExtras().get("data");
+                imageView.setImageDrawable(photo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
