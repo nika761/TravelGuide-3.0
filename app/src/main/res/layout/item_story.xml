@@ -8,21 +8,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.travelguide.helper.ScaledVideoView
-            android:id="@+id/scalable_video"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="658dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <VideoView
+                android:id="@+id/scalable_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+            
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_story_gradient" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/story_react_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/blackStatusBar"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/post_desc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -30,7 +38,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|center"
                 android:orientation="vertical"
                 android:padding="10dp">
 
@@ -53,7 +61,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="22dp"
                     android:background="@drawable/emoji_heart" />
 
                 <TextView
@@ -67,7 +75,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="22dp"
                     android:background="@drawable/emoji_comment" />
 
                 <TextView
@@ -81,7 +89,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="22dp"
                     android:background="@drawable/emoji_share" />
 
                 <TextView
@@ -92,10 +100,10 @@
                     android:textColor="@color/white" />
 
                 <ImageButton
-                    android:layout_width="28dp"
+                    android:layout_width="35dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="22dp"
                     android:background="@drawable/emoji_link" />
 
                 <TextView
@@ -113,8 +121,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:background="@color/blackStatusBar"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="80dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/go"

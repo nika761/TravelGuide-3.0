@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.example.travelguide.R;
-import com.example.travelguide.home.adapter.recycler.StoryRecyclerAdapter;
 import com.example.travelguide.model.response.PostResponseModel;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;

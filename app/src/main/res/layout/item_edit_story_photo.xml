@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/edit_post_media_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="60dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/photo_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit"
+            android:paddingStart="30dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/edit_post_media_container"
+            app:layout_constraintEnd_toEndOf="@id/edit_post_media_container"
+            app:layout_constraintStart_toStartOf="@id/edit_post_media_container"
+            app:layout_constraintTop_toBottomOf="@id/edit_post_media_container">
+
+            <ImageButton
+                android:id="@+id/crop_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_crop"
+                app:layout_constraintEnd_toEndOf="@id/crop_text"
+                app:layout_constraintStart_toStartOf="@id/crop_text"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/crop_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="Crop"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@id/filter_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/crop_image" />
+
+            <ImageButton
+                android:id="@+id/filter_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_filter"
+                app:layout_constraintEnd_toEndOf="@id/filter_text"
+                app:layout_constraintStart_toStartOf="@id/filter_text"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/filter_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="Filters"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@id/crop_text"
+                app:layout_constraintStart_toEndOf="@id/crop_text"
+                app:layout_constraintTop_toBottomOf="@id/filter_image" />
+
+            <ImageButton
+                android:id="@+id/sort_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_photo_white"
+                app:layout_constraintEnd_toEndOf="@id/sort_text"
+                app:layout_constraintStart_toStartOf="@id/sort_text"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sort_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="Sort"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@id/delete_text"
+                app:layout_constraintStart_toEndOf="@id/filter_text"
+                app:layout_constraintTop_toBottomOf="@id/filter_image" />
+
+            <ImageButton
+                android:id="@+id/delete_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_delete_white"
+                app:layout_constraintEnd_toEndOf="@id/delete_text"
+                app:layout_constraintStart_toStartOf="@id/delete_text"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/delete_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="Delete"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sort_text"
+                app:layout_constraintTop_toBottomOf="@id/delete_image" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

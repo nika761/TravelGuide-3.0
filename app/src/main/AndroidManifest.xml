@@ -22,18 +22,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".opening.activity.LanguageActivity" />
+        <activity android:name=".ui.opening.activity.LanguageActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
         <activity
-            android:name=".upload.activity.EditPostActivity"
+            android:name=".ui.upload.activity.EditPostActivity"
             android:theme="@style/SecondAppTheme" />
 
-        <activity android:name=".home.activity.StoryActivity" />
+        <activity android:name=".ui.home.activity.StoryActivity" />
         <activity
-            android:name=".home.activity.UserPageActivity"
+            android:name=".ui.home.activity.UserPageActivity"
             android:theme="@style/SecondAppTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -57,29 +57,31 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name=".login.activity.SignInActivity" />
+        <activity android:name=".ui.login.activity.SignInActivity" />
         <activity
-            android:name=".login.activity.SignUpActivity"
+            android:name=".ui.login.activity.SignUpActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name=".profile.activity.UserFollowActivity"
+            android:name=".ui.profile.activity.UserFollowActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
-            android:name=".upload.activity.MediaDetailActivity"
+            android:name=".ui.upload.activity.MediaDetailActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
-            android:name=".search.activity.SearchActivity"
+            android:name=".ui.search.activity.SearchActivity"
             android:theme="@style/SecondAppTheme" />
-        <activity android:name=".login.activity.SavedUserActivity" />
+
+        <activity android:name=".ui.login.activity.SavedUserActivity" />
+
         <activity
-            android:name=".login.activity.ForgotPasswordActivity"
+            android:name=".ui.login.activity.ForgotPasswordActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
-            android:name=".login.activity.TermsAndPrivacyActivity"
+            android:name=".ui.login.activity.TermsAndPrivacyActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
-            android:name=".opening.activity.SplashScreenActivity"
+            android:name=".ui.opening.activity.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,7 +100,7 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name=".upload.activity.GalleryPickerActivity"
+            android:name=".ui.upload.activity.GalleryPickerActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
             android:name="com.facebook.CustomTabActivity"
@@ -112,18 +114,20 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".upload.activity.FilterActivity" />
         <activity
-            android:name=".profile.activity.ChangePhotoActivity"
+            android:name=".ui.upload.activity.FilterActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
-            android:name=".upload.activity.DescribePostActivity"
+            android:name=".ui.profile.activity.ChangePhotoActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
-            android:name=".upload.activity.ChooseMusicActivity"
+            android:name=".ui.upload.activity.DescribePostActivity"
             android:theme="@style/SecondAppTheme" />
         <activity
-            android:name=".upload.activity.SortStoriesActivity"
+            android:name=".ui.upload.activity.ChooseMusicActivity"
+            android:theme="@style/SecondAppTheme" />
+        <activity
+            android:name=".ui.upload.activity.SortStoriesActivity"
             android:theme="@style/SecondAppTheme" />
     </application>
 

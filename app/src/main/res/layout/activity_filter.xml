@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
+        android:background="@color/white"
         android:gravity="start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +24,7 @@
             android:layout_gravity="end"
             android:layout_marginEnd="20dp"
             android:text="Done"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:visibility="visible" />
 
@@ -34,7 +35,7 @@
             android:layout_gravity="center"
             android:layout_marginEnd="20dp"
             android:text="Undo"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:visibility="gone" />
 
@@ -43,7 +44,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/icon_close_white" />
+            android:background="@drawable/icon_close" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -51,6 +52,7 @@
         android:id="@+id/filter_photo"
         android:layout_width="0dp"
         android:layout_height="450dp"
+        android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_filter" />
@@ -59,8 +61,8 @@
         android:id="@+id/recycler_filter"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/transparent"
         android:layout_marginTop="5dp"
+        android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -4,15 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 
 
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener;
 import com.abedelazizshe.lightcompressorlibrary.VideoCompressor;
 import com.abedelazizshe.lightcompressorlibrary.VideoQuality;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,9 +27,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HelperMedia {
     static int current = 0;
-
 
     public static String encodeImage(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -130,8 +135,8 @@ public class HelperMedia {
     public static ArrayList<String> getVideosPathByDate(Context context) {
         ArrayList<String> listOfAllPaths = new ArrayList<>();
 
-        String[] projection = new String[]{
-                "COUNT(*) as count", MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME, MediaStore.Video.VideoColumns.DATA,
+        String[] projection = new String[]{"COUNT(*) as count", MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Video.VideoColumns.DATA,
                 "MAX (" + MediaStore.Video.VideoColumns.DATE_TAKEN + ") as max"};
 
         Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection,
@@ -153,6 +158,36 @@ public class HelperMedia {
         }
 
         return listOfAllPaths;
+    }
+
+
+    public static void loadCirclePhoto(Context context, String url, CircleImageView circleImageView) {
+        Glide.with(context)
+                .applyDefaultRequestOptions(new RequestOptions().centerCrop())
+                .load(url)
+                .into(circleImageView);
+    }
+
+    public static void loadPhoto(Context context, String url, ImageView imageView) {
+        Glide.with(context)
+                .applyDefaultRequestOptions(new RequestOptions().centerCrop())
+                .load(url)
+                .into(imageView);
+    }
+
+    public static String getFilePathFromVideoURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Video.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     public static void reduceVideoQuality(ArrayList<String> paths, VideoQualityCallBack videoQualityCallBack, Context context) {

@@ -55,9 +55,9 @@
             android:layout_height="wrap_content"
             android:background="@color/blackStatusBar"
             android:gravity="center"
-            android:textSize="10sp"
             android:text="Select Cover"
             android:textColor="@color/white"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@id/describe_story_photo"
             app:layout_constraintEnd_toEndOf="@id/describe_story_photo"
             app:layout_constraintStart_toStartOf="@id/describe_story_photo" />

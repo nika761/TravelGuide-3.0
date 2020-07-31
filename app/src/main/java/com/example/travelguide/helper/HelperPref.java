@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.example.travelguide.model.User;
 import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.model.response.ProfileResponseModel;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -30,6 +31,24 @@ public class HelperPref {
 
     private static final String ACCESS_TOKEN_PREFERENCES = "access_preference";
     private static final String ACCESS_KEY = "access_token";
+
+    private static final String USER_PROFILE_PREFERENCES = "user_profile_prefs";
+    private static final String PROFILE_KEY = "user_profile";
+
+    public static void saveUserProfileInfo(Context context, ProfileResponseModel.Userinfo userinfo) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PROFILE_KEY, new Gson().toJson(userinfo));
+        editor.apply();
+    }
+
+    public static ProfileResponseModel.Userinfo getUserProfileInfo(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        ProfileResponseModel.Userinfo currentUserInfo = gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null),
+                ProfileResponseModel.Userinfo.class);
+        return currentUserInfo;
+    }
 
     public static void saveUser(Context context, User user) {
         List<User> users = getSavedUsers(context);
