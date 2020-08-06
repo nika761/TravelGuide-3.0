@@ -18,9 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
+import com.example.travelguide.model.response.TermsPolicyResponse;
 import com.example.travelguide.ui.login.interfaces.IPolicyFragment;
-import com.example.travelguide.model.request.TermsPolicyRequestModel;
-import com.example.travelguide.model.response.TermsPolicyResponseModel;
+import com.example.travelguide.model.request.TermsPolicyRequest;
 import com.example.travelguide.ui.login.presenter.PolicyPresenter;
 import com.example.travelguide.helper.HelperPref;
 
@@ -33,7 +33,7 @@ public class PolicyFragment extends Fragment implements IPolicyFragment {
     private LottieAnimationView animationView;
     private TextView policyHeader;
     private WebView policyTextWebView;
-    private TermsPolicyRequestModel termsPolicyRequestModel;
+    private TermsPolicyRequest termsPolicyRequest;
     private PolicyPresenter policyPresenter;
 
 
@@ -52,8 +52,8 @@ public class PolicyFragment extends Fragment implements IPolicyFragment {
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
         if (HelperPref.getLanguageId(context) != 0)
-            termsPolicyRequestModel.setLanguage_id(HelperPref.getLanguageId(context));
-        policyPresenter.sendPolicyResponse(termsPolicyRequestModel);
+            termsPolicyRequest.setLanguage_id(HelperPref.getLanguageId(context));
+        policyPresenter.sendPolicyResponse(termsPolicyRequest);
 
     }
 
@@ -84,7 +84,7 @@ public class PolicyFragment extends Fragment implements IPolicyFragment {
 //        termsScroll = v.findViewById(R.id.scroll_terms);
         policyHeader = v.findViewById(R.id.policy_header);
         policyTextWebView = v.findViewById(R.id.policy_text);
-        termsPolicyRequestModel = new TermsPolicyRequestModel();
+        termsPolicyRequest = new TermsPolicyRequest();
         policyPresenter = new PolicyPresenter(this);
         policyTextWebView.getSettings();
         policyTextWebView.setBackgroundColor(getResources().getColor(R.color.whiteNone));
@@ -101,17 +101,17 @@ public class PolicyFragment extends Fragment implements IPolicyFragment {
         cancelBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
     }
 
-    private void setPolicy(TermsPolicyResponseModel termsPolicyResponseModel) {
-        policyHeader.setText(termsPolicyResponseModel.getPolicy().getPolicy_title());
-        policyTextWebView.loadData("<html><body>" + termsPolicyResponseModel.getPolicy().getPolicy_text() + "</body></html>", "text/html", "UTF-8");
+    private void setPolicy(TermsPolicyResponse termsPolicyResponse) {
+        policyHeader.setText(termsPolicyResponse.getPolicy().getPolicy_title());
+        policyTextWebView.loadData("<html><body>" + termsPolicyResponse.getPolicy().getPolicy_text() + "</body></html>", "text/html", "UTF-8");
 
         animationView.setVisibility(View.GONE);
     }
 
     @Override
-    public void onGetPolicyResult(TermsPolicyResponseModel termsPolicyResponseModel) {
-        if (termsPolicyResponseModel.getStatus() == 0) {
-            setPolicy(termsPolicyResponseModel);
+    public void onGetPolicyResult(TermsPolicyResponse termsPolicyResponse) {
+        if (termsPolicyResponse.getStatus() == 0) {
+            setPolicy(termsPolicyResponse);
         } else {
             Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
         }

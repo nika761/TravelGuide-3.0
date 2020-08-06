@@ -1,6 +1,6 @@
 package com.example.travelguide.model.request;
 
-public class TermsPolicyRequestModel {
+public class TermsPolicyRequest {
     private int language_id;
 
     public int getLanguage_id() {

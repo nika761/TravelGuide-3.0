@@ -19,7 +19,7 @@ import com.example.travelguide.ui.login.activity.SignInActivity;
 import com.example.travelguide.ui.home.activity.UserPageActivity;
 import com.example.travelguide.ui.opening.interfaces.ILanguageActivity;
 import com.example.travelguide.ui.login.activity.SavedUserActivity;
-import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.response.LanguagesResponse;
 import com.example.travelguide.ui.opening.presenter.LanguagePresenter;
 import com.example.travelguide.helper.HelperPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -35,7 +35,7 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
     private ImageView mainIconSun;
     private TextView mainLogoTxt, justGoTxt;
     private LanguagePresenter languagePresenter;
-    private ArrayList<LanguagesResponseModel.Language> languages;
+    private ArrayList<LanguagesResponse.Language> languages;
     private final String INTENT_LANGUAGES = "languages";
 
     @Override
@@ -114,7 +114,7 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
     }
 
 
-    private void startApplication(List<LanguagesResponseModel.Language> languages) {
+    private void startApplication(List<LanguagesResponse.Language> languages) {
         new Handler().postDelayed(() -> {
 //            if (HelperPref.getLanguageId(this) != 0) {
 //                checkLastSignedUser();
@@ -146,9 +146,9 @@ public class SplashScreenActivity extends AppCompatActivity implements ILanguage
     }
 
     @Override
-    public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
-        if (languagesResponseModel.getStatus() == 0) {
-            List<LanguagesResponseModel.Language> languages = languagesResponseModel.getLanguage();
+    public void onGetLanguages(LanguagesResponse languagesResponse) {
+        if (languagesResponse.getStatus() == 0) {
+            List<LanguagesResponse.Language> languages = languagesResponse.getLanguage();
             startApplication(languages);
         }
     }

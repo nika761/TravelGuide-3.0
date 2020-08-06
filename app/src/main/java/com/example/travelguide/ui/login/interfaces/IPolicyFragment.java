@@ -1,7 +1,7 @@
 package com.example.travelguide.ui.login.interfaces;
 
-import com.example.travelguide.model.response.TermsPolicyResponseModel;
+import com.example.travelguide.model.response.TermsPolicyResponse;
 
 public interface IPolicyFragment {
-    void onGetPolicyResult(TermsPolicyResponseModel termsPolicyResponseModel);
+    void onGetPolicyResult(TermsPolicyResponse termsPolicyResponse);
 }

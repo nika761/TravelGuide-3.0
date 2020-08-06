@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.travelguide.model.User;
-import com.example.travelguide.model.response.LoginResponseModel;
-import com.example.travelguide.model.response.ProfileResponseModel;
+import com.example.travelguide.model.response.LoginResponse;
+import com.example.travelguide.model.response.ProfileResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,18 +35,18 @@ public class HelperPref {
     private static final String USER_PROFILE_PREFERENCES = "user_profile_prefs";
     private static final String PROFILE_KEY = "user_profile";
 
-    public static void saveUserProfileInfo(Context context, ProfileResponseModel.Userinfo userinfo) {
+    public static void saveUserProfileInfo(Context context, ProfileResponse.Userinfo userinfo) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(PROFILE_KEY, new Gson().toJson(userinfo));
         editor.apply();
     }
 
-    public static ProfileResponseModel.Userinfo getUserProfileInfo(Context context) {
+    public static ProfileResponse.Userinfo getUserProfileInfo(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        ProfileResponseModel.Userinfo currentUserInfo = gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null),
-                ProfileResponseModel.Userinfo.class);
+        ProfileResponse.Userinfo currentUserInfo = gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null),
+                ProfileResponse.Userinfo.class);
         return currentUserInfo;
     }
 
@@ -91,8 +91,8 @@ public class HelperPref {
         return users;
     }
 
-    public static void saveServerUser(Context context, LoginResponseModel.User user) {
-        List<LoginResponseModel.User> serverSavedUsers = getServerSavedUsers(context);
+    public static void saveServerUser(Context context, LoginResponse.User user) {
+        List<LoginResponse.User> serverSavedUsers = getServerSavedUsers(context);
         if (!serverSavedUsers.contains(user)) {
             serverSavedUsers.add(user);
         }
@@ -102,11 +102,11 @@ public class HelperPref {
         editor.apply();
     }
 
-    public static List<LoginResponseModel.User> getServerSavedUsers(Context context) {
-        List<LoginResponseModel.User> users = new ArrayList<>();
+    public static List<LoginResponse.User> getServerSavedUsers(Context context) {
+        List<LoginResponse.User> users = new ArrayList<>();
         SharedPreferences sharedPreferences = context.getSharedPreferences(SERVER_USER_PREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<LoginResponseModel.User>>() {
+        Type listType = new TypeToken<List<LoginResponse.User>>() {
         }.getType();
         if (sharedPreferences.getString(SERVER_USER_KEY, null) != null) {
             users = gson.fromJson(sharedPreferences.getString(SERVER_USER_KEY, null), listType);
@@ -114,16 +114,16 @@ public class HelperPref {
         return users;
     }
 
-    public static LoginResponseModel.User getCurrentLoggedUser(Context context) {
+    public static LoginResponse.User getCurrentLoggedUser(Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGGED_USER_PREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
 
-        return gson.fromJson(sharedPreferences.getString(LOGGED_USER_KEY, null), LoginResponseModel.User.class);
+        return gson.fromJson(sharedPreferences.getString(LOGGED_USER_KEY, null), LoginResponse.User.class);
     }
 
-    public static void deleteServerUser(Context context, LoginResponseModel.User user) {
-        List<LoginResponseModel.User> users = getServerSavedUsers(context);
+    public static void deleteServerUser(Context context, LoginResponse.User user) {
+        List<LoginResponse.User> users = getServerSavedUsers(context);
         users.remove(user);
         SharedPreferences sharedPreferences = context.getSharedPreferences(SERVER_USER_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

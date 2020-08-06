@@ -1,7 +1,7 @@
 package com.example.travelguide.ui.home.interfaces;
 
-import com.example.travelguide.model.response.PostResponseModel;
+import com.example.travelguide.model.response.PostResponse;
 
 public interface IHomeFragment {
-    void onGetPosts(PostResponseModel postResponseModel);
+    void onGetPosts(PostResponse postResponse);
 }

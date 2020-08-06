@@ -21,9 +21,9 @@ import com.example.travelguide.R;
 import com.example.travelguide.ui.profile.adapter.recycler.ChangeLangAdapter;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.ui.profile.interfaces.IChangeLangFragment;
-import com.example.travelguide.model.request.ChangeLangRequestModel;
-import com.example.travelguide.model.response.ChangeLangResponseModel;
-import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.request.ChangeLangRequest;
+import com.example.travelguide.model.response.ChangeLangResponse;
+import com.example.travelguide.model.response.LanguagesResponse;
 import com.example.travelguide.ui.profile.presenter.ChangeLangPresenter;
 
 import java.util.List;
@@ -69,10 +69,10 @@ public class ChangeLangFragment extends DialogFragment implements IChangeLangFra
     }
 
     @Override
-    public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
+    public void onGetLanguages(LanguagesResponse languagesResponse) {
 
-        if (languagesResponseModel.getStatus() == 0) {
-            initLanguageRecycler(languagesResponseModel.getLanguage());
+        if (languagesResponse.getStatus() == 0) {
+            initLanguageRecycler(languagesResponse.getLanguage());
             lottieAnimationView.setVisibility(View.GONE);
         } else {
             Toast.makeText(context, "Error Language", Toast.LENGTH_SHORT).show();
@@ -81,9 +81,9 @@ public class ChangeLangFragment extends DialogFragment implements IChangeLangFra
     }
 
     @Override
-    public void onLanguageChange(ChangeLangResponseModel changeLangResponseModel) {
+    public void onLanguageChange(ChangeLangResponse changeLangResponse) {
 
-        if (changeLangResponseModel.getStatus() == 0) {
+        if (changeLangResponse.getStatus() == 0) {
             Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
             Objects.requireNonNull(getDialog()).dismiss();
         } else {
@@ -92,7 +92,7 @@ public class ChangeLangFragment extends DialogFragment implements IChangeLangFra
 
     }
 
-    private void initLanguageRecycler(List updatedLanguagesList) {
+    private void initLanguageRecycler(List<LanguagesResponse.Language> updatedLanguagesList) {
         ChangeLangAdapter adapter = new ChangeLangAdapter(context, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
@@ -103,8 +103,8 @@ public class ChangeLangFragment extends DialogFragment implements IChangeLangFra
     @Override
     public void onLanguageChoose(int langId) {
         HelperPref.saveLanguageId(context, langId);
-        ChangeLangRequestModel changeLangRequestModel = new ChangeLangRequestModel(String.valueOf(HelperPref.getLanguageId(context)));
-        changeLangPresenter.sentChangeLanguageRequest(changeLangRequestModel,
+        ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(HelperPref.getLanguageId(context)));
+        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest,
                 "Bearer" + " " + HelperPref.getCurrentAccessToken(context));
     }
 }

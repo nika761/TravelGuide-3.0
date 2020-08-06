@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.example.travelguide.R;
-import com.example.travelguide.model.response.PostResponseModel;
+import com.example.travelguide.model.response.PostResponse;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -62,7 +62,7 @@ public class VideoPlayerRecyclerView extends RecyclerView {
     private SimpleExoPlayer videoPlayer;
 
     // vars
-    private List<PostResponseModel.Post_stories> stories = new ArrayList<>();
+    private List<PostResponse.Post_stories> stories = new ArrayList<>();
     private int videoSurfaceDefaultHeight = 0;
     private int screenDefaultHeight = 0;
     private Context context;
@@ -429,7 +429,7 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         }
     }
 
-    public void setStories(List<PostResponseModel.Post_stories> stories) {
+    public void setStories(List<PostResponse.Post_stories> stories) {
         this.stories = stories;
     }
 }

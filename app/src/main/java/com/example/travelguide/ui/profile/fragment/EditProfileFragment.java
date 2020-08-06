@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.travelguide.R;
 import com.example.travelguide.ui.home.activity.UserPageActivity;
 import com.example.travelguide.helper.HelperPref;
-import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.ui.profile.activity.ChangePhotoActivity;
 
 import java.util.List;
@@ -82,7 +82,7 @@ public class EditProfileFragment extends Fragment {
     private void setUserData() {
         if (HelperPref.getCurrentAccessToken(context) != null) {
 
-            List<LoginResponseModel.User> loggedUsers = HelperPref.getServerSavedUsers(context);
+            List<LoginResponse.User> loggedUsers = HelperPref.getServerSavedUsers(context);
             name.setText(loggedUsers.get(0).getName());
             surName.setText(loggedUsers.get(0).getLastname());
             nickName.setText(loggedUsers.get(0).getNickname());

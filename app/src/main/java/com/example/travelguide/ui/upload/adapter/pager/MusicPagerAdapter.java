@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 
 public class MusicPagerAdapter extends FragmentPagerAdapter {
+    
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ArrayList<String> fragmentsTitle = new ArrayList<>();
 

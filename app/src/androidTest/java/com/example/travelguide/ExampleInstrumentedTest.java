@@ -11,7 +11,7 @@
 //import static org.junit.Assert.*;
 //
 ///**
-// * Instrumented fragment_profile, which will execute on an Android device.
+// * Instrumented fragment_profile_included, which will execute on an Android device.
 // *
 // * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
 // */
@@ -19,7 +19,7 @@
 //public class ExampleInstrumentedTest {
 //    @Test
 //    public void useAppContext() {
-//        // Context of the app under fragment_profile.
+//        // Context of the app under fragment_profile_included.
 //        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 //
 //        assertEquals("com.item_story.travelguide", appContext.getPackageName());

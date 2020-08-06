@@ -1,10 +1,12 @@
 package com.example.travelguide.helper;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -21,8 +23,11 @@ import com.bumptech.glide.request.RequestOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -66,6 +71,7 @@ public class HelperMedia {
         Log.e("Strng", encodedString);
 
         return encodedString;
+
 //        byte[] decodedBytes = com.migcomponents.migbase64.Base64.decodeFast(encodedString.getBytes());
 //
 //        try {
@@ -94,6 +100,7 @@ public class HelperMedia {
                 TimeUnit.MILLISECONDS.toSeconds(duration) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
         );
+
     }
 
     public static long getVideoDurationInt(String path) {
@@ -106,55 +113,154 @@ public class HelperMedia {
     }
 
     public static ArrayList<String> getImagesPathByDate(Context context) {
+
         ArrayList<String> listOfAllPaths = new ArrayList<>();
 
-        String[] projection = new String[]{
-                "COUNT(*) as count", MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME, MediaStore.Images.ImageColumns.DATA,
-                "MAX (" + MediaStore.Images.ImageColumns.DATE_TAKEN + ") as max"};
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
-        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
-                "1) GROUP BY (" + MediaStore.Images.ImageColumns.DATE_TAKEN,
-                null,
-                "max DESC");
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    //gets image path, it will always be a latest image because of sortOrdering by MAX date_taken
+            String[] projection = new String[]{
+                    MediaStore.Images.Media._ID,
+                    MediaStore.Images.Media.DISPLAY_NAME,
+                    MediaStore.Images.Media.DURATION,
+                    MediaStore.Images.Media.DATA,
+                    MediaStore.Images.Media.SIZE
+            };
+            String selection = MediaStore.Images.Media.DURATION +
+                    " >= ?";
+            String[] selectionArgs = new String[]{
+                    String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
+
+            String sortOrder = MediaStore.Images.Media.DISPLAY_NAME + " DESC";
+
+            try (Cursor cursor = context.getContentResolver().query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    null,
+                    null,
+                    sortOrder
+            )) {
+                // Cache column indices.
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                int nameColumn =
+                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+                int durationColumn =
+                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
+                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+
+                while (cursor.moveToNext()) {
+                    // Get values of columns for a given video.
+                    long id = cursor.getLong(idColumn);
+                    String name = cursor.getString(nameColumn);
+                    int duration = cursor.getInt(durationColumn);
+                    int size = cursor.getInt(sizeColumn);
+
                     String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    //gets count via alias ("as count" in projection)
-                    int count = cursor.getInt(cursor.getColumnIndex("count"));
-                    //do you logic here
+
+
                     listOfAllPaths.add(path);
-                } while (cursor.moveToNext());
+                }
             }
-            cursor.close();
+
+            // Do something for lollipop and above versions
+        } else {
+
+            String[] projection = new String[]{
+                    "COUNT(*) as count", MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME, MediaStore.Images.ImageColumns.DATA,
+                    "MAX (" + MediaStore.Images.ImageColumns.DATE_TAKEN + ") as max"};
+
+            Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
+                    "1) GROUP BY (" + MediaStore.Images.ImageColumns.DATE_TAKEN,
+                    null,
+                    "max DESC");
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        //gets image path, it will always be a latest image because of sortOrdering by MAX date_taken
+                        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                        //gets count via alias ("as count" in projection)
+                        int count = cursor.getInt(cursor.getColumnIndex("count"));
+                        //do you logic here
+                        listOfAllPaths.add(path);
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+            // do something for phones running an SDK before lollipop
         }
+
         return listOfAllPaths;
     }
 
     public static ArrayList<String> getVideosPathByDate(Context context) {
         ArrayList<String> listOfAllPaths = new ArrayList<>();
 
-        String[] projection = new String[]{"COUNT(*) as count", MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME,
-                MediaStore.Video.VideoColumns.DATA,
-                "MAX (" + MediaStore.Video.VideoColumns.DATE_TAKEN + ") as max"};
 
-        Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection,
-                "1) GROUP BY (" + MediaStore.Video.VideoColumns.DATE_TAKEN,
-                null,
-                "max DESC");
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    //gets image path, it will always be a latest image because of sortOrdering by MAX date_taken
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            String[] projection = new String[]{
+                    MediaStore.Video.Media._ID,
+                    MediaStore.Video.Media.DISPLAY_NAME,
+                    MediaStore.Video.Media.DATA,
+                    MediaStore.Video.Media.DURATION,
+                    MediaStore.Video.Media.SIZE
+            };
+            String selection = MediaStore.Video.Media.DURATION +
+                    " >= ?";
+            String[] selectionArgs = new String[]{
+                    String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
+
+            String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " DESC";
+
+            try (Cursor cursor = context.getContentResolver().query(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    null,
+                    null,
+                    sortOrder
+            )) {
+                // Cache column indices.
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+                int nameColumn =
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
+                int durationColumn =
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
+
+                while (cursor.moveToNext()) {
+                    // Get values of columns for a given video.
+                    long id = cursor.getLong(idColumn);
+                    String name = cursor.getString(nameColumn);
+                    int duration = cursor.getInt(durationColumn);
+                    int size = cursor.getInt(sizeColumn);
+
                     String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
-                    //gets count via alias ("as count" in projection)
-                    int count = cursor.getInt(cursor.getColumnIndex("count"));
-                    //do you logic here
+
+                    // Stores column values and the contentUri in a local object
+                    // that represents the media file.
                     listOfAllPaths.add(path);
-                } while (cursor.moveToNext());
+                }
             }
-            cursor.close();
+        } else {
+            String[] projection = new String[]{"COUNT(*) as count", MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME,
+                    MediaStore.Video.VideoColumns.DATA,
+                    "MAX (" + MediaStore.Video.VideoColumns.DATE_TAKEN + ") as max"};
+
+            Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection,
+                    "1) GROUP BY (" + MediaStore.Video.VideoColumns.DATE_TAKEN,
+                    null,
+                    "max DESC");
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        //gets image path, it will always be a latest image because of sortOrdering by MAX date_taken
+                        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                        //gets count via alias ("as count" in projection)
+                        int count = cursor.getInt(cursor.getColumnIndex("count"));
+                        //do you logic here
+                        listOfAllPaths.add(path);
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
         }
 
         return listOfAllPaths;

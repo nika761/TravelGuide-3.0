@@ -1,8 +1,8 @@
 package com.example.travelguide.ui.profile.presenter;
 
 import com.example.travelguide.ui.profile.interfaces.IAboutFragment;
-import com.example.travelguide.model.request.AboutRequestModel;
-import com.example.travelguide.model.response.AboutResponseModel;
+import com.example.travelguide.model.request.AboutRequest;
+import com.example.travelguide.model.response.AboutResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
@@ -19,17 +19,17 @@ public class AboutPresenter {
         apiService = RetrofitManager.getApiService();
     }
 
-    public void sendAboutRequest(AboutRequestModel aboutRequestModel){
-        apiService.getAbout(aboutRequestModel).enqueue(new Callback<AboutResponseModel>() {
+    public void sendAboutRequest(AboutRequest aboutRequest){
+        apiService.getAbout(aboutRequest).enqueue(new Callback<AboutResponse>() {
             @Override
-            public void onResponse(Call<AboutResponseModel> call, Response<AboutResponseModel> response) {
+            public void onResponse(Call<AboutResponse> call, Response<AboutResponse> response) {
                 if (response.isSuccessful()){
                     iAboutFragment.onGetAboutResult(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<AboutResponseModel> call, Throwable t) {
+            public void onFailure(Call<AboutResponse> call, Throwable t) {
 
             }
         });

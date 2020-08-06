@@ -2,7 +2,7 @@ package com.example.travelguide.ui.upload.interfaces;
 
 
 import com.example.travelguide.model.ItemMedia;
-import com.example.travelguide.model.response.UploadPostResponseModel;
+import com.example.travelguide.model.response.UploadPostResponse;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ public interface IEditPost {
 
     void onSortChoose(List<ItemMedia> stories);
 
-    void onTrimChoose(String path);
+    void onTrimChoose(String path, int position);
 
     void onStoryDeleted(List<ItemMedia> stories);
 
-    void onStoryUploaded(UploadPostResponseModel uploadPostResponseModel);
+    void onStoryUploaded(UploadPostResponse uploadPostResponse);
 
     void onFileUploaded();
 

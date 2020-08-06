@@ -13,7 +13,7 @@ import com.example.travelguide.R;
 import com.example.travelguide.ui.notification.fragment.NotificationsFragment;
 import com.example.travelguide.ui.home.fragment.UserHomeFragment;
 import com.example.travelguide.ui.profile.fragment.UserProfileFragment;
-import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.helper.HelperSystem;
 import com.example.travelguide.helper.HelperUI;
 import com.example.travelguide.ui.search.activity.SearchActivity;
@@ -54,7 +54,7 @@ public class UserPageActivity extends AppCompatActivity {
     }
 
     private void ongGetUserDate() {
-        LoginResponseModel.User loggedUser = (LoginResponseModel.User) getIntent().getSerializableExtra("server_user");
+        LoginResponse.User loggedUser = (LoginResponse.User) getIntent().getSerializableExtra("server_user");
         if (loggedUser != null) {
             userDataForFragments = new Bundle();
             userDataForFragments.putSerializable("user", loggedUser);

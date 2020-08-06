@@ -1,8 +1,8 @@
 package com.example.travelguide.ui.login.presenter;
 
+import com.example.travelguide.model.response.TermsPolicyResponse;
 import com.example.travelguide.ui.login.interfaces.ITermsFragment;
-import com.example.travelguide.model.request.TermsPolicyRequestModel;
-import com.example.travelguide.model.response.TermsPolicyResponseModel;
+import com.example.travelguide.model.request.TermsPolicyRequest;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
@@ -19,10 +19,10 @@ public class TermsPresenter {
         apiService = RetrofitManager.getApiService();
     }
 
-    public void sendTermsResponse(TermsPolicyRequestModel termsPolicyRequestModel) {
-        apiService.getTerms(termsPolicyRequestModel).enqueue(new Callback<TermsPolicyResponseModel>() {
+    public void sendTermsResponse(TermsPolicyRequest termsPolicyRequest) {
+        apiService.getTerms(termsPolicyRequest).enqueue(new Callback<TermsPolicyResponse>() {
             @Override
-            public void onResponse(Call<TermsPolicyResponseModel> call, Response<TermsPolicyResponseModel> response) {
+            public void onResponse(Call<TermsPolicyResponse> call, Response<TermsPolicyResponse> response) {
                 if (response.isSuccessful()) {
                     iTermsFragment.onGetTermsResult(response.body());
                 }
@@ -30,7 +30,7 @@ public class TermsPresenter {
             }
 
             @Override
-            public void onFailure(Call<TermsPolicyResponseModel> call, Throwable t) {
+            public void onFailure(Call<TermsPolicyResponse> call, Throwable t) {
 
             }
         });

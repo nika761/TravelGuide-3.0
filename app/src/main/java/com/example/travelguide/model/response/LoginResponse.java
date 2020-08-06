@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class LoginResponseModel {
+public class LoginResponse {
 
     @Expose
     @SerializedName("access_token")

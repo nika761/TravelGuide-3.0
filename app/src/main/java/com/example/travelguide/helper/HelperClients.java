@@ -1,27 +1,50 @@
 package com.example.travelguide.helper;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.event.ProgressEvent;
+import com.amazonaws.event.ProgressListener;
 import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.s3.transfermanager.MultipleFileUpload;
+import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
+import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
+import com.amazonaws.mobileconnectors.s3.transfermanager.internal.MultipleFileUploadImpl;
+import com.amazonaws.mobileconnectors.s3.transfermanager.internal.TransferManagerUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
+import com.amazonaws.services.s3.model.ListMultipartUploadsRequest;
+import com.amazonaws.services.s3.model.MultipartUpload;
+import com.amazonaws.services.s3.model.MultipartUploadListing;
+import com.amazonaws.services.s3.model.PartETag;
+import com.amazonaws.services.s3.model.UploadPartRequest;
+import com.amazonaws.services.s3.model.UploadPartResult;
+import com.example.travelguide.model.ItemMedia;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HelperClients {
-    private static final String KEY = "AKIAVWUTGVROTZGHURQ4";
-    private static final String SECRET = "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";
+    public static final String S3_KEY = "AKIAVWUTGVROTZGHURQ4";
+    public static final String S3_SECRET = "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";
     private static final String AMAZONS3_END_POINT = "https://travel-guide-3.s3.eu-central-1.amazonaws.com";
-    public static final String BUCKET = "travel-guide-3";
+    public static final String S3_BUCKET = "travel-guide-3";
 
     public static GoogleSignInClient googleSignInClient(Context context) {
 
@@ -43,7 +66,7 @@ public class HelperClients {
         BasicAWSCredentials credentials;
 
         AWSMobileClient.getInstance().initialize(context).execute();
-        credentials = new BasicAWSCredentials(KEY, SECRET);
+        credentials = new BasicAWSCredentials(S3_KEY, S3_SECRET);
 
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.setProtocol(Protocol.HTTPS);
@@ -58,16 +81,45 @@ public class HelperClients {
         return s3Client;
     }
 
-    public static TransferUtility transferUtility(Context context, AmazonS3Client amazonS3Client) {
+    private static TransferUtility transferUtility(Context context, AmazonS3Client amazonS3Client) {
         return TransferUtility.builder()
                 .context(context)
-                .defaultBucket(BUCKET)
+                .defaultBucket(S3_BUCKET)
                 .s3Client(amazonS3Client)
                 .build();
     }
 
-    public static TransferObserver uploadObserver(Context context, File file) {
+    public static TransferObserver transferObserver(Context context, File file) {
         return HelperClients.transferUtility(context, amazonS3Client(context))
-                .upload(HelperClients.BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
+                .upload(HelperClients.S3_BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
+    }
+
+    public static void uploadMultipleS3(AmazonS3Client s3Client, List<ItemMedia> paths, Context context) {
+        ArrayList<File> files = new ArrayList<>();
+        for (ItemMedia list : paths) {
+            if (list.getType() == 0) {
+                files.add(new File(list.getPath()));
+            }
+        }
+        TransferManager transferManager = new TransferManager(s3Client);
+        try {
+            MultipleFileUpload xfer = transferManager.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files);
+            // loop with Transfer.isDone()
+//            XferMgrProgress.showTransferProgress(xfer);
+            // or block with Transfer.waitForCompletion()
+//            XferMgrProgress.waitForCompletion(xfer);
+//            if (xfer.isDone()) {
+//                Toast.makeText(context, String.valueOf(xfer.getProgress().getPercentTransferred()), Toast.LENGTH_LONG).show();
+//                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
+//
+//            } else {
+//                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
+//                Toast.makeText(context, xfer.getDescription(), Toast.LENGTH_LONG).show();
+//            }
+
+        } catch (AmazonServiceException a) {
+            Log.e("ssss", a.getErrorMessage());
+        }
+        transferManager.shutdownNow();
     }
 }

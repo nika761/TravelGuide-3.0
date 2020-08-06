@@ -1,8 +1,8 @@
 package com.example.travelguide.ui.home.presenter;
 
 import com.example.travelguide.ui.home.interfaces.IHomeFragment;
-import com.example.travelguide.model.request.PostRequestModel;
-import com.example.travelguide.model.response.PostResponseModel;
+import com.example.travelguide.model.request.PostRequest;
+import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
@@ -19,17 +19,17 @@ public class HomePresenter {
         apiService = RetrofitManager.getApiService();
     }
 
-    public void getPosts(String accessToken, PostRequestModel postRequestModel){
-        apiService.getPosts(accessToken,postRequestModel).enqueue(new Callback<PostResponseModel>() {
+    public void getPosts(String accessToken, PostRequest postRequest){
+        apiService.getPosts(accessToken, postRequest).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<PostResponseModel> call, Response<PostResponseModel> response) {
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()){
                     iHomeFragment.onGetPosts(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<PostResponseModel> call, Throwable t) {
+            public void onFailure(Call<PostResponse> call, Throwable t) {
 
             }
         });

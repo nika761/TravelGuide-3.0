@@ -28,8 +28,8 @@ import com.example.travelguide.ui.login.activity.SignInActivity;
 import com.example.travelguide.ui.home.activity.UserPageActivity;
 import com.example.travelguide.ui.login.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
-import com.example.travelguide.model.request.LoginRequestModel;
-import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.model.request.LoginRequest;
+import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.ui.login.presenter.SignInPresenter;
 import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.helper.HelperPref;
@@ -149,13 +149,13 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         password = enterPassword.getText().toString();
 
         ((SignInActivity) context).startLoader();
-        LoginRequestModel loginRequestModel = new LoginRequestModel(email, password);
-        signInPresenter.sentLoginRequest(loginRequestModel);
+        LoginRequest loginRequest = new LoginRequest(email, password);
+        signInPresenter.sentLoginRequest(loginRequest);
 //
 //        if (email != null && HelperFields.checkEmail(email) && password != null && HelperFields.checkPassword(password)) {
 //            ((SignInActivity) context).startLoader();
-//            LoginRequestModel loginRequestModel = new LoginRequestModel(email, password);
-//            signInPresenter.sentLoginRequest(loginRequestModel);
+//            LoginRequest loginRequest = new LoginRequest(email, password);
+//            signInPresenter.sentLoginRequest(loginRequest);
 //        } else {
 //            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
 //        }
@@ -219,15 +219,15 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     }
 
     @Override
-    public void onGetLoginResult(LoginResponseModel loginResponseModel) {
-        if (loginResponseModel.getUser() != null) {
-            onUserLogged(loginResponseModel.getUser());
-            HelperPref.saveAccessToken(context, loginResponseModel.getAccess_token());
+    public void onGetLoginResult(LoginResponse loginResponse) {
+        if (loginResponse.getUser() != null) {
+            onUserLogged(loginResponse.getUser());
+            HelperPref.saveAccessToken(context, loginResponse.getAccess_token());
             Toast.makeText(context, "Signed", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void onUserLogged(LoginResponseModel.User loggedUser) {
+    private void onUserLogged(LoginResponse.User loggedUser) {
         HelperPref.saveServerUser(context, loggedUser);
         Intent intent = new Intent(context, UserPageActivity.class);
         intent.putExtra("server_user", loggedUser);

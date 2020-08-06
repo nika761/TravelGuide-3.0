@@ -3,7 +3,7 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SignUpResponseModel {
+public class SignUpResponse {
 
     @Expose
     @SerializedName("access_token")

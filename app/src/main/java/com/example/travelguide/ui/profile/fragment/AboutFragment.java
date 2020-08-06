@@ -20,8 +20,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.ui.profile.interfaces.IAboutFragment;
-import com.example.travelguide.model.request.AboutRequestModel;
-import com.example.travelguide.model.response.AboutResponseModel;
+import com.example.travelguide.model.request.AboutRequest;
+import com.example.travelguide.model.response.AboutResponse;
 import com.example.travelguide.ui.profile.presenter.AboutPresenter;
 
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class AboutFragment extends Fragment implements IAboutFragment {
         setClickListeners();
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
         if (HelperPref.getLanguageId(context) != 0) {
-            aboutPresenter.sendAboutRequest(new AboutRequestModel(String.valueOf(HelperPref.getLanguageId(context))));
+            aboutPresenter.sendAboutRequest(new AboutRequest(String.valueOf(HelperPref.getLanguageId(context))));
         }
     }
 
@@ -79,11 +79,11 @@ public class AboutFragment extends Fragment implements IAboutFragment {
 
 
     @Override
-    public void onGetAboutResult(AboutResponseModel aboutResponseModel) {
-        if (aboutResponseModel.getStatus() == 0) {
+    public void onGetAboutResult(AboutResponse aboutResponse) {
+        if (aboutResponse.getStatus() == 0) {
 
-            aboutHeader.setText(aboutResponseModel.getAbout().getAbout_title());
-            aboutTextWebView.loadData("<html><body>" + aboutResponseModel.getAbout().getAbout_text() + "</body></html>", "text/html", "UTF-8");
+            aboutHeader.setText(aboutResponse.getAbout().getAbout_title());
+            aboutTextWebView.loadData("<html><body>" + aboutResponse.getAbout().getAbout_text() + "</body></html>", "text/html", "UTF-8");
             animationView.setVisibility(View.GONE);
 
         } else {

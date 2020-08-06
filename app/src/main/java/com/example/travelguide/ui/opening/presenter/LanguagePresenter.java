@@ -1,7 +1,7 @@
 package com.example.travelguide.ui.opening.presenter;
 
 import com.example.travelguide.ui.opening.interfaces.ILanguageActivity;
-import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.response.LanguagesResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
@@ -19,16 +19,16 @@ public class LanguagePresenter {
     }
 
     public void sentLanguageRequest() {
-        service.getLanguages().enqueue(new Callback<LanguagesResponseModel>() {
+        service.getLanguages().enqueue(new Callback<LanguagesResponse>() {
             @Override
-            public void onResponse(Call<LanguagesResponseModel> call, Response<LanguagesResponseModel> response) {
+            public void onResponse(Call<LanguagesResponse> call, Response<LanguagesResponse> response) {
                 if (response.isSuccessful()) {
                     iLanguageActivity.onGetLanguages(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<LanguagesResponseModel> call, Throwable t) {
+            public void onFailure(Call<LanguagesResponse> call, Throwable t) {
 
             }
         });

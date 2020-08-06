@@ -5,37 +5,37 @@ import android.util.Log;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.example.travelguide.model.request.UploadPostRequestModel;
-import com.example.travelguide.ui.upload.interfaces.IEditPost;
-import com.example.travelguide.model.response.UploadPostResponseModel;
+import com.example.travelguide.model.request.UploadPostRequest;
+import com.example.travelguide.model.response.UploadPostResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
+import com.example.travelguide.ui.upload.interfaces.IUploadPostListener;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UploadPostPresenter {
-    private IEditPost iEditPost;
+    private IUploadPostListener uploadPostListener;
     private ApiService apiService;
 
-    public UploadPostPresenter(IEditPost iEditPost) {
-        this.iEditPost = iEditPost;
+    public UploadPostPresenter(IUploadPostListener uploadPostListener) {
+        this.uploadPostListener = uploadPostListener;
         apiService = RetrofitManager.getApiService();
     }
 
-    public void uploadStory(String accessToken, UploadPostRequestModel uploadPostRequestModel) {
-        apiService.uploadPost(accessToken, uploadPostRequestModel).enqueue(new Callback<UploadPostResponseModel>() {
+    public void uploadStory(String accessToken, UploadPostRequest uploadPostRequest) {
+        apiService.uploadPost(accessToken, uploadPostRequest).enqueue(new Callback<UploadPostResponse>() {
             @Override
-            public void onResponse(Call<UploadPostResponseModel> call, Response<UploadPostResponseModel> response) {
+            public void onResponse(Call<UploadPostResponse> call, Response<UploadPostResponse> response) {
 
                 Log.e("asdasdasd", String.valueOf(response.code()));
-                if (response.isSuccessful())
-                    iEditPost.onStoryUploaded(response.body());
+//                if (response.isSuccessful())
+//                    iEditPost.onStoryUploaded(response.body());
             }
 
             @Override
-            public void onFailure(Call<UploadPostResponseModel> call, Throwable t) {
+            public void onFailure(Call<UploadPostResponse> call, Throwable t) {
                 Log.e("ssssss", t.getMessage());
 
             }
@@ -48,9 +48,9 @@ public class UploadPostPresenter {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
-                    iEditPost.onFileUploaded();
+                    uploadPostListener.onPostUploaded();
                 } else if (TransferState.FAILED == state) {
-                    iEditPost.onFileUploadError();
+                    uploadPostListener.onPostUploadError();
                 }
             }
 
@@ -61,7 +61,7 @@ public class UploadPostPresenter {
 
             @Override
             public void onError(int id, Exception ex) {
-                iEditPost.onFileUploadError();
+                uploadPostListener.onPostUploadError();
             }
         });
 

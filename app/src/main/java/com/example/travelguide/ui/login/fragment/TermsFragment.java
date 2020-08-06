@@ -19,9 +19,9 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
+import com.example.travelguide.model.response.TermsPolicyResponse;
 import com.example.travelguide.ui.login.interfaces.ITermsFragment;
-import com.example.travelguide.model.request.TermsPolicyRequestModel;
-import com.example.travelguide.model.response.TermsPolicyResponseModel;
+import com.example.travelguide.model.request.TermsPolicyRequest;
 import com.example.travelguide.ui.login.presenter.TermsPresenter;
 
 import java.util.Objects;
@@ -34,7 +34,7 @@ public class TermsFragment extends Fragment implements ITermsFragment {
     private TextView termsHeader;
     private WebView termsTextWebView;
     private TermsPresenter termsPresenter;
-    private TermsPolicyRequestModel termsPolicyRequestModel;
+    private TermsPolicyRequest termsPolicyRequest;
     private LottieAnimationView animationView;
 
     @Nullable
@@ -65,8 +65,8 @@ public class TermsFragment extends Fragment implements ITermsFragment {
 //        loadAnimation(agreeBtn, R.anim.anim_swipe_right, 50);
 
         if (HelperPref.getLanguageId(context) != 0)
-            termsPolicyRequestModel.setLanguage_id(HelperPref.getLanguageId(context));
-        termsPresenter.sendTermsResponse(termsPolicyRequestModel);
+            termsPolicyRequest.setLanguage_id(HelperPref.getLanguageId(context));
+        termsPresenter.sendTermsResponse(termsPolicyRequest);
 
     }
 
@@ -87,7 +87,7 @@ public class TermsFragment extends Fragment implements ITermsFragment {
 //        termsScroll = v.findViewById(R.id.scroll_terms);
         termsHeader = v.findViewById(R.id.terms_of_services_header);
         termsTextWebView = v.findViewById(R.id.terms_text);
-        termsPolicyRequestModel = new TermsPolicyRequestModel();
+        termsPolicyRequest = new TermsPolicyRequest();
         termsPresenter = new TermsPresenter(this);
         termsTextWebView.getSettings();
         termsTextWebView.setBackgroundColor(getResources().getColor(R.color.whiteNone));
@@ -104,30 +104,30 @@ public class TermsFragment extends Fragment implements ITermsFragment {
         target.startAnimation(animation);
     }
 
-    private void setTerms(TermsPolicyResponseModel termsPolicyResponseModel) {
-        termsHeader.setText(termsPolicyResponseModel.getTerms().getTerms_title());
-        termsTextWebView.loadData("<html><body>" + termsPolicyResponseModel.getTerms().getTerms_text() + "</body></html>", "text/html", "UTF-8");
+    private void setTerms(TermsPolicyResponse termsPolicyResponse) {
+        termsHeader.setText(termsPolicyResponse.getTerms().getTerms_title());
+        termsTextWebView.loadData("<html><body>" + termsPolicyResponse.getTerms().getTerms_text() + "</body></html>", "text/html", "UTF-8");
 
         animationView.setVisibility(View.GONE);
     }
 
-    private void setPolicy(TermsPolicyResponseModel termsPolicyResponseModel) {
-        termsHeader.setText(termsPolicyResponseModel.getPolicy().getPolicy_title());
-        termsTextWebView.loadData("<html><body>" + termsPolicyResponseModel.getPolicy().getPolicy_text() + "</body></html>", "text/html", "UTF-8");
+    private void setPolicy(TermsPolicyResponse termsPolicyResponse) {
+        termsHeader.setText(termsPolicyResponse.getPolicy().getPolicy_title());
+        termsTextWebView.loadData("<html><body>" + termsPolicyResponse.getPolicy().getPolicy_text() + "</body></html>", "text/html", "UTF-8");
 
         animationView.setVisibility(View.GONE);
     }
 
     @Override
-    public void onGetTermsResult(TermsPolicyResponseModel termsPolicyResponseModel) {
-        if (termsPolicyResponseModel.getStatus() == 0) {
+    public void onGetTermsResult(TermsPolicyResponse termsPolicyResponse) {
+        if (termsPolicyResponse.getStatus() == 0) {
 //            assert getArguments() != null;
 //            if (checkTermOrPrivacy(getArguments())) {
-//                setTerms(termsPolicyResponseModel);
+//                setTerms(termsPolicyResponse);
 //            } else {
-//                setPolicy(termsPolicyResponseModel);
+//                setPolicy(termsPolicyResponse);
 //            }
-            setTerms(termsPolicyResponseModel);
+            setTerms(termsPolicyResponse);
         } else {
             Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
         }

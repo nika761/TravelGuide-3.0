@@ -1,10 +1,8 @@
 package com.example.travelguide.ui.upload.activity;
 
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,14 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
-import com.example.travelguide.helper.HelperMedia;
 import com.example.travelguide.model.ItemMedia;
 import com.example.travelguide.ui.upload.adapter.recycler.EditPostAdapter;
 import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.ui.upload.interfaces.IEditPost;
-import com.example.travelguide.model.request.UploadPostRequestModel;
-import com.example.travelguide.model.response.UploadPostResponseModel;
+import com.example.travelguide.model.request.UploadPostRequest;
+import com.example.travelguide.model.response.UploadPostResponse;
 import com.example.travelguide.ui.upload.presenter.UploadPostPresenter;
+import com.gowtham.library.ui.ActVideoTrimmer;
+import com.gowtham.library.utils.TrimmerConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -38,6 +37,7 @@ import java.util.List;
 public class EditPostActivity extends AppCompatActivity implements IEditPost, View.OnClickListener {
     private static final int FILTER_ACTIVITY = 1;
     private static final int SORT_ACTIVITY = 2;
+    private static final int TRIM_ACTIVITY = 3;
     public static final String STORIES_PATHS = "selectedPaths";
     private ArrayList<String> storiesPath = new ArrayList<>();
     private List<ItemMedia> itemMedias = new ArrayList<>();
@@ -45,7 +45,7 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
     private int adapterPosition;
     private UploadPostPresenter uploadPostPresenter;
     private LottieAnimationView lottieAnimationView;
-    private UploadPostRequestModel uploadPostRequestModel;
+    private UploadPostRequest uploadPostRequest;
     private File fileForUpload;
     private RecyclerView recyclerEditStories;
 
@@ -76,7 +76,7 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
         ImageView btnBack = findViewById(R.id.edit_post_back_btn);
         btnBack.setOnClickListener(this);
 
-        uploadPostPresenter = new UploadPostPresenter(this);
+//        uploadPostPresenter = new UploadPostPresenter(this);
 
         recyclerEditStories = findViewById(R.id.recycler_post);
         lottieAnimationView = findViewById(R.id.animation_view_upload);
@@ -104,8 +104,8 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
                 }
 
             }
-//            uploadPostRequestModel = new UploadPostRequestModel(17, photos, videos);
-//            uploadPostPresenter.uploadStory("Bearer" + " " + HelperPref.getCurrentAccessToken(this), uploadPostRequestModel);
+//            uploadPostRequest = new UploadPostRequest(17, photos, videos);
+//            uploadPostPresenter.uploadStory("Bearer" + " " + HelperPref.getCurrentAccessToken(this), uploadPostRequest);
 
         }
     }
@@ -122,6 +122,10 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
 
             case SORT_ACTIVITY:
                 onSortFinish(resultCode, data);
+                break;
+
+            case TRIM_ACTIVITY:
+                onTrimFinish(resultCode, data);
                 break;
         }
     }
@@ -164,19 +168,15 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
     }
 
     @Override
-    public void onTrimChoose(String path) {
-        Uri uri = Uri.fromFile(new File(path));
-
-        Intent trimVideoIntent = new Intent("com.android.camera.action.TRIM");
-
-// The key for the extra has been discovered from com.android.gallery3d.app.PhotoPage.KEY_MEDIA_ITEM_PATH
-        trimVideoIntent.putExtra("media-item-path", HelperMedia.getFilePathFromVideoURI(this, uri));
-        trimVideoIntent.setData(uri);
-// Check if the device can handle the Intent
-        List<ResolveInfo> list = getPackageManager().queryIntentActivities(trimVideoIntent, 0);
-        if (null != list && list.size() > 0) {
-            startActivity(trimVideoIntent); // Fires TrimVideo activity into being active
-        }
+    public void onTrimChoose(String path, int position) {
+        this.adapterPosition = position;
+        Uri videoUri = Uri.fromFile(new File(path));
+        Intent intent = new Intent(this, ActVideoTrimmer.class);
+        intent.putExtra(TrimmerConstants.TRIM_VIDEO_URI, String.valueOf(videoUri));
+        intent.putExtra(TrimmerConstants.TRIM_TYPE, 3);
+        intent.putExtra(TrimmerConstants.MIN_FROM_DURATION, 5L);
+        intent.putExtra(TrimmerConstants.MAX_TO_DURATION, 15L);
+        startActivityForResult(intent, TRIM_ACTIVITY);
     }
 
     @Override
@@ -230,12 +230,29 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
         }
     }
 
+    private void onTrimFinish(int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_OK:
+                if (data != null) {
+                    String trimmedVideoPath = data.getStringExtra(TrimmerConstants.TRIMMED_VIDEO_PATH);
+                    editPostAdapter.onTrimFinish(trimmedVideoPath, adapterPosition);
+                    Toast.makeText(this, "Video Trimmed Successful", Toast.LENGTH_LONG).show();
+                }
+                break;
+
+            case RESULT_CANCELED:
+                Toast.makeText(this, "Video Trim Error", Toast.LENGTH_LONG).show();
+                break;
+
+        }
+    }
+
     @Override
-    public void onStoryUploaded(UploadPostResponseModel uploadPostResponseModel) {
+    public void onStoryUploaded(UploadPostResponse uploadPostResponse) {
         lottieAnimationView.setVisibility(View.GONE);
-        if (uploadPostResponseModel.getStatus() == 0) {
+        if (uploadPostResponse.getStatus() == 0) {
             Toast.makeText(this, "uploaded", Toast.LENGTH_SHORT).show();
-        } else if (uploadPostResponseModel.getStatus() == 1) {
+        } else if (uploadPostResponse.getStatus() == 1) {
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Some error", Toast.LENGTH_SHORT).show();
@@ -247,7 +264,7 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
         lottieAnimationView.setVisibility(View.GONE);
         Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
         finish();
-        String url = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.BUCKET, fileForUpload.getName());
+        String url = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, fileForUpload.getName());
 //        String url = HelperClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
     }
 
@@ -267,10 +284,9 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
 
 //        transferUtility.upload("travel-guide-3", file.getName(), file, CannedAccessControlList.PublicRead);
 
-////        s3Client.putObject(putObjectRequest);
-//        TransferManager tm = new TransferManager(credentials);
-//        MultipleFileUpload upload = tm.uploadFileList(myBucket, myKeyPrefix, rootDirectory, fileList);
-        uploadPostPresenter.uploadToS3(HelperClients.uploadObserver(this, fileForUpload));
+//        s3Client.putObject(putObjectRequest);
+
+        uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
 //        uploadObserver.setTransferListener(new TransferListener() {
 //
 //            @Override

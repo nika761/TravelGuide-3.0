@@ -1,6 +1,6 @@
 package com.example.travelguide.model.request;
 
-public class CheckMailRequestModel {
+public class CheckMailRequest {
     private String email;
 
     public String getEmail() {

@@ -26,8 +26,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
-import com.example.travelguide.model.request.ProfileRequestModel;
-import com.example.travelguide.model.response.ProfileResponseModel;
+import com.example.travelguide.model.request.ProfileRequest;
+import com.example.travelguide.model.response.ProfileResponse;
 import com.example.travelguide.ui.profile.activity.UserFollowActivity;
 import com.example.travelguide.ui.home.activity.UserPageActivity;
 import com.example.travelguide.ui.profile.adapter.pager.ProfilePagerAdapter;
@@ -63,7 +63,7 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
     private ProfilePresenter profilePresenter;
     private LottieAnimationView lottieAnimationView;
     private View myLayout;
-    private ProfileResponseModel.Userinfo userinfo;
+    private ProfileResponse.Userinfo userinfo;
 
     @Nullable
     @Override
@@ -135,7 +135,7 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
         if (HelperPref.getUserProfileInfo(context) == null) {
             lottieAnimationView.setVisibility(View.VISIBLE);
             profilePresenter.getProfile("Bearer" + " " + HelperPref.getCurrentAccessToken(context),
-                    new ProfileRequestModel(HelperPref.getServerSavedUsers(context).get(0).getId()));
+                    new ProfileRequest(HelperPref.getServerSavedUsers(context).get(0).getId()));
         } else {
             this.userinfo = HelperPref.getUserProfileInfo(context);
             myLayout.setVisibility(View.VISIBLE);
@@ -235,13 +235,13 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
     }
 
     @Override
-    public void onGetProfile(ProfileResponseModel profileResponseModel) {
+    public void onGetProfile(ProfileResponse profileResponse) {
 
-        ProfileResponseModel.Userinfo userInfo;
+        ProfileResponse.Userinfo userInfo;
 
-        if (profileResponseModel.getStatus() == 1) {
+        if (profileResponse.getStatus() == 1) {
 
-            userInfo = profileResponseModel.getUserinfo();
+            userInfo = profileResponse.getUserinfo();
 
             HelperPref.saveUserProfileInfo(context, userInfo);
 

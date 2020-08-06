@@ -24,12 +24,12 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
 import com.example.travelguide.ui.login.interfaces.ISignUpFragment;
-import com.example.travelguide.model.request.SignUpRequestModel;
-import com.example.travelguide.model.request.CheckNickRequestModel;
-import com.example.travelguide.model.response.SignUpResponseModel;
-import com.example.travelguide.model.request.CheckMailRequestModel;
-import com.example.travelguide.model.response.CheckMailResponseModel;
-import com.example.travelguide.model.response.CheckNickResponseModel;
+import com.example.travelguide.model.request.SignUpRequest;
+import com.example.travelguide.model.request.CheckNickRequest;
+import com.example.travelguide.model.response.SignUpResponse;
+import com.example.travelguide.model.request.CheckMailRequest;
+import com.example.travelguide.model.response.CheckMailResponse;
+import com.example.travelguide.model.response.CheckNickResponse;
 import com.example.travelguide.ui.login.presenter.SignUpPresenter;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.helper.HelperUI;
@@ -185,6 +185,10 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
             ePhoneNumberHead.setText(" Phone Number ");
             ePhoneNumberHead.setTextColor(getResources().getColor(R.color.black));
             phoneNumber = ePhoneNumber.getText().toString();
+
+            String name = countryCodePicker.getSelectedCountryName();
+            String code = countryCodePicker.getSelectedCountryCodeWithPlus();
+            String asds = countryCodePicker.getSelectedCountryEnglishName();
             //registerPhoneNumber.getText().clear();
         }
 
@@ -210,9 +214,9 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
                 birthDate != null &&
                 password != null &&
                 confirmPassword != null) {
-            SignUpRequestModel signUpRequestModel = new SignUpRequestModel(userName, userSurname, nickName, email, password,
+            SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password,
                     confirmPassword, birthDate, phoneNumber, String.valueOf(HelperPref.getLanguageId(context)));
-            signUpPresenter.sendAuthResponse(signUpRequestModel);
+            signUpPresenter.sendAuthResponse(signUpRequest);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(context, " Error ", Toast.LENGTH_LONG).show();
@@ -255,17 +259,17 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     }
 
     private void checkNickNameToServer(String name, String surname, String nickName) {
-        CheckNickRequestModel checkNickRequestModel = new CheckNickRequestModel();
-        checkNickRequestModel.setName(name);
-        checkNickRequestModel.setSurname(surname);
-        checkNickRequestModel.setNickname(nickName);
-        signUpPresenter.checkNick(checkNickRequestModel);
+        CheckNickRequest checkNickRequest = new CheckNickRequest();
+        checkNickRequest.setName(name);
+        checkNickRequest.setSurname(surname);
+        checkNickRequest.setNickname(nickName);
+        signUpPresenter.checkNick(checkNickRequest);
     }
 
     private void checkEmailToServer(String email) {
-        CheckMailRequestModel checkMailRequestModel = new CheckMailRequestModel();
-        checkMailRequestModel.setEmail(email);
-        signUpPresenter.checkEmail(checkMailRequestModel);
+        CheckMailRequest checkMailRequest = new CheckMailRequest();
+        checkMailRequest.setEmail(email);
+        signUpPresenter.checkEmail(checkMailRequest);
     }
 
     private void keyBoardFocusHelper(View view) {
@@ -280,9 +284,9 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     }
 
     @Override
-    public void onGetAuthResult(SignUpResponseModel signUpResponseModel) {
+    public void onGetAuthResult(SignUpResponse signUpResponse) {
 
-        String authResultStatus = signUpResponseModel.getStatus();
+        String authResultStatus = signUpResponse.getStatus();
 
         switch (authResultStatus) {
             case "0":
@@ -303,19 +307,19 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     }
 
     @Override
-    public void onGetEmailCheckResult(CheckMailResponseModel checkMailResponseModel) {
-        if (checkMailResponseModel.getStasus().equals("1")) {
+    public void onGetEmailCheckResult(CheckMailResponse checkMailResponse) {
+        if (checkMailResponse.getStasus().equals("1")) {
             HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email");
         }
     }
 
     @Override
-    public void onGetNickCheckResult(CheckNickResponseModel checkNickResponseModel) {
+    public void onGetNickCheckResult(CheckNickResponse checkNickResponse) {
         registerNickOffer.setVisibility(View.VISIBLE);
         registerNickOfferOne.setVisibility(View.VISIBLE);
         registerNickOfferTwo.setVisibility(View.VISIBLE);
-        nickNameFirst = checkNickResponseModel.getNicknames_to_offer().get(0);
-        nickNameSecond = checkNickResponseModel.getNicknames_to_offer().get(1);
+        nickNameFirst = checkNickResponse.getNicknames_to_offer().get(0);
+        nickNameSecond = checkNickResponse.getNicknames_to_offer().get(1);
         registerNickOfferOne.setText(nickNameFirst);
         registerNickOfferTwo.setText(nickNameSecond);
     }

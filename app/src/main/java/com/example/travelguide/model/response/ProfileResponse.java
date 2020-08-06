@@ -3,7 +3,7 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProfileResponseModel {
+public class ProfileResponse {
     @Expose
     @SerializedName("userinfo")
     private Userinfo userinfo;

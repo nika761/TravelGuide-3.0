@@ -16,7 +16,7 @@ import com.example.travelguide.ui.opening.adapter.recycler.LanguagesAdapter;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.ui.opening.interfaces.ILanguageActivity;
 import com.example.travelguide.ui.login.activity.SavedUserActivity;
-import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.response.LanguagesResponse;
 import com.example.travelguide.model.User;
 import com.example.travelguide.ui.opening.presenter.LanguagePresenter;
 
@@ -29,7 +29,7 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
     private List<User> currentUsers;
     private RecyclerView recyclerView;
     private LanguagePresenter languagePresenter;
-    private List<LanguagesResponseModel.Language> languages;
+    private List<LanguagesResponse.Language> languages;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
         languagePresenter = new LanguagePresenter(this);
 //        languagePresenter.sentLanguageRequest();
         String INTENT_LANGUAGES = "languages";
-        languages = (List<LanguagesResponseModel.Language>) getIntent().getSerializableExtra(INTENT_LANGUAGES);
+        languages = (List<LanguagesResponse.Language>) getIntent().getSerializableExtra(INTENT_LANGUAGES);
         if (languages != null) {
             iniRecyclerAdapter(languages);
         }
@@ -77,7 +77,7 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
         startActivity(userPageIntent);
     }
 
-    private void iniRecyclerAdapter(List updatedLanguagesList) {
+    private void iniRecyclerAdapter(List<LanguagesResponse.Language> updatedLanguagesList) {
         LanguagesAdapter adapter = new LanguagesAdapter(this, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -86,8 +86,8 @@ public class LanguageActivity extends AppCompatActivity implements ILanguageActi
     }
 
     @Override
-    public void onGetLanguages(LanguagesResponseModel languagesResponseModel) {
-        iniRecyclerAdapter(languagesResponseModel.getLanguage());
+    public void onGetLanguages(LanguagesResponse languagesResponse) {
+        iniRecyclerAdapter(languagesResponse.getLanguage());
     }
 
     @Override

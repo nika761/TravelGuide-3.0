@@ -1,9 +1,9 @@
 package com.example.travelguide.model.request;
 
-public class PostRequestModel {
-    int user_id;
+public class ProfileRequest {
+    private int user_id;
 
-    public PostRequestModel(int user_id) {
+    public ProfileRequest(int user_id) {
         this.user_id = user_id;
     }
 

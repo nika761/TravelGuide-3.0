@@ -4,10 +4,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.travelguide.model.request.LoginRequest;
 import com.example.travelguide.ui.login.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
-import com.example.travelguide.model.request.LoginRequestModel;
-import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 import com.facebook.AccessToken;
@@ -84,17 +84,17 @@ public class SignInPresenter {
         }
     }
 
-    public void sentLoginRequest(LoginRequestModel loginRequestModel) {
-        apiService.signIn(loginRequestModel).enqueue(new Callback<LoginResponseModel>() {
+    public void sentLoginRequest(LoginRequest loginRequest) {
+        apiService.signIn(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful()) {
                     iSignInFragment.onGetLoginResult(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
 
             }
         });

@@ -1,12 +1,12 @@
 package com.example.travelguide.ui.login.presenter;
 
 import com.example.travelguide.ui.login.interfaces.ISignUpFragment;
-import com.example.travelguide.model.request.SignUpRequestModel;
-import com.example.travelguide.model.request.CheckNickRequestModel;
-import com.example.travelguide.model.response.SignUpResponseModel;
-import com.example.travelguide.model.request.CheckMailRequestModel;
-import com.example.travelguide.model.response.CheckMailResponseModel;
-import com.example.travelguide.model.response.CheckNickResponseModel;
+import com.example.travelguide.model.request.SignUpRequest;
+import com.example.travelguide.model.request.CheckNickRequest;
+import com.example.travelguide.model.response.SignUpResponse;
+import com.example.travelguide.model.request.CheckMailRequest;
+import com.example.travelguide.model.response.CheckMailResponse;
+import com.example.travelguide.model.response.CheckNickResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 
@@ -25,10 +25,10 @@ public class SignUpPresenter {
         service = RetrofitManager.getApiService();
     }
 
-    public void sendAuthResponse(SignUpRequestModel signUpRequestModel) {
-        service.signUp(signUpRequestModel).enqueue(new Callback<SignUpResponseModel>() {
+    public void sendAuthResponse(SignUpRequest signUpRequest) {
+        service.signUp(signUpRequest).enqueue(new Callback<SignUpResponse>() {
             @Override
-            public void onResponse(@NotNull Call<SignUpResponseModel> call, @NotNull Response<SignUpResponseModel> response) {
+            public void onResponse(@NotNull Call<SignUpResponse> call, @NotNull Response<SignUpResponse> response) {
 //                String token = response.body().getAccess_token();
                 if (response.isSuccessful()) {
                     iSignUpFragment.onGetAuthResult(response.body());
@@ -36,39 +36,39 @@ public class SignUpPresenter {
             }
 
             @Override
-            public void onFailure(Call<SignUpResponseModel> call, Throwable t) {
+            public void onFailure(Call<SignUpResponse> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
-    public void checkEmail(CheckMailRequestModel checkMailRequestModel) {
-        service.checkEmail(checkMailRequestModel).enqueue(new Callback<CheckMailResponseModel>() {
+    public void checkEmail(CheckMailRequest checkMailRequest) {
+        service.checkEmail(checkMailRequest).enqueue(new Callback<CheckMailResponse>() {
             @Override
-            public void onResponse(Call<CheckMailResponseModel> call, Response<CheckMailResponseModel> response) {
+            public void onResponse(Call<CheckMailResponse> call, Response<CheckMailResponse> response) {
                 if (response.isSuccessful()) {
                     iSignUpFragment.onGetEmailCheckResult(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<CheckMailResponseModel> call, Throwable t) {
+            public void onFailure(Call<CheckMailResponse> call, Throwable t) {
 
             }
         });
     }
 
-    public void checkNick(CheckNickRequestModel checkNickRequestModel) {
-        service.checkNick(checkNickRequestModel).enqueue(new Callback<CheckNickResponseModel>() {
+    public void checkNick(CheckNickRequest checkNickRequest) {
+        service.checkNick(checkNickRequest).enqueue(new Callback<CheckNickResponse>() {
             @Override
-            public void onResponse(Call<CheckNickResponseModel> call, Response<CheckNickResponseModel> response) {
+            public void onResponse(Call<CheckNickResponse> call, Response<CheckNickResponse> response) {
                 if (response.isSuccessful()) {
                     iSignUpFragment.onGetNickCheckResult(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<CheckNickResponseModel> call, Throwable t) {
+            public void onFailure(Call<CheckNickResponse> call, Throwable t) {
 
             }
         });

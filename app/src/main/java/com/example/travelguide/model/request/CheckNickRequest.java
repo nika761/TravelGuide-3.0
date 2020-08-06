@@ -1,6 +1,6 @@
 package com.example.travelguide.model.request;
 
-public class CheckNickRequestModel {
+public class CheckNickRequest {
     private String nickname;
 
     public String getNickname() {

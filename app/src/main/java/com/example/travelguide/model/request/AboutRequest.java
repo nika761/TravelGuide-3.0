@@ -1,9 +1,9 @@
 package com.example.travelguide.model.request;
 
-public class ChangeLangRequestModel {
+public class AboutRequest {
     String language_id;
 
-    public ChangeLangRequestModel(String language_id) {
+    public AboutRequest(String language_id) {
         this.language_id = language_id;
     }
 
@@ -14,5 +14,4 @@ public class ChangeLangRequestModel {
     public void setLanguage_id(String language_id) {
         this.language_id = language_id;
     }
-
 }

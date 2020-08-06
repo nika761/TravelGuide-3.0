@@ -1,7 +1,7 @@
 package com.example.travelguide.ui.profile.presenter;
 
-import com.example.travelguide.model.request.ProfileRequestModel;
-import com.example.travelguide.model.response.ProfileResponseModel;
+import com.example.travelguide.model.request.ProfileRequest;
+import com.example.travelguide.model.response.ProfileResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 import com.example.travelguide.ui.profile.interfaces.IProfileFragment;
@@ -19,17 +19,17 @@ public class ProfilePresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    public void getProfile(String accessToken, ProfileRequestModel profileRequestModel) {
-        apiService.getProfile(accessToken, profileRequestModel).enqueue(new Callback<ProfileResponseModel>() {
+    public void getProfile(String accessToken, ProfileRequest profileRequest) {
+        apiService.getProfile(accessToken, profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
-            public void onResponse(Call<ProfileResponseModel> call, Response<ProfileResponseModel> response) {
+            public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 if (response.isSuccessful()) {
                     iProfileFragment.onGetProfile(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<ProfileResponseModel> call, Throwable t) {
+            public void onFailure(Call<ProfileResponse> call, Throwable t) {
 
             }
         });

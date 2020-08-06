@@ -1,15 +1,15 @@
 package com.example.travelguide.ui.login.interfaces;
 
-import com.example.travelguide.model.response.CheckMailResponseModel;
-import com.example.travelguide.model.response.SignUpResponseModel;
-import com.example.travelguide.model.response.CheckNickResponseModel;
+import com.example.travelguide.model.response.CheckMailResponse;
+import com.example.travelguide.model.response.SignUpResponse;
+import com.example.travelguide.model.response.CheckNickResponse;
 
 public interface ISignUpFragment {
 
-    void onGetAuthResult(SignUpResponseModel signUpResponseModel);
+    void onGetAuthResult(SignUpResponse signUpResponse);
 
-    void onGetEmailCheckResult(CheckMailResponseModel checkMailResponseModel);
+    void onGetEmailCheckResult(CheckMailResponse checkMailResponse);
 
-    void onGetNickCheckResult(CheckNickResponseModel checkNickResponseModel);
+    void onGetNickCheckResult(CheckNickResponse checkNickResponse);
 
 }

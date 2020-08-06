@@ -23,7 +23,6 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         initUI();
-//        loadFragment(new SignInFragment(), null, R.id.fragment_container, false);
         HelperUI.loadFragment(new SignInFragment(), null, R.id.fragment_container, false, this);
     }
 

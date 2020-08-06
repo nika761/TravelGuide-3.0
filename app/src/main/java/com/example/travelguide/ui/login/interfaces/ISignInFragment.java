@@ -1,7 +1,7 @@
 package com.example.travelguide.ui.login.interfaces;
 
 import com.example.travelguide.model.User;
-import com.example.travelguide.model.response.LoginResponseModel;
+import com.example.travelguide.model.response.LoginResponse;
 
 public interface ISignInFragment {
 
@@ -9,6 +9,6 @@ public interface ISignInFragment {
 
     void onGetGglUserData(User user);
 
-    void onGetLoginResult(LoginResponseModel loginResponseModel);
+    void onGetLoginResult(LoginResponse loginResponse);
 
 }

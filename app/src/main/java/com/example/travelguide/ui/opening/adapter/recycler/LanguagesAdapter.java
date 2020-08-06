@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.ui.opening.interfaces.ILanguageActivity;
-import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.response.LanguagesResponse;
 
 import java.util.List;
 
 public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.LanguageViewHolder> {
 
-    private List<LanguagesResponseModel.Language> languageList;
+    private List<LanguagesResponse.Language> languageList;
     private Context context;
     private ILanguageActivity iLanguageActivity;
 
@@ -52,7 +52,7 @@ public class LanguagesAdapter extends RecyclerView.Adapter<LanguagesAdapter.Lang
         return languageList.size();
     }
 
-    public void setLanguageList(List<LanguagesResponseModel.Language> getLanguagesList) {
+    public void setLanguageList(List<LanguagesResponse.Language> getLanguagesList) {
         this.languageList = getLanguagesList;
         notifyDataSetChanged();
     }

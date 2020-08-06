@@ -1,7 +1,6 @@
 package com.example.travelguide.ui.profile.adapter.recycler;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.ui.profile.interfaces.IChangeLangFragment;
-import com.example.travelguide.model.response.LanguagesResponseModel;
+import com.example.travelguide.model.response.LanguagesResponse;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
 
     private Context context;
     private IChangeLangFragment iChangeLangFragment;
-    private List<LanguagesResponseModel.Language> languages;
+    private List<LanguagesResponse.Language> languages;
     private int currentLanguageId;
     private int currentLanguagePosition;
 
@@ -56,7 +55,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
         return languages.size();
     }
 
-    public void setLanguageList(List<LanguagesResponseModel.Language> languages) {
+    public void setLanguageList(List<LanguagesResponse.Language> languages) {
         this.languages = languages;
         notifyDataSetChanged();
     }

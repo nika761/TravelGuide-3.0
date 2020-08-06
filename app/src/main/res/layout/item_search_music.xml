@@ -14,31 +14,72 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/item_music_title"
+        android:id="@+id/item_music_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/blackStatusBar"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/item_music_image"
+        app:layout_constraintTop_toBottomOf="@id/item_music_image" />
+
+    <ImageButton
+        android:id="@+id/item_play_music"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@drawable/icon_play"
+        app:layout_constraintBottom_toBottomOf="@id/item_music_image"
+        app:layout_constraintEnd_toEndOf="@id/item_music_image"
+        app:layout_constraintStart_toStartOf="@id/item_music_image"
+        app:layout_constraintTop_toTopOf="@id/item_music_image" />
+
+    <TextView
+        android:id="@+id/item_music_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:text="Music title"
         android:textColor="@color/blackStatusBar"
-        android:textSize="15sp"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_music_image"
         app:layout_constraintTop_toTopOf="@id/item_music_image" />
 
     <TextView
-        android:id="@+id/item_music_duration"
+        android:id="@+id/item_music_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Music author"
+        android:textColor="@color/blackStatusBar"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/item_music_category"
+        app:layout_constraintEnd_toStartOf="@id/item_music_favorite"
+        app:layout_constraintStart_toEndOf="@id/item_music_image"
+        app:layout_constraintTop_toBottomOf="@id/item_music_title" />
+
+    <TextView
+        android:id="@+id/item_music_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:text="00:20"
+        android:text="Rock"
         android:textColor="@color/blackStatusBar"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@id/item_music_image"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_music_image" />
 
     <ImageButton
         android:id="@+id/item_music_favorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@drawable/emoji_link_black"
         app:layout_constraintBottom_toBottomOf="@id/item_music_image"
         app:layout_constraintEnd_toEndOf="parent"

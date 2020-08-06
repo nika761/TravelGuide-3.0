@@ -1,6 +1,6 @@
 package com.example.travelguide.model.response;
 
-public class CheckMailResponseModel {
+public class CheckMailResponse {
    private String stasus;
 
     public String getStasus() {

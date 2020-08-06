@@ -73,13 +73,18 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void onCropFinish(String croppedPhoto, int adapterPosition) {
-        itemMedias.set(adapterPosition, new ItemMedia(0, croppedPhoto));
+    public void onCropFinish(String croppedPhoto, int itemPosition) {
+        itemMedias.set(itemPosition, new ItemMedia(0, croppedPhoto));
         notifyDataSetChanged();
     }
 
-    public void onFilterFinish(String filteredPhoto, int adapterPosition) {
-        itemMedias.set(adapterPosition, new ItemMedia(0, filteredPhoto));
+    public void onFilterFinish(String filteredPhoto, int itemPosition) {
+        itemMedias.set(itemPosition, new ItemMedia(0, filteredPhoto));
+        notifyDataSetChanged();
+    }
+
+    public void onTrimFinish(String trimmedVideo, int itemPosition) {
+        itemMedias.set(itemPosition, new ItemMedia(1, trimmedVideo));
         notifyDataSetChanged();
     }
 
@@ -168,6 +173,8 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             trim.setOnClickListener(this);
 
             videoItem = itemView.findViewById(R.id.video_item);
+            videoItem.setOnClickListener(this);
+
             speedTools = itemView.findViewById(R.id.speed_container);
         }
 
@@ -187,7 +194,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             switch (v.getId()) {
 
                 case R.id.trim_video:
-                    iEditPost.onTrimChoose(itemMedias.get(getLayoutPosition()).getPath());
+                    iEditPost.onTrimChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
                     break;
 
                 case R.id.speed_video:
@@ -202,6 +209,14 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 case R.id.sort_video:
                     iEditPost.onSortChoose(itemMedias);
+                    break;
+
+                case R.id.video_item:
+                    if (videoItem.isPlaying()) {
+                        videoItem.pause();
+                    } else {
+                        videoItem.resume();
+                    }
                     break;
 
                 case R.id.delete_image_video:

@@ -3,7 +3,8 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ChangeLangResponseModel {
+public class AddFavoriteMusicResponse {
+
 
     @Expose
     @SerializedName("status")

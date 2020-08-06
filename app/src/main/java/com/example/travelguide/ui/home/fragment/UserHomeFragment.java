@@ -1,7 +1,6 @@
 package com.example.travelguide.ui.home.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,8 +23,8 @@ import com.example.travelguide.ui.home.adapter.recycler.PostRecyclerAdapter;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.ui.home.interfaces.IHomeFragment;
 import com.example.travelguide.ui.home.interfaces.OnLoadFinishListener;
-import com.example.travelguide.model.request.PostRequestModel;
-import com.example.travelguide.model.response.PostResponseModel;
+import com.example.travelguide.model.request.PostRequest;
+import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.ui.home.presenter.HomePresenter;
 
 import java.util.List;
@@ -41,7 +39,7 @@ public class UserHomeFragment extends Fragment implements IHomeFragment, OnLoadF
     private LinearLayout storyContainer;
     private StoriesProgressView storiesProgressView;
     private LottieAnimationView lottieAnimationView;
-    private int storyPosition = 0;
+    private int oldPosition = -1;
 
     @Nullable
     @Override
@@ -64,8 +62,8 @@ public class UserHomeFragment extends Fragment implements IHomeFragment, OnLoadF
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         homePresenter = new HomePresenter(this);
-        PostRequestModel postRequestModel = new PostRequestModel(29);
-        homePresenter.getPosts("Bearer" + " " + HelperPref.getCurrentAccessToken(context), postRequestModel);
+        PostRequest postRequest = new PostRequest(0);
+        homePresenter.getPosts("Bearer" + " " + HelperPref.getCurrentAccessToken(context), postRequest);
     }
 
 
@@ -75,7 +73,7 @@ public class UserHomeFragment extends Fragment implements IHomeFragment, OnLoadF
         this.context = context;
     }
 
-    private void initRecyclerView(List<PostResponseModel.Posts> posts) {
+    private void initRecyclerView(List<PostResponse.Posts> posts) {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -84,48 +82,51 @@ public class UserHomeFragment extends Fragment implements IHomeFragment, OnLoadF
         helper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
 
-//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                if (postResponseModel != null && currentItemPosition != layoutManager.findFirstVisibleItemPosition()) {
-//                    currentItemPosition = layoutManager.findFirstVisibleItemPosition();
-//                    iniStoryBar(postResponseModel.getPosts().get(layoutManager.findFirstVisibleItemPosition()).getPost_stories().size());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+//                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+//                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+//                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
 //                }
-//            }
-//        });
+
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (firstVisibleItem != oldPosition) {
+                    PostRecyclerAdapter.PostHolder postHolder = ((PostRecyclerAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(firstVisibleItem));
+
+                    if (postHolder != null) {
+                        postHolder.recyclerView.post(() -> {
+                            postHolder.recyclerView.smoothScrollToPosition(0);
+                        });
+                        postHolder.iniStory(firstVisibleItem);
+                    }
+                    PostRecyclerAdapter.PostHolder oldHolder = ((PostRecyclerAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(oldPosition));
+                    if (oldHolder != null) {
+                        oldHolder.storyView.removeAllViews();
+                    }
+                    oldPosition = firstVisibleItem;
+                }
+
+            }
+        });
 
     }
 
     @Override
-    public void onGetPosts(PostResponseModel postResponseModel) {
-        if (postResponseModel.getStatus() == 0) {
-            initRecyclerView(postResponseModel.getPosts());
+    public void onGetPosts(PostResponse postResponse) {
+        if (postResponse.getStatus() == 0) {
+            initRecyclerView(postResponse.getPosts());
         }
     }
-
-    private void iniStoryBar(int count) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                5,
-                1.0f);
-        Drawable storyBarItemBg = getResources().getDrawable(R.drawable.story_bar_item_bg, null);
-        params.leftMargin = 3;
-        params.rightMargin = 3;
-        for (int i = 0; i < count; i++) {
-            ProgressBar progressBar = new ProgressBar(context,
-                    null,
-                    android.R.attr.progressBarStyleHorizontal);
-            progressBar.setProgressDrawable(storyBarItemBg);
-            progressBar.setLayoutParams(params);
-            storyContainer.addView(progressBar);
-        }
-    }
-
 
     @Override
     public void onDestroy() {
@@ -139,4 +140,5 @@ public class UserHomeFragment extends Fragment implements IHomeFragment, OnLoadF
     public void stopLoader() {
         lottieAnimationView.setVisibility(View.GONE);
     }
+
 }
