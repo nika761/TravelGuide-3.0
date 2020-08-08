@@ -13,8 +13,11 @@ import com.amazonaws.event.ProgressEvent;
 import com.amazonaws.event.ProgressListener;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transfermanager.MultipleFileUpload;
+import com.amazonaws.mobileconnectors.s3.transfermanager.ObjectMetadataProvider;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
+import com.amazonaws.mobileconnectors.s3.transfermanager.internal.MultipleFileTransfer;
+import com.amazonaws.mobileconnectors.s3.transfermanager.internal.MultipleFileTransferMonitor;
 import com.amazonaws.mobileconnectors.s3.transfermanager.internal.MultipleFileUploadImpl;
 import com.amazonaws.mobileconnectors.s3.transfermanager.internal.TransferManagerUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -28,6 +31,7 @@ import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
 import com.amazonaws.services.s3.model.ListMultipartUploadsRequest;
 import com.amazonaws.services.s3.model.MultipartUpload;
 import com.amazonaws.services.s3.model.MultipartUploadListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PartETag;
 import com.amazonaws.services.s3.model.UploadPartRequest;
 import com.amazonaws.services.s3.model.UploadPartResult;
@@ -41,8 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelperClients {
-    public static final String S3_KEY = "AKIAVWUTGVROTZGHURQ4";
-    public static final String S3_SECRET = "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";
+    private static final String S3_KEY = "AKIAVWUTGVROTZGHURQ4";
+    private static final String S3_SECRET = "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";
     private static final String AMAZONS3_END_POINT = "https://travel-guide-3.s3.eu-central-1.amazonaws.com";
     public static final String S3_BUCKET = "travel-guide-3";
 
@@ -94,32 +98,49 @@ public class HelperClients {
                 .upload(HelperClients.S3_BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
     }
 
-    public static void uploadMultipleS3(AmazonS3Client s3Client, List<ItemMedia> paths, Context context) {
+    public static void uploadMultipleS3(AmazonS3Client s3Client, List<ItemMedia> paths) {
         ArrayList<File> files = new ArrayList<>();
         for (ItemMedia list : paths) {
             if (list.getType() == 0) {
                 files.add(new File(list.getPath()));
             }
         }
-        TransferManager transferManager = new TransferManager(s3Client);
-        try {
-            MultipleFileUpload xfer = transferManager.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files);
-            // loop with Transfer.isDone()
-//            XferMgrProgress.showTransferProgress(xfer);
-            // or block with Transfer.waitForCompletion()
-//            XferMgrProgress.waitForCompletion(xfer);
-//            if (xfer.isDone()) {
-//                Toast.makeText(context, String.valueOf(xfer.getProgress().getPercentTransferred()), Toast.LENGTH_LONG).show();
-//                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
-//
-//            } else {
-//                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
-//                Toast.makeText(context, xfer.getDescription(), Toast.LENGTH_LONG).show();
-//            }
 
-        } catch (AmazonServiceException a) {
-            Log.e("ssss", a.getErrorMessage());
-        }
-        transferManager.shutdownNow();
+
+        TransferManager tm = new TransferManager(s3Client);
+
+        ObjectMetadataProvider metadataProvider = (file, metadata) -> metadata.addUserMetadata("original-image-date", file.getAbsolutePath());
+
+        MultipleFileUpload upload = tm.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files, metadataProvider);
+        upload.addProgressListener((ProgressListener) progressEvent ->
+                Log.e("taggssg", String.valueOf(progressEvent.getEventCode())));
+
+        tm.shutdownNow();
+
+
+//        TransferManager transferManager = new TransferManager(s3Client);
+//        try {
+//            MultipleFileUpload xfer = transferManager.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files);
+//            xfer.addProgressListener((ProgressListener) progressEvent ->
+//                    Log.e("taggssg", String.valueOf(progressEvent.getEventCode())));
+//            // loop with Transfer.isDone()
+////            XferMgrProgress.showTransferProgress(xfer);
+//            // or block with Transfer.waitForCompletion()
+////            XferMgrProgress.waitForCompletion(xfer);
+////            if (xfer.isDone()) {
+////                Toast.makeText(context, String.valueOf(xfer.getProgress().getPercentTransferred()), Toast.LENGTH_LONG).show();
+////                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
+////
+////            } else {
+////                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
+////                Toast.makeText(context, xfer.getDescription(), Toast.LENGTH_LONG).show();
+//
+//
+////            }
+//
+//        } catch (AmazonServiceException a) {
+//            Log.e("ssss", a.getErrorMessage());
+//        }
+//        transferManager.shutdownNow();
     }
 }

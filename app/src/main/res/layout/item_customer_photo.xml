@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="115dp"
+    android:layout_height="115dp"
+    android:layout_margin="1dp">
+
+    <ImageView
+        android:id="@+id/item_customer_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="image_transition" />
+
+    <TextView
+        android:id="@+id/item_customer_post_states"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
+        android:padding="3dp"
+        android:text="999k"
+        android:textColor="@color/whiteNone"
+        android:textSize="10sp"
+        android:visibility="visible" />
+
+</FrameLayout>

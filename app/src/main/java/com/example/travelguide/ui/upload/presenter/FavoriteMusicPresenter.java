@@ -1,5 +1,7 @@
 package com.example.travelguide.ui.upload.presenter;
 
+import android.util.Log;
+
 import com.example.travelguide.model.response.FavoriteMusicResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
@@ -25,15 +27,20 @@ public class FavoriteMusicPresenter {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         iFavoriteMusic.onGetFavoriteMusics(response.body().getFavotite_musics());
+                        Log.e("cxzcx", "asdasdasd");
                     } else {
                         iFavoriteMusic.onGetFavoriteFailed();
+                        Log.e("cxzcx", "asdaqweqqwesdasd");
                     }
+                } else {
+                    Log.e("cxzcx", response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<FavoriteMusicResponse> call, Throwable t) {
                 iFavoriteMusic.onGetFavoriteFailed();
+                Log.e("cxzcx", "zxczxccccccc");
             }
         });
     }

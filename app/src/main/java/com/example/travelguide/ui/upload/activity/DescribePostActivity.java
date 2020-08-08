@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -26,10 +27,14 @@ import com.example.travelguide.helper.HelperMedia;
 import com.example.travelguide.model.ItemMedia;
 import com.example.travelguide.ui.upload.interfaces.IUploadPostListener;
 import com.example.travelguide.ui.upload.presenter.UploadPostPresenter;
+import com.google.android.gms.common.api.Status;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.travelguide.ui.upload.activity.EditPostActivity.STORIES_PATHS;
@@ -57,6 +62,9 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
         View selectCover = findViewById(R.id.select_cover_btn);
         selectCover.setOnClickListener(this);
 
+        TextView location = findViewById(R.id.location);
+        location.setOnClickListener(this);
+
         imageView = findViewById(R.id.describe_story_photo);
         HelperMedia.loadPhoto(this, itemMedia.get(0).getPath(), imageView);
     }
@@ -81,11 +89,37 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
 
                 break;
 
+            case R.id.location:
+
+//                AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+//                        getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+//
+//                // Specify the types of place data to return.
+//                assert autocompleteFragment != null;
+//                autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+//
+//                // Set up a PlaceSelectionListener to handle the response.
+//                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//                    @Override
+//                    public void onPlaceSelected(@NotNull Place place) {
+//                        // TODO: Get info about the selected place.
+//                        Log.i("zz", "Place: " + place.getName() + ", " + place.getId());
+//                    }
+//
+//
+//                    @Override
+//                    public void onError(@NotNull Status status) {
+//                        // TODO: Handle the error.
+//                        Log.i("cc", "An error occurred: " + status);
+//                    }
+//                });
+                break;
+
             case R.id.describe_post_post_btn:
                 List<ItemMedia> convertedImages = convertImagesToPng(itemMedia);
                 uploadPostPresenter = new UploadPostPresenter(this);
                 AmazonS3Client s3Client = HelperClients.amazonS3Client(this);
-                HelperClients.uploadMultipleS3(s3Client, convertedImages, this);
+                HelperClients.uploadMultipleS3(s3Client, convertedImages);
                 break;
         }
     }
@@ -125,6 +159,14 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
     public void onPostUploadError() {
         Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (uploadPostPresenter != null) {
+            uploadPostPresenter = null;
+        }
+        super.onDestroy();
     }
 }
 

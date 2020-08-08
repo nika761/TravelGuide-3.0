@@ -52,6 +52,8 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         HelperMedia.loadPhoto(holder.musicImage.getContext(), musics.get(position).getImage(), holder.musicImage);
         if (musics.get(position).getIs_favorite() == 1) {
             holder.favorite.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+        } else {
+            holder.favorite.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
         }
     }
 
@@ -98,9 +100,9 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
                 case R.id.item_play_music:
                     playingPosition = getLayoutPosition();
-                    notifyDataSetChanged();
-                    playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
                     iSearchMusic.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                    playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+                    notifyDataSetChanged();
                     break;
             }
         }

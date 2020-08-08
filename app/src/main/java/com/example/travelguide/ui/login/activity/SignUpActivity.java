@@ -17,7 +17,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        HelperUI.loadFragment(new SignUpFragment(),null,REGISTER_FRAGMENT_CONTAINER_ID,false,this);
+        HelperUI.loadFragment(new SignUpFragment(), null, REGISTER_FRAGMENT_CONTAINER_ID, false, this);
     }
 
     @Override

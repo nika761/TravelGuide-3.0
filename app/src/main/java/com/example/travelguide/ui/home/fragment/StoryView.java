@@ -78,7 +78,6 @@ public class StoryView extends LinearLayout {
 
     public void start(final int position, int duration) {
         clearPrevious(position);
-        Log.e("dfsdfsdf", String.valueOf(position));
         ProgressBar progressBar = (ProgressBar) getChildAt(position);
         final ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 100);
         valueAnimator.setDuration(duration);

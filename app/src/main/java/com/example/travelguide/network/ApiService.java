@@ -3,19 +3,23 @@ package com.example.travelguide.network;
 import com.example.travelguide.model.request.AboutRequest;
 import com.example.travelguide.model.request.AddFavoriteMusic;
 import com.example.travelguide.model.request.ChangeLangRequest;
+import com.example.travelguide.model.request.CustomerPostRequest;
 import com.example.travelguide.model.request.LoginRequest;
 import com.example.travelguide.model.request.PostRequest;
 import com.example.travelguide.model.request.ProfileRequest;
+import com.example.travelguide.model.request.FollowRequest;
 import com.example.travelguide.model.request.SignUpRequest;
 import com.example.travelguide.model.request.TermsPolicyRequest;
 import com.example.travelguide.model.request.UploadPostRequest;
 import com.example.travelguide.model.response.AboutResponse;
 import com.example.travelguide.model.response.AddFavoriteMusicResponse;
 import com.example.travelguide.model.response.ChangeLangResponse;
+import com.example.travelguide.model.response.CustomerPostResponse;
 import com.example.travelguide.model.response.FavoriteMusicResponse;
 import com.example.travelguide.model.response.MusicResponse;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.ProfileResponse;
+import com.example.travelguide.model.response.FollowResponse;
 import com.example.travelguide.model.response.SignUpResponse;
 import com.example.travelguide.model.request.CheckMailRequest;
 import com.example.travelguide.model.response.CheckMailResponse;
@@ -72,6 +76,11 @@ public interface ApiService {
                                 @Body PostRequest postRequest);
 
     @Headers({"Accept: application/json"})
+    @POST("get/posts_by_user")
+    Call<CustomerPostResponse> getCustomerPosts(@Header("Authorization") String token,
+                                                @Body CustomerPostRequest customerPostRequest);
+
+    @Headers({"Accept: application/json"})
     @POST("get/profile")
     Call<ProfileResponse> getProfile(@Header("Authorization") String token,
                                      @Body ProfileRequest profileRequest);
@@ -86,8 +95,12 @@ public interface ApiService {
                                                     @Body AddFavoriteMusic addFavoriteMusic);
 
     @Headers({"Accept: application/json"})
-    @POST("set/favorite_music")
+    @POST("get/favorite_music")
     Call<FavoriteMusicResponse> getFavoriteMusics(@Header("Authorization") String token);
 
+    @Headers({"Accept: application/json"})
+    @POST("set/follower")
+    Call<FollowResponse> follow(@Header("Authorization") String token,
+                                @Body FollowRequest followRequest);
 
 }

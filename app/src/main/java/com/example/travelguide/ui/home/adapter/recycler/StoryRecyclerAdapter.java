@@ -1,5 +1,6 @@
 package com.example.travelguide.ui.home.adapter.recycler;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperMedia;
+import com.example.travelguide.ui.home.activity.CustomerProfileActivity;
 import com.example.travelguide.ui.home.interfaces.OnLoadFinishListener;
 import com.example.travelguide.model.response.PostResponse;
 
@@ -57,7 +59,7 @@ public class StoryRecyclerAdapter extends RecyclerView.Adapter<StoryRecyclerAdap
         notifyDataSetChanged();
     }
 
-    class StoryHolder extends RecyclerView.ViewHolder {
+    class StoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         View parent;
         VideoView videoItem;
@@ -71,7 +73,9 @@ public class StoryRecyclerAdapter extends RecyclerView.Adapter<StoryRecyclerAdap
             videoItem = itemView.findViewById(R.id.scalable_video);
             description = itemView.findViewById(R.id.post_description);
             musicName = itemView.findViewById(R.id.music_name_post);
+
             profileImage = itemView.findViewById(R.id.user_image_post);
+            profileImage.setOnClickListener(this);
         }
 
         void setVideoItem() {
@@ -82,6 +86,17 @@ public class StoryRecyclerAdapter extends RecyclerView.Adapter<StoryRecyclerAdap
                 mp.setLooping(true);
                 videoItem.start();
             });
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.user_image_post:
+                    Intent intent = new Intent(videoItem.getContext(), CustomerProfileActivity.class);
+                    intent.putExtra("id", currentPost.getUser_id());
+                    videoItem.getContext().startActivity(intent);
+                    break;
+            }
         }
     }
 }

@@ -130,6 +130,8 @@
         <activity
             android:name=".ui.upload.activity.SortStoriesActivity"
             android:theme="@style/SecondAppTheme" />
+        <activity android:name=".ui.home.activity.CustomerProfileActivity" android:theme="@style/SecondAppTheme"/>
+        <activity android:name=".ui.home.activity.CustomerFollowerActivity" />
     </application>
 
 </manifest>
