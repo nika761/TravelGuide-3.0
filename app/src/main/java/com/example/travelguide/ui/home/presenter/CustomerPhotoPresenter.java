@@ -1,7 +1,7 @@
 package com.example.travelguide.ui.home.presenter;
 
 import com.example.travelguide.model.request.CustomerPostRequest;
-import com.example.travelguide.model.response.CustomerPostResponse;
+import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
 import com.example.travelguide.ui.home.interfaces.ICustomerPhoto;
@@ -20,9 +20,9 @@ public class CustomerPhotoPresenter {
     }
 
     public void getCustomerPosts(String accessToken, CustomerPostRequest customerPostRequest) {
-        apiService.getCustomerPosts(accessToken, customerPostRequest).enqueue(new Callback<CustomerPostResponse>() {
+        apiService.getCustomerPosts(accessToken, customerPostRequest).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<CustomerPostResponse> call, Response<CustomerPostResponse> response) {
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         iCustomerPhoto.onGetPosts(response.body());
@@ -35,7 +35,7 @@ public class CustomerPhotoPresenter {
             }
 
             @Override
-            public void onFailure(Call<CustomerPostResponse> call, Throwable t) {
+            public void onFailure(Call<PostResponse> call, Throwable t) {
                 iCustomerPhoto.onGetPostsError(t.getMessage());
             }
         });

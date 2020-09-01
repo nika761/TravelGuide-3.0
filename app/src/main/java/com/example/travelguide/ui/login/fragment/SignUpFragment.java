@@ -46,7 +46,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     private CountryCodePicker countryCodePicker;
     private SignUpPresenter signUpPresenter;
     private LinearLayout phoneNumberContainer;
-    private String userName, userSurname, nickName, birthDate, email,
+    private String userName, userSurname, nickName, birthDate, email, phoneIndex,
             phoneNumber, password, confirmPassword, nickNameFirst, nickNameSecond;
     private EditText eName, eSurname, eNickName, eMail,
             ePhoneNumber, ePassword, eConfirmPassword;
@@ -188,6 +188,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
 
             String name = countryCodePicker.getSelectedCountryName();
             String code = countryCodePicker.getSelectedCountryCodeWithPlus();
+            phoneIndex = countryCodePicker.getSelectedCountryCode();
             String asds = countryCodePicker.getSelectedCountryEnglishName();
             //registerPhoneNumber.getText().clear();
         }
@@ -215,7 +216,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
                 password != null &&
                 confirmPassword != null) {
             SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password,
-                    confirmPassword, birthDate, phoneNumber, String.valueOf(HelperPref.getLanguageId(context)));
+                    confirmPassword, birthDate, phoneIndex, phoneNumber, String.valueOf(HelperPref.getLanguageId(context)));
             signUpPresenter.sendAuthResponse(signUpRequest);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {
@@ -224,9 +225,17 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
 
     }
 
-    private void showAlertDialog() {
+    private void showAlertDialog(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final View customLayout = getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
+        TextView verifyTitle, verifyMessage;
+
+        verifyTitle = customLayout.findViewById(R.id.confirm_title);
+        verifyMessage = customLayout.findViewById(R.id.confirm_message);
+
+        verifyTitle.setText(title);
+        verifyMessage.setText(message);
+
         builder.setView(customLayout);
         AlertDialog dialog = builder.create();
         Objects.requireNonNull(dialog.getWindow())
@@ -286,24 +295,53 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     @Override
     public void onGetAuthResult(SignUpResponse signUpResponse) {
 
-        String authResultStatus = signUpResponse.getStatus();
+        int authResultStatus = signUpResponse.getStatus();
 
         switch (authResultStatus) {
-            case "0":
-                showAlertDialog();
+            case 0:
+                showAlertDialog(signUpResponse.getTitle(), signUpResponse.getMessage());
                 break;
 
-            case "2":
+            case 2:
                 HelperUI.setBackgroundWarning(eNickName, eNickNameHead, "NickName");
                 checkNickNameToServer(userName, userSurname, nickName);
                 break;
 
-            case "4":
+            case 3:
+                Toast.makeText(context, "nickname lenght must be less then 17!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case 4:
                 HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email");
 //                checkEmailToServer(email);
                 break;
 
+            case 5:
+                Toast.makeText(context, "birth date  is not a correct format!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case 6:
+                Toast.makeText(context, "password lenght must be 8 or more!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case 7:
+                Toast.makeText(context, "The password confirmation does not match.", Toast.LENGTH_SHORT).show();
+                break;
+
+            case 8:
+                Toast.makeText(context, "phone lenght must be 9 or more!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case 9:
+                Toast.makeText(context, "phone index must lenght be 1 or more!", Toast.LENGTH_SHORT).show();
+                break;
+
         }
+    }
+
+    @Override
+    public void onGetAuthError(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

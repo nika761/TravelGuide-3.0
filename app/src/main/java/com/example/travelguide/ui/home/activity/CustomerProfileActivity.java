@@ -26,13 +26,11 @@ import com.example.travelguide.ui.home.fragment.CustomerPhotoFragment;
 import com.example.travelguide.ui.home.fragment.CustomerTourFragment;
 import com.example.travelguide.ui.home.interfaces.ICustomerProfileActivity;
 import com.example.travelguide.ui.home.presenter.CustomerProfilePresenter;
-import com.example.travelguide.ui.profile.adapter.pager.ProfilePagerAdapter;
-import com.example.travelguide.ui.profile.fragment.LikedContentFragment;
-import com.example.travelguide.ui.profile.fragment.UserPhotoFragment;
-import com.example.travelguide.ui.profile.fragment.UserTourFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class CustomerProfileActivity extends AppCompatActivity implements ICustomerProfileActivity, View.OnClickListener {
 
@@ -58,7 +56,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements ICusto
         initUI();
 
         if (customerUserId != 0) {
-            customerProfilePresenter.getProfile("Bearer" + " " + HelperPref.getCurrentAccessToken(this), new ProfileRequest(customerUserId));
+            customerProfilePresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getCurrentAccessToken(this), new ProfileRequest(customerUserId));
         }
     }
 
@@ -66,12 +64,14 @@ public class CustomerProfileActivity extends AppCompatActivity implements ICusto
 
         customerProfilePresenter = new CustomerProfilePresenter(this);
 
-
         ViewPager viewPager = findViewById(R.id.customer_view_pager);
         TabLayout tabLayout = findViewById(R.id.customer_profile_tab);
 
         CustomerPagerAdapter customerPagerAdapter = new CustomerPagerAdapter(getSupportFragmentManager());
-        customerPagerAdapter.addFragment(new CustomerPhotoFragment(customerUserId));
+
+        if (customerUserId != 0)
+            customerPagerAdapter.addFragment(new CustomerPhotoFragment(customerUserId));
+
         customerPagerAdapter.addFragment(new CustomerTourFragment());
         viewPager.setAdapter(customerPagerAdapter);
 
@@ -114,8 +114,12 @@ public class CustomerProfileActivity extends AppCompatActivity implements ICusto
         follower.setText(String.valueOf(userInfo.getFollower()));
         reaction.setText(String.valueOf(userInfo.getReactions()));
         bio.setText(userInfo.getBiography());
+
         if (userInfo.getProfile_pic() != null)
             HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), image);
+
+        if (userInfo.getFollow() == 1)
+            followBtn.setText("Following");
 
         loaderContainer.setVisibility(View.GONE);
         lottieLoader.setVisibility(View.GONE);
@@ -160,7 +164,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements ICusto
                 break;
 
             case R.id.customer_profile_follow_btn:
-                customerProfilePresenter.follow("Bearer" + " " + HelperPref.getCurrentAccessToken(this), new FollowRequest(customerUserId));
+                customerProfilePresenter.follow(ACCESS_TOKEN_BEARER + HelperPref.getCurrentAccessToken(this), new FollowRequest(customerUserId));
                 break;
 
             case R.id.customer_profile_follow_container:
@@ -172,7 +176,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements ICusto
 
     @Override
     protected void onDestroy() {
-        if (customerProfilePresenter != null){
+        if (customerProfilePresenter != null) {
             customerProfilePresenter = null;
         }
         super.onDestroy();

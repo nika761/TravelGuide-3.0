@@ -7,26 +7,25 @@
     <EditText
         android:id="@+id/search_fragment_search_field"
         android:layout_width="0dp"
-        android:layout_height="33dp"
+        android:layout_height="38dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_signup_fields"
-        android:drawableStart="@drawable/icon_search_yellow"
-        android:paddingStart="10dp"
         android:hint="Search"
-        app:layout_constraintEnd_toEndOf="@id/music_for_you"
-        app:layout_constraintStart_toStartOf="@id/music_for_you"
+        android:paddingStart="5dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toEndOf="@id/moods_recycler"
+        app:layout_constraintStart_toStartOf="@id/moods_recycler"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/music_for_you"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/moods_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:text="For You"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/search_music_recycler"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_fragment_search_field" />
 
@@ -34,11 +33,10 @@
         android:id="@+id/search_music_recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/music_for_you"
-        app:layout_constraintStart_toStartOf="@+id/music_for_you"
-        app:layout_constraintTop_toBottomOf="@+id/music_for_you" />
+        app:layout_constraintEnd_toEndOf="@id/moods_recycler"
+        app:layout_constraintStart_toStartOf="@+id/moods_recycler"
+        app:layout_constraintTop_toBottomOf="@+id/moods_recycler" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

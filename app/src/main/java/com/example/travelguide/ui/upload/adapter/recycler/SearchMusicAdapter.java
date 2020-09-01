@@ -22,6 +22,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     private List<MusicResponse.Album> musics;
     private ISearchMusic iSearchMusic;
     private int playingPosition = -1;
+    private int oldPlayingPosition;
 
     public SearchMusicAdapter(List<MusicResponse.Album> musics, ISearchMusic iSearchMusic) {
         this.musics = musics;
@@ -41,15 +42,24 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         holder.musicAuthor.setText(musics.get(position).getAuthor());
         holder.musicAuthor.setSelected(true);
         holder.musicDuration.setText(musics.get(position).getDuration());
+
+        if (musics.get(position).getNew_label() == 1) {
+            holder.musicNewLabel.setVisibility(View.VISIBLE);
+        } else {
+            holder.musicNewLabel.setVisibility(View.GONE);
+        }
+
         if (playingPosition == position) {
             holder.playBtn.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
         } else {
             holder.playBtn.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
         }
+
         if (musics.get(position).getCategories().size() != 0) {
             holder.musicCategory.setText(musics.get(position).getCategories().get(0).getCategory());
         }
         HelperMedia.loadPhoto(holder.musicImage.getContext(), musics.get(position).getImage(), holder.musicImage);
+
         if (musics.get(position).getIs_favorite() == 1) {
             holder.favorite.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
         } else {
@@ -64,7 +74,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
     public class SearchMusicHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView musicTitle, musicAuthor, musicCategory, musicDuration;
+        TextView musicTitle, musicAuthor, musicCategory, musicDuration, musicNewLabel;
         ImageView musicImage;
         ImageButton favorite, playBtn;
 
@@ -73,6 +83,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             musicTitle = itemView.findViewById(R.id.item_music_title);
             musicAuthor = itemView.findViewById(R.id.item_music_author);
             musicImage = itemView.findViewById(R.id.item_music_image);
+            musicNewLabel = itemView.findViewById(R.id.item_music_added);
             musicCategory = itemView.findViewById(R.id.item_music_category);
             musicDuration = itemView.findViewById(R.id.item_music_duration);
 
@@ -99,6 +110,9 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                     break;
 
                 case R.id.item_play_music:
+                    if (playingPosition == getLayoutPosition()) {
+                        playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+                    }
                     playingPosition = getLayoutPosition();
                     iSearchMusic.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
                     playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));

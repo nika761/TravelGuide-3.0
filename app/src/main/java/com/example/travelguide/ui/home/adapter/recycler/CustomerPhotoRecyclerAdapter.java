@@ -10,17 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperMedia;
-import com.example.travelguide.helper.HelperPref;
-import com.example.travelguide.model.response.CustomerPostResponse;
+import com.example.travelguide.model.response.PostResponse;
+import com.example.travelguide.ui.home.interfaces.ICustomerPhoto;
 
 import java.util.List;
 
 public class CustomerPhotoRecyclerAdapter extends RecyclerView.Adapter<CustomerPhotoRecyclerAdapter.PhotoViewHolder> {
 
-    private List<CustomerPostResponse.Posts> posts;
+    private List<PostResponse.Posts> posts;
+    private ICustomerPhoto iCustomerPhoto;
 
-    public CustomerPhotoRecyclerAdapter(List<CustomerPostResponse.Posts> posts) {
+    public CustomerPhotoRecyclerAdapter(List<PostResponse.Posts> posts, ICustomerPhoto iCustomerPhoto) {
         this.posts = posts;
+        this.iCustomerPhoto = iCustomerPhoto;
     }
 
     @NonNull
@@ -45,7 +47,12 @@ public class CustomerPhotoRecyclerAdapter extends RecyclerView.Adapter<CustomerP
 
         PhotoViewHolder(@NonNull View itemView) {
             super(itemView);
+
             postImage = itemView.findViewById(R.id.item_customer_photo);
+            postImage.setOnClickListener(v -> {
+                iCustomerPhoto.onPostChoose(posts.get(getLayoutPosition()).getPost_id());
+            });
+
         }
     }
 }

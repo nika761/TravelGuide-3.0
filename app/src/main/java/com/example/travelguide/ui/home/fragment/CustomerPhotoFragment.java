@@ -1,5 +1,6 @@
 package com.example.travelguide.ui.home.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.request.CustomerPostRequest;
-import com.example.travelguide.model.response.CustomerPostResponse;
+import com.example.travelguide.model.response.PostResponse;
+import com.example.travelguide.ui.home.activity.PostActivity;
 import com.example.travelguide.ui.home.adapter.recycler.CustomerPhotoRecyclerAdapter;
 import com.example.travelguide.ui.home.interfaces.ICustomerPhoto;
 import com.example.travelguide.ui.home.presenter.CustomerPhotoPresenter;
-import com.example.travelguide.ui.home.presenter.CustomerProfilePresenter;
-import com.example.travelguide.ui.upload.adapter.recycler.GalleryAdapter;
+
+import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class CustomerPhotoFragment extends Fragment implements ICustomerPhoto {
     private RecyclerView recyclerView;
@@ -42,13 +44,14 @@ public class CustomerPhotoFragment extends Fragment implements ICustomerPhoto {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        customerPhotoPresenter.getCustomerPosts("Bearer" + " " + HelperPref.getCurrentAccessToken(recyclerView.getContext()), new CustomerPostRequest(userId));
+        customerPhotoPresenter.getCustomerPosts(ACCESS_TOKEN_BEARER +
+                HelperPref.getCurrentAccessToken(recyclerView.getContext()), new CustomerPostRequest(userId));
     }
 
     @Override
-    public void onGetPosts(CustomerPostResponse customerPostResponse) {
+    public void onGetPosts(PostResponse postResponse) {
 
-        CustomerPhotoRecyclerAdapter adapter = new CustomerPhotoRecyclerAdapter(customerPostResponse.getPosts());
+        CustomerPhotoRecyclerAdapter adapter = new CustomerPhotoRecyclerAdapter(postResponse.getPosts(),this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -58,6 +61,13 @@ public class CustomerPhotoFragment extends Fragment implements ICustomerPhoto {
     @Override
     public void onGetPostsError(String message) {
 
+    }
+
+    @Override
+    public void onPostChoose(int userId) {
+        Intent intent = new Intent(recyclerView.getContext(), PostActivity.class);
+        intent.putExtra("user_id", userId);
+        recyclerView.getContext().startActivity(intent);
     }
 
     @Override

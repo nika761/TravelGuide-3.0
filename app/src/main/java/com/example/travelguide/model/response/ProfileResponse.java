@@ -37,6 +37,11 @@ public class ProfileResponse {
         @Expose
         @SerializedName("following")
         private int following;
+
+        @Expose
+        @SerializedName("follow")
+        private int follow;
+
         @Expose
         @SerializedName("share_profile")
         private String share_profile;
@@ -71,6 +76,18 @@ public class ProfileResponse {
         @SerializedName("name")
         private String name;
 
+        @Expose
+        @SerializedName("id")
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
         public int getReactions() {
             return reactions;
         }
@@ -93,6 +110,14 @@ public class ProfileResponse {
 
         public void setFollowing(int following) {
             this.following = following;
+        }
+
+        public int getFollow() {
+            return follow;
+        }
+
+        public void setFollow(int follow) {
+            this.follow = follow;
         }
 
         public String getShare_profile() {

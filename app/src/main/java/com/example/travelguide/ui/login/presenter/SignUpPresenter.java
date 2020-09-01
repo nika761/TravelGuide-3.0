@@ -32,12 +32,14 @@ public class SignUpPresenter {
 //                String token = response.body().getAccess_token();
                 if (response.isSuccessful()) {
                     iSignUpFragment.onGetAuthResult(response.body());
+                } else {
+                    iSignUpFragment.onGetAuthError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<SignUpResponse> call, Throwable t) {
-                t.printStackTrace();
+                iSignUpFragment.onGetAuthError(t.getMessage());
             }
         });
     }

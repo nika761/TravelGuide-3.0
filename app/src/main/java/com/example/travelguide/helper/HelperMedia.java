@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -19,23 +20,25 @@ import com.abedelazizshe.lightcompressorlibrary.VideoCompressor;
 import com.abedelazizshe.lightcompressorlibrary.VideoQuality;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.travelguide.model.ItemMedia;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMedia {
-    static int current = 0;
 
     public static String encodeImage(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -266,6 +269,31 @@ public class HelperMedia {
         return listOfAllPaths;
     }
 
+    public static List<ItemMedia> convertImagesToPng(List<ItemMedia> itemMedia) {
+
+        List<ItemMedia> convertedImages = new ArrayList<>();
+
+        for (int i = 0; i < itemMedia.size(); i++) {
+            if (itemMedia.get(i).getType() == 0) {
+                try {
+                    Bitmap bmp = BitmapFactory.decodeFile(itemMedia.get(i).getPath());
+
+                    File imageFileJGP = new File(itemMedia.get(i).getPath());
+
+                    File imageFilePNG = new File(imageFileJGP.getParent() + "/" + System.currentTimeMillis() + ".png");
+
+                    FileOutputStream out = new FileOutputStream(imageFilePNG);
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out); //100-best quality
+                    out.flush();
+                    out.close();
+                    convertedImages.add(new ItemMedia(0, imageFilePNG.getAbsolutePath()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return convertedImages;
+    }
 
     public static void loadCirclePhoto(Context context, String url, CircleImageView circleImageView) {
         Glide.with(context)

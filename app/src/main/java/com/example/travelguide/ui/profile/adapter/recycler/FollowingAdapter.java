@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperMedia;
 import com.example.travelguide.model.User;
+import com.example.travelguide.model.response.FollowingResponse;
 
 import java.util.List;
 
@@ -20,11 +21,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.FollowingViewHolder> {
 
     private Context context;
-    private List<User> users;
+    private List<FollowingResponse.Followings> following;
 
-    public FollowingAdapter(Context context, List<User> users) {
+    public FollowingAdapter(Context context, List<FollowingResponse.Followings> following) {
         this.context = context;
-        this.users = users;
+        this.following = following;
     }
 
     @NonNull
@@ -36,28 +37,21 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Foll
 
     @Override
     public void onBindViewHolder(@NonNull final FollowingViewHolder holder, final int position) {
-        final User currentUser = users.get(position);
-
-        setDataIntoViews(holder, currentUser);
+        HelperMedia.loadCirclePhoto(context, following.get(position).getProfile_pic(), holder.followingUserImage);
+        holder.followingUserName.setText(following.get(position).getName());
+        holder.followingUserNickName.setText(following.get(position).getNickname());
     }
 
-    private void setDataIntoViews(FollowingViewHolder viewHolder, User currentUser) {
-        HelperMedia.loadCirclePhoto(context, currentUser.getUrl(), viewHolder.followingUserImage);
-        viewHolder.followingUserName.setText(currentUser.getName());
-        viewHolder.followingUserLastName.setText(currentUser.getLastName());
-        viewHolder.followingUserNickName.setText(currentUser.getEmail());
-
-    }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return following.size();
     }
 
     class FollowingViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView followingUserImage;
-        TextView followingUserName, followingUserLastName, followingUserNickName;
+        TextView followingUserName, followingUserNickName;
 
 
         FollowingViewHolder(@NonNull View itemView) {
@@ -69,7 +63,6 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Foll
         private void iniUi(View view) {
             followingUserImage = view.findViewById(R.id.following_user_image);
             followingUserName = view.findViewById(R.id.following_user_name);
-            followingUserLastName = view.findViewById(R.id.following_user_last_name);
             followingUserNickName = view.findViewById(R.id.following_user_nick_name);
 
         }

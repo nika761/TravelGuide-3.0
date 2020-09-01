@@ -12,23 +12,27 @@
         android:background="@drawable/bg_confirmation"
         android:gravity="center_vertical|center_horizontal"
         android:orientation="vertical"
-        android:paddingStart="40dp"
-        android:paddingEnd="40dp">
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp">
 
         <TextView
+            android:id="@+id/confirm_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
+            android:autoSizeTextType="uniform"
             android:text="Please confirm your registration ! "
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/confirm_message"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="50dp"
-            android:gravity="center_vertical|center_horizontal"
+            android:layout_marginBottom="30dp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical|center_horizontal|start"
             android:text="In order to complete your registration, please click the confirmation link that we have sent to you in the email and SMS ."
             android:textSize="14sp" />
 

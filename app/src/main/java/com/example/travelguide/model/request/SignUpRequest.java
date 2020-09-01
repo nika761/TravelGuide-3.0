@@ -9,22 +9,24 @@ public class SignUpRequest {
     private String password;
     private String password_confirmation;
     private String date_of_birth;
+    private String phone_index;
     private String phone_num;
     private String language_id;
 
     public SignUpRequest() {
     }
 
-    public SignUpRequest(String name, String lastname, String nickname, String email, String password, String password_confirmation, String birthDate, String phoneNumber, String languageID) {
+    public SignUpRequest(String name, String lastname, String nickname, String email, String password, String password_confirmation, String date_of_birth, String phone_index, String phone_num, String language_id) {
         this.name = name;
         this.lastname = lastname;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.password_confirmation = password_confirmation;
-        this.date_of_birth = birthDate;
-        this.phone_num = phoneNumber;
-        this.language_id = languageID;
+        this.date_of_birth = date_of_birth;
+        this.phone_index = phone_index;
+        this.phone_num = phone_num;
+        this.language_id = language_id;
     }
 
     public String getName() {
@@ -75,20 +77,28 @@ public class SignUpRequest {
         this.password_confirmation = password_confirmation;
     }
 
-    public String getBirthDate() {
+    public String getDate_of_birth() {
         return date_of_birth;
     }
 
-    public void setBirthDate(String birthDate) {
-        this.date_of_birth = birthDate;
+    public void setDate_of_birth(String date_of_birth) {
+        this.date_of_birth = date_of_birth;
     }
 
-    public String getPhoneNumber() {
+    public String getPhone_index() {
+        return phone_index;
+    }
+
+    public void setPhone_index(String phone_index) {
+        this.phone_index = phone_index;
+    }
+
+    public String getPhone_num() {
         return phone_num;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phone_num = phoneNumber;
+    public void setPhone_num(String phone_num) {
+        this.phone_num = phone_num;
     }
 
     public String getLanguage_id() {

@@ -2,24 +2,42 @@ package com.example.travelguide.network;
 
 import com.example.travelguide.model.request.AboutRequest;
 import com.example.travelguide.model.request.AddFavoriteMusic;
+import com.example.travelguide.model.request.ByMoodRequest;
 import com.example.travelguide.model.request.ChangeLangRequest;
 import com.example.travelguide.model.request.CustomerPostRequest;
+import com.example.travelguide.model.request.FollowersRequest;
+import com.example.travelguide.model.request.FollowingRequest;
+import com.example.travelguide.model.request.ForgotPasswordRequest;
 import com.example.travelguide.model.request.LoginRequest;
+import com.example.travelguide.model.request.PostByLocationRequest;
 import com.example.travelguide.model.request.PostRequest;
 import com.example.travelguide.model.request.ProfileRequest;
 import com.example.travelguide.model.request.FollowRequest;
+import com.example.travelguide.model.request.ResetPasswordRequest;
+import com.example.travelguide.model.request.SearchMusicRequest;
+import com.example.travelguide.model.request.SetPostFavoriteRequest;
+import com.example.travelguide.model.request.SetPostViewRequest;
+import com.example.travelguide.model.request.SetStoryLikeRequest;
 import com.example.travelguide.model.request.SignUpRequest;
 import com.example.travelguide.model.request.TermsPolicyRequest;
 import com.example.travelguide.model.request.UploadPostRequest;
+import com.example.travelguide.model.request.VerifyEmailRequest;
 import com.example.travelguide.model.response.AboutResponse;
 import com.example.travelguide.model.response.AddFavoriteMusicResponse;
 import com.example.travelguide.model.response.ChangeLangResponse;
-import com.example.travelguide.model.response.CustomerPostResponse;
 import com.example.travelguide.model.response.FavoriteMusicResponse;
+import com.example.travelguide.model.response.FollowerResponse;
+import com.example.travelguide.model.response.FollowingResponse;
+import com.example.travelguide.model.response.ForgotPasswordResponse;
+import com.example.travelguide.model.response.MoodResponse;
 import com.example.travelguide.model.response.MusicResponse;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.ProfileResponse;
 import com.example.travelguide.model.response.FollowResponse;
+import com.example.travelguide.model.response.ResetPasswordResponse;
+import com.example.travelguide.model.response.SetPostFavoriteResponse;
+import com.example.travelguide.model.response.SetPostViewResponse;
+import com.example.travelguide.model.response.SetStoryLikeResponse;
 import com.example.travelguide.model.response.SignUpResponse;
 import com.example.travelguide.model.request.CheckMailRequest;
 import com.example.travelguide.model.response.CheckMailResponse;
@@ -29,6 +47,7 @@ import com.example.travelguide.model.response.LanguagesResponse;
 import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.model.response.TermsPolicyResponse;
 import com.example.travelguide.model.response.UploadPostResponse;
+import com.example.travelguide.model.response.VerifyEmailResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -77,8 +96,8 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("get/posts_by_user")
-    Call<CustomerPostResponse> getCustomerPosts(@Header("Authorization") String token,
-                                                @Body CustomerPostRequest customerPostRequest);
+    Call<PostResponse> getCustomerPosts(@Header("Authorization") String token,
+                                        @Body CustomerPostRequest customerPostRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/profile")
@@ -102,5 +121,63 @@ public interface ApiService {
     @POST("set/follower")
     Call<FollowResponse> follow(@Header("Authorization") String token,
                                 @Body FollowRequest followRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("get/followings")
+    Call<FollowingResponse> getFollowing(@Header("Authorization") String token,
+                                         @Body FollowingRequest followingRequest);
+
+
+    @Headers({"Accept: application/json"})
+    @POST("get/followers")
+    Call<FollowerResponse> getFollowers(@Header("Authorization") String token,
+                                        @Body FollowersRequest followersRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("get/moods")
+    Call<MoodResponse> getMoods(@Header("Authorization") String token);
+
+    @Headers({"Accept: application/json"})
+    @POST("get/mood/musics")
+    Call<MusicResponse> getMusicsByMood(@Header("Authorization") String token,
+                                        @Body ByMoodRequest byMoodRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("search/musics")
+    Call<MusicResponse> searchMusic(@Header("Authorization") String token,
+                                    @Body SearchMusicRequest searchMusicRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post/view")
+    Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
+                                          @Body SetPostViewRequest setPostViewRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("get/posts_by_location")
+    Call<PostResponse> getPostsByLocation(@Header("Authorization") String token,
+                                          @Body PostByLocationRequest postByLocationRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("email/verify_email")
+    Call<VerifyEmailResponse> verifyEmail(@Header("Authorization") String token,
+                                          @Body VerifyEmailRequest verifyEmailRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/story_like")
+    Call<SetStoryLikeResponse> setStoryLike(@Header("Authorization") String token,
+                                            @Body SetStoryLikeRequest setStoryLikeRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_favourite")
+    Call<SetPostFavoriteResponse> setPostFavorite(@Header("Authorization") String token,
+                                                  @Body SetPostFavoriteRequest setPostFavoriteRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("password/email")
+    Call<ForgotPasswordResponse> forgotPassword(@Body ForgotPasswordRequest forgotPasswordRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("password/reset")
+    Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
 
 }

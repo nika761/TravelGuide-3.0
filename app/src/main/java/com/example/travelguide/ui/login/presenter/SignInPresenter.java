@@ -34,7 +34,6 @@ public class SignInPresenter {
         apiService = RetrofitManager.getApiService();
     }
 
-
     public void fetchFbUserData(AccessToken accessToken) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
             try {
@@ -89,13 +88,16 @@ public class SignInPresenter {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful()) {
+                    Log.v("czxczxc", response.message());
                     iSignInFragment.onGetLoginResult(response.body());
+                } else {
+                    Log.v("czxczxc", response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-
+                Log.v("czxczxc", t.getMessage());
             }
         });
     }

@@ -43,11 +43,9 @@ public class MusicResponse {
         @Expose
         @SerializedName("link")
         private String link;
-
         @Expose
         @SerializedName("duration")
         private String duration;
-
         @Expose
         @SerializedName("text_for_paste")
         private String text_for_paste;
@@ -57,6 +55,11 @@ public class MusicResponse {
         @Expose
         @SerializedName("is_favorite")
         private int is_favorite;
+
+        @Expose
+        @SerializedName("new_label")
+        private int new_label;
+
         @Expose
         @SerializedName("author")
         private String author;
@@ -149,6 +152,14 @@ public class MusicResponse {
 
         public int getMusic_id() {
             return music_id;
+        }
+
+        public int getNew_label() {
+            return new_label;
+        }
+
+        public void setNew_label(int new_label) {
+            this.new_label = new_label;
         }
 
         public void setMusic_id(int music_id) {

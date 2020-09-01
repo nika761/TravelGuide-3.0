@@ -8,6 +8,8 @@ public interface ISignUpFragment {
 
     void onGetAuthResult(SignUpResponse signUpResponse);
 
+    void onGetAuthError(String message);
+
     void onGetEmailCheckResult(CheckMailResponse checkMailResponse);
 
     void onGetNickCheckResult(CheckNickResponse checkNickResponse);

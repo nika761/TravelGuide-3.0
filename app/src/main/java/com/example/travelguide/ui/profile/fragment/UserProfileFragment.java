@@ -47,6 +47,7 @@ import static com.example.travelguide.helper.HelperPref.GOOGLE;
 import static com.example.travelguide.helper.HelperUI.ABOUT;
 import static com.example.travelguide.helper.HelperUI.POLICY;
 import static com.example.travelguide.helper.HelperUI.TERMS;
+import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class UserProfileFragment extends Fragment implements IProfileFragment {
 
@@ -64,6 +65,7 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
     private LottieAnimationView lottieAnimationView;
     private View myLayout;
     private ProfileResponse.Userinfo userinfo;
+    private int userId;
 
     @Nullable
     @Override
@@ -134,7 +136,7 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
         super.onViewCreated(view, savedInstanceState);
         if (HelperPref.getUserProfileInfo(context) == null) {
             lottieAnimationView.setVisibility(View.VISIBLE);
-            profilePresenter.getProfile("Bearer" + " " + HelperPref.getCurrentAccessToken(context),
+            profilePresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getCurrentAccessToken(context),
                     new ProfileRequest(HelperPref.getServerSavedUsers(context).get(0).getId()));
         } else {
             this.userinfo = HelperPref.getUserProfileInfo(context);
@@ -145,6 +147,7 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
             follower.setText(String.valueOf(userinfo.getFollower()));
             following.setText(String.valueOf(userinfo.getFollowing()));
             reaction.setText(String.valueOf(userinfo.getReactions()));
+            this.userId = userinfo.getId();
         }
 
     }
@@ -225,6 +228,7 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
 
             case R.id.states_test:
                 Intent intent = new Intent(context, UserFollowActivity.class);
+                intent.putExtra("user_id", userId);
                 startActivity(intent);
                 break;
 
@@ -254,6 +258,8 @@ public class UserProfileFragment extends Fragment implements IProfileFragment {
             follower.setText(String.valueOf(userInfo.getFollower()));
             following.setText(String.valueOf(userInfo.getFollowing()));
             reaction.setText(String.valueOf(userInfo.getReactions()));
+            this.userId = userInfo.getId();
+
         }
     }
 

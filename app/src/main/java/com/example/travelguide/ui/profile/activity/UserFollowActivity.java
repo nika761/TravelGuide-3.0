@@ -36,9 +36,10 @@ public class UserFollowActivity extends AppCompatActivity {
     }
 
     private void setViewPager(ViewPager viewPager) {
+        int userId = getIntent().getIntExtra("user_id", 0);
         FollowersPagerAdapter followersPagerAdapter = new FollowersPagerAdapter(getSupportFragmentManager());
-        followersPagerAdapter.addFragment(new UserFollowingFragment(), "Following");
-        followersPagerAdapter.addFragment(new UserFollowersFragment(), "Followers");
+        followersPagerAdapter.addFragment(new UserFollowingFragment(userId), "Following");
+        followersPagerAdapter.addFragment(new UserFollowersFragment(userId), "Followers");
         viewPager.setAdapter(followersPagerAdapter);
     }
 

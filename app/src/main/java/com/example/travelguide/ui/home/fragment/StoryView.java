@@ -106,9 +106,7 @@ public class StoryView extends LinearLayout {
                     progressBar.setProgress(0);
                 } else {
                     progressBar.setProgress(100);
-
                 }
-
             }
         }
     }

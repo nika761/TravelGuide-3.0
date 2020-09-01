@@ -13,11 +13,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/item_music_added"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:background="@color/yellowTextView"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="new"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/item_music_image"
+        app:layout_constraintStart_toStartOf="@id/item_music_image"
+        app:layout_constraintTop_toTopOf="@+id/item_music_image" />
+
+    <TextView
         android:id="@+id/item_music_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/blackStatusBar"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/item_music_image"
         app:layout_constraintTop_toBottomOf="@id/item_music_image" />
 
@@ -74,8 +90,8 @@
         android:textColor="@color/blackStatusBar"
         android:textSize="14sp"
         android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/item_music_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_music_image" />
 
     <ImageButton

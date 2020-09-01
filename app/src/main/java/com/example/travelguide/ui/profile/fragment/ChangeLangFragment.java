@@ -29,6 +29,8 @@ import com.example.travelguide.ui.profile.presenter.ChangeLangPresenter;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
+
 public class ChangeLangFragment extends DialogFragment implements IChangeLangFragment {
     private Context context;
     private ChangeLangPresenter changeLangPresenter;
@@ -104,7 +106,6 @@ public class ChangeLangFragment extends DialogFragment implements IChangeLangFra
     public void onLanguageChoose(int langId) {
         HelperPref.saveLanguageId(context, langId);
         ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(HelperPref.getLanguageId(context)));
-        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest,
-                "Bearer" + " " + HelperPref.getCurrentAccessToken(context));
+        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, ACCESS_TOKEN_BEARER + HelperPref.getCurrentAccessToken(context));
     }
 }

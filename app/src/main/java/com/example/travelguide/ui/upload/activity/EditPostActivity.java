@@ -175,7 +175,7 @@ public class EditPostActivity extends AppCompatActivity implements IEditPost, Vi
         intent.putExtra(TrimmerConstants.TRIM_VIDEO_URI, String.valueOf(videoUri));
         intent.putExtra(TrimmerConstants.TRIM_TYPE, 3);
         intent.putExtra(TrimmerConstants.MIN_FROM_DURATION, 5L);
-        intent.putExtra(TrimmerConstants.MAX_TO_DURATION, 15L);
+        intent.putExtra(TrimmerConstants.MAX_TO_DURATION, 60L);
         startActivityForResult(intent, TRIM_ACTIVITY);
     }
 

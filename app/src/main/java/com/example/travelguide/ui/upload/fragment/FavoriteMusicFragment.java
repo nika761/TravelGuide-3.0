@@ -21,6 +21,8 @@ import com.example.travelguide.ui.upload.presenter.FavoriteMusicPresenter;
 
 import java.util.List;
 
+import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
+
 public class FavoriteMusicFragment extends Fragment implements IFavoriteMusic {
     private RecyclerView favoriteMusicRecycler;
     private FavoriteMusicPresenter favoriteMusicPresenter;
@@ -36,7 +38,7 @@ public class FavoriteMusicFragment extends Fragment implements IFavoriteMusic {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        favoriteMusicPresenter.getFavoriteMusics("Bearer" + " " + HelperPref.getCurrentAccessToken(favoriteMusicRecycler.getContext()));
+        favoriteMusicPresenter.getFavoriteMusics(ACCESS_TOKEN_BEARER + HelperPref.getCurrentAccessToken(favoriteMusicRecycler.getContext()));
     }
 
     @Override

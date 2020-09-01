@@ -7,7 +7,6 @@ import java.util.List;
 
 public class PostResponse implements Cloneable {
 
-
     @Expose
     @SerializedName("posts")
     private List<Posts> posts;
@@ -37,7 +36,7 @@ public class PostResponse implements Cloneable {
         private List<Post_stories> post_stories;
         @Expose
         @SerializedName("post_locations")
-        private List<String> post_locations;
+        private List<Post_locations> post_locations;
         @Expose
         @SerializedName("hashtags")
         private List<String> hashtags;
@@ -51,11 +50,22 @@ public class PostResponse implements Cloneable {
         @SerializedName("post_go_activity")
         private int post_go_activity;
         @Expose
+        @SerializedName("past_time")
+        private String past_time;
+
+        @Expose
+        @SerializedName("post_reactions")
+        private int post_reactions;
+
+        @Expose
         @SerializedName("music_text")
         private String music_text;
         @Expose
         @SerializedName("post_share_url")
         private String post_share_url;
+        @Expose
+        @SerializedName("music_url")
+        private String music_url;
         @Expose
         @SerializedName("created_at")
         private String created_at;
@@ -65,6 +75,15 @@ public class PostResponse implements Cloneable {
         @Expose
         @SerializedName("go")
         private String go;
+
+        @Expose
+        @SerializedName("i_follow_post_owner")
+        private int i_follow_post_owner;
+
+        @Expose
+        @SerializedName("cover")
+        private String cover;
+
         @Expose
         @SerializedName("description")
         private String description;
@@ -92,11 +111,11 @@ public class PostResponse implements Cloneable {
             this.post_stories = post_stories;
         }
 
-        public List<String> getPost_locations() {
+        public List<Post_locations> getPost_locations() {
             return post_locations;
         }
 
-        public void setPost_locations(List<String> post_locations) {
+        public void setPost_locations(List<Post_locations> post_locations) {
             this.post_locations = post_locations;
         }
 
@@ -132,6 +151,14 @@ public class PostResponse implements Cloneable {
             this.post_go_activity = post_go_activity;
         }
 
+        public String getPast_time() {
+            return past_time;
+        }
+
+        public void setPast_time(String past_time) {
+            this.past_time = past_time;
+        }
+
         public String getMusic_text() {
             return music_text;
         }
@@ -146,6 +173,22 @@ public class PostResponse implements Cloneable {
 
         public void setPost_share_url(String post_share_url) {
             this.post_share_url = post_share_url;
+        }
+
+        public int getI_follow_post_owner() {
+            return i_follow_post_owner;
+        }
+
+        public void setI_follow_post_owner(int i_follow_post_owner) {
+            this.i_follow_post_owner = i_follow_post_owner;
+        }
+
+        public String getMusic_url() {
+            return music_url;
+        }
+
+        public void setMusic_url(String music_url) {
+            this.music_url = music_url;
         }
 
         public String getCreated_at() {
@@ -200,6 +243,22 @@ public class PostResponse implements Cloneable {
             return nickname;
         }
 
+        public int getPost_reactions() {
+            return post_reactions;
+        }
+
+        public String getCover() {
+            return cover;
+        }
+
+        public void setCover(String cover) {
+            this.cover = cover;
+        }
+
+        public void setPost_reactions(int post_reactions) {
+            this.post_reactions = post_reactions;
+        }
+
         public void setNickname(String nickname) {
             this.nickname = nickname;
         }
@@ -237,6 +296,18 @@ public class PostResponse implements Cloneable {
         @Expose
         @SerializedName("story_id")
         private int story_id;
+
+        @Expose
+        @SerializedName("story_like_by_me")
+        private int story_like_by_me;
+
+        public int getStory_like_by_me() {
+            return story_like_by_me;
+        }
+
+        public void setStory_like_by_me(int story_like_by_me) {
+            this.story_like_by_me = story_like_by_me;
+        }
 
         public int getSecond() {
             return second;
@@ -276,6 +347,42 @@ public class PostResponse implements Cloneable {
 
         public void setStory_id(int story_id) {
             this.story_id = story_id;
+        }
+    }
+
+    public static class Post_locations {
+        @Expose
+        @SerializedName("lng")
+        private String lng;
+        @Expose
+        @SerializedName("lat")
+        private String lat;
+        @Expose
+        @SerializedName("address")
+        private String address;
+
+        public String getLng() {
+            return lng;
+        }
+
+        public void setLng(String lng) {
+            this.lng = lng;
+        }
+
+        public String getLat() {
+            return lat;
+        }
+
+        public void setLat(String lat) {
+            this.lat = lat;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.model.response.VerifyEmailResponse;
 import com.example.travelguide.ui.notification.fragment.NotificationsFragment;
 import com.example.travelguide.ui.home.fragment.UserHomeFragment;
 import com.example.travelguide.ui.profile.fragment.UserProfileFragment;
@@ -54,11 +55,18 @@ public class UserPageActivity extends AppCompatActivity {
     }
 
     private void ongGetUserDate() {
+
         LoginResponse.User loggedUser = (LoginResponse.User) getIntent().getSerializableExtra("server_user");
         if (loggedUser != null) {
             userDataForFragments = new Bundle();
             userDataForFragments.putSerializable("user", loggedUser);
         }
+
+//        VerifyEmailResponse.User verifyUser = (VerifyEmailResponse.User) getIntent().getSerializableExtra("server_user");
+//        if (verifyUser != null) {
+//            userDataForFragments = new Bundle();
+//            userDataForFragments.putSerializable("user", verifyUser);
+//        }
 //
 //        User loggedUser = (User) getIntent().getSerializableExtra("loggedUser");
 //        if (loggedUser != null) {
@@ -86,7 +94,7 @@ public class UserPageActivity extends AppCompatActivity {
                 break;
 
             case R.id.bot_nav_search:
-                Intent intent = new Intent(this, SearchActivity.class);
+                Intent intent = new Intent(UserPageActivity.this, SearchActivity.class);
                 startActivity(intent);
                 break;
 

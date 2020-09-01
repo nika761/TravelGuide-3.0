@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,10 @@ public class GalleryPickerActivity extends AppCompatActivity implements GalleryF
     private ImageButton closeBtn;
     private ArrayList<String> pickedItems = new ArrayList<>();
     private GalleryAdapterMin galleryAdapterMin;
+    private final int MAX_SIZE_WITH_VIDEO = 8;
+    private final int MAX_SIZE_DEFAULT = 9;
+    boolean isVideo = true;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,7 +73,7 @@ public class GalleryPickerActivity extends AppCompatActivity implements GalleryF
         viewPager.setAdapter(galleryPagerAdapter);
     }
 
-    private void setViewVisibility(boolean isShow) {
+    private void choosedItemRecyclerVisibility(boolean isShow) {
         if (isShow) {
             nextBtn.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -80,38 +85,55 @@ public class GalleryPickerActivity extends AppCompatActivity implements GalleryF
 
     @Override
     public void onItemSelected(String path) {
-        if (pickedItems.size() != 0 && pickedItems.contains(path)) {
 
-            setViewVisibility(true);
+        if (pickedItems.size() != 0 && pickedItems.contains(path)) {
             pickedItems.remove(path);
-            nextBtn.setClickable(true);
-            nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree,null));
-            if (pickedItems.size() == 0) {
-                setViewVisibility(false);
+            if (path.endsWith("mp4")) {
+                isVideo = true;
             }
-            nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
-            galleryAdapterMin.setItemsPath(pickedItems);
+            if (pickedItems.size() <= 10) {
+                nextBtn.setClickable(true);
+                nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree, null));
+                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+                galleryAdapterMin.setItemsPath(pickedItems);
+            }
+
+            if (pickedItems.size() == 0) {
+                choosedItemRecyclerVisibility(false);
+            }
 
         } else {
-            if (pickedItems.size() <= 9) {
-                pickedItems.add(path);
-                nextBtn.setClickable(true);
-                nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree,null));
-            } else {
-                nextBtn.setClickable(false);
-                nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_next_btn_grey,null));
-            }
-            setViewVisibility(true);
-            nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
-            galleryAdapterMin.setItemsPath(pickedItems);
+            if (path.endsWith("mp4")) {
+                if (isVideo) {
+                    pickedItems.add(path);
+                    choosedItemRecyclerVisibility(true);
+                    nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+                    galleryAdapterMin.setItemsPath(pickedItems);
+                    isVideo = false;
+                } else {
+                    Toast.makeText(this, "You can choose only one video", Toast.LENGTH_SHORT).show();
+                }
 
+            } else {
+                if (pickedItems.size() <= 9) {
+                    pickedItems.add(path);
+                    nextBtn.setClickable(true);
+                    nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree, null));
+                } else {
+                    nextBtn.setClickable(false);
+                    nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_next_btn_grey, null));
+                }
+                choosedItemRecyclerVisibility(true);
+                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+                galleryAdapterMin.setItemsPath(pickedItems);
+            }
         }
     }
 
     @Override
     public void onItemRemoved(ArrayList<String> list) {
         if (list.size() == 0) {
-            setViewVisibility(false);
+            choosedItemRecyclerVisibility(false);
         } else {
             nextBtn.setText(MessageFormat.format("Next ({0})", list.size()));
         }

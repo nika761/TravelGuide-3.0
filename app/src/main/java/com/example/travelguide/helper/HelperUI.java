@@ -84,7 +84,6 @@ public class HelperUI {
         return confirmPasswordValidate;
     }
 
-    @SuppressLint("ResourceAsColor")
     public static void setBackgroundWarning(EditText currentField, TextView currentHead, String currentHeadText) {
         currentField.setBackgroundResource(BACKGROUND_WARNING);
         currentHead.setText(String.format("* %s", currentHeadText));

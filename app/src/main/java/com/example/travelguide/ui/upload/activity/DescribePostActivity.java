@@ -1,5 +1,6 @@
 package com.example.travelguide.ui.upload.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -24,10 +25,17 @@ import com.bumptech.glide.Glide;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.helper.HelperMedia;
+import com.example.travelguide.helper.S3Helper;
 import com.example.travelguide.model.ItemMedia;
 import com.example.travelguide.ui.upload.interfaces.IUploadPostListener;
 import com.example.travelguide.ui.upload.presenter.UploadPostPresenter;
 import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,12 +45,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.travelguide.helper.HelperMedia.convertImagesToPng;
+import static com.example.travelguide.network.ApiEndPoint.PLACES_API_KEY;
 import static com.example.travelguide.ui.upload.activity.EditPostActivity.STORIES_PATHS;
 
 public class DescribePostActivity extends AppCompatActivity implements View.OnClickListener, IUploadPostListener {
     private ImageView imageView;
     private List<ItemMedia> itemMedia = new ArrayList<>();
     private UploadPostPresenter uploadPostPresenter;
+    private static final int LOCATIONS_REQUEST_CODE = 444;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +64,11 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void initUI() {
+
+        Places.initialize(getApplicationContext(), PLACES_API_KEY);
+        PlacesClient placesClient = Places.createClient(this);
+
+
         ImageButton backBtn = findViewById(R.id.describe_post_back_btn);
         backBtn.setOnClickListener(this);
 
@@ -77,7 +93,6 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
 //        recyclerDescribeStories.setAdapter(adapter);
 //    }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -86,11 +101,12 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
                 break;
 
             case R.id.select_cover_btn:
-
                 break;
 
             case R.id.location:
-
+                List<Place.Field> locations = Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME, Place.Field.LAT_LNG);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, locations).build(DescribePostActivity.this);
+                startActivityForResult(intent, LOCATIONS_REQUEST_CODE);
 //                AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
 //                        getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 //
@@ -102,14 +118,12 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
 //                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
 //                    @Override
 //                    public void onPlaceSelected(@NotNull Place place) {
-//                        // TODO: Get info about the selected place.
 //                        Log.i("zz", "Place: " + place.getName() + ", " + place.getId());
 //                    }
 //
 //
 //                    @Override
 //                    public void onError(@NotNull Status status) {
-//                        // TODO: Handle the error.
 //                        Log.i("cc", "An error occurred: " + status);
 //                    }
 //                });
@@ -117,38 +131,42 @@ public class DescribePostActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.describe_post_post_btn:
                 List<ItemMedia> convertedImages = convertImagesToPng(itemMedia);
-                uploadPostPresenter = new UploadPostPresenter(this);
+                ArrayList<String> files = new ArrayList<>();
+                for (ItemMedia list : convertedImages) {
+                    if (list.getType() == 0) {
+                        files.add(list.getPath());
+                    }
+                }
+//                uploadPostPresenter = new UploadPostPresenter(this);
                 AmazonS3Client s3Client = HelperClients.amazonS3Client(this);
                 HelperClients.uploadMultipleS3(s3Client, convertedImages);
+//                S3Helper s3Helper = new S3Helper();
+//                s3Helper.upload(files, this);
                 break;
         }
     }
 
-    public List<ItemMedia> convertImagesToPng(List<ItemMedia> itemMedia) {
-
-        List<ItemMedia> convertedImages = new ArrayList<>();
-
-        for (int i = 0; i < itemMedia.size(); i++) {
-            if (itemMedia.get(i).getType() == 0) {
-                try {
-                    Bitmap bmp = BitmapFactory.decodeFile(itemMedia.get(i).getPath());
-
-                    File imageFileJGP = new File(itemMedia.get(i).getPath());
-
-                    File imageFilePNG = new File(imageFileJGP.getParent() + "/" + System.currentTimeMillis() + ".png");
-
-                    FileOutputStream out = new FileOutputStream(imageFilePNG);
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out); //100-best quality
-                    out.flush();
-                    out.close();
-                    convertedImages.add(new ItemMedia(0, imageFilePNG.getAbsolutePath()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATIONS_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Toast.makeText(this, place.getName(), Toast.LENGTH_SHORT).show();
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            if (data != null) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+            }
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            if (data != null) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
         }
-        return convertedImages;
     }
+
 
     @Override
     public void onPostUploaded() {
