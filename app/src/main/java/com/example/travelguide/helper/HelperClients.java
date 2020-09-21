@@ -39,6 +39,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PartETag;
 import com.amazonaws.services.s3.model.UploadPartRequest;
 import com.amazonaws.services.s3.model.UploadPartResult;
+import com.example.travelguide.R;
 import com.example.travelguide.model.ItemMedia;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -56,7 +57,7 @@ public class HelperClients {
     private static final String S3_KEY = "AKIAVWUTGVROTZGHURQ4";
     private static final String S3_SECRET = "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";
     private static final String AMAZONS3_END_POINT = "https://travel-guide-3.s3.eu-central-1.amazonaws.com";
-    public static final String S3_BUCKET = "travel-guide-3";
+    public static final String S3_BUCKET = "travel-guide-3/temp";
 
     public static GoogleSignInClient googleSignInClient(Context context) {
 
@@ -64,6 +65,7 @@ public class HelperClients {
 
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 

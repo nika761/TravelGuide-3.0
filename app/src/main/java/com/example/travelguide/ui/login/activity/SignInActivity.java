@@ -15,9 +15,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.request.VerifyEmailRequest;
-import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.model.response.VerifyEmailResponse;
-import com.example.travelguide.ui.home.activity.UserPageActivity;
+import com.example.travelguide.ui.home.HomePageActivity;
 import com.example.travelguide.ui.login.fragment.SignInFragment;
 import com.example.travelguide.helper.HelperUI;
 import com.example.travelguide.ui.login.interfaces.OnVerify;
@@ -53,7 +52,7 @@ public class SignInActivity extends AppCompatActivity implements OnVerify {
 
             if (signature != null && id != null) {
                 signInActivityPresenter.verify(ACCESS_TOKEN_BEARER +
-                        HelperPref.getCurrentAccessToken(this), new VerifyEmailRequest(id, signature));
+                        HelperPref.getAccessToken(this), new VerifyEmailRequest(id, signature));
                 Log.e("email", signature + " " + id);
             }
 
@@ -95,7 +94,7 @@ public class SignInActivity extends AppCompatActivity implements OnVerify {
 
 //        HelperPref.saveServerUser(this, verifyEmailResponse.getUser());
 
-        Intent intent = new Intent(this, UserPageActivity.class);
+        Intent intent = new Intent(this, HomePageActivity.class);
         startActivity(intent);
         this.finish();
 

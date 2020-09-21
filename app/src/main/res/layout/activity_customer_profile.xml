@@ -39,7 +39,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/customer_profile_coordinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -268,7 +268,7 @@
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/customer_view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
         </androidx.core.widget.NestedScrollView>
 
@@ -279,7 +279,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loader_customer_profile"

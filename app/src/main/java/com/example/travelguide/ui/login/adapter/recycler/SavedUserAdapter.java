@@ -20,9 +20,10 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperMedia;
+import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.ui.login.activity.ForgotPasswordActivity;
 import com.example.travelguide.ui.login.activity.SignInActivity;
-import com.example.travelguide.ui.home.activity.UserPageActivity;
+import com.example.travelguide.ui.home.HomePageActivity;
 import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.model.User;
 import com.example.travelguide.helper.HelperPref;
@@ -41,13 +42,13 @@ import static com.example.travelguide.helper.HelperPref.GOOGLE;
 
 public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.SimpleViewHolder> {
     private Context mContext;
-    private List<User> userList;
+    private List<LoginResponse.User> userList;
     private int selectedUserPosition = -1;
     private GoogleSignInClient googleSignInClient;
 
-    public SavedUserAdapter(Context context, List<User> objects) {
+    public SavedUserAdapter(Context context, List<LoginResponse.User> users) {
         this.mContext = context;
-        this.userList = objects;
+        this.userList = users;
     }
 
     @NotNull
@@ -59,17 +60,15 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
 
     @Override
     public void onBindViewHolder(@NotNull final SimpleViewHolder viewHolder, final int position) {
-        final User currentUser = userList.get(position);
-
         if (position == selectedUserPosition) {
             viewHolder.linearLayout.setVisibility(View.VISIBLE);
         } else {
             viewHolder.linearLayout.setVisibility(View.GONE);
         }
 
-        setDataOnViews(viewHolder, currentUser);
+        viewHolder.bindView(position);
 
-        onSwipeLayout(viewHolder, position, currentUser);
+        onSwipeLayout(viewHolder, position);
 
         mItemManger.bindView(viewHolder.itemView, position);
     }
@@ -84,33 +83,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
         return R.id.swipe;
     }
 
-    private void setDataOnViews(SimpleViewHolder viewHolder, User currentUser) {
-        if (currentUser.getUrl() != null) {
-            HelperMedia.loadCirclePhoto(mContext, currentUser.getUrl(), viewHolder.userImage);
-        } else {
-            viewHolder.userImage.setMinimumHeight(72);
-            viewHolder.userImage.setMinimumWidth(72);
-            viewHolder.userImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            viewHolder.userImage.setBackground(mContext.getResources().getDrawable(R.drawable.image_account));
-        }
-        viewHolder.userName.setText(String.format("%s %s %s", mContext.getString(R.string.continue_as), currentUser.getName(), currentUser.getLastName()));
-
-        if (currentUser.getLoginType() != null) {
-            switch (currentUser.getLoginType()) {
-                case FACEBOOK:
-                    viewHolder.userLoginType = currentUser.getLoginType();
-                    viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.facebook_little));
-                    break;
-
-                case GOOGLE:
-                    viewHolder.userLoginType = currentUser.getLoginType();
-                    viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.google_little));
-                    break;
-            }
-        }
-    }
-
-    private void onSwipeLayout(SimpleViewHolder viewHolder, int position, User currentUser) {
+    private void onSwipeLayout(SimpleViewHolder viewHolder, int position) {
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
@@ -118,37 +91,37 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
 
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, viewHolder.swipeLayout.findViewById(R.id.bottom_wraper));
 
-        viewHolder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-            @Override
-            public void onStartOpen(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onOpen(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onStartClose(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onClose(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-
-            }
-
-            @Override
-            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-
-            }
-        });
+//        viewHolder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+//            @Override
+//            public void onStartOpen(SwipeLayout layout) {
+//
+//            }
+//
+//            @Override
+//            public void onOpen(SwipeLayout layout) {
+//
+//            }
+//
+//            @Override
+//            public void onStartClose(SwipeLayout layout) {
+//
+//            }
+//
+//            @Override
+//            public void onClose(SwipeLayout layout) {
+//
+//            }
+//
+//            @Override
+//            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+//
+//            }
+//
+//            @Override
+//            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+//
+//            }
+//        });
 
 //        viewHolder.swipeLayout.getSurfaceView().setOnClickListener(v -> {
 //            if (linearVisibility) {
@@ -205,7 +178,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
             } else {
                 personPhotoUrl = null;
             }
-            Intent intent = new Intent(mContext, UserPageActivity.class);
+            Intent intent = new Intent(mContext, HomePageActivity.class);
             User user = new User(account.getGivenName(), account.getFamilyName(), personPhotoUrl, account.getId(), account.getEmail(), "google");
             intent.putExtra("loggedUser", user);
 
@@ -258,6 +231,32 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
             forgotPassword.setOnClickListener(this);
 
             loginTypeImg = itemView.findViewById(R.id.saved_user_login_type);
+        }
+
+        private void bindView(int position) {
+            if (userList.get(position).getProfile_pic() != null) {
+                HelperMedia.loadCirclePhoto(mContext, userList.get(position).getProfile_pic(), userImage);
+            } else {
+                userImage.setMinimumHeight(72);
+                userImage.setMinimumWidth(72);
+                userImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                userImage.setBackground(mContext.getResources().getDrawable(R.drawable.image_account));
+            }
+            userName.setText(String.format("%s %s %s", mContext.getString(R.string.continue_as), userList.get(position).getName(), userList.get(position).getLastname()));
+
+//        if (currentUser.getLoginType() != null) {
+//            switch (currentUser.getLoginType()) {
+//                case FACEBOOK:
+//                    viewHolder.userLoginType = currentUser.getLoginType();
+//                    viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.facebook_little));
+//                    break;
+//
+//                case GOOGLE:
+//                    viewHolder.userLoginType = currentUser.getLoginType();
+//                    viewHolder.loginTypeImg.setBackground(mContext.getDrawable(R.drawable.google_little));
+//                    break;
+//            }
+//        }
         }
 
 

@@ -281,7 +281,7 @@ public class StoryRecycler extends RecyclerView{
             return;
         }
 
-//        StoryRecyclerAdapter.VideoPlayerViewHolder holder = (StoryRecyclerAdapter.VideoPlayerViewHolder) child.getTag();
+//        StoryAdapter.VideoPlayerViewHolder holder = (StoryAdapter.VideoPlayerViewHolder) child.getTag();
 //        if (holder == null) {
 //            playPosition = -1;
 //            return;

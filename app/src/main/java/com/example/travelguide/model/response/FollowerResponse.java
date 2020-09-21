@@ -31,6 +31,9 @@ public class FollowerResponse {
 
     public static class Followers {
         @Expose
+        @SerializedName("is_following")
+        private int is_following;
+        @Expose
         @SerializedName("nickname")
         private String nickname;
         @Expose
@@ -42,6 +45,14 @@ public class FollowerResponse {
         @Expose
         @SerializedName("user_id")
         private int user_id;
+
+        public int getIs_following() {
+            return is_following;
+        }
+
+        public void setIs_following(int is_following) {
+            this.is_following = is_following;
+        }
 
         public String getNickname() {
             return nickname;

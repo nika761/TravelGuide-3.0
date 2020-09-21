@@ -273,12 +273,12 @@ public class HelperMedia {
 
         List<ItemMedia> convertedImages = new ArrayList<>();
 
-        for (int i = 0; i < itemMedia.size(); i++) {
-            if (itemMedia.get(i).getType() == 0) {
+        for (ItemMedia item : itemMedia) {
+            if (item.getType() == 0) {
                 try {
-                    Bitmap bmp = BitmapFactory.decodeFile(itemMedia.get(i).getPath());
+                    Bitmap bmp = BitmapFactory.decodeFile(item.getPath());
 
-                    File imageFileJGP = new File(itemMedia.get(i).getPath());
+                    File imageFileJGP = new File(item.getPath());
 
                     File imageFilePNG = new File(imageFileJGP.getParent() + "/" + System.currentTimeMillis() + ".png");
 

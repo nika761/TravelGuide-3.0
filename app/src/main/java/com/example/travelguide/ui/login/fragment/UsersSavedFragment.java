@@ -25,22 +25,12 @@ import com.example.travelguide.helper.HelperPref;
 
 public class UsersSavedFragment extends Fragment {
 
-    private Button closeFragmentBtn;
-    private TextView addAccount;
     private Context context;
-    private Window window;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-//        window = Objects.requireNonNull(getActivity()).getWindow();
-//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//        window.setStatusBarColor(ContextCompat.getColor(context, R.color.blackStatusBar));
-
-        View view = inflater.inflate(R.layout.fragment_saved_users, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_saved_users, container, false);
     }
 
     @Override
@@ -48,7 +38,6 @@ public class UsersSavedFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initRecycler(view);
         initUI(view);
-        setClickListeners();
     }
 
     @Override
@@ -59,8 +48,20 @@ public class UsersSavedFragment extends Fragment {
 
 
     private void initUI(View view) {
-        closeFragmentBtn = view.findViewById(R.id.saved_user_fragment_close_btn);
-        addAccount = view.findViewById(R.id.saved_user_add_account);
+
+        Button closeFragmentBtn = view.findViewById(R.id.saved_user_fragment_close_btn);
+        closeFragmentBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SignInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+
+        TextView addAccount = view.findViewById(R.id.saved_user_add_account);
+        addAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SignInActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void initRecycler(View view) {
@@ -75,37 +76,13 @@ public class UsersSavedFragment extends Fragment {
         swipeAdapter.setMode(Attributes.Mode.Single);
         RecyclerView swipeRecyclerView = view.findViewById(R.id.saved_user_recycler);
         swipeRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-
         swipeRecyclerView.setAdapter(swipeAdapter);
-        swipeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                Log.e("RecyclerView", "onScrollStateChanged");
-            }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    private void setClickListeners() {
-        closeFragmentBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context, SignInActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
-        addAccount.setOnClickListener(v -> {
-            Intent intent = new Intent(context, SignInActivity.class);
-            startActivity(intent);
-        });
     }
 
 }

@@ -1,6 +1,5 @@
 package com.example.travelguide.helper;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,7 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.travelguide.R;
-import com.example.travelguide.ui.login.activity.TermsAndPrivacyActivity;
+import com.example.travelguide.ui.webView.WebActivity;
 
 public class HelperUI {
 
@@ -31,9 +30,11 @@ public class HelperUI {
     public static final String POLICY = "policy";
     public static final String ABOUT = "about";
     public static final String TYPE = "type";
+    public static final String UI_HASHTAG = "hashtags";
+    public static final String UI_LOCATION = "location";
 
     public static void startTermsAndPolicyActivity(Context context, String requestFor) {
-        Intent termsIntent = new Intent(context, TermsAndPrivacyActivity.class);
+        Intent termsIntent = new Intent(context, WebActivity.class);
         termsIntent.putExtra(TYPE, requestFor);
         context.startActivity(termsIntent);
     }

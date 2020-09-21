@@ -7,4 +7,5 @@ public class PostByLocationRequest {
     public PostByLocationRequest(int post_id) {
         this.post_id = post_id;
     }
+
 }

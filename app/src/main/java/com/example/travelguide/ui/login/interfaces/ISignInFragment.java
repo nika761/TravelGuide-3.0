@@ -5,10 +5,13 @@ import com.example.travelguide.model.response.LoginResponse;
 
 public interface ISignInFragment {
 
-    void onGetFbUserData(User user);
+    void userFirstLogin(String key, int platform);
 
-    void onGetGglUserData(User user);
+    void onSign(LoginResponse loginResponse);
 
-    void onGetLoginResult(LoginResponse loginResponse);
+    void onAuthError(String message);
 
+    void onFireBaseAuthSignIn();
+
+    void onFireBaseAuthSignUp();
 }

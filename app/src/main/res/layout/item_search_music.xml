@@ -59,7 +59,7 @@
         android:text="Music title"
         android:textColor="@color/blackStatusBar"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_music_choose"
         app:layout_constraintStart_toEndOf="@id/item_music_image"
         app:layout_constraintTop_toTopOf="@id/item_music_image" />
 
@@ -91,7 +91,7 @@
         android:textSize="14sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@id/item_music_image"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_music_choose"
         app:layout_constraintStart_toEndOf="@id/item_music_image" />
 
     <ImageButton
@@ -99,8 +99,17 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/emoji_link_black"
-        app:layout_constraintBottom_toBottomOf="@id/item_music_image"
+        app:layout_constraintBottom_toTopOf="@id/item_music_choose"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/item_music_image" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/item_music_choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/item_music_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_music_favorite" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

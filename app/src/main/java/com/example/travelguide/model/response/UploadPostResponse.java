@@ -3,23 +3,21 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class UploadPostResponse {
 
     @Expose
-    @SerializedName("videos")
-    private List<String> videos;
+    @SerializedName("result")
+    private String result;
     @Expose
     @SerializedName("status")
     private int status;
 
-    public List<String> getVideos() {
-        return videos;
+    public String getResult() {
+        return result;
     }
 
-    public void setVideos(List<String> videos) {
-        this.videos = videos;
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public int getStatus() {

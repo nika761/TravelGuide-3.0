@@ -9,6 +9,9 @@ public class SetPostFavoriteResponse {
     @SerializedName("message")
     private String message;
     @Expose
+    @SerializedName("count")
+    private int count;
+    @Expose
     @SerializedName("status")
     private int status;
 
@@ -18,6 +21,14 @@ public class SetPostFavoriteResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public int getStatus() {

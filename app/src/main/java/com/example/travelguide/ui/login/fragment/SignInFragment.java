@@ -22,10 +22,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.travelguide.R;
+import com.example.travelguide.model.UserModel;
+import com.example.travelguide.ui.login.activity.DateActivity;
 import com.example.travelguide.ui.login.activity.ForgotPasswordActivity;
 import com.example.travelguide.ui.login.activity.SignUpActivity;
 import com.example.travelguide.ui.login.activity.SignInActivity;
-import com.example.travelguide.ui.home.activity.UserPageActivity;
+import com.example.travelguide.ui.home.HomePageActivity;
 import com.example.travelguide.ui.login.interfaces.ISignInFragment;
 import com.example.travelguide.model.User;
 import com.example.travelguide.model.request.LoginRequest;
@@ -34,6 +36,7 @@ import com.example.travelguide.ui.login.presenter.SignInPresenter;
 import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.helper.HelperUI;
+import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -45,28 +48,37 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.concurrent.Executor;
 
 public class SignInFragment extends Fragment implements ISignInFragment {
 
     private SignInPresenter signInPresenter;
     private TextView registerTxt, signInTxt, cancelSignInTxt, enterMailHead, enterPasswordHead, forgotPassword, notHaveAccout, connectWiht, termsOfServices, privacyPolicy;
     private EditText enterEmail, enterPassword;
-    private SignInButton signBtnGoogle;
     private Button facebookBtn, googleBtn;
-    private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private LoginButton signBtnFacebook;
     private Button signInBtn;
-    private int RC_SIGN_IN = 0;
+    private int GOOGLE_SIGN_IN = 0;
     private Context context;
     private LinearLayout terms;
     private ImageView lineLeft, lineRight;
     private String email, password;
-
+    private DatabaseReference myRef;
 
     @Nullable
     @Override
@@ -83,12 +95,18 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     private void initUI(View view) {
         signInPresenter = new SignInPresenter(this);
-        mGoogleSignInClient = HelperClients.googleSignInClient(context);
-        signBtnGoogle = view.findViewById(R.id.sign_in_button_google);
+
+        SignInButton signBtnGoogle = view.findViewById(R.id.sign_in_button_google);
         signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
 
         googleBtn = view.findViewById(R.id.google);
         googleBtn.setOnClickListener(this::onViewClick);
+
+
+        signBtnFacebook = view.findViewById(R.id.login_button_facebook);
+        facebookBtn = view.findViewById(R.id.facebook);
+        facebookBtn.setOnClickListener(this::onViewClick);
+        callbackManager = CallbackManager.Factory.create();
 
 
         registerTxt = view.findViewById(R.id.register_now);
@@ -111,11 +129,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         enterPasswordHead = view.findViewById(R.id.enter_password_head);
 //        cancelSignInTxt = view.findViewById(R.id.cancel_text_view);
 
-        facebookBtn = view.findViewById(R.id.facebook);
-        facebookBtn.setOnClickListener(this::onViewClick);
-
-        signBtnFacebook = view.findViewById(R.id.login_button_facebook);
-        callbackManager = CallbackManager.Factory.create();
         notHaveAccout = view.findViewById(R.id.not_have_account);
         connectWiht = view.findViewById(R.id.connect_with);
         lineLeft = view.findViewById(R.id.line_left);
@@ -130,14 +143,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     }
 
-    private void startUserActivity(User user) {
-        User currentUser = new User(user.getName(), user.getLastName(), user.getUrl(), user.getId(), user.getEmail(), user.getLoginType());
-        HelperPref.saveUser(context, currentUser);
-        Intent intent = new Intent(getActivity(), UserPageActivity.class);
-        intent.putExtra("loggedUser", user);
-        startActivity(intent);
-    }
-
     private void signInWithAccount() {
 //        email = HelperFields.checkEditTextData(enterEmail, enterMailHead,
 //                getString(R.string.email_or_phone_number), email,
@@ -149,8 +154,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         password = enterPassword.getText().toString();
 
         ((SignInActivity) context).startLoader();
-        LoginRequest loginRequest = new LoginRequest(email, password);
-        signInPresenter.sentLoginRequest(loginRequest);
+        signInPresenter.singIn(new LoginRequest(email, password));
 //
 //        if (email != null && HelperFields.checkEmail(email) && password != null && HelperFields.checkPassword(password)) {
 //            ((SignInActivity) context).startLoader();
@@ -162,18 +166,20 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     }
 
     private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+
+        Intent signInIntent = HelperClients.googleSignInClient(context).getSignInIntent();
+        startActivityForResult(signInIntent, GOOGLE_SIGN_IN
+        );
+
     }
 
     private void signInWithFacebook() {
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email", "user_friends"));
         signBtnFacebook.performClick();
-        callbackManager = CallbackManager.Factory.create();
         signBtnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                signInPresenter.fetchFbUserData(loginResult.getAccessToken());
+                signInPresenter.authWithFb(loginResult.getAccessToken());
             }
 
             @Override
@@ -192,12 +198,17 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+
+        if (requestCode == GOOGLE_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            signInPresenter.fetchGglUserData(task);
-            //handleGoogleSignInResult(task);
+            signInPresenter.authWithGoogle(task);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
     private void onFocusChange(View v, boolean hasFocus) {
@@ -208,38 +219,67 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         }
     }
 
+//    @Override
+//    public void onFireBaseAuth(LoginResponse.User user) {
+////        User currentUser = new User(user.getName(), user.getLastName(), user.getUrl(), user.getId(), user.getEmail(), user.getLoginType());
+////        HelperPref.saveUser(context, currentUser);
+//        Intent intent = new Intent(getActivity(), HomePageActivity.class);
+////        intent.putExtra("loggedUser", user);
+//        startActivity(intent);
+//    }
+
     @Override
-    public void onGetFbUserData(User user) {
-        startUserActivity(user);
+    public void onAuthError(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onGetGglUserData(User user) {
-        startUserActivity(user);
+    public void onFireBaseAuthSignIn() {
+
     }
 
     @Override
-    public void onGetLoginResult(LoginResponse loginResponse) {
-        if (loginResponse.getUser() != null) {
-            onUserLogged(loginResponse.getUser());
-            HelperPref.saveAccessToken(context, loginResponse.getAccess_token());
-            Toast.makeText(context, "Signed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void onUserLogged(LoginResponse.User loggedUser) {
-        HelperPref.saveServerUser(context, loggedUser);
-        Intent intent = new Intent(context, UserPageActivity.class);
-        intent.putExtra("server_user", loggedUser);
-        ((SignInActivity) context).stopLoader();
+    public void onFireBaseAuthSignUp() {
+        Intent intent = new Intent(context, DateActivity.class);
         context.startActivity(intent);
-        ((SignInActivity) context).finish();
+    }
+
+    @Override
+    public void userFirstLogin(String key, int platform) {
+
+    }
+
+    @Override
+    public void onSign(LoginResponse loginResponse) {
+        switch (loginResponse.getStatus()) {
+            case 0:
+
+                HelperPref.saveAccessToken(context, loginResponse.getAccess_token());
+                HelperPref.saveUser(context, loginResponse.getUser());
+
+                Intent intent = new Intent(context, HomePageActivity.class);
+//                intent.putExtra("server_user", loggedUser);
+
+                ((SignInActivity) context).stopLoader();
+
+                context.startActivity(intent);
+
+                ((SignInActivity) context).finish();
+                break;
+
+            case 1:
+                Toast.makeText(context, String.valueOf(loginResponse.getStatus()), Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override
     public void onDestroy() {
         if (signInPresenter != null) {
             signInPresenter = null;
+        }
+        if (context != null) {
+            context = null;
         }
         super.onDestroy();
     }
@@ -313,5 +353,4 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 break;
         }
     }
-
 }

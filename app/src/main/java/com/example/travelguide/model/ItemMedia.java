@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class ItemMedia implements Serializable {
 
     private int type;
+    //if type = 1 video
+    //if type = 0 photo
     private String path;
 
     public ItemMedia(int type, String path) {

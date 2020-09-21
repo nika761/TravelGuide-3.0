@@ -2,13 +2,18 @@ package com.example.travelguide.network;
 
 import com.example.travelguide.model.request.AboutRequest;
 import com.example.travelguide.model.request.AddFavoriteMusic;
+import com.example.travelguide.model.request.AuthWitFirebaseRequest;
 import com.example.travelguide.model.request.ByMoodRequest;
 import com.example.travelguide.model.request.ChangeLangRequest;
+import com.example.travelguide.model.request.CommentRequest;
 import com.example.travelguide.model.request.CustomerPostRequest;
+import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.request.FollowersRequest;
 import com.example.travelguide.model.request.FollowingRequest;
 import com.example.travelguide.model.request.ForgotPasswordRequest;
+import com.example.travelguide.model.request.HashtagRequest;
 import com.example.travelguide.model.request.LoginRequest;
+import com.example.travelguide.model.request.PostByHashtagRequest;
 import com.example.travelguide.model.request.PostByLocationRequest;
 import com.example.travelguide.model.request.PostRequest;
 import com.example.travelguide.model.request.ProfileRequest;
@@ -18,17 +23,23 @@ import com.example.travelguide.model.request.SearchMusicRequest;
 import com.example.travelguide.model.request.SetPostFavoriteRequest;
 import com.example.travelguide.model.request.SetPostViewRequest;
 import com.example.travelguide.model.request.SetStoryLikeRequest;
+import com.example.travelguide.model.request.SharePostRequest;
 import com.example.travelguide.model.request.SignUpRequest;
+import com.example.travelguide.model.request.SignUpWithFirebaseRequest;
 import com.example.travelguide.model.request.TermsPolicyRequest;
 import com.example.travelguide.model.request.UploadPostRequest;
+import com.example.travelguide.model.request.UploadPostRequestModel;
 import com.example.travelguide.model.request.VerifyEmailRequest;
 import com.example.travelguide.model.response.AboutResponse;
 import com.example.travelguide.model.response.AddFavoriteMusicResponse;
+import com.example.travelguide.model.response.AuthWithFirebaseResponse;
 import com.example.travelguide.model.response.ChangeLangResponse;
+import com.example.travelguide.model.response.CommentResponse;
 import com.example.travelguide.model.response.FavoriteMusicResponse;
 import com.example.travelguide.model.response.FollowerResponse;
 import com.example.travelguide.model.response.FollowingResponse;
 import com.example.travelguide.model.response.ForgotPasswordResponse;
+import com.example.travelguide.model.response.HashtagResponse;
 import com.example.travelguide.model.response.MoodResponse;
 import com.example.travelguide.model.response.MusicResponse;
 import com.example.travelguide.model.response.PostResponse;
@@ -38,6 +49,7 @@ import com.example.travelguide.model.response.ResetPasswordResponse;
 import com.example.travelguide.model.response.SetPostFavoriteResponse;
 import com.example.travelguide.model.response.SetPostViewResponse;
 import com.example.travelguide.model.response.SetStoryLikeResponse;
+import com.example.travelguide.model.response.SharePostResponse;
 import com.example.travelguide.model.response.SignUpResponse;
 import com.example.travelguide.model.request.CheckMailRequest;
 import com.example.travelguide.model.response.CheckMailResponse;
@@ -45,12 +57,14 @@ import com.example.travelguide.model.request.CheckNickRequest;
 import com.example.travelguide.model.response.CheckNickResponse;
 import com.example.travelguide.model.response.LanguagesResponse;
 import com.example.travelguide.model.response.LoginResponse;
+import com.example.travelguide.model.response.SignUpWithFirebaseResponse;
 import com.example.travelguide.model.response.TermsPolicyResponse;
 import com.example.travelguide.model.response.UploadPostResponse;
 import com.example.travelguide.model.response.VerifyEmailResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -84,10 +98,10 @@ public interface ApiService {
     Call<ChangeLangResponse> changeLanguage(@Header("Authorization") String token,
                                             @Body ChangeLangRequest changeLangRequest);
 
-    @Headers({"Accept: application/json"})
-    @POST("upload_content")
-    Call<UploadPostResponse> uploadPost(@Header("Authorization") String token,
-                                        @Body UploadPostRequest uploadPostRequest);
+//    @Headers({"Accept: application/json"})
+//    @POST("upload_content")
+//    Call<UploadPostResponse> uploadPost(@Header("Authorization") String token,
+//                                        @Body UploadPostRequest uploadPostRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/get_posts")
@@ -158,6 +172,11 @@ public interface ApiService {
                                           @Body PostByLocationRequest postByLocationRequest);
 
     @Headers({"Accept: application/json"})
+    @POST("get/posts_by_hashtag")
+    Call<PostResponse> getPostsByHashtag(@Header("Authorization") String token,
+                                         @Body PostByHashtagRequest postByHashtagRequest);
+
+    @Headers({"Accept: application/json"})
     @POST("email/verify_email")
     Call<VerifyEmailResponse> verifyEmail(@Header("Authorization") String token,
                                           @Body VerifyEmailRequest verifyEmailRequest);
@@ -180,4 +199,37 @@ public interface ApiService {
     @POST("password/reset")
     Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
 
+    @Headers({"Accept: application/json"})
+    @POST("get/my_favourite_posts")
+    Call<PostResponse> getFavoritePosts(@Header("Authorization") String token,
+                                        @Body FavoritePostRequest favoritePostRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_share")
+    Call<SharePostResponse> setPostShare(@Header("Authorization") String token,
+                                         @Body SharePostRequest sharePostRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("search/hashtags")
+    Call<HashtagResponse> getHashtags(@Header("Authorization") String token,
+                                      @Body HashtagRequest hashtagRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("get/post_story_comments")
+    Call<CommentResponse> getStoryComments(@Header("Authorization") String token,
+                                           @Body CommentRequest commentRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("login/by_outer_account")
+    Call<AuthWithFirebaseResponse> authWithFirebase(@Body AuthWitFirebaseRequest authWitFirebaseRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("register_outer_account")
+    Call<SignUpWithFirebaseResponse> signUpWithFirebase(@Body SignUpWithFirebaseRequest signUpWithFirebaseRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("create/post")
+    Call<UploadPostResponse> uploadPost(@Header("Authorization") String token,
+                                        @Header("Content-type") String unc,
+                                        @Body UploadPostRequestModel uploadPostRequest);
 }

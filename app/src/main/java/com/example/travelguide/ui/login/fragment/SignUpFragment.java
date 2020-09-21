@@ -36,6 +36,7 @@ import com.example.travelguide.helper.HelperUI;
 import com.hbb20.CountryCodePicker;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class SignUpFragment extends Fragment implements ISignUpFragment, View.OnClickListener {
@@ -113,8 +114,15 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
             String dayString = day < 10 ? "0" + day : String.valueOf(day);
             String monthString = month < 10 ? "0" + month : String.valueOf(month);
 
-            String date = year + "/" + monthString + "/" + dayString;
-            registerBirthDate.setText(date);
+
+            Date currentDate = new Date();
+            int age = currentDate.getYear() - year;
+            if (age < 18) {
+                Toast.makeText(context, "18 წელზე მეტის", Toast.LENGTH_SHORT).show();
+            } else {
+                String date = year + "/" + monthString + "/" + dayString;
+                registerBirthDate.setText(date);
+            }
         };
 
         return view;

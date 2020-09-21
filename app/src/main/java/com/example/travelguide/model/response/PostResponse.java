@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class PostResponse implements Cloneable {
+public class PostResponse {
 
     @Expose
     @SerializedName("posts")
@@ -35,6 +35,15 @@ public class PostResponse implements Cloneable {
         @SerializedName("post_stories")
         private List<Post_stories> post_stories;
         @Expose
+        @SerializedName("post_reactions")
+        private int post_reactions;
+        @Expose
+        @SerializedName("i_favor_post")
+        private boolean i_favor_post;
+        @Expose
+        @SerializedName("i_follow_post_owner")
+        private boolean i_follow_post_owner;
+        @Expose
         @SerializedName("post_locations")
         private List<Post_locations> post_locations;
         @Expose
@@ -52,11 +61,9 @@ public class PostResponse implements Cloneable {
         @Expose
         @SerializedName("past_time")
         private String past_time;
-
         @Expose
-        @SerializedName("post_reactions")
-        private int post_reactions;
-
+        @SerializedName("music_url")
+        private String music_url;
         @Expose
         @SerializedName("music_text")
         private String music_text;
@@ -64,26 +71,20 @@ public class PostResponse implements Cloneable {
         @SerializedName("post_share_url")
         private String post_share_url;
         @Expose
-        @SerializedName("music_url")
-        private String music_url;
+        @SerializedName("post_view")
+        private int post_view;
         @Expose
         @SerializedName("created_at")
         private String created_at;
+        @Expose
+        @SerializedName("cover")
+        private String cover;
         @Expose
         @SerializedName("music_id")
         private int music_id;
         @Expose
         @SerializedName("go")
         private String go;
-
-        @Expose
-        @SerializedName("i_follow_post_owner")
-        private int i_follow_post_owner;
-
-        @Expose
-        @SerializedName("cover")
-        private String cover;
-
         @Expose
         @SerializedName("description")
         private String description;
@@ -109,6 +110,30 @@ public class PostResponse implements Cloneable {
 
         public void setPost_stories(List<Post_stories> post_stories) {
             this.post_stories = post_stories;
+        }
+
+        public int getPost_reactions() {
+            return post_reactions;
+        }
+
+        public void setPost_reactions(int post_reactions) {
+            this.post_reactions = post_reactions;
+        }
+
+        public boolean getI_favor_post() {
+            return i_favor_post;
+        }
+
+        public void setI_favor_post(boolean i_favor_post) {
+            this.i_favor_post = i_favor_post;
+        }
+
+        public boolean getI_follow_post_owner() {
+            return i_follow_post_owner;
+        }
+
+        public void setI_follow_post_owner(boolean i_follow_post_owner) {
+            this.i_follow_post_owner = i_follow_post_owner;
         }
 
         public List<Post_locations> getPost_locations() {
@@ -159,6 +184,14 @@ public class PostResponse implements Cloneable {
             this.past_time = past_time;
         }
 
+        public String getMusic_url() {
+            return music_url;
+        }
+
+        public void setMusic_url(String music_url) {
+            this.music_url = music_url;
+        }
+
         public String getMusic_text() {
             return music_text;
         }
@@ -175,20 +208,12 @@ public class PostResponse implements Cloneable {
             this.post_share_url = post_share_url;
         }
 
-        public int getI_follow_post_owner() {
-            return i_follow_post_owner;
+        public int getPost_view() {
+            return post_view;
         }
 
-        public void setI_follow_post_owner(int i_follow_post_owner) {
-            this.i_follow_post_owner = i_follow_post_owner;
-        }
-
-        public String getMusic_url() {
-            return music_url;
-        }
-
-        public void setMusic_url(String music_url) {
-            this.music_url = music_url;
+        public void setPost_view(int post_view) {
+            this.post_view = post_view;
         }
 
         public String getCreated_at() {
@@ -197,6 +222,14 @@ public class PostResponse implements Cloneable {
 
         public void setCreated_at(String created_at) {
             this.created_at = created_at;
+        }
+
+        public String getCover() {
+            return cover;
+        }
+
+        public void setCover(String cover) {
+            this.cover = cover;
         }
 
         public int getMusic_id() {
@@ -243,22 +276,6 @@ public class PostResponse implements Cloneable {
             return nickname;
         }
 
-        public int getPost_reactions() {
-            return post_reactions;
-        }
-
-        public String getCover() {
-            return cover;
-        }
-
-        public void setCover(String cover) {
-            this.cover = cover;
-        }
-
-        public void setPost_reactions(int post_reactions) {
-            this.post_reactions = post_reactions;
-        }
-
         public void setNickname(String nickname) {
             this.nickname = nickname;
         }
@@ -282,6 +299,9 @@ public class PostResponse implements Cloneable {
 
     public static class Post_stories {
         @Expose
+        @SerializedName("story_like_by_me")
+        private boolean story_like_by_me;
+        @Expose
         @SerializedName("second")
         private int second;
         @Expose
@@ -297,15 +317,11 @@ public class PostResponse implements Cloneable {
         @SerializedName("story_id")
         private int story_id;
 
-        @Expose
-        @SerializedName("story_like_by_me")
-        private int story_like_by_me;
-
-        public int getStory_like_by_me() {
+        public boolean getStory_like_by_me() {
             return story_like_by_me;
         }
 
-        public void setStory_like_by_me(int story_like_by_me) {
+        public void setStory_like_by_me(boolean story_like_by_me) {
             this.story_like_by_me = story_like_by_me;
         }
 

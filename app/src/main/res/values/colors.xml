@@ -9,6 +9,8 @@
     <color name="white">#FFFFFF</color>
     <color name="yellowTextView">#F3BC1E</color>
     <color name="grey">#807A7A</color>
+    <color name="greyLightMedium">#83D8CDCD</color>
+    <color name="greyLight">#D3D8CDCD</color>
     <color name="black">#000</color>
     <color name="blue">#3B5998</color>
     <color name="redGoogle">#E33E2B</color>

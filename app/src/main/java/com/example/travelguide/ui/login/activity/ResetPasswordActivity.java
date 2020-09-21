@@ -1,9 +1,9 @@
 package com.example.travelguide.ui.login.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -18,15 +18,12 @@ import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.helper.HelperUI;
 import com.example.travelguide.model.request.ResetPasswordRequest;
-import com.example.travelguide.model.request.VerifyEmailRequest;
 import com.example.travelguide.model.response.ResetPasswordResponse;
+import com.example.travelguide.ui.home.HomePageActivity;
 import com.example.travelguide.ui.login.interfaces.IResetPassword;
 import com.example.travelguide.ui.login.presenter.ResetPasswordPresenter;
 
 import java.util.List;
-import java.util.Objects;
-
-import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ResetPasswordActivity extends AppCompatActivity implements IResetPassword, View.OnFocusChangeListener {
     private EditText eEmail, ePassword, eConfirmPassword;
@@ -122,7 +119,12 @@ public class ResetPasswordActivity extends AppCompatActivity implements IResetPa
     @Override
     public void onPasswordReset(ResetPasswordResponse resetPasswordResponse) {
         if (resetPasswordResponse != null) {
-            Toast.makeText(this, resetPasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            if (resetPasswordResponse.getStatus() == 0) {
+                Intent intent = new Intent(this, HomePageActivity.class);
+                intent.putExtra("password_changed","password_changed");
+                startActivity(intent);
+                Toast.makeText(this, resetPasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

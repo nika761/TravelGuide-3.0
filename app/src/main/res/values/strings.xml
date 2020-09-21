@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="facebook_app_id">262622864731766</string>
-    <string name="fb_login_protocol_scheme">fb262622864731766</string>
+    <string name="facebook_app_id" translatable="false">660410181561551</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb660410181561551</string>
 
     <string name="app_name">TravelGuide</string>
     <string name="welcome">Welcome</string>
