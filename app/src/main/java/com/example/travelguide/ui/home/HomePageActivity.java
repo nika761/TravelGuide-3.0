@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.ui.home.comments.CommentFragment;
 import com.example.travelguide.ui.home.home.HomeFragment;
 import com.example.travelguide.ui.home.notifications.NotificationsFragment;
@@ -27,11 +28,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.example.travelguide.helper.HelperSystem.READ_EXTERNAL_STORAGE;
 
-public class HomePageActivity extends AppCompatActivity {
+public class HomePageActivity extends AppCompatActivity implements ProfileFragment.OnPostChooseListener {
 
     private GoogleSignInClient mGoogleSignInClient;
     private Bundle userDataForFragments;
@@ -47,9 +49,14 @@ public class HomePageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
         String changed = getIntent().getStringExtra("password_changed");
+        String option = getIntent().getStringExtra("option");
 
         if (changed != null)
             if (changed.equals("password_changed"))
+                HelperUI.loadFragment(new ProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+
+        if (option != null)
+            if (option.equals("uploaded"))
                 HelperUI.loadFragment(new ProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
 
         ongGetUserDate();
@@ -190,4 +197,8 @@ public class HomePageActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @Override
+    public void onPostChoose(List<PostResponse.Posts> posts) {
+        HelperUI.loadFragment(new HomeFragment(posts), null, R.id.user_page_frg_container, false, this);
+    }
 }

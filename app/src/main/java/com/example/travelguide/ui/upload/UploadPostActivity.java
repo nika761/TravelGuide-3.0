@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperClients;
@@ -24,6 +25,7 @@ import com.example.travelguide.helper.HelperSystem;
 import com.example.travelguide.model.ItemMedia;
 import com.example.travelguide.model.request.UploadPostRequestModel;
 import com.example.travelguide.ui.editPost.filterActivity.FilterActivity;
+import com.example.travelguide.ui.home.HomePageActivity;
 import com.example.travelguide.ui.upload.tag.TagPostActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -48,21 +50,24 @@ import static com.example.travelguide.ui.music.ChooseMusicActivity.MUSIC_ID;
 
 public class UploadPostActivity extends AppCompatActivity implements View.OnClickListener, UploadPostListener {
     private static final int LOCATIONS_REQUEST_CODE = 444;
-    private static final int TAG_ACTIVITY = 48;
+    private static final int TAG_ACTIVITY_HASHTAGS = 48;
+    private static final int TAG_ACTIVITY_FRIENDS = 49;
     public static final String TAG_USERS = "tag_users";
     public static final String TAG_HASHTAGS = "tag_hashtags";
     private ImageView imageView;
     private File fileForUpload;
     private List<ItemMedia> itemMedia = new ArrayList<>();
     private List<String> hashtags = new ArrayList<>();
-    private List<Integer> users;
+    private List<Integer> users = new ArrayList<>();
     private UploadPostPresenter uploadPostPresenter;
+    private ConstraintLayout loaderContainer;
     private EditText postDescription;
     private int musicId;
     private String address;
     private String addressName;
     private String latLng;
     private String description;
+    private String oldDesc;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,6 +102,11 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 
         postDescription = findViewById(R.id.description_post);
 
+        loaderContainer = findViewById(R.id.loader_upload);
+
+        TextView friends = findViewById(R.id.describe_friends);
+        friends.setOnClickListener(this);
+
         TextView hashtag = findViewById(R.id.describe_hashtags);
         hashtag.setOnClickListener(this);
     }
@@ -118,7 +128,14 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 
             case R.id.describe_hashtags:
                 Intent i = new Intent(this, TagPostActivity.class);
-                startActivityForResult(i, TAG_ACTIVITY);
+                i.putExtra("tag_type", TAG_HASHTAGS);
+                startActivityForResult(i, TAG_ACTIVITY_HASHTAGS);
+                break;
+
+            case R.id.describe_friends:
+                Intent j = new Intent(this, TagPostActivity.class);
+                j.putExtra("tag_type", TAG_USERS);
+                startActivityForResult(j, TAG_ACTIVITY_FRIENDS);
                 break;
 
             case R.id.location:
@@ -152,6 +169,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void startUpload() {
+        loaderContainer.setVisibility(View.VISIBLE);
         if (itemMedia.get(0).getType() == 0) {
             List<ItemMedia> convertedImages = convertImagesToPng(itemMedia);
             fileForUpload = new File(convertedImages.get(0).getPath());
@@ -191,14 +209,14 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                         break;
                 }
 
-            case TAG_ACTIVITY:
+            case TAG_ACTIVITY_HASHTAGS:
                 switch (resultCode) {
                     case RESULT_OK:
                         if (data != null) {
                             String hashtag = data.getStringExtra("hashtags");
                             this.hashtags.add(hashtag);
 
-                            String oldDesc = postDescription.getText().toString();
+                            oldDesc = postDescription.getText().toString();
                             StringBuilder builder = new StringBuilder();
 
                             for (String details : hashtags) {
@@ -206,6 +224,26 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                                 postDescription.setText(builder.toString() + " " + oldDesc);
                                 Toast.makeText(this, hashtags.toString(), Toast.LENGTH_LONG).show();
                             }
+
+                        } else {
+                            return;
+                        }
+                        break;
+                    case RESULT_CANCELED:
+                        Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
+                        break;
+                }
+
+            case TAG_ACTIVITY_FRIENDS:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        if (data != null) {
+                            int friendsId = data.getIntExtra("friend_id", 0);
+                            String friendName = data.getStringExtra("friend_name");
+                            this.users.add(friendsId);
+
+                            oldDesc = postDescription.getText().toString();
+                            postDescription.setText(oldDesc + " " + friendName);
 
                         } else {
                             return;
@@ -235,7 +273,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onPostUploaded() {
+    public void onPostUploadedToS3() {
         Log.e("zxcv", "uploaded to s3 ");
 
         String url = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, fileForUpload.getName());
@@ -267,8 +305,22 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onPostUploadError() {
-        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+    public void onPostUploadErrorS3(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPostUploaded() {
+        loaderContainer.setVisibility(View.GONE);
+        Intent intent = new Intent(UploadPostActivity.this, HomePageActivity.class);
+        intent.putExtra("option", "uploaded");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPostUploadError(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

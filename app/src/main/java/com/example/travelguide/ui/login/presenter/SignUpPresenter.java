@@ -66,12 +66,15 @@ public class SignUpPresenter {
             public void onResponse(Call<CheckNickResponse> call, Response<CheckNickResponse> response) {
                 if (response.isSuccessful()) {
                     iSignUpFragment.onGetNickCheckResult(response.body());
+                }else {
+                    iSignUpFragment.onGetAuthError(response.message());
+
                 }
             }
 
             @Override
             public void onFailure(Call<CheckNickResponse> call, Throwable t) {
-
+                iSignUpFragment.onGetAuthError(t.getMessage());
             }
         });
     }

@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:text="Nika Butskhrikidze"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:visibility="visible" />

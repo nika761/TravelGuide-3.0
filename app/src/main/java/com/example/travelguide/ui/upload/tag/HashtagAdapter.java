@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
+import com.example.travelguide.model.response.FollowerResponse;
 import com.example.travelguide.model.response.HashtagResponse;
 
 import java.util.List;

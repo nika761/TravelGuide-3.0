@@ -85,10 +85,11 @@ public class HelperUI {
         return confirmPasswordValidate;
     }
 
-    public static void setBackgroundWarning(EditText currentField, TextView currentHead, String currentHeadText) {
+    public static void setBackgroundWarning(EditText currentField, TextView currentHead, String currentHeadText, Context context) {
+
         currentField.setBackgroundResource(BACKGROUND_WARNING);
         currentHead.setText(String.format("* %s", currentHeadText));
-        currentHead.setTextColor(RED);
+        currentHead.setTextColor(context.getResources().getColor(R.color.red));
         YoYo.with(Techniques.Shake)
                 .duration(300)
                 .playOn(currentField);
@@ -100,10 +101,10 @@ public class HelperUI {
         currentHead.setTextColor(color);
     }
 
-    public static String checkEditTextData(EditText currentField, TextView currentHead, String currentHeadText, int colorDefault, int bgColor) {
+    public static String checkEditTextData(EditText currentField, TextView currentHead, String currentHeadText, int colorDefault, int bgColor, Context context) {
         String currentStringData = null;
         if (currentField.getText().toString().isEmpty()) {
-            setBackgroundWarning(currentField, currentHead, currentHeadText);
+            setBackgroundWarning(currentField, currentHead, currentHeadText, context);
         } else {
             setBackgroundDefault(currentField, currentHead, currentHeadText, colorDefault, bgColor);
             currentStringData = currentField.getText().toString();

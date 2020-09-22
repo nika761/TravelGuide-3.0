@@ -51,11 +51,12 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     private void checkNetwork() {
         if (HelperSystem.checkNetworkConnection(this)) {
             if (HelperPref.getLanguageId(this) != 0) {
-                if (HelperPref.getSavedUsers(this).size() > 0) {
-                    openSaved();
-                } else {
-                    openApp();
-                }
+//                if (HelperPref.getSavedUsers(this).size() > 0) {
+//                    openSaved();
+//                } else {
+//                    openApp();
+//                }
+                openApp();
             } else {
                 languagePresenter.sentLanguageRequest();
             }

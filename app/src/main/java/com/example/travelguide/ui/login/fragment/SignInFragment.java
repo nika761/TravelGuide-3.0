@@ -23,6 +23,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.travelguide.R;
 import com.example.travelguide.model.UserModel;
+import com.example.travelguide.model.response.AppSettingsResponse;
+import com.example.travelguide.model.response.AuthWithFirebaseResponse;
 import com.example.travelguide.ui.login.activity.DateActivity;
 import com.example.travelguide.ui.login.activity.ForgotPasswordActivity;
 import com.example.travelguide.ui.login.activity.SignUpActivity;
@@ -79,6 +81,8 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     private ImageView lineLeft, lineRight;
     private String email, password;
     private DatabaseReference myRef;
+    private String key, name;
+    private int platformId;
 
     @Nullable
     @Override
@@ -144,32 +148,28 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     }
 
     private void signInWithAccount() {
-//        email = HelperFields.checkEditTextData(enterEmail, enterMailHead,
-//                getString(R.string.email_or_phone_number), email,
-//                getResources().getColor(R.color.red), getResources().getColor(R.color.white));
-//        password = HelperFields.checkEditTextData(enterPassword,
-//                enterPasswordHead, getString(R.string.password), password,
-//                getResources().getColor(R.color.red), getResources().getColor(R.color.white));
-        email = enterEmail.getText().toString();
-        password = enterPassword.getText().toString();
+        email = HelperUI.checkEditTextData(enterEmail, enterMailHead, "Email or Phone Number", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, context);
 
-        ((SignInActivity) context).startLoader();
-        signInPresenter.singIn(new LoginRequest(email, password));
-//
-//        if (email != null && HelperFields.checkEmail(email) && password != null && HelperFields.checkPassword(password)) {
-//            ((SignInActivity) context).startLoader();
-//            LoginRequest loginRequest = new LoginRequest(email, password);
-//            signInPresenter.sentLoginRequest(loginRequest);
-//        } else {
-//            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
-//        }
+        password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, "Password", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, context);
+
+        if (email != null && HelperUI.checkEmail(email)) {
+            HelperUI.setBackgroundDefault(enterEmail, enterMailHead, "Email or Phone Number", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE);
+            if (password != null && HelperUI.checkPassword(password)) {
+                HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, "Password", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE);
+                ((SignInActivity) context).startLoader();
+                signInPresenter.singIn(new LoginRequest(email, password));
+            } else {
+                HelperUI.setBackgroundWarning(enterPassword, enterPasswordHead, "Password", context);
+            }
+        } else {
+            HelperUI.setBackgroundWarning(enterEmail, enterMailHead, "Email or Phone Number", context);
+        }
     }
 
     private void signInWithGoogle() {
 
         Intent signInIntent = HelperClients.googleSignInClient(context).getSignInIntent();
-        startActivityForResult(signInIntent, GOOGLE_SIGN_IN
-        );
+        startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
 
     }
 
@@ -234,19 +234,44 @@ public class SignInFragment extends Fragment implements ISignInFragment {
     }
 
     @Override
-    public void onFireBaseAuthSignIn() {
+    public void onFireBaseAuthSignIn(AuthWithFirebaseResponse authWithFirebaseResponse) {
+        HelperPref.saveAccessToken(context, authWithFirebaseResponse.getAccess_token());
+        HelperPref.saveCurrentUserId(context, authWithFirebaseResponse.getUser().getId());
 
+        Intent intent = new Intent(context, HomePageActivity.class);
+//                intent.putExtra("server_user", loggedUser);
+
+        ((SignInActivity) context).stopLoader();
+
+        context.startActivity(intent);
+
+        ((SignInActivity) context).finish();
+    }
+
+    @Override
+    public void onFireBaseSignUp(String token, int platform, String name) {
+        this.key = token;
+        this.platformId = platform;
+        this.name = name;
     }
 
     @Override
     public void onFireBaseAuthSignUp() {
         Intent intent = new Intent(context, DateActivity.class);
+        intent.putExtra("platform", platformId);
+        intent.putExtra("key", key);
+        intent.putExtra("name", name);
         context.startActivity(intent);
     }
 
     @Override
-    public void userFirstLogin(String key, int platform) {
+    public void onGetSettings(AppSettingsResponse.App_settings appSettings) {
 
+    }
+
+    @Override
+    public void onGetSettingsError(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -256,6 +281,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
                 HelperPref.saveAccessToken(context, loginResponse.getAccess_token());
                 HelperPref.saveUser(context, loginResponse.getUser());
+                HelperPref.saveCurrentUserId(context, loginResponse.getUser().getId());
 
                 Intent intent = new Intent(context, HomePageActivity.class);
 //                intent.putExtra("server_user", loggedUser);

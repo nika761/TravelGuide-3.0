@@ -56,7 +56,6 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
 
         closeBtn = findViewById(R.id.close_btn);
         closeBtn.setOnClickListener(this);
-
     }
 
     private void initRecycler() {
@@ -89,7 +88,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
             if (path.endsWith("mp4")) {
                 isVideo = true;
             }
-            if (pickedItems.size() <= 10) {
+            if (pickedItems.size() <= 2) {
                 nextBtn.setClickable(true);
                 nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree, null));
                 nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
@@ -113,13 +112,14 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 }
 
             } else {
-                if (pickedItems.size() <= 9) {
+                if (pickedItems.size() < 1) {
                     pickedItems.add(path);
                     nextBtn.setClickable(true);
                     nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree, null));
                 } else {
                     nextBtn.setClickable(false);
                     nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_next_btn_grey, null));
+                    Toast.makeText(this, "You can choose only one photo", Toast.LENGTH_SHORT).show();
                 }
                 choosedItemRecyclerVisibility(true);
                 nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
@@ -141,9 +141,14 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.next_btn:
-                Intent intent = new Intent(GalleryActivity.this, EditPostActivity.class);
-                intent.putStringArrayListExtra(STORIES_PATHS, pickedItems);
-                startActivity(intent);
+                if (pickedItems.size() >= 1) {
+                    Intent intent = new Intent(GalleryActivity.this, EditPostActivity.class);
+                    intent.putStringArrayListExtra(STORIES_PATHS, pickedItems);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Please choose item", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
 
             case R.id.close_btn:

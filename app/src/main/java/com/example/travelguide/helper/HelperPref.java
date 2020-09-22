@@ -34,6 +34,9 @@ public class HelperPref {
     private static final String USER_PROFILE_PREFERENCES = "user_profile_prefs";
     private static final String PROFILE_KEY = "user_profile";
 
+    private static final String USER_ID_PREF = "user_id_prefs";
+    private static final String USER_ID_KEY = "user_id";
+
     public static void saveUserProfileInfo(Context context, ProfileResponse.Userinfo userinfo) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -47,6 +50,22 @@ public class HelperPref {
         ProfileResponse.Userinfo currentUserInfo = gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null),
                 ProfileResponse.Userinfo.class);
         return currentUserInfo;
+    }
+
+    public static void saveCurrentUserId(Context context, int userId){
+            SharedPreferences sharedPreferences = context.getSharedPreferences(USER_ID_PREF, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(USER_ID_KEY, userId);
+            editor.apply();
+    }
+
+    public static int getCurrentUserId(Context context) {
+        int userId = 0;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_ID_PREF, Context.MODE_PRIVATE);
+        if (sharedPreferences.getInt(USER_ID_KEY, 0) != 0) {
+            userId = sharedPreferences.getInt(USER_ID_KEY, 0);
+        }
+        return userId;
     }
 
     public static void saveUser(Context context, LoginResponse.User user) {

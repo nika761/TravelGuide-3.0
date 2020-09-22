@@ -31,7 +31,6 @@ public class SavedUserActivity extends AppCompatActivity {
 //        startActivity(intent);
     }
 
-
 //    AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
 //        @Override
 //        protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {

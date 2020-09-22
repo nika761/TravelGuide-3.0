@@ -1,6 +1,6 @@
 package com.example.travelguide.model.request;
 
-public class CustomerPostRequest {
+public class PostByUserRequest {
     private int user_id;
 
     public int getUser_id() {
@@ -11,7 +11,7 @@ public class CustomerPostRequest {
         this.user_id = user_id;
     }
 
-    public CustomerPostRequest(int user_id) {
+    public PostByUserRequest(int user_id) {
         this.user_id = user_id;
     }
 }

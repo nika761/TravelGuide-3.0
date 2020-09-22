@@ -65,6 +65,15 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     private int visibleItemCount;
     private int totalItemCount;
     private PostAdapter postRecyclerAdapter;
+    private List<PostResponse.Posts> posts;
+
+    public HomeFragment() {
+
+    }
+
+    public HomeFragment(List<PostResponse.Posts> posts) {
+        this.posts = posts;
+    }
 
     @Nullable
     @Override
@@ -87,11 +96,14 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        homeFragmentPresenter = new HomeFragmentPresenter(this);
-        homeFragmentPresenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
-                new PostRequest(0));
+        if (posts != null) {
+            initRecyclerView(posts);
+        } else {
+            homeFragmentPresenter = new HomeFragmentPresenter(this);
+            homeFragmentPresenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
+                    new PostRequest(0));
+        }
     }
-
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -128,12 +140,14 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                     visibleItemCount = layoutManager.getChildCount();
                     totalItemCount = layoutManager.getItemCount();
                     pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
                     Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
 
                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         loading = false;
                         homeFragmentPresenter.getLazyPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
                                 new PostRequest(postRecyclerAdapter.getPostId()));
+
                         Log.e("postsdsdsd", String.valueOf(postRecyclerAdapter.getPostId()));
 
                     }
@@ -214,7 +228,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onFavoriteSuccess(SetPostFavoriteResponse setPostFavoriteResponse) {
         switch (setPostFavoriteResponse.getStatus()) {
             case 0:
-
                 Toast.makeText(context, setPostFavoriteResponse.getMessage(), Toast.LENGTH_SHORT).show();
             case 1:
 //                postRecyclerAdapter.setStoryFavorite(1, storyPosition, setPostFavoriteResponse.getCount());

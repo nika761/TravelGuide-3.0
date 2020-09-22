@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
-import com.example.travelguide.model.request.CustomerPostRequest;
+import com.example.travelguide.model.request.PostByUserRequest;
 import com.example.travelguide.model.response.PostResponse;
 
 import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
@@ -41,7 +41,7 @@ public class CustomerPhotoFragment extends Fragment implements CustomerPhotoList
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         customerPhotoPresenter.getCustomerPosts(ACCESS_TOKEN_BEARER +
-                HelperPref.getAccessToken(recyclerView.getContext()), new CustomerPostRequest(userId));
+                HelperPref.getAccessToken(recyclerView.getContext()), new PostByUserRequest(userId));
     }
 
     @Override

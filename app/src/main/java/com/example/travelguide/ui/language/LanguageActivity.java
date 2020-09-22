@@ -44,24 +44,27 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
     }
 
     public void checkSavedUsers() {
-        currentUsers = HelperPref.getSavedUsers(this);
-        if (currentUsers.size() != 0) {
-//            for (User currentUser : currentUsers) {
-//                if (currentUser != null && currentUser.getLoginType() != null
-//                        && currentUser.getLoginType().equals("google")) {
-//                    startUserPageActivity(currentUser);
-//                } else if (currentUser != null && currentUser.getLoginType() != null
-//                        && currentUser.getLoginType().equals("facebook")) {
-//                    startUserPageActivity(currentUser);
-//                } else {
-            Intent userIntent = new Intent(this, SavedUserActivity.class);
-            startActivity(userIntent);
-//                }
-//            }
-        } else {
-            Intent signIntent = new Intent(this, SignInActivity.class);
-            startActivity(signIntent);
-        }
+//        currentUsers = HelperPref.getSavedUsers(this);
+//        if (currentUsers.size() != 0) {
+////            for (User currentUser : currentUsers) {
+////                if (currentUser != null && currentUser.getLoginType() != null
+////                        && currentUser.getLoginType().equals("google")) {
+////                    startUserPageActivity(currentUser);
+////                } else if (currentUser != null && currentUser.getLoginType() != null
+////                        && currentUser.getLoginType().equals("facebook")) {
+////                    startUserPageActivity(currentUser);
+////                } else {
+//            Intent userIntent = new Intent(this, SavedUserActivity.class);
+//            startActivity(userIntent);
+////                }
+////            }
+//        } else {
+//            Intent signIntent = new Intent(this, SignInActivity.class);
+//            startActivity(signIntent);
+//        }
+        Intent signIntent = new Intent(this, SignInActivity.class);
+        startActivity(signIntent);
+
     }
 
     private void startUserPageActivity(User currentUser) {

@@ -13,6 +13,7 @@ public class LoginResponse {
     @Expose
     @SerializedName("user")
     private User user;
+
     @Expose
     @SerializedName("status")
     private int status;

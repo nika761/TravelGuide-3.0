@@ -27,7 +27,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.model.request.ProfileRequest;
+import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.ProfileResponse;
+import com.example.travelguide.ui.customerUser.post.CustomerPhotoFragment;
 import com.example.travelguide.ui.home.profile.changeLanguage.ChangeLangFragment;
 import com.example.travelguide.ui.home.profile.editProfile.EditProfileFragment;
 import com.example.travelguide.ui.home.profile.favorites.FavoritePostFragment;
@@ -40,6 +42,7 @@ import com.example.travelguide.helper.HelperUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -98,15 +101,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         viewPager = myLayout.findViewById(R.id.viewpager_test);
         tabLayout = myLayout.findViewById(R.id.tabs_test);
 
-        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
-        profilePagerAdapter.addFragment(new UserPostsFragment());
-        profilePagerAdapter.addFragment(new FavoritePostFragment());
-        profilePagerAdapter.addFragment(new UserToursFragment());
-        viewPager.setAdapter(profilePagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
-        tabLayout.getTabAt(1).setIcon(R.drawable.profile_liked);
-        tabLayout.getTabAt(2).setIcon(R.drawable.profile_tour);
 
         View followStates = myLayout.findViewById(R.id.states_test);
         followStates.setOnClickListener(this::onViewClick);
@@ -135,8 +129,9 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         lottieAnimationView.setVisibility(View.VISIBLE);
+        this.userId = HelperPref.getCurrentUserId(context);
         profileFragmentPresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
-                new ProfileRequest(85));
+                new ProfileRequest(userId));
 
 //        if (HelperPref.getUserProfileInfo(context) == null) {
 //            lottieAnimationView.setVisibility(View.VISIBLE);
@@ -264,7 +259,23 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             reaction.setText(String.valueOf(userInfo.getReactions()));
             this.userId = userInfo.getId();
 
+            ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
+
+            profilePagerAdapter.addFragment(new UserPostsFragment(userId, context));
+            profilePagerAdapter.addFragment(new FavoritePostFragment());
+            profilePagerAdapter.addFragment(new UserToursFragment());
+            viewPager.setAdapter(profilePagerAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+            tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
+            tabLayout.getTabAt(1).setIcon(R.drawable.profile_liked);
+            tabLayout.getTabAt(2).setIcon(R.drawable.profile_tour);
+
         }
+    }
+
+    @Override
+    public void onGetError(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -273,6 +284,10 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             profileFragmentPresenter = null;
         }
         super.onDestroy();
+    }
+
+    public interface OnPostChooseListener {
+        void onPostChoose(List<PostResponse.Posts> posts);
     }
 
 

@@ -60,31 +60,33 @@ public class ResetPasswordActivity extends AppCompatActivity implements IResetPa
         save.setOnClickListener(v -> {
 
             email = HelperUI.checkEditTextData(eEmail, emailHead, "Email",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+
             password = HelperUI.checkEditTextData(ePassword, passwordHead, "Password",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+
             confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, confirmPasswordHead, "Confirm Password",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
 
             if (email != null && HelperUI.checkEmail(email)) {
                 HelperUI.setBackgroundDefault(eEmail, emailHead, "Email",
                         HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             } else {
-                HelperUI.setBackgroundWarning(eEmail, emailHead, "Email");
+                HelperUI.setBackgroundWarning(eEmail, emailHead, "Email", save.getContext());
             }
 
             if (password != null && HelperUI.checkPassword(password)) {
                 HelperUI.setBackgroundDefault(ePassword, passwordHead, "Password",
                         HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             } else {
-                HelperUI.setBackgroundWarning(ePassword, passwordHead, "Password");
+                HelperUI.setBackgroundWarning(ePassword, passwordHead, "Password", save.getContext());
             }
 
             if (password != null && confirmPassword != null && HelperUI.checkConfirmPassword(password, confirmPassword)) {
                 HelperUI.setBackgroundDefault(eConfirmPassword, confirmPasswordHead, "Confirm Password",
                         HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             } else {
-                HelperUI.setBackgroundWarning(eConfirmPassword, confirmPasswordHead, "Confirm Password");
+                HelperUI.setBackgroundWarning(eConfirmPassword, confirmPasswordHead, "Confirm Password", save.getContext());
             }
 
             if (email != null && password != null && confirmPassword != null) {
@@ -121,7 +123,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements IResetPa
         if (resetPasswordResponse != null) {
             if (resetPasswordResponse.getStatus() == 0) {
                 Intent intent = new Intent(this, HomePageActivity.class);
-                intent.putExtra("password_changed","password_changed");
+                intent.putExtra("password_changed", "password_changed");
                 startActivity(intent);
                 Toast.makeText(this, resetPasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }

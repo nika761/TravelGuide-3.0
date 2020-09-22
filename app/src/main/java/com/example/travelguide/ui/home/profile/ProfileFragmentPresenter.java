@@ -18,17 +18,20 @@ public class ProfileFragmentPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    public void getProfile(String accessToken, ProfileRequest profileRequest) {
+    void getProfile(String accessToken, ProfileRequest profileRequest) {
         apiService.getProfile(accessToken, profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     profileFragmentListener.onGetProfile(response.body());
+                }else {
+                    profileFragmentListener.onGetError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                profileFragmentListener.onGetError(t.getMessage());
 
             }
         });

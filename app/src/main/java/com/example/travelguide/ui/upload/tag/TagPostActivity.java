@@ -16,15 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
-import com.example.travelguide.model.request.HashtagRequest;
-import com.example.travelguide.model.request.SearchMusicRequest;
+import com.example.travelguide.model.request.SearchFollowersRequest;
+import com.example.travelguide.model.request.SearchHashtagRequest;
+import com.example.travelguide.model.response.FollowerResponse;
 import com.example.travelguide.model.response.HashtagResponse;
-import com.googlecode.mp4parser.h264.BTree;
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
-import java.io.BufferedReader;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +37,6 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
     private EditText searchEditTxt;
     private RecyclerView recyclerView;
     private TagPostPresenter postPresenter;
-    private HashtagAdapter hashtagAdapter;
     private String type;
     private TextView title;
 
@@ -49,17 +45,37 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_tags);
         this.type = getIntent().getStringExtra("tag_type");
+        initUI();
         if (type != null)
             switch (type) {
                 case TAG_USERS:
                     title.setText("Tag Friends");
+                    RxTextView.textChanges(searchEditTxt)
+                            .debounce(1200, TimeUnit.MILLISECONDS)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            //CharSequence is converted to String
+                            .map(CharSequence::toString)
+                            .subscribe((Consumer<CharSequence>) charSequence -> {
+                                if (!charSequence.toString().isEmpty()) {
+                                    postPresenter.searchFollowers(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new SearchFollowersRequest(charSequence.toString()));
+                                }
+                            });
                     break;
 
                 case TAG_HASHTAGS:
                     title.setText("Hashtags");
+                    RxTextView.textChanges(searchEditTxt)
+                            .debounce(1200, TimeUnit.MILLISECONDS)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            //CharSequence is converted to String
+                            .map(CharSequence::toString)
+                            .subscribe((Consumer<CharSequence>) charSequence -> {
+                                if (!charSequence.toString().isEmpty()) {
+                                    postPresenter.getHashtags(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new SearchHashtagRequest(charSequence.toString()));
+                                }
+                            });
                     break;
             }
-        initUI();
     }
 
     private void initUI() {
@@ -83,28 +99,19 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
         recyclerView = findViewById(R.id.tag_post_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        RxTextView.textChanges(searchEditTxt)
-                .debounce(1200, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                //CharSequence is converted to String
-                .map(CharSequence::toString)
-                .subscribe((Consumer<CharSequence>) charSequence -> {
-                    if (!charSequence.toString().isEmpty()) {
-                        postPresenter.getHashtags(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new HashtagRequest(charSequence.toString()));
-                    }
-                });
     }
 
     @Override
     public void onGetHashtags(List<HashtagResponse.Hashtags> hashtags) {
-        hashtagAdapter = new HashtagAdapter(this);
+        HashtagAdapter hashtagAdapter = new HashtagAdapter(this);
         recyclerView.setAdapter(hashtagAdapter);
         hashtagAdapter.setHashtags(hashtags);
     }
 
     @Override
-    public void onGetHashtagsError(String message) {
+    public void onGetError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -117,13 +124,30 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
     }
 
     @Override
+    public void onGetFollowers(List<FollowerResponse.Followers> followers) {
+        FriendsAdapter friendsAdapter = new FriendsAdapter(this);
+        recyclerView.setAdapter(friendsAdapter);
+        friendsAdapter.setFollowers(followers);
+    }
+
+    @Override
+    public void onChooseFollower(int followerId, String name) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("friend_id", followerId);
+        resultIntent.putExtra("friend_name", name);
+        setResult(Activity.RESULT_OK, resultIntent);
+        Toast.makeText(this, "Friend added" + " " + name, Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tag_post_back_btn:
                 finish();
                 break;
             case R.id.tag_post_search_btn:
-                postPresenter.getHashtags(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new HashtagRequest(searchEditTxt.getText().toString()));
+                postPresenter.getHashtags(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new SearchHashtagRequest(searchEditTxt.getText().toString()));
                 break;
 
 //            case R.id.tag_post_done_btn:

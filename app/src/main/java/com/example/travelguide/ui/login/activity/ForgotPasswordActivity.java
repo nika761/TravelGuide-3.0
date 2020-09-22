@@ -52,7 +52,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements IForgot
         Button save = findViewById(R.id.forgot_password_save_btn);
         save.setOnClickListener(v -> {
             email = HelperUI.checkEditTextData(eEmail, emailHead, "Email",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, eEmail.getContext());
 
             if (email != null && HelperUI.checkEmail(email)) {
                 HelperUI.setBackgroundDefault(eEmail, emailHead, "Email",
@@ -60,7 +60,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements IForgot
                 forgotPasswordPresenter.forgotPassword(new ForgotPasswordRequest(email, HelperPref.getLanguageId(this)));
                 eEmail.clearFocus();
             } else {
-                HelperUI.setBackgroundWarning(eEmail, emailHead, "Email");
+                HelperUI.setBackgroundWarning(eEmail, emailHead, "Email", eEmail.getContext());
             }
         });
     }

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.example.travelguide.model.FireBaseUserModel;
 import com.example.travelguide.model.request.AuthWitFirebaseRequest;
 import com.example.travelguide.model.request.LoginRequest;
+import com.example.travelguide.model.response.AppSettingsResponse;
 import com.example.travelguide.model.response.AuthWithFirebaseResponse;
 import com.example.travelguide.ui.login.interfaces.ISignInFragment;
 import com.example.travelguide.model.response.LoginResponse;
@@ -91,6 +92,7 @@ public class SignInPresenter {
                             database.child(id).setValue(fireBaseUserModel);
 
                             authWithFireBase(new AuthWitFirebaseRequest(key));
+                            iSignInFragment.onFireBaseSignUp(key, 1, firstName);
 
 //                            iSignInFragment.onFireBaseAuth(user);
                         }
@@ -139,6 +141,9 @@ public class SignInPresenter {
                         FireBaseUserModel fireBaseUserModel = new FireBaseUserModel(personEmail, personGivenName, personFamilyName, personId, personPhotoUrl, key);
                         if (personId != null)
                             database.child(personId).setValue(fireBaseUserModel);
+
+                        iSignInFragment.onFireBaseSignUp(key, 2, personGivenName);
+
                         authWithFireBase(new AuthWitFirebaseRequest(key));
 
 //                        iSignInFragment.onFireBaseAuth(user);
@@ -183,7 +188,8 @@ public class SignInPresenter {
                     switch (response.body().getStatus()) {
                         case 0:
                             //იუზერი არის
-                            iSignInFragment.onFireBaseAuthSignIn();
+                            iSignInFragment.onFireBaseAuthSignIn(response.body());
+                            break;
                         case 1:
                             //იუზერი არ არი
                             iSignInFragment.onFireBaseAuthSignUp();
@@ -202,13 +208,36 @@ public class SignInPresenter {
         });
     }
 
+    private void getAppSettings() {
+        apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
+            @Override
+            public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus() == 0) {
+                        iSignInFragment.onGetSettings(response.body().getApp_settings());
+                    } else {
+                        iSignInFragment.onGetSettingsError(response.message());
+                    }
+                } else {
+                    iSignInFragment.onGetSettingsError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppSettingsResponse> call, Throwable t) {
+                iSignInFragment.onGetSettingsError(t.getMessage());
+            }
+        });
+    }
+
+
     private String generateKey() {
 
         String keyToken = null;
         KeyGenerator gen;
         try {
             gen = KeyGenerator.getInstance("AES");
-            gen.init(32); /* 32-bit AES */
+            gen.init(128); /* 32-bit AES */
             SecretKey secret = gen.generateKey();
             byte[] binary = secret.getEncoded();
             keyToken = String.format("%032X", new BigInteger(+1, binary));

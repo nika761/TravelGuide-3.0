@@ -6,12 +6,13 @@ import com.example.travelguide.model.request.AuthWitFirebaseRequest;
 import com.example.travelguide.model.request.ByMoodRequest;
 import com.example.travelguide.model.request.ChangeLangRequest;
 import com.example.travelguide.model.request.CommentRequest;
-import com.example.travelguide.model.request.CustomerPostRequest;
+import com.example.travelguide.model.request.PostByUserRequest;
 import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.request.FollowersRequest;
 import com.example.travelguide.model.request.FollowingRequest;
 import com.example.travelguide.model.request.ForgotPasswordRequest;
-import com.example.travelguide.model.request.HashtagRequest;
+import com.example.travelguide.model.request.SearchFollowersRequest;
+import com.example.travelguide.model.request.SearchHashtagRequest;
 import com.example.travelguide.model.request.LoginRequest;
 import com.example.travelguide.model.request.PostByHashtagRequest;
 import com.example.travelguide.model.request.PostByLocationRequest;
@@ -27,11 +28,11 @@ import com.example.travelguide.model.request.SharePostRequest;
 import com.example.travelguide.model.request.SignUpRequest;
 import com.example.travelguide.model.request.SignUpWithFirebaseRequest;
 import com.example.travelguide.model.request.TermsPolicyRequest;
-import com.example.travelguide.model.request.UploadPostRequest;
 import com.example.travelguide.model.request.UploadPostRequestModel;
 import com.example.travelguide.model.request.VerifyEmailRequest;
 import com.example.travelguide.model.response.AboutResponse;
 import com.example.travelguide.model.response.AddFavoriteMusicResponse;
+import com.example.travelguide.model.response.AppSettingsResponse;
 import com.example.travelguide.model.response.AuthWithFirebaseResponse;
 import com.example.travelguide.model.response.ChangeLangResponse;
 import com.example.travelguide.model.response.CommentResponse;
@@ -64,7 +65,6 @@ import com.example.travelguide.model.response.VerifyEmailResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -83,6 +83,9 @@ public interface ApiService {
 
     @GET("get_languages")
     Call<LanguagesResponse> getLanguages();
+
+    @GET("get/app_settings")
+    Call<AppSettingsResponse> getAppSettings();
 
     @POST("get_terms_policy")
     Call<TermsPolicyResponse> getTerms(@Body TermsPolicyRequest termsPolicyRequest);
@@ -111,7 +114,7 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("get/posts_by_user")
     Call<PostResponse> getCustomerPosts(@Header("Authorization") String token,
-                                        @Body CustomerPostRequest customerPostRequest);
+                                        @Body PostByUserRequest customerPostRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/profile")
@@ -212,7 +215,12 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("search/hashtags")
     Call<HashtagResponse> getHashtags(@Header("Authorization") String token,
-                                      @Body HashtagRequest hashtagRequest);
+                                      @Body SearchHashtagRequest hashtagRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("search/followers")
+    Call<FollowerResponse> searchFollowers(@Header("Authorization") String token,
+                                      @Body SearchFollowersRequest searchFollowersRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/post_story_comments")

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.ui.home.profile.userFollowActivity.follower.FollowersFragment;
 import com.example.travelguide.ui.home.profile.userFollowActivity.following.FollowingFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -35,7 +36,7 @@ public class UserFollowActivity extends AppCompatActivity {
     }
 
     private void setViewPager(ViewPager viewPager) {
-        int userId = getIntent().getIntExtra("user_id", 0);
+        int userId = HelperPref.getCurrentUserId(this);
         FollowPagerAdapter followPagerAdapter = new FollowPagerAdapter(getSupportFragmentManager());
         followPagerAdapter.addFragment(new FollowingFragment(userId), "Following");
         followPagerAdapter.addFragment(new FollowersFragment(userId), "Followers");

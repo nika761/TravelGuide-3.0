@@ -57,6 +57,8 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
             ePasswordHead, eConfirmPasswordHead,
             signUpBtn, signUpCancelBtn, registerNickOffer,
             registerNickOfferOne, registerNickOfferTwo, terms, policy;
+    private long startTime;
+    private int color;
 
 
     @Nullable
@@ -114,14 +116,22 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
             String dayString = day < 10 ? "0" + day : String.valueOf(day);
             String monthString = month < 10 ? "0" + month : String.valueOf(month);
 
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-            Date currentDate = new Date();
-            int age = currentDate.getYear() - year;
-            if (age < 18) {
+//            Date currentDate = new Date();
+//            int age = currentDate.getYear() - year;
+
+            int age = currentYear - year;
+
+            if (age < 13) {
                 Toast.makeText(context, "18 წელზე მეტის", Toast.LENGTH_SHORT).show();
             } else {
                 String date = year + "/" + monthString + "/" + dayString;
                 registerBirthDate.setText(date);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day);
+                startTime = calendar.getTimeInMillis();
             }
         };
 
@@ -137,47 +147,48 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        this.color = context.getResources().getColor(R.color.black, null);
     }
 
     private void onGetData() {
 
         userName = HelperUI.checkEditTextData(eName, eNameHead, "Name",
-                HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                color, HelperUI.BACKGROUND_DEF_BLACK, context);
 
         userSurname = HelperUI.checkEditTextData(eSurname, eSurnameHead, "Surname",
-                HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                color, HelperUI.BACKGROUND_DEF_BLACK, context);
 
         nickName = HelperUI.checkEditTextData(eNickName, eNickNameHead, "NickName",
-                HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                color, HelperUI.BACKGROUND_DEF_BLACK, context);
 
         email = HelperUI.checkEditTextData(eMail, eEmailHead, "Email",
-                HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                color, HelperUI.BACKGROUND_DEF_BLACK, context);
 
         if (email != null && HelperUI.checkEmail(email)) {
             HelperUI.setBackgroundDefault(eMail, eEmailHead, "Email",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                    color, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
-            HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email");
+            HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email", context);
         }
 
         password = HelperUI.checkEditTextData(ePassword, ePasswordHead, "Password",
-                HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                color, HelperUI.BACKGROUND_DEF_BLACK, context);
 
         if (password != null && HelperUI.checkPassword(password)) {
             HelperUI.setBackgroundDefault(ePassword, ePasswordHead, "Password",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                    color, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
-            HelperUI.setBackgroundWarning(ePassword, ePasswordHead, "Password");
+            HelperUI.setBackgroundWarning(ePassword, ePasswordHead, "Password", context);
         }
 
         confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",
-                HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                color, HelperUI.BACKGROUND_DEF_BLACK, context);
 
         if (password != null && confirmPassword != null && HelperUI.checkConfirmPassword(password, confirmPassword)) {
             HelperUI.setBackgroundDefault(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                    color, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
-            HelperUI.setBackgroundWarning(eConfirmPassword, eConfirmPasswordHead, "Confirm Password");
+            HelperUI.setBackgroundWarning(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",context);
         }
 
         if (ePhoneNumber.getText().toString().isEmpty() || !checkNumber(ePhoneNumber)) {
@@ -224,7 +235,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
                 password != null &&
                 confirmPassword != null) {
             SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password,
-                    confirmPassword, birthDate, phoneIndex, phoneNumber, String.valueOf(HelperPref.getLanguageId(context)));
+                    confirmPassword, String.valueOf(startTime), phoneIndex, phoneNumber, String.valueOf(HelperPref.getLanguageId(context)));
             signUpPresenter.sendAuthResponse(signUpRequest);
             //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {
@@ -311,7 +322,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
                 break;
 
             case 2:
-                HelperUI.setBackgroundWarning(eNickName, eNickNameHead, "NickName");
+                HelperUI.setBackgroundWarning(eNickName, eNickNameHead, "NickName",context);
                 checkNickNameToServer(userName, userSurname, nickName);
                 break;
 
@@ -320,7 +331,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
                 break;
 
             case 4:
-                HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email");
+                HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email",context);
 //                checkEmailToServer(email);
                 break;
 
@@ -355,7 +366,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     @Override
     public void onGetEmailCheckResult(CheckMailResponse checkMailResponse) {
         if (checkMailResponse.getStasus().equals("1")) {
-            HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email");
+            HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email",context);
         }
     }
 

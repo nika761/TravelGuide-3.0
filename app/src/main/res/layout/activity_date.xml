@@ -63,6 +63,31 @@
                 android:paddingEnd="10dp"
                 android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/enter_nick_error"
+                android:layout_width="282dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="This nickname is busy, you can choose free"
+                android:textColor="@color/red"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/enter_nick_1"
+                android:layout_width="282dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/enter_nick_2"
+                android:layout_width="282dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
+
             <Button
                 android:id="@+id/enter_info_save"
                 android:layout_width="200dp"

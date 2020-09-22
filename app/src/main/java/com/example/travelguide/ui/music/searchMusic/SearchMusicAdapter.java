@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
@@ -54,8 +55,10 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         }
 
         if (playingPosition == position) {
+            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.greyLight, null));
             holder.playBtn.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
         } else {
+            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.white, null));
             holder.playBtn.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
         }
 
@@ -69,12 +72,12 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         } else {
             holder.favorite.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
         }
-
-        if (checkedPosition == position) {
-            holder.checkBox.setChecked(true);
-        } else {
-            holder.checkBox.setChecked(false);
-        }
+//
+//        if (checkedPosition == position) {
+//            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.blue, null));
+//        } else {
+//            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.white, null));
+//        }
     }
 
     @Override
@@ -88,9 +91,11 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         ImageView musicImage;
         ImageButton favorite, playBtn;
         CheckBox checkBox;
+        ConstraintLayout container;
 
         SearchMusicHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.search_music_container);
             musicTitle = itemView.findViewById(R.id.item_music_title);
             musicAuthor = itemView.findViewById(R.id.item_music_author);
             musicImage = itemView.findViewById(R.id.item_music_image);
@@ -98,13 +103,11 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             musicCategory = itemView.findViewById(R.id.item_music_category);
             musicDuration = itemView.findViewById(R.id.item_music_duration);
 
-            checkBox = itemView.findViewById(R.id.item_music_choose);
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-            });
-
             favorite = itemView.findViewById(R.id.item_music_favorite);
             favorite.setOnClickListener(this);
+
+            container = itemView.findViewById(R.id.search_music_container);
+            container.setOnClickListener(this);
 
             playBtn = itemView.findViewById(R.id.item_play_music);
             playBtn.setOnClickListener(this);
@@ -127,23 +130,30 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
                 case R.id.item_play_music:
                     if (playingPosition == getLayoutPosition()) {
+                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+                        searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        playingPosition = -1;
+                        notifyDataSetChanged();
+                    } else {
+                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
+                        playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+                        searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        listener.onMusicChoose(musics.get(getLayoutPosition()).getMusic_id());
+                        playingPosition = getLayoutPosition();
+                        notifyDataSetChanged();
                     }
-                    playingPosition = getLayoutPosition();
-                    searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                    playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-                    notifyDataSetChanged();
+
                     break;
 
-                case R.id.item_music_choose:
-                    if (checkedPosition == getLayoutPosition()) {
-                        checkBox.setChecked(false);
-                    }
-                    checkedPosition = getLayoutPosition();
-                    checkBox.setChecked(true);
-                    listener.onMusicChoose(musics.get(getLayoutPosition()).getMusic_id());
-                    notifyDataSetChanged();
-                    break;
+//                case R.id.search_music_container:
+//                    if (checkedPosition == getLayoutPosition()) {
+//                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
+//                    }
+//                    checkedPosition = getLayoutPosition();
+//                    listener.onMusicChoose(musics.get(getLayoutPosition()).getMusic_id());
+//                    notifyDataSetChanged();
+//                    break;
             }
         }
     }

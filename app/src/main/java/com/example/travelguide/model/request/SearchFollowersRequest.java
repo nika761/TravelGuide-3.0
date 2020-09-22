@@ -1,9 +1,9 @@
 package com.example.travelguide.model.request;
 
-public class HashtagRequest {
+public class SearchFollowersRequest {
     private String text;
 
-    public HashtagRequest(String text) {
+    public SearchFollowersRequest(String text) {
         this.text = text;
     }
 }
