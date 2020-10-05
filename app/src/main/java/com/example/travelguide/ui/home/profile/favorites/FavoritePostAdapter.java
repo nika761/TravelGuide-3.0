@@ -34,6 +34,7 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
     public void onBindViewHolder(@NonNull FavoritePostAdapter.PostViewHolder holder, int position) {
         HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
         holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
+        holder.nickName.setText(posts.get(position).getNickname());
     }
 
     @Override
@@ -45,11 +46,14 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
 
         ImageView postImage;
         TextView reactions;
+        TextView nickName;
 
         PostViewHolder(@NonNull View itemView) {
             super(itemView);
 
             reactions = itemView.findViewById(R.id.favorite_post_reactions);
+
+            nickName = itemView.findViewById(R.id.item_customer_post_nick);
 
             postImage = itemView.findViewById(R.id.favorite_post_cover);
             postImage.setOnClickListener(v -> favoritePostListener.onPostChoose(posts.get

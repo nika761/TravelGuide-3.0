@@ -34,6 +34,7 @@ public class UploadPostPresenter {
                         uploadPostListener.onPostUploaded();
                     } else {
                         uploadPostListener.onPostUploadError(response.body().getResult());
+                        Log.e("zxcv", response.body().getStatus() + " status code  ");
                     }
                     Log.e("zxcv", response.body().getStatus() + " status code  ");
                     Log.e("zxcv", response.body().getResult());

@@ -197,7 +197,6 @@ public class HelperMedia {
     public static ArrayList<String> getVideosPathByDate(Context context) {
         ArrayList<String> listOfAllPaths = new ArrayList<>();
 
-
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             String[] projection = new String[]{
                     MediaStore.Video.Media._ID,
@@ -218,28 +217,29 @@ public class HelperMedia {
                     projection,
                     null,
                     null,
-                    sortOrder
-            )) {
+                    sortOrder)) {
                 // Cache column indices.
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-                int nameColumn =
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-                int durationColumn =
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
+                if (cursor != null) {
+                    int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+                    int nameColumn =
+                            cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
+                    int durationColumn =
+                            cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+                    int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
 
-                while (cursor.moveToNext()) {
-                    // Get values of columns for a given video.
-                    long id = cursor.getLong(idColumn);
-                    String name = cursor.getString(nameColumn);
-                    int duration = cursor.getInt(durationColumn);
-                    int size = cursor.getInt(sizeColumn);
+                    while (cursor.moveToNext()) {
+                        // Get values of columns for a given video.
+                        long id = cursor.getLong(idColumn);
+                        String name = cursor.getString(nameColumn);
+                        int duration = cursor.getInt(durationColumn);
+                        int size = cursor.getInt(sizeColumn);
 
-                    String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
 
-                    // Stores column values and the contentUri in a local object
-                    // that represents the media file.
-                    listOfAllPaths.add(path);
+                        // Stores column values and the contentUri in a local object
+                        // that represents the media file.
+                        listOfAllPaths.add(path);
+                    }
                 }
             }
         } else {

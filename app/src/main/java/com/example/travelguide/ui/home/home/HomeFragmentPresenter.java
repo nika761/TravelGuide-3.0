@@ -35,19 +35,28 @@ public class HomeFragmentPresenter {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
-                    homeFragmentListener.onGetPosts(response.body());
                     if (response.body() != null) {
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().size()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(0).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(1).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(2).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(3).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(4).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(5).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(6).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(7).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(8).getPost_id()));
-                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(9).getPost_id()));
+
+                        if (response.body().getStatus() == -100) {
+                            homeFragmentListener.onLoginError();
+                        }
+                        //to do
+                        if (response.body().getPosts() != null)
+                            homeFragmentListener.onGetPosts(response.body());
+                        else {
+                            homeFragmentListener.onGetPostsError("no posts");
+                        }
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().size()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(0).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(1).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(2).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(3).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(4).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(5).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(6).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(7).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(8).getPost_id()));
+//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(9).getPost_id()));
                     }
                 } else {
                     homeFragmentListener.onGetPostsError(response.message());
@@ -58,7 +67,6 @@ public class HomeFragmentPresenter {
             public void onFailure(Call<PostResponse> call, Throwable t) {
                 homeFragmentListener.onGetPostsError(t.getMessage());
             }
-
         });
     }
 
@@ -67,7 +75,7 @@ public class HomeFragmentPresenter {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
-                        homeFragmentListener.onGetLazyPosts(response.body());
+                    homeFragmentListener.onGetLazyPosts(response.body());
                 } else {
                     homeFragmentListener.onGetPostsError(response.message());
 

@@ -163,8 +163,8 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ImageButton sort = itemView.findViewById(R.id.sort_video);
             sort.setOnClickListener(this);
 
-            ImageButton speed = itemView.findViewById(R.id.speed_video);
-            speed.setOnClickListener(this);
+//            ImageButton speed = itemView.findViewById(R.id.speed_video);
+//            speed.setOnClickListener(this);
 
             ImageButton trim = itemView.findViewById(R.id.trim_video);
             trim.setOnClickListener(this);
@@ -194,15 +194,15 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     editPostListener.onTrimChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
                     break;
 
-                case R.id.speed_video:
-                    if (visibility) {
-                        speedTools.setVisibility(View.GONE);
-                        visibility = false;
-                    } else {
-                        speedTools.setVisibility(View.VISIBLE);
-                        visibility = true;
-                    }
-                    break;
+//                case R.id.speed_video:
+//                    if (visibility) {
+//                        speedTools.setVisibility(View.GONE);
+//                        visibility = false;
+//                    } else {
+//                        speedTools.setVisibility(View.VISIBLE);
+//                        visibility = true;
+//                    }
+//                    break;
 
                 case R.id.sort_video:
                     editPostListener.onSortChoose(itemMedias);

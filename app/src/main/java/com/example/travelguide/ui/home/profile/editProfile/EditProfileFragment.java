@@ -1,7 +1,10 @@
 package com.example.travelguide.ui.home.profile.editProfile;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +22,7 @@ import com.example.travelguide.ui.home.HomePageActivity;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.response.LoginResponse;
 
+import java.io.File;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,6 +35,9 @@ public class EditProfileFragment extends Fragment {
     private TextView toolbarBackBtn, birthDate;
     private Context context;
     private View changePhotoBtn;
+    private String imagePath;
+    private File imageFile;
+    private final static int PICK_IMAGE = 28;
 
     @Nullable
     @Override
@@ -103,10 +110,26 @@ public class EditProfileFragment extends Fragment {
                 break;
 
             case R.id.change_photo_btn:
-                Intent intent = new Intent(context, ChangePhotoActivity.class);
-                context.startActivity(intent);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
                 break;
 
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    Uri uri = data.getData();
+                    if (uri != null && uri.getPath() != null)
+                        imageFile = new File(uri.getPath());
+                }
+            }
         }
     }
 

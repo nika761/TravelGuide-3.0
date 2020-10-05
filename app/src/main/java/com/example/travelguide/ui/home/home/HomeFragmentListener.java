@@ -16,6 +16,8 @@ public interface HomeFragmentListener {
 
     void resetTimer();
 
+    void onLoginError();
+
     void onStoryLikeChoose(int postId, int storyId, int position);
 
     void onStoryLiked(SetStoryLikeResponse setStoryLikeResponse);

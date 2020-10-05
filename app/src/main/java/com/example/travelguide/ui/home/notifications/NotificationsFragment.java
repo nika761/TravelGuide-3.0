@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import com.example.travelguide.R;
 import com.example.travelguide.ui.home.HomePageActivity;
 
+import java.util.Objects;
+
 public class NotificationsFragment extends Fragment implements View.OnClickListener {
 
     @Nullable
@@ -50,7 +52,7 @@ public class NotificationsFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.notification_close_btn:
-                getActivity().finish();
+                Objects.requireNonNull(getActivity()).onBackPressed();
                 break;
         }
     }
@@ -59,7 +61,6 @@ public class NotificationsFragment extends Fragment implements View.OnClickListe
     public void onDestroy() {
         if (getContext() != null)
             ((HomePageActivity) getContext()).hideBottomNavigation(true);
-
         super.onDestroy();
 
     }

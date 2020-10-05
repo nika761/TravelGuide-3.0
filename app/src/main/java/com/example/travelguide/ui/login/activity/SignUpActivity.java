@@ -24,4 +24,5 @@ public class SignUpActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }

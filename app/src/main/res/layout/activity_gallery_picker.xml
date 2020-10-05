@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="You can select both videos and photos. \n max item number is 10. "
+            android:text="You can select only one video or one photo \n max item number is 1. "
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/next_btn"

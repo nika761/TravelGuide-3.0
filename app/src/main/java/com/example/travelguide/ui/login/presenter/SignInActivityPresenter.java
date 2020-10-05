@@ -4,7 +4,7 @@ import com.example.travelguide.model.request.VerifyEmailRequest;
 import com.example.travelguide.model.response.VerifyEmailResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
-import com.example.travelguide.ui.login.interfaces.OnVerify;
+import com.example.travelguide.ui.login.interfaces.OnSignListener;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -12,10 +12,10 @@ import retrofit2.Response;
 
 public class SignInActivityPresenter {
 
-    private OnVerify onVerify;
+    private OnSignListener onVerify;
     private ApiService apiService;
 
-    public SignInActivityPresenter(OnVerify onVerify) {
+    public SignInActivityPresenter(OnSignListener onVerify) {
         this.onVerify = onVerify;
         this.apiService = RetrofitManager.getApiService();
     }

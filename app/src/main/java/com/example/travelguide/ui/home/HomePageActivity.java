@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.ui.home.comments.CommentFragment;
 import com.example.travelguide.ui.home.home.HomeFragment;
@@ -54,6 +55,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         if (changed != null)
             if (changed.equals("password_changed"))
                 HelperUI.loadFragment(new ProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+
 
         if (option != null)
             if (option.equals("uploaded"))
@@ -148,15 +150,26 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     public void signOutFromFbAccount() {
         LoginManager.getInstance().logOut();
+        HelperPref.saveAccessToken(this, null);
+        HelperPref.saveCurrentUserId(this, 0);
 //        if (user != null) {
 //            HelperPref.deleteUser(this, user);
 //        }
         finish();
     }
 
+    public void signOutFromAccount() {
+        HelperPref.saveAccessToken(this, null);
+        HelperPref.saveCurrentUserId(this, 0);
+        finish();
+    }
+
     public void signOutFromGoogleAccount() {
+        Toast.makeText(this, "Google sign out started", Toast.LENGTH_SHORT).show();
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+            HelperPref.saveAccessToken(this, null);
+            HelperPref.saveCurrentUserId(this, 0);
 //            if (user != null) {
 //                HelperPref.deleteUser(this, user);
 //            }
@@ -164,8 +177,11 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
             Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(this, e -> {
             e.printStackTrace();
-            Toast.makeText(this, "Failure", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.getMessage() + "Google Failed", Toast.LENGTH_SHORT).show();
         });
+
+        Toast.makeText(this, "Method space", Toast.LENGTH_SHORT).show();
+
         finish();
     }
 

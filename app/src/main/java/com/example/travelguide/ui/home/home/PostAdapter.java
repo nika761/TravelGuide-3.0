@@ -47,6 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         if (posts.get(position).getPost_stories() != null) {
             storyRecyclerAdapter.setStories(posts.get(position).getPost_stories());
             storyRecyclerAdapter.setCurrentPost(posts.get(position));
+            storyRecyclerAdapter.setStoryView(holder.storyView);
             postId = posts.get(position).getPost_id();
 //            homeFragmentListener.startTimer(posts.get(position).getPost_id());
             Log.e("postsdsdsd", posts.get(position).getPost_id() + "post id from post");
@@ -98,8 +99,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
         void iniStory(int position) {
             storyView.setStorySize(posts.get(position).getPost_stories().size());
-            int duration = posts.get(position).getPost_stories().get(0).getSecond();
-            storyView.start(0, duration);
+//            int duration = posts.get(position).getPost_stories().get(0).getSecond();
+//            storyView.start(0, duration + 2000);
         }
 
         private void initRecycler(RecyclerView storiesRecycler) {
@@ -148,7 +149,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                     int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
 
                     if (oldPosition != firstVisibleItem) {
-                        storyView.start(firstVisibleItem, posts.get(getLayoutPosition()).getPost_stories().get(firstVisibleItem).getSecond());
+                        storyView.start(firstVisibleItem, posts.get(getLayoutPosition()).getPost_stories().get(firstVisibleItem).getSecond() + 2000);
                         oldPosition = firstVisibleItem;
                     }
                 }

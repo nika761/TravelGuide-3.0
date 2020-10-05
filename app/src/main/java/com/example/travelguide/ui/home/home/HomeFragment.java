@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
@@ -36,6 +37,8 @@ import com.example.travelguide.model.request.PostRequest;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.SharePostResponse;
 import com.example.travelguide.ui.home.HomePageActivity;
+import com.example.travelguide.ui.login.activity.SignInActivity;
+import com.example.travelguide.ui.splashScreen.SplashScreenActivity;
 
 import java.util.List;
 import java.util.Objects;
@@ -228,10 +231,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onFavoriteSuccess(SetPostFavoriteResponse setPostFavoriteResponse) {
         switch (setPostFavoriteResponse.getStatus()) {
             case 0:
-                Toast.makeText(context, setPostFavoriteResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, setPostFavoriteResponse.getMessage(), Toast.LENGTH_SHORT).show();
             case 1:
 //                postRecyclerAdapter.setStoryFavorite(1, storyPosition, setPostFavoriteResponse.getCount());
-                Toast.makeText(context, setPostFavoriteResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, setPostFavoriteResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -334,6 +337,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     }
 
     @Override
+    public void onLoginError() {
+        Intent intent = new Intent(context, SignInActivity.class);
+        startActivity(intent);
+        Objects.requireNonNull(getActivity()).finish();
+    }
+
+    @Override
     public void onStoryLikeChoose(int postId, int storyId, int position) {
         this.storyPosition = position;
         homeFragmentPresenter.setStoryLike(ACCESS_TOKEN_BEARER +
@@ -345,10 +355,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (setStoryLikeResponse.getStatus()) {
             case 0:
 //                postRecyclerAdapter.setStoryLike(0, storyPosition, setStoryLikeResponse.getStory().getStory_likes());
-                Toast.makeText(context, setStoryLikeResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, setStoryLikeResponse.getMessage(), Toast.LENGTH_SHORT).show();
             case 1:
 //                postRecyclerAdapter.setStoryLike(1, storyPosition, setStoryLikeResponse.getStory().getStory_likes());
-                Toast.makeText(context, setStoryLikeResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, setStoryLikeResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }

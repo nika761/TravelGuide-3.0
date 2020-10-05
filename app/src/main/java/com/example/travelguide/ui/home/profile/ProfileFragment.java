@@ -26,6 +26,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperMedia;
 import com.example.travelguide.model.request.ProfileRequest;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.ProfileResponse;
@@ -49,6 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.travelguide.helper.HelperPref.FACEBOOK;
 import static com.example.travelguide.helper.HelperPref.GOOGLE;
+import static com.example.travelguide.helper.HelperPref.TRAVEL_GUIDE;
 import static com.example.travelguide.helper.HelperUI.ABOUT;
 import static com.example.travelguide.helper.HelperUI.POLICY;
 import static com.example.travelguide.helper.HelperUI.TERMS;
@@ -64,7 +66,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     private ActionBarDrawerToggle toggle;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private String loginType;
     private Context context;
     private ProfileFragmentPresenter profileFragmentPresenter;
     private LottieAnimationView lottieAnimationView;
@@ -101,6 +102,19 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         viewPager = myLayout.findViewById(R.id.viewpager_test);
         tabLayout = myLayout.findViewById(R.id.tabs_test);
 
+        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
+
+        this.userId = HelperPref.getCurrentUserId(context);
+        profilePagerAdapter.addFragment(new UserPostsFragment(userId, context));
+        profilePagerAdapter.addFragment(new FavoritePostFragment());
+        profilePagerAdapter.addFragment(new UserToursFragment());
+
+        viewPager.setAdapter(profilePagerAdapter);
+
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
+        tabLayout.getTabAt(1).setIcon(R.drawable.profile_liked);
+        tabLayout.getTabAt(2).setIcon(R.drawable.profile_tour);
 
         View followStates = myLayout.findViewById(R.id.states_test);
         followStates.setOnClickListener(this::onViewClick);
@@ -129,7 +143,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         lottieAnimationView.setVisibility(View.VISIBLE);
-        this.userId = HelperPref.getCurrentUserId(context);
         profileFragmentPresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
                 new ProfileRequest(userId));
 
@@ -182,26 +195,34 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.settings_sing_out:
-                logOut();
+                String type = HelperPref.getCurrentPlatform(context);
+                logOut(type);
                 break;
         }
         return true;
     };
 
-    private void logOut() {
+    private void logOut(String loginType) {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle("Sign out ?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     if (loginType != null) {
                         switch (loginType) {
                             case FACEBOOK:
+                                Toast.makeText(context, "Case facebook working", Toast.LENGTH_SHORT).show();
                                 ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
                                 break;
                             case GOOGLE:
+                                Toast.makeText(context, "Case google working", Toast.LENGTH_SHORT).show();
                                 ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
+                                break;
+                            case TRAVEL_GUIDE:
+                                Toast.makeText(context, "Case TravelGuide working", Toast.LENGTH_SHORT).show();
+                                ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromAccount();
                                 break;
                         }
                     } else {
+                        Toast.makeText(context, "Case error", Toast.LENGTH_SHORT).show();
                         Objects.requireNonNull(getActivity()).finish();
                     }
                 })
@@ -257,18 +278,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             follower.setText(String.valueOf(userInfo.getFollower()));
             following.setText(String.valueOf(userInfo.getFollowing()));
             reaction.setText(String.valueOf(userInfo.getReactions()));
+            HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
             this.userId = userInfo.getId();
-
-            ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
-
-            profilePagerAdapter.addFragment(new UserPostsFragment(userId, context));
-            profilePagerAdapter.addFragment(new FavoritePostFragment());
-            profilePagerAdapter.addFragment(new UserToursFragment());
-            viewPager.setAdapter(profilePagerAdapter);
-            tabLayout.setupWithViewPager(viewPager);
-            tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
-            tabLayout.getTabAt(1).setIcon(R.drawable.profile_liked);
-            tabLayout.getTabAt(2).setIcon(R.drawable.profile_tour);
 
         }
     }

@@ -3,6 +3,7 @@ package com.example.travelguide.ui.upload.tag;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,15 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
 
     private List<HashtagResponse.Hashtags> hashtags;
     private TagPostListener tagPostListener;
+    private List<String> hashs;
+    private int type;
 
-    public HashtagAdapter(TagPostListener tagPostListener) {
+    public HashtagAdapter(int type) {
+        this.type = type;
+    }
+
+    public HashtagAdapter(TagPostListener tagPostListener, int type) {
+        this.type = type;
         this.tagPostListener = tagPostListener;
     }
 
@@ -31,12 +39,26 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
 
     @Override
     public void onBindViewHolder(@NonNull HashtagHolder holder, int position) {
-        holder.hashtag.setText(hashtags.get(position).getHashtag());
+        if (type == 0) {
+            holder.hashtag.setText(hashtags.get(position).getHashtag());
+            holder.delete.setVisibility(View.GONE);
+        } else {
+            holder.hashtag.setText(hashs.get(position));
+            holder.delete.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return hashtags.size();
+        if (type == 0)
+            return hashtags.size();
+        else
+            return hashs.size();
+    }
+
+    public void setHashs(List<String> hashs) {
+        this.hashs = hashs;
+        notifyDataSetChanged();
     }
 
     public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
@@ -47,11 +69,20 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
     class HashtagHolder extends RecyclerView.ViewHolder {
 
         TextView hashtag;
+        ImageButton delete;
 
         HashtagHolder(@NonNull View itemView) {
             super(itemView);
+            delete = itemView.findViewById(R.id.item_search_hashtag_delete);
             hashtag = itemView.findViewById(R.id.hashtag_search);
-            hashtag.setOnClickListener(v -> tagPostListener.onChooseHashtag(hashtags.get(getLayoutPosition()).getHashtag()));
+
+            if (type == 0)
+                hashtag.setOnClickListener(v -> tagPostListener.onChooseHashtag(hashtags.get(getLayoutPosition()).getHashtag()));
+            else
+                delete.setOnClickListener(v -> {
+                    hashs.remove(getLayoutPosition());
+                    notifyDataSetChanged();
+                });
         }
 
     }

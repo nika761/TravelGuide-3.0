@@ -62,30 +62,30 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="Trim"
                 android:textColor="@color/white"
-                app:layout_constraintEnd_toStartOf="@id/speed_text"
+                app:layout_constraintEnd_toStartOf="@id/sort_text_video"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/trim_video" />
 
-            <ImageButton
-                android:id="@+id/speed_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/icon_speed"
-                app:layout_constraintEnd_toEndOf="@id/speed_text"
-                app:layout_constraintStart_toStartOf="@id/speed_text"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/speed_video"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/icon_speed"-->
+<!--                app:layout_constraintEnd_toEndOf="@id/speed_text"-->
+<!--                app:layout_constraintStart_toStartOf="@id/speed_text"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
-            <TextView
-                android:id="@+id/speed_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:text="Speed"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toStartOf="@id/trim_text"
-                app:layout_constraintStart_toEndOf="@id/trim_text"
-                app:layout_constraintTop_toBottomOf="@id/speed_video" />
+<!--            <TextView-->
+<!--                android:id="@+id/speed_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="30dp"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:text="Speed"-->
+<!--                android:textColor="@color/white"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/trim_text"-->
+<!--                app:layout_constraintStart_toEndOf="@id/trim_text"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/speed_video" />-->
 
             <ImageButton
                 android:id="@+id/sort_video"
@@ -105,8 +105,8 @@
                 android:text="Sort"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toStartOf="@id/delete_text_video"
-                app:layout_constraintStart_toEndOf="@id/speed_text"
-                app:layout_constraintTop_toBottomOf="@id/speed_video" />
+                app:layout_constraintStart_toEndOf="@id/trim_text"
+                app:layout_constraintTop_toBottomOf="@id/trim_video" />
 
             <ImageButton
                 android:id="@+id/delete_image_video"

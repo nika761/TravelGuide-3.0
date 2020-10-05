@@ -43,9 +43,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/linear_main_logo"
         app:layout_constraintEnd_toEndOf="@id/linear_main_logo"
-        android:text="Just Go !"
+        android:text="Just Go!"
         android:textColor="@color/yellowTextView"
         android:textSize="25sp"
-        android:textStyle="bold" />
+        android:textStyle="normal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

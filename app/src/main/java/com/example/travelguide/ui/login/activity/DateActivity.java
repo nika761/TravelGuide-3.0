@@ -1,12 +1,14 @@
 package com.example.travelguide.ui.login.activity;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -59,9 +61,11 @@ public class DateActivity extends AppCompatActivity implements IDateListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date);
+
         this.platformId = getIntent().getIntExtra("platform", 0);
         this.key = getIntent().getStringExtra("key");
         this.name = getIntent().getStringExtra("name");
+
         datePresenter = new DatePresenter(this);
         initUI();
         setClickListeners();
@@ -71,9 +75,17 @@ public class DateActivity extends AppCompatActivity implements IDateListener {
         dateHead = findViewById(R.id.enter_date_of_birth_head);
         dateOfBirth = findViewById(R.id.enter_birth_date);
         nickHead = findViewById(R.id.enter_nickName_head);
-        eNickName = findViewById(R.id.enter_nickName);
-        nickError = findViewById(R.id.enter_nick_error);
 
+        eNickName = findViewById(R.id.enter_nickName);
+        eNickName.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (inputMethodManager != null)
+                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        });
+
+        nickError = findViewById(R.id.enter_nick_error);
         nickOffer1 = findViewById(R.id.enter_nick_1);
         nickOffer2 = findViewById(R.id.enter_nick_2);
 
@@ -127,7 +139,7 @@ public class DateActivity extends AppCompatActivity implements IDateListener {
             int age = currentYear - year;
 
             if (age < 13) {
-                Toast.makeText(this, "13 წელზე მეტის", Toast.LENGTH_SHORT).show();
+                Toast.makeText(save.getContext(), "Application age restriction 13+", Toast.LENGTH_SHORT).show();
             } else {
 
                 String date = year + "/" + monthString + "/" + dayString;
@@ -157,13 +169,18 @@ public class DateActivity extends AppCompatActivity implements IDateListener {
 
     @Override
     public void onSuccess(SignUpWithFirebaseResponse signUpWithFirebaseResponse) {
+        switch (platformId) {
+            case 1:
+                HelperPref.saveCurrentPlatform(this, HelperPref.FACEBOOK);
+                break;
+            case 2:
+                HelperPref.saveCurrentPlatform(this, HelperPref.GOOGLE);
+                break;
+        }
         HelperPref.saveAccessToken(this, signUpWithFirebaseResponse.getAccess_token());
+        HelperPref.saveCurrentUserId(this, signUpWithFirebaseResponse.getUser().getId());
 
         Intent intent = new Intent(this, HomePageActivity.class);
-//                intent.putExtra("server_user", loggedUser);
-
-//        ((SignInActivity) context).stopLoader();
-
         startActivity(intent);
 
         finish();

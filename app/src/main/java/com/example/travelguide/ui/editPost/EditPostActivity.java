@@ -36,6 +36,7 @@ import java.util.List;
 
 
 public class EditPostActivity extends AppCompatActivity implements EditPostListener, View.OnClickListener {
+
     private static final int FILTER_ACTIVITY = 1;
     private static final int SORT_ACTIVITY = 2;
     private static final int TRIM_ACTIVITY = 3;
@@ -146,6 +147,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostListe
         this.adapterPosition = position;
         CropImage.activity(Uri.fromFile(new File(path)))
                 .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(9, 16)
                 .setMultiTouchEnabled(true)
                 .start(this);
     }

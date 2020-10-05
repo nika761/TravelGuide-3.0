@@ -35,7 +35,6 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        favoriteMusicPresenter.getFavoriteMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(favoriteMusicRecycler.getContext()));
     }
 
     @Override
@@ -50,6 +49,12 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     @Override
     public void onGetFavoriteFailed() {
         Toast.makeText(favoriteMusicRecycler.getContext(), "Get Favorite error", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        favoriteMusicPresenter.getFavoriteMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(favoriteMusicRecycler.getContext()));
     }
 
     @Override

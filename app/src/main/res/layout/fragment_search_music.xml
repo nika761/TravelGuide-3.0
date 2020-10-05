@@ -13,6 +13,7 @@
         android:hint="Search"
         android:paddingStart="5dp"
         android:paddingEnd="10dp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@id/moods_recycler"
         app:layout_constraintStart_toStartOf="@id/moods_recycler"
         app:layout_constraintTop_toTopOf="parent" />

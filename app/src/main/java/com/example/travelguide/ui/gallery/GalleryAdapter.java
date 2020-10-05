@@ -22,7 +22,6 @@ import java.util.Map;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageViewHolder> {
 
-
     private ArrayList<String> uris = new ArrayList<>();
     private HashMap<Integer, Integer> selectedItemPositions = new HashMap<>();
     private Context context;

@@ -96,7 +96,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
         initUI(view);
     }
 
-
     private void initUI(View view) {
         signInPresenter = new SignInPresenter(this);
 
@@ -152,7 +151,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
         password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, "Password", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, context);
 
-        if (email != null && HelperUI.checkEmail(email)) {
+        if (email != null) {
             HelperUI.setBackgroundDefault(enterEmail, enterMailHead, "Email or Phone Number", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE);
             if (password != null && HelperUI.checkPassword(password)) {
                 HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, "Password", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE);
@@ -168,12 +167,15 @@ public class SignInFragment extends Fragment implements ISignInFragment {
 
     private void signInWithGoogle() {
 
+        HelperPref.saveCurrentPlatform(context, HelperPref.GOOGLE);
         Intent signInIntent = HelperClients.googleSignInClient(context).getSignInIntent();
         startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
+
 
     }
 
     private void signInWithFacebook() {
+        HelperPref.saveCurrentPlatform(context, HelperPref.FACEBOOK);
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email", "user_friends"));
         signBtnFacebook.performClick();
         signBtnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -203,12 +205,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             signInPresenter.authWithGoogle(task);
         }
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
     private void onFocusChange(View v, boolean hasFocus) {
@@ -218,15 +215,6 @@ public class SignInFragment extends Fragment implements ISignInFragment {
             inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
     }
-
-//    @Override
-//    public void onFireBaseAuth(LoginResponse.User user) {
-////        User currentUser = new User(user.getName(), user.getLastName(), user.getUrl(), user.getId(), user.getEmail(), user.getLoginType());
-////        HelperPref.saveUser(context, currentUser);
-//        Intent intent = new Intent(getActivity(), HomePageActivity.class);
-////        intent.putExtra("loggedUser", user);
-//        startActivity(intent);
-//    }
 
     @Override
     public void onAuthError(String message) {
@@ -282,6 +270,7 @@ public class SignInFragment extends Fragment implements ISignInFragment {
                 HelperPref.saveAccessToken(context, loginResponse.getAccess_token());
                 HelperPref.saveUser(context, loginResponse.getUser());
                 HelperPref.saveCurrentUserId(context, loginResponse.getUser().getId());
+                HelperPref.saveCurrentPlatform(context, HelperPref.TRAVEL_GUIDE);
 
                 Intent intent = new Intent(context, HomePageActivity.class);
 //                intent.putExtra("server_user", loggedUser);

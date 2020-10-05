@@ -2,6 +2,7 @@ package com.example.travelguide.ui.upload;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperClients;
@@ -26,6 +29,7 @@ import com.example.travelguide.model.ItemMedia;
 import com.example.travelguide.model.request.UploadPostRequestModel;
 import com.example.travelguide.ui.editPost.filterActivity.FilterActivity;
 import com.example.travelguide.ui.home.HomePageActivity;
+import com.example.travelguide.ui.upload.tag.HashtagAdapter;
 import com.example.travelguide.ui.upload.tag.TagPostActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -37,6 +41,8 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,15 +65,20 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     private List<ItemMedia> itemMedia = new ArrayList<>();
     private List<String> hashtags = new ArrayList<>();
     private List<Integer> users = new ArrayList<>();
+    private List<String> hashs = new ArrayList<>();
     private UploadPostPresenter uploadPostPresenter;
     private ConstraintLayout loaderContainer;
     private EditText postDescription;
     private int musicId;
+    private RecyclerView hashtagRecycler;
+    private HashtagAdapter hashtagAdapter;
     private String address;
     private String addressName;
     private String latLng;
     private String description;
     private String oldDesc;
+    private String videoHeight;
+    private String videoWidht;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,6 +112,11 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
         HelperMedia.loadPhoto(this, itemMedia.get(0).getPath(), imageView);
 
         postDescription = findViewById(R.id.description_post);
+
+        hashtagRecycler = findViewById(R.id.hashtag_upload_recycler);
+        hashtagRecycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        hashtagAdapter = new HashtagAdapter(1);
+        hashtagRecycler.setAdapter(hashtagAdapter);
 
         loaderContainer = findViewById(R.id.loader_upload);
 
@@ -145,10 +161,14 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.describe_post_post_btn:
-                if (HelperSystem.isWriteStoragePermission(this)) {
+                if (itemMedia.get(0).getType() == 0) {
+                    if (HelperSystem.isWriteStoragePermission(this)) {
+                        startUpload();
+                    } else {
+                        HelperSystem.requestWriteStoragePermission(this);
+                    }
+                }else {
                     startUpload();
-                } else {
-                    HelperSystem.requestWriteStoragePermission(this);
                 }
 //                ArrayList<String> files = new ArrayList<>();
 //                for (ItemMedia list : convertedImages) {
@@ -168,6 +188,15 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+
+    private void hashtagRecyclerVisibility(boolean isShow) {
+        if (isShow) {
+            hashtagRecycler.setVisibility(View.VISIBLE);
+        } else {
+            hashtagRecycler.setVisibility(View.GONE);
+        }
+    }
+
     public void startUpload() {
         loaderContainer.setVisibility(View.VISIBLE);
         if (itemMedia.get(0).getType() == 0) {
@@ -176,6 +205,20 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
             uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
         } else {
             fileForUpload = new File(itemMedia.get(0).getPath());
+
+            try {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(itemMedia.get(0).getPath());
+
+                this.videoWidht = String.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                this.videoHeight = String.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+
+            } catch (RuntimeException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.getMessage();
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
             uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
         }
     }
@@ -194,10 +237,9 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                             if (place.getLatLng() != null) {
                                 String lat = String.valueOf(place.getLatLng().latitude);
                                 String lon = String.valueOf(place.getLatLng().longitude);
-                                latLng = lat + " , " + lon;
+                                latLng = lat + "," + lon;
                             }
-                            Toast.makeText(this, place.getName(), Toast.LENGTH_SHORT).show();
-                            Toast.makeText(this, place.getAddress(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, addressName + " " + "added", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case RESULT_CANCELED:
@@ -208,6 +250,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                         }
                         break;
                 }
+                break;
 
             case TAG_ACTIVITY_HASHTAGS:
                 switch (resultCode) {
@@ -216,23 +259,19 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                             String hashtag = data.getStringExtra("hashtags");
                             this.hashtags.add(hashtag);
 
-                            oldDesc = postDescription.getText().toString();
-                            StringBuilder builder = new StringBuilder();
-
-                            for (String details : hashtags) {
-                                builder.append(details);
-                                postDescription.setText(builder.toString() + " " + oldDesc);
-                                Toast.makeText(this, hashtags.toString(), Toast.LENGTH_LONG).show();
+                            this.hashs.add(hashtag);
+                            if (hashs.size() > 0) {
+                                hashtagRecyclerVisibility(true);
+                                hashtagAdapter.setHashs(hashs);
+                            } else {
+                                hashtagRecyclerVisibility(false);
                             }
-
-                        } else {
-                            return;
                         }
                         break;
                     case RESULT_CANCELED:
-                        Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
                         break;
                 }
+                break;
 
             case TAG_ACTIVITY_FRIENDS:
                 switch (resultCode) {
@@ -242,17 +281,19 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                             String friendName = data.getStringExtra("friend_name");
                             this.users.add(friendsId);
 
-                            oldDesc = postDescription.getText().toString();
-                            postDescription.setText(oldDesc + " " + friendName);
-
-                        } else {
-                            return;
+                            this.hashs.add(friendName);
+                            if (hashs.size() > 0) {
+                                hashtagRecyclerVisibility(true);
+                                hashtagAdapter.setHashs(hashs);
+                            } else {
+                                hashtagRecyclerVisibility(false);
+                            }
                         }
                         break;
                     case RESULT_CANCELED:
-                        Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
                         break;
                 }
+                break;
         }
     }
 
@@ -268,7 +309,6 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         }
     }
 
@@ -280,8 +320,8 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 
         Log.e("zxcv", url);
 
-        description = postDescription.getText().toString();
-        Toast.makeText(this, description, Toast.LENGTH_SHORT).show();
+        if (postDescription.getText() != null)
+            description = postDescription.getText().toString();
 
         List<UploadPostRequestModel.Post_stories> stories = new ArrayList<>();
 
@@ -313,6 +353,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     public void onPostUploaded() {
         loaderContainer.setVisibility(View.GONE);
         Intent intent = new Intent(UploadPostActivity.this, HomePageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("option", "uploaded");
         startActivity(intent);
     }

@@ -19,14 +19,14 @@ import com.example.travelguide.model.response.VerifyEmailResponse;
 import com.example.travelguide.ui.home.HomePageActivity;
 import com.example.travelguide.ui.login.fragment.SignInFragment;
 import com.example.travelguide.helper.HelperUI;
-import com.example.travelguide.ui.login.interfaces.OnVerify;
+import com.example.travelguide.ui.login.interfaces.OnSignListener;
 import com.example.travelguide.ui.login.presenter.SignInActivityPresenter;
 
 import java.util.List;
 
 import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
-public class SignInActivity extends AppCompatActivity implements OnVerify {
+public class SignInActivity extends AppCompatActivity implements OnSignListener {
 
     private LottieAnimationView animationView;
     private FrameLayout frameLayout;
@@ -55,9 +55,6 @@ public class SignInActivity extends AppCompatActivity implements OnVerify {
                         HelperPref.getAccessToken(this), new VerifyEmailRequest(id, signature));
                 Log.e("email", signature + " " + id);
             }
-
-        } else {
-            Toast.makeText(this, "Link Error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -94,12 +91,14 @@ public class SignInActivity extends AppCompatActivity implements OnVerify {
 
 //        HelperPref.saveServerUser(this, verifyEmailResponse.getUser());
 
+        HelperPref.saveAccessToken(this, verifyEmailResponse.getAccess_token());
+        HelperPref.saveCurrentUserId(this, verifyEmailResponse.getUser().getId());
+        HelperPref.saveCurrentPlatform(this,HelperPref.TRAVEL_GUIDE);
+
         Intent intent = new Intent(this, HomePageActivity.class);
         startActivity(intent);
         this.finish();
 
-        HelperPref.saveAccessToken(this, verifyEmailResponse.getAccess_token());
-        Toast.makeText(this, "Signed", Toast.LENGTH_SHORT).show();
     }
 
     @Override

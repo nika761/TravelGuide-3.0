@@ -58,7 +58,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
         FriendsHolder(@NonNull View itemView) {
             super(itemView);
             container = itemView.findViewById(R.id.followers_container);
-            container.setOnClickListener(v -> tagPostListener.onChooseFollower(followers.get(getLayoutPosition()).getUser_id(), followers.get(getLayoutPosition()).getName()));
+            container.setOnClickListener(v -> tagPostListener.onChooseFollower(followers.get(getLayoutPosition()).getUser_id(), followers.get(getLayoutPosition()).getNickname()));
 
             profileImage = itemView.findViewById(R.id.followers_user_image);
             userName = itemView.findViewById(R.id.followers_user_name);

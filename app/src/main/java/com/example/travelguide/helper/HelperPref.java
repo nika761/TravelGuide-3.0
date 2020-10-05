@@ -24,6 +24,7 @@ public class HelperPref {
 
     public static final String FACEBOOK = "facebook";
     public static final String GOOGLE = "google";
+    public static final String TRAVEL_GUIDE = "travel_guide";
 
     private static final String LOGGED_USER_PREFERENCES = "logged_user_preference";
     private static final String LOGGED_USER_KEY = "logged_user";
@@ -36,6 +37,10 @@ public class HelperPref {
 
     private static final String USER_ID_PREF = "user_id_prefs";
     private static final String USER_ID_KEY = "user_id";
+
+    private static final String PLATFORM_PREF = "platform_pref";
+    private static final String PLATFORM_KEY = "platform_key";
+
 
     public static void saveUserProfileInfo(Context context, ProfileResponse.Userinfo userinfo) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
@@ -52,11 +57,11 @@ public class HelperPref {
         return currentUserInfo;
     }
 
-    public static void saveCurrentUserId(Context context, int userId){
-            SharedPreferences sharedPreferences = context.getSharedPreferences(USER_ID_PREF, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt(USER_ID_KEY, userId);
-            editor.apply();
+    public static void saveCurrentUserId(Context context, int userId) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_ID_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(USER_ID_KEY, userId);
+        editor.apply();
     }
 
     public static int getCurrentUserId(Context context) {
@@ -67,6 +72,23 @@ public class HelperPref {
         }
         return userId;
     }
+
+    public static void saveCurrentPlatform(Context context, String platform) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PLATFORM_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PLATFORM_KEY, platform);
+        editor.apply();
+    }
+
+    public static String getCurrentPlatform(Context context) {
+        String platform = null;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PLATFORM_PREF, Context.MODE_PRIVATE);
+        if (sharedPreferences.getString(PLATFORM_KEY, null) != null) {
+            platform = sharedPreferences.getString(PLATFORM_KEY, null);
+        }
+        return platform;
+    }
+
 
     public static void saveUser(Context context, LoginResponse.User user) {
         List<LoginResponse.User> users = getSavedUsers(context);
@@ -90,7 +112,7 @@ public class HelperPref {
         LoginResponse.User user;
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGGED_USER_PREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        Type listType = new TypeToken<LoginResponse.User>(){
+        Type listType = new TypeToken<LoginResponse.User>() {
         }.getType();
         if (sharedPreferences.getString(LOGGED_USER_KEY, null) != null) {
             user = gson.fromJson(sharedPreferences.getString(LOGGED_USER_KEY, null), listType);

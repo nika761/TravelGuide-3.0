@@ -56,7 +56,10 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
 //                } else {
 //                    openApp();
 //                }
-                openApp();
+                if (HelperPref.getAccessToken(this) != null)
+                    openHome();
+                else
+                    openSign();
             } else {
                 languagePresenter.sentLanguageRequest();
             }
@@ -131,7 +134,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
         }, SPLASH_DISPLAY_LENGTH);
     }
 
-    private void openApp() {
+    private void openSign() {
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(SplashScreenActivity.this, SignInActivity.class);
             startActivity(intent);
@@ -146,6 +149,15 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
             finish();
         }, SPLASH_DISPLAY_LENGTH);
     }
+
+    private void openHome() {
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(SplashScreenActivity.this, HomePageActivity.class);
+            startActivity(intent);
+            finish();
+        }, SPLASH_DISPLAY_LENGTH);
+    }
+
 
     @Override
     public void onGetLanguages(LanguagesResponse languagesResponse) {

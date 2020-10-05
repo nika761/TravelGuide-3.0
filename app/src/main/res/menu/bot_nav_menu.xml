@@ -10,7 +10,7 @@
         android:title="" />
     <item
         android:id="@+id/bot_nav_add"
-        android:icon="@drawable/icon_add"
+        android:icon="@drawable/ic_upload"
         android:title="" />
     <item
         android:id="@+id/bot_nav_ntf"

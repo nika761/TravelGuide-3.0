@@ -21,9 +21,16 @@
                 android:visibility="visible" />
 
             <View
+                android:id="@+id/gradient_for_post"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_story_gradient" />
+
+            <ImageView
+                android:id="@+id/story_cover_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
 
         </FrameLayout>
 
@@ -47,8 +54,8 @@
                     android:id="@+id/user_image_post"
                     android:layout_width="45dp"
                     android:layout_height="50dp"
-                    app:civ_border_color="@color/white"
-                    app:civ_border_width="1dp" />
+                    app:civ_border_color="@color/greyLight"
+                    app:civ_border_width="0.25dp" />
 
                 <ImageButton
                     android:id="@+id/story_follow_btn"
@@ -127,7 +134,7 @@
 
         <FrameLayout
             android:id="@+id/post_desc"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/go"
@@ -144,9 +151,8 @@
 
                 <TextView
                     android:id="@+id/nickname_post"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="NikaButskhrikidze"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -160,7 +166,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:maxLines="2"
-                    android:text="Unforgetable journey in the world of luxury cars"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@id/post_location"
@@ -170,14 +175,13 @@
 
                 <TextView
                     android:id="@+id/post_location"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:maxLines="1"
-                    android:text="Modena , Italy"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@id/hashtags"
+                    app:layout_constraintBottom_toTopOf="@id/hashtag_recycler"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/post_description" />
@@ -195,24 +199,92 @@
                 <!--                    app:layout_constraintEnd_toEndOf="parent"-->
                 <!--                    app:layout_constraintStart_toStartOf="parent" />-->
 
-                <co.hkm.soltag.TagContainerLayout
-                    android:id="@+id/hashtags"
+                <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+                <!--                    android:id="@+id/hashtag_container"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:visibility="gone">-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/hashtag_1"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="5dp"-->
+                <!--                        android:autoSizeTextType="uniform"-->
+                <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/hashtag_2"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="5dp"-->
+                <!--                        android:autoSizeTextType="uniform"-->
+                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_1"-->
+                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/hashtag_3"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="5dp"-->
+                <!--                        android:autoSizeTextType="uniform"-->
+                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_2"-->
+                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/hashtag_4"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="5dp"-->
+                <!--                        android:autoSizeTextType="uniform"-->
+                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_3"-->
+                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/hashtag_5"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="5dp"-->
+                <!--                        android:autoSizeTextType="uniform"-->
+                <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                <!--                        app:layout_constraintTop_toBottomOf="@id/hashtag_1" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/hashtag_6"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_marginStart="5dp"-->
+                <!--                        android:autoSizeTextType="uniform"-->
+                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_5"-->
+                <!--                        app:layout_constraintTop_toTopOf="@id/hashtag_5" />-->
+
+                <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/hashtag_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:container_background_color="@android:color/transparent"
-                    app:container_border_color="@android:color/transparent"
-                    app:container_enable_drag="false"
-                    app:horizontal_interval="1dp"
-                    app:layout_constraintBottom_toTopOf="@id/music_name_post"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:tag_background_color="@android:color/transparent"
-                    app:tag_border_color="@android:color/transparent"
-                    app:tag_horizontal_padding="2dp"
-                    app:tag_text_color="@color/white"
-                    app:tag_theme="none"
-                    app:tag_vertical_padding="2dp"
-                    app:vertical_interval="1dp" />
+                    android:visibility="gone" />
+
+                <!--                <co.hkm.soltag.TagContainerLayout-->
+                <!--                    android:id="@+id/hashtags"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    app:container_background_color="@android:color/transparent"-->
+                <!--                    app:container_border_color="@android:color/transparent"-->
+                <!--                    app:container_enable_drag="false"-->
+                <!--                    app:horizontal_interval="1dp"-->
+                <!--                    app:layout_constraintBottom_toTopOf="@id/music_name_post"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:tag_background_color="@android:color/transparent"-->
+                <!--                    app:tag_border_color="@android:color/transparent"-->
+                <!--                    app:tag_horizontal_padding="2dp"-->
+                <!--                    app:tag_text_color="@color/white"-->
+                <!--                    app:tag_theme="none"-->
+                <!--                    app:tag_vertical_padding="2dp"-->
+                <!--                    app:vertical_interval="1dp" />-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -226,7 +298,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_music"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/hashtags" />
+                        app:layout_constraintTop_toBottomOf="@id/hashtag_recycler" />
 
                     <TextView
                         android:id="@+id/music_name_post"
@@ -239,7 +311,6 @@
                         android:marqueeRepeatLimit="marquee_forever"
                         android:scrollHorizontally="true"
                         android:singleLine="true"
-                        android:text="Colonne sonore Ferrari ca"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@id/music_icon"
@@ -264,5 +335,6 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </FrameLayout>

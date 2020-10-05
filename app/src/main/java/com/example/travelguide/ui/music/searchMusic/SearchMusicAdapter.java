@@ -133,6 +133,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
                         searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        listener.onMusicChoose(0);
                         playingPosition = -1;
                         notifyDataSetChanged();
                     } else {

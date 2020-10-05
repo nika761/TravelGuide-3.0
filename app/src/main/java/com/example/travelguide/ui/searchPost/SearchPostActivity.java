@@ -28,16 +28,14 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     private String type;
     private String hashtag;
 
-    public SearchPostActivity(int postId, String type, String hashtag) {
-        this.postId = postId;
-        this.type = type;
-        this.hashtag = hashtag;
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts_locatiom);
+
+        this.postId = getIntent().getIntExtra("search_post_id", 0);
+        this.type = getIntent().getStringExtra("search_type");
+        this.hashtag = getIntent().getStringExtra("search_hashtag");
 
         initUI();
 
@@ -64,10 +62,13 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     public void onGetPosts(PostResponse postResponse) {
         switch (type) {
             case UI_LOCATION:
-                head.setText(postResponse.getPosts().get(0).getPost_locations().get(0).getAddress());
+                if (postResponse.getPosts() != null)
+                    if (postResponse.getPosts().size() != 0)
+                        head.setText(postResponse.getPosts().get(0).getPost_locations().get(0).getAddress());
                 break;
+
             case UI_HASHTAG:
-                head.setText(postResponse.getPosts().get(0).getHashtags().get(0));
+                head.setText(hashtag);
                 break;
         }
 

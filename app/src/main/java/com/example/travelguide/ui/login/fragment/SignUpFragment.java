@@ -124,7 +124,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
             int age = currentYear - year;
 
             if (age < 13) {
-                Toast.makeText(context, "18 წელზე მეტის", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Application age restriction 13+", Toast.LENGTH_SHORT).show();
             } else {
                 String date = year + "/" + monthString + "/" + dayString;
                 registerBirthDate.setText(date);
@@ -188,7 +188,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
             HelperUI.setBackgroundDefault(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",
                     color, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
-            HelperUI.setBackgroundWarning(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",context);
+            HelperUI.setBackgroundWarning(eConfirmPassword, eConfirmPasswordHead, "Confirm Password", context);
         }
 
         if (ePhoneNumber.getText().toString().isEmpty() || !checkNumber(ePhoneNumber)) {
@@ -244,7 +244,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
 
     }
 
-    private void showAlertDialog(String title, String message) {
+    private void showConfirmDialog(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final View customLayout = getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
         TextView verifyTitle, verifyMessage;
@@ -318,11 +318,11 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
 
         switch (authResultStatus) {
             case 0:
-                showAlertDialog(signUpResponse.getTitle(), signUpResponse.getMessage());
+                showConfirmDialog(signUpResponse.getTitle(), signUpResponse.getMessage());
                 break;
 
             case 2:
-                HelperUI.setBackgroundWarning(eNickName, eNickNameHead, "NickName",context);
+                HelperUI.setBackgroundWarning(eNickName, eNickNameHead, "NickName", context);
                 checkNickNameToServer(userName, userSurname, nickName);
                 break;
 
@@ -331,7 +331,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
                 break;
 
             case 4:
-                HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email",context);
+                HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email", context);
 //                checkEmailToServer(email);
                 break;
 
@@ -366,7 +366,7 @@ public class SignUpFragment extends Fragment implements ISignUpFragment, View.On
     @Override
     public void onGetEmailCheckResult(CheckMailResponse checkMailResponse) {
         if (checkMailResponse.getStasus().equals("1")) {
-            HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email",context);
+            HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email", context);
         }
     }
 
