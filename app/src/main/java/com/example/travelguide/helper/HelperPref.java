@@ -41,6 +41,10 @@ public class HelperPref {
     private static final String PLATFORM_PREF = "platform_pref";
     private static final String PLATFORM_KEY = "platform_key";
 
+//    public enum LoginTypeEnum {
+//        GOOGLE, FACEBOOK, TRAVEL_GUIDE
+//    }
+
 
     public static void saveUserProfileInfo(Context context, ProfileResponse.Userinfo userinfo) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
@@ -52,9 +56,8 @@ public class HelperPref {
     public static ProfileResponse.Userinfo getUserProfileInfo(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        ProfileResponse.Userinfo currentUserInfo = gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null),
+        return gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null),
                 ProfileResponse.Userinfo.class);
-        return currentUserInfo;
     }
 
     public static void saveCurrentUserId(Context context, int userId) {

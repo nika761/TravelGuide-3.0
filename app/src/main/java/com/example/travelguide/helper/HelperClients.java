@@ -116,8 +116,6 @@ public class HelperClients {
             }
         }
 
-//
-
 //        TransferManager tm = new TransferManager(s3Client);
 //
 //        ObjectMetadataProvider metadataProvider = (file, metadata) -> metadata.addUserMetadata("original-image-date", file.getAbsolutePath());

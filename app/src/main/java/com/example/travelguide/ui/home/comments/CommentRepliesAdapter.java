@@ -62,7 +62,7 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
             HelperMedia.loadCirclePhoto(like.getContext(), commentReplies.get(position).getProfile_pic(), userImage);
             userName.setText(commentReplies.get(position).getNickname());
             commentBody.setText(commentReplies.get(position).getText());
-            commentDate.setText(commentReplies.get(position).getCreated_at());
+            commentDate.setText(commentReplies.get(position).getReply_time());
         }
     }
 }

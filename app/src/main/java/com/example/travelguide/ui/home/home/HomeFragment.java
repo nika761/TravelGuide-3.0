@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
@@ -37,8 +36,7 @@ import com.example.travelguide.model.request.PostRequest;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.SharePostResponse;
 import com.example.travelguide.ui.home.HomePageActivity;
-import com.example.travelguide.ui.login.activity.SignInActivity;
-import com.example.travelguide.ui.splashScreen.SplashScreenActivity;
+import com.example.travelguide.ui.login.signIn.SignInActivity;
 
 import java.util.List;
 import java.util.Objects;
@@ -310,6 +308,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onDestroy() {
+
         if (homeFragmentPresenter != null) {
             homeFragmentPresenter = null;
         }
@@ -317,6 +316,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         if (countDownTimer != null) {
             countDownTimer = null;
         }
+
         super.onDestroy();
     }
 

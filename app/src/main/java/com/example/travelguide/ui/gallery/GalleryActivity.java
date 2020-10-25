@@ -35,7 +35,6 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
     private final int MAX_SIZE_DEFAULT = 9;
     boolean isVideo = true;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +147,6 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 } else {
                     Toast.makeText(this, "Please choose item", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
 
             case R.id.close_btn:

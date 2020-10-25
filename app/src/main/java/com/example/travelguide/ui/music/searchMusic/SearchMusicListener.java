@@ -9,8 +9,6 @@ import java.util.List;
 public interface SearchMusicListener {
     void onGetMusic(MusicResponse musicResponse);
 
-    void onPlayMusic(String music);
-
     void onStopMusic();
 
     void onPressMusic(String music, int position);
@@ -21,7 +19,7 @@ public interface SearchMusicListener {
 
     void onGetMoods(List<MoodResponse.Moods> moods);
 
-    void onGetResponseError(String message);
+    void onGetError(String message);
 
     void onChooseMood(int moodId);
 }

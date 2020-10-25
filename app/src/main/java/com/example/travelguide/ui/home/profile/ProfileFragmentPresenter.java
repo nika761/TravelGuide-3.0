@@ -9,11 +9,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileFragmentPresenter {
+class ProfileFragmentPresenter {
     private ProfileFragmentListener profileFragmentListener;
     private ApiService apiService;
 
-    public ProfileFragmentPresenter(ProfileFragmentListener profileFragmentListener) {
+    ProfileFragmentPresenter(ProfileFragmentListener profileFragmentListener) {
         this.profileFragmentListener = profileFragmentListener;
         this.apiService = RetrofitManager.getApiService();
     }
@@ -23,8 +23,11 @@ public class ProfileFragmentPresenter {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    profileFragmentListener.onGetProfile(response.body());
-                }else {
+                    if (response.body().getStatus() == 0)
+                        profileFragmentListener.onGetProfile(response.body().getUserinfo());
+                    else
+                        profileFragmentListener.onGetError(String.valueOf(response.body().getStatus()));
+                } else {
                     profileFragmentListener.onGetError(response.message());
                 }
             }
@@ -32,7 +35,6 @@ public class ProfileFragmentPresenter {
             @Override
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
                 profileFragmentListener.onGetError(t.getMessage());
-
             }
         });
     }

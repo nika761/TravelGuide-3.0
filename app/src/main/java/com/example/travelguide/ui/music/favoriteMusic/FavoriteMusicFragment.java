@@ -41,14 +41,13 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     public void onGetFavoriteMusics(List<FavoriteMusicResponse.Favotite_musics> favoriteMusics) {
         if (favoriteMusics.size() > 0) {
             favoriteMusicRecycler.setLayoutManager(new LinearLayoutManager(favoriteMusicRecycler.getContext()));
-            FavoriteMusicAdapter favoriteMusicAdapter = new FavoriteMusicAdapter(favoriteMusics);
-            favoriteMusicRecycler.setAdapter(favoriteMusicAdapter);
+            favoriteMusicRecycler.setAdapter(new FavoriteMusicAdapter(favoriteMusics));
         }
     }
 
     @Override
-    public void onGetFavoriteFailed() {
-        Toast.makeText(favoriteMusicRecycler.getContext(), "Get Favorite error", Toast.LENGTH_LONG).show();
+    public void onGetFavoriteFailed(String message) {
+        Toast.makeText(favoriteMusicRecycler.getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override

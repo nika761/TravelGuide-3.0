@@ -21,27 +21,23 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class FollowingFragment extends Fragment implements FollowingFragmentListener {
     private Context context;
-    private FollowingFragmentPresenter followingFragmentPresenter;
+    private FollowingFragmentPresenter followingPresenter;
     private RecyclerView recyclerView;
-    private int userId;
-
-    public FollowingFragment(int userId) {
-        this.userId = userId;
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_following, container, false);
         recyclerView = view.findViewById(R.id.following_recycler);
-        followingFragmentPresenter = new FollowingFragmentPresenter(this);
+        followingPresenter = new FollowingFragmentPresenter(this);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        followingFragmentPresenter.getFollowing(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new FollowingRequest(userId));
+        followingPresenter.getFollowing(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
+                new FollowingRequest(HelperPref.getCurrentUserId(context)));
     }
 
     @Override
@@ -56,8 +52,7 @@ public class FollowingFragment extends Fragment implements FollowingFragmentList
         if (followingResponse.getFollowings() != null && followingResponse.getFollowings().size() != 0) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setHasFixedSize(true);
-            FollowingAdapter mAdapter = new FollowingAdapter(context, followingResponse.getFollowings());
-            recyclerView.setAdapter(mAdapter);
+            recyclerView.setAdapter(new FollowingAdapter(followingResponse.getFollowings()));
         }
     }
 
@@ -68,8 +63,12 @@ public class FollowingFragment extends Fragment implements FollowingFragmentList
 
     @Override
     public void onDestroy() {
-        if (followingFragmentPresenter != null) {
-            followingFragmentPresenter = null;
+        if (followingPresenter != null) {
+            followingPresenter = null;
+        }
+
+        if (context != null) {
+            context = null;
         }
         super.onDestroy();
     }

@@ -10,13 +10,15 @@ public class SignUpRequest {
     private String password_confirmation;
     private String date_of_birth;
     private String phone_index;
+    private String profile_pic;
     private String phone_num;
     private String language_id;
+    private int gender;
 
     public SignUpRequest() {
     }
 
-    public SignUpRequest(String name, String lastname, String nickname, String email, String password, String password_confirmation, String date_of_birth, String phone_index, String phone_num, String language_id) {
+    public SignUpRequest(String name, String lastname, String nickname, String email, String password, String password_confirmation, String date_of_birth, String phone_index, String profile_pic, String phone_num, String language_id, int gender) {
         this.name = name;
         this.lastname = lastname;
         this.nickname = nickname;
@@ -25,8 +27,10 @@ public class SignUpRequest {
         this.password_confirmation = password_confirmation;
         this.date_of_birth = date_of_birth;
         this.phone_index = phone_index;
+        this.profile_pic = profile_pic;
         this.phone_num = phone_num;
         this.language_id = language_id;
+        this.gender = gender;
     }
 
     public String getName() {
@@ -108,4 +112,21 @@ public class SignUpRequest {
     public void setLanguage_id(String language_id) {
         this.language_id = language_id;
     }
+
+    public String getProfile_pic() {
+        return profile_pic;
+    }
+
+    public void setProfile_pic(String profile_pic) {
+        this.profile_pic = profile_pic;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
 }

@@ -1,9 +1,12 @@
 package com.example.travelguide.ui.home.home;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -26,9 +29,11 @@ import com.example.travelguide.ui.customerUser.CustomerProfileActivity;
 import com.example.travelguide.ui.searchPost.SearchPostActivity;
 import com.example.travelguide.model.response.PostResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import co.hkm.soltag.TagContainerLayout;
 import co.hkm.soltag.TagView;
@@ -108,7 +113,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
 //        viewHolder.tagContainerLayout.setTags(currentPost.getHashtags());
 
-
         if (currentPost.getPost_locations().size() != 0)
             storyHolder.location.setText(currentPost.getPost_locations().get(0).getAddress());
         HelperMedia.loadCirclePhoto(storyHolder.profileImage.getContext(), currentPost.getProfile_pic(), storyHolder.profileImage);
@@ -186,7 +190,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         TextView nickName, description, musicName, location, storyLikes, storyComments, storyShares, storyFavorites;
         CircleImageView profileImage;
         ImageButton like, follow, share, favorite, comment;
-        TagContainerLayout tagContainerLayout;
         ImageView storyCover;
         RecyclerView hashtagRecycler;
 
@@ -246,7 +249,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         }
 
         void setHashtagRecycler() {
-            hashtagRecycler.setLayoutManager(new LinearLayoutManager(share.getContext(),RecyclerView.HORIZONTAL,false));
+            hashtagRecycler.setLayoutManager(new LinearLayoutManager(share.getContext(), RecyclerView.HORIZONTAL, false));
             hashtagRecycler.setAdapter(new HashtagAdapter(currentPost.getHashtags()));
         }
 
@@ -254,17 +257,16 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             videoItem.setVideoURI(Uri.parse(stories.get(getLayoutPosition()).getUrl()));
             videoItem.requestFocus();
             videoItem.setOnPreparedListener(mp -> {
-//                        holder.videoItem.setMediaController(new MediaController(context));
-                mp.setLooping(true);
-//                mp.setVolume(0, 0);
-                videoItem.start();
 
+                mp.setLooping(true);
+                videoItem.start();
                 int duration = currentPost.getPost_stories().get(0).getSecond();
                 storyView.start(0, duration);
 
-//                storyCover.setVisibility(View.GONE);
             });
+
         }
+
 
         @Override
         public void onClick(View v) {
@@ -298,7 +300,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
                         stories.get(getLayoutPosition()).setStory_like_by_me(true);
                     }
 
-                    Log.e("vbnvbn", String.valueOf(currentPost.getPost_id()));
                     break;
 
                 case R.id.story_follow_btn:
@@ -328,6 +329,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
                     homeFragmentListener.onCommentChoose(stories.get(getLayoutPosition()).getStory_id(), currentPost.getPost_id());
                     break;
             }
+
         }
     }
 }

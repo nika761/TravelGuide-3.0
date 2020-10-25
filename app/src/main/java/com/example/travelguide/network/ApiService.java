@@ -1,11 +1,14 @@
 package com.example.travelguide.network;
 
 import com.example.travelguide.model.request.AboutRequest;
+import com.example.travelguide.model.request.AddCommentReplyRequest;
+import com.example.travelguide.model.request.AddCommentRequest;
 import com.example.travelguide.model.request.AddFavoriteMusic;
 import com.example.travelguide.model.request.AuthWitFirebaseRequest;
 import com.example.travelguide.model.request.ByMoodRequest;
 import com.example.travelguide.model.request.ChangeLangRequest;
 import com.example.travelguide.model.request.CommentRequest;
+import com.example.travelguide.model.request.LikeCommentRequest;
 import com.example.travelguide.model.request.PostByUserRequest;
 import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.request.FollowersRequest;
@@ -31,6 +34,8 @@ import com.example.travelguide.model.request.TermsPolicyRequest;
 import com.example.travelguide.model.request.UploadPostRequestModel;
 import com.example.travelguide.model.request.VerifyEmailRequest;
 import com.example.travelguide.model.response.AboutResponse;
+import com.example.travelguide.model.response.AddCommentReplyResponse;
+import com.example.travelguide.model.response.AddCommentResponse;
 import com.example.travelguide.model.response.AddFavoriteMusicResponse;
 import com.example.travelguide.model.response.AppSettingsResponse;
 import com.example.travelguide.model.response.AuthWithFirebaseResponse;
@@ -41,6 +46,7 @@ import com.example.travelguide.model.response.FollowerResponse;
 import com.example.travelguide.model.response.FollowingResponse;
 import com.example.travelguide.model.response.ForgotPasswordResponse;
 import com.example.travelguide.model.response.HashtagResponse;
+import com.example.travelguide.model.response.LikeCommentResponse;
 import com.example.travelguide.model.response.MoodResponse;
 import com.example.travelguide.model.response.MusicResponse;
 import com.example.travelguide.model.response.PostResponse;
@@ -226,6 +232,22 @@ public interface ApiService {
     @POST("get/post_story_comments")
     Call<CommentResponse> getStoryComments(@Header("Authorization") String token,
                                            @Body CommentRequest commentRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_story_comment")
+    Call<AddCommentResponse> addStoryComment(@Header("Authorization") String token,
+                                              @Body AddCommentRequest addCommentRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_story_comment_reply")
+    Call<AddCommentReplyResponse> addStoryCommentReply(@Header("Authorization") String token,
+                                                       @Body AddCommentReplyRequest replyRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_story_comment_like")
+    Call<LikeCommentResponse> likeStoryComment(@Header("Authorization") String token,
+                                              @Body LikeCommentRequest likeCommentRequest);
+
 
     @Headers({"Accept: application/json"})
     @POST("login/by_outer_account")

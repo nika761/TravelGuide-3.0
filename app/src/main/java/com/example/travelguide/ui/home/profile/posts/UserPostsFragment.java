@@ -43,7 +43,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     public UserPostsFragment(int userId, Context context) {
         this.userId = userId;
         this.context = context;
-        onPostChooseListener = (ProfileFragment.OnPostChooseListener) context;
+        this.onPostChooseListener = (ProfileFragment.OnPostChooseListener) context;
     }
 
     @Nullable
@@ -77,8 +77,9 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     @Override
     public void onGetPosts(PostResponse postResponse) {
-        UserPostAdapter adapter = new UserPostAdapter(postResponse.getPosts(), this);
         this.posts = postResponse.getPosts();
+
+        UserPostAdapter adapter = new UserPostAdapter(postResponse.getPosts(), this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);

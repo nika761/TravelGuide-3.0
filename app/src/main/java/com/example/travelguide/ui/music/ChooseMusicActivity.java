@@ -24,10 +24,6 @@ import java.util.List;
 import static com.example.travelguide.ui.editPost.EditPostActivity.STORIES_PATHS;
 
 public class ChooseMusicActivity extends AppCompatActivity implements View.OnClickListener, SearchMusicFragment.OnChooseMusic {
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private ImageButton backBtn;
-    private TextView nextBtn;
     public static final String MUSIC_ID = "music_id";
     private List<ItemMedia> itemMediaList = new ArrayList<>();
     private int musicId;
@@ -38,28 +34,25 @@ public class ChooseMusicActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_choose_music);
         this.itemMediaList = (List<ItemMedia>) getIntent().getSerializableExtra(STORIES_PATHS);
         initUI();
-        setViewPager(viewPager);
-        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void initUI() {
 
-        tabLayout = findViewById(R.id.music_tab_layout);
-        viewPager = findViewById(R.id.music_view_pager);
-
-        nextBtn = findViewById(R.id.music_next_btn);
+        TextView nextBtn = findViewById(R.id.music_next_btn);
         nextBtn.setOnClickListener(this);
 
-        backBtn = findViewById(R.id.music_back_btn);
+        ImageButton backBtn = findViewById(R.id.music_back_btn);
         backBtn.setOnClickListener(this);
 
-    }
+        ViewPager viewPager = findViewById(R.id.music_view_pager);
 
-    private void setViewPager(ViewPager viewPager) {
         MusicPagerAdapter musicPagerAdapter = new MusicPagerAdapter(getSupportFragmentManager());
         musicPagerAdapter.addFragment(new SearchMusicFragment(), "Music");
         musicPagerAdapter.addFragment(new FavoriteMusicFragment(), "Favorites");
         viewPager.setAdapter(musicPagerAdapter);
+
+        TabLayout tabLayout = findViewById(R.id.music_tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -67,7 +60,6 @@ public class ChooseMusicActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.music_next_btn:
                 Intent intent = new Intent(this, UploadPostActivity.class);
-//                intent.putStringArrayListExtra("selectedPaths", storiesPath);
                 intent.putExtra(STORIES_PATHS, (Serializable) itemMediaList);
                 intent.putExtra(MUSIC_ID, musicId);
                 startActivity(intent);

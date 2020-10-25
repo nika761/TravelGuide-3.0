@@ -30,9 +30,8 @@ import com.example.travelguide.helper.HelperMedia;
 import com.example.travelguide.model.request.ProfileRequest;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.ProfileResponse;
-import com.example.travelguide.ui.customerUser.post.CustomerPhotoFragment;
 import com.example.travelguide.ui.home.profile.changeLanguage.ChangeLangFragment;
-import com.example.travelguide.ui.home.profile.editProfile.EditProfileFragment;
+import com.example.travelguide.ui.home.profile.editProfile.ProfileEditActivity;
 import com.example.travelguide.ui.home.profile.favorites.FavoritePostFragment;
 import com.example.travelguide.ui.home.profile.posts.UserPostsFragment;
 import com.example.travelguide.ui.home.profile.tours.UserToursFragment;
@@ -58,20 +57,24 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
 
-    private TextView nickName, name, userBioText, drawerBtn, tourRequest, firstPhotoConent, editProfile,
-            bioText, following, follower, reaction;
+    private TextView nickName;
+    private TextView name;
+    private TextView userBioText;
+    private TextView bioText;
+    private TextView following;
+    private TextView follower;
+    private TextView reaction;
+    private View myLayout;
     private ImageButton bioVisibleBtn, bioInvisibleBtn;
     private CircleImageView userPrfImage;
+    private LottieAnimationView lottieAnimationView;
     private ImageView userBioTextState;
     private ActionBarDrawerToggle toggle;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private Context context;
+
     private ProfileFragmentPresenter profileFragmentPresenter;
-    private LottieAnimationView lottieAnimationView;
-    private View myLayout;
-    private ProfileResponse.Userinfo userinfo;
     private int userId;
+    private String userName;
 
     @Nullable
     @Override
@@ -99,8 +102,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         lottieAnimationView = view.findViewById(R.id.loader_profile);
 
         myLayout = view.findViewById(R.id.test);
-        viewPager = myLayout.findViewById(R.id.viewpager_test);
-        tabLayout = myLayout.findViewById(R.id.tabs_test);
+        ViewPager viewPager = myLayout.findViewById(R.id.viewpager_test);
+        TabLayout tabLayout = myLayout.findViewById(R.id.tabs_test);
 
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
 
@@ -119,7 +122,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         View followStates = myLayout.findViewById(R.id.states_test);
         followStates.setOnClickListener(this::onViewClick);
 
-        editProfile = myLayout.findViewById(R.id.edit_profile);
+        TextView editProfile = myLayout.findViewById(R.id.edit_profile);
         editProfile.setOnClickListener(this::onViewClick);
 
         bioVisibleBtn = myLayout.findViewById(R.id.bio_visible_btn);
@@ -143,25 +146,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         lottieAnimationView.setVisibility(View.VISIBLE);
-        profileFragmentPresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
-                new ProfileRequest(userId));
-
-//        if (HelperPref.getUserProfileInfo(context) == null) {
-//            lottieAnimationView.setVisibility(View.VISIBLE);
-//            profileFragmentPresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
-//                    new ProfileRequest(HelperPref.getServerSavedUsers(context).get(0).getId()));
-//        } else {
-//            this.userinfo = HelperPref.getUserProfileInfo(context);
-//            myLayout.setVisibility(View.VISIBLE);
-//            name.setText(userinfo.getName() + " " + userinfo.getLastname());
-//            nickName.setText(String.format("@%s", userinfo.getNickname()));
-//            bioText.setText(userinfo.getBiography());
-//            follower.setText(String.valueOf(userinfo.getFollower()));
-//            following.setText(String.valueOf(userinfo.getFollowing()));
-//            reaction.setText(String.valueOf(userinfo.getReactions()));
-//            this.userId = userinfo.getId();
-//        }
-
+        profileFragmentPresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(userId));
     }
 
     @Override
@@ -183,41 +168,38 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.settings_about:
-                HelperUI.startTermsAndPolicyActivity(context, ABOUT);
+                HelperUI.startWebActivity(context, ABOUT);
                 break;
 
             case R.id.settings_privacy:
-                HelperUI.startTermsAndPolicyActivity(context, POLICY);
+                HelperUI.startWebActivity(context, POLICY);
                 break;
 
             case R.id.settings_terms:
-                HelperUI.startTermsAndPolicyActivity(context, TERMS);
+                HelperUI.startWebActivity(context, TERMS);
                 break;
 
             case R.id.settings_sing_out:
                 String type = HelperPref.getCurrentPlatform(context);
-                logOut(type);
+                logOutDialog(type);
                 break;
         }
         return true;
     };
 
-    private void logOut(String loginType) {
+    private void logOutDialog(String loginType) {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle("Sign out ?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     if (loginType != null) {
                         switch (loginType) {
                             case FACEBOOK:
-                                Toast.makeText(context, "Case facebook working", Toast.LENGTH_SHORT).show();
                                 ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
                                 break;
                             case GOOGLE:
-                                Toast.makeText(context, "Case google working", Toast.LENGTH_SHORT).show();
                                 ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
                                 break;
                             case TRAVEL_GUIDE:
-                                Toast.makeText(context, "Case TravelGuide working", Toast.LENGTH_SHORT).show();
                                 ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromAccount();
                                 break;
                         }
@@ -248,40 +230,34 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
             case R.id.states_test:
                 Intent intent = new Intent(context, UserFollowActivity.class);
-                intent.putExtra("user_id", userId);
+                intent.putExtra("user_name", userName);
                 startActivity(intent);
                 break;
 
             case R.id.edit_profile:
-                HelperUI.loadFragment(new EditProfileFragment(), null, R.id.user_page_frg_container, true, ((HomePageActivity) context));
+                Intent editProfile = new Intent(context, ProfileEditActivity.class);
+                startActivity(editProfile);
                 break;
         }
     }
 
     @Override
-    public void onGetProfile(ProfileResponse profileResponse) {
+    public void onGetProfile(ProfileResponse.Userinfo userInfo) {
 
-        ProfileResponse.Userinfo userInfo;
+        HelperPref.saveUserProfileInfo(context, userInfo);
 
-        if (profileResponse.getStatus() == 0) {
+        lottieAnimationView.setVisibility(View.GONE);
+        myLayout.setVisibility(View.VISIBLE);
 
-            userInfo = profileResponse.getUserinfo();
-
-            HelperPref.saveUserProfileInfo(context, userInfo);
-
-            lottieAnimationView.setVisibility(View.GONE);
-            myLayout.setVisibility(View.VISIBLE);
-
-            name.setText(userInfo.getName() + " " + userInfo.getLastname());
-            nickName.setText(String.format("@%s", userInfo.getNickname()));
-            bioText.setText(userInfo.getBiography());
-            follower.setText(String.valueOf(userInfo.getFollower()));
-            following.setText(String.valueOf(userInfo.getFollowing()));
-            reaction.setText(String.valueOf(userInfo.getReactions()));
-            HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
-            this.userId = userInfo.getId();
-
-        }
+        userName = userInfo.getName() + " " + userInfo.getLastname();
+        name.setText(String.format("%s %s", userInfo.getName(), userInfo.getLastname()));
+        nickName.setText(String.format("@%s", userInfo.getNickname()));
+        bioText.setText(userInfo.getBiography());
+        follower.setText(String.valueOf(userInfo.getFollower()));
+        following.setText(String.valueOf(userInfo.getFollowing()));
+        reaction.setText(String.valueOf(userInfo.getReactions()));
+        HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
+        this.userId = userInfo.getId();
     }
 
     @Override

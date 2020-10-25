@@ -33,7 +33,7 @@ public class HelperUI {
     public static final String UI_HASHTAG = "hashtags";
     public static final String UI_LOCATION = "location";
 
-    public static void startTermsAndPolicyActivity(Context context, String requestFor) {
+    public static void startWebActivity(Context context, String requestFor) {
         Intent termsIntent = new Intent(context, WebActivity.class);
         termsIntent.putExtra(TYPE, requestFor);
         context.startActivity(termsIntent);

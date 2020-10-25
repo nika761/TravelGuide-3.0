@@ -19,12 +19,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.FollowingViewHolder> {
 
-    private Context context;
-    private List<FollowingResponse.Followings> following;
+    private List<FollowingResponse.Followings> followings;
 
-    FollowingAdapter(Context context, List<FollowingResponse.Followings> following) {
-        this.context = context;
-        this.following = following;
+    FollowingAdapter(List<FollowingResponse.Followings> following) {
+        this.followings = following;
     }
 
     @NonNull
@@ -36,15 +34,14 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Foll
 
     @Override
     public void onBindViewHolder(@NonNull final FollowingViewHolder holder, final int position) {
-        HelperMedia.loadCirclePhoto(context, following.get(position).getProfile_pic(), holder.followingUserImage);
-        holder.followingUserName.setText(following.get(position).getName());
-        holder.followingUserNickName.setText(following.get(position).getNickname());
+        HelperMedia.loadCirclePhoto(holder.followingUserName.getContext(), followings.get(position).getProfile_pic(), holder.followingUserImage);
+        holder.followingUserName.setText(followings.get(position).getName());
+        holder.followingUserNickName.setText(followings.get(position).getNickname());
     }
-
 
     @Override
     public int getItemCount() {
-        return following.size();
+        return followings.size();
     }
 
     class FollowingViewHolder extends RecyclerView.ViewHolder {
@@ -55,11 +52,11 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.Foll
 
         FollowingViewHolder(@NonNull View itemView) {
             super(itemView);
-            iniUi(itemView);
+            initUI(itemView);
         }
 
 
-        private void iniUi(View view) {
+        private void initUI(View view) {
             followingUserImage = view.findViewById(R.id.following_user_image);
             followingUserName = view.findViewById(R.id.following_user_name);
             followingUserNickName = view.findViewById(R.id.following_user_nick_name);

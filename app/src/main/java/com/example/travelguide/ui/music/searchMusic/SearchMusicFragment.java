@@ -62,57 +62,29 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
         searchMusicPresenter.getMoods(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
                 (searchMusicRecycler.getContext()));
 
-        // Input listener with control operation interval, that is, the interval event between each input event listener must be greater than 1200ms (1s20ms)
         RxTextView.textChanges(searchField)
                 .debounce(1200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                //CharSequence is converted to String
                 .map(CharSequence::toString)
                 .subscribe((Consumer<CharSequence>) charSequence -> {
                     if (charSequence.toString().isEmpty()) {
                         searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
                                 (searchMusicRecycler.getContext()));
                     }
-                    searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
+                    searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
+                            (moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
 
                 });
-
-//        searchField.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-////                searchMusicPresenter.searchMusic(HelperPref.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(s.toString()));
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if (s.toString().isEmpty()) {
-//                    searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
-//                            (searchMusicRecycler.getContext()));
-//                }
-//
-//                searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(s.toString()));
-//            }
-//        });
     }
 
     @Override
     public void onGetMusic(MusicResponse musicResponse) {
         if (musicResponse.getStatus() == 0) {
             searchMusicRecycler.setLayoutManager(new LinearLayoutManager(searchMusicRecycler.getContext()));
-            SearchMusicAdapter searchMusicAdapter = new SearchMusicAdapter(musicResponse.getAlbum(), this, searchField.getContext());
-            searchMusicRecycler.setAdapter(searchMusicAdapter);
+            searchMusicRecycler.setAdapter(new SearchMusicAdapter(musicResponse.getAlbum(), this, searchField.getContext()));
+        } else {
+            Toast.makeText(searchField.getContext(), String.valueOf(musicResponse.getStatus()), Toast.LENGTH_SHORT).show();
         }
-    }
-
-
-    @Override
-    public void onPlayMusic(String music) {
-//        play(music);
     }
 
     @Override
@@ -167,7 +139,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     }
 
     @Override
-    public void onGetResponseError(String message) {
+    public void onGetError(String message) {
         Toast.makeText(moodsRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -192,10 +164,6 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
         }
     }
 
-//    private void stop() {
-//        stopPlayer();
-//    }
-
     private void stopPlayer() {
         if (musicPlayer != null) {
             musicPlayer.release();
@@ -214,6 +182,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
         if (searchMusicPresenter != null) {
             searchMusicPresenter = null;
         }
+        stopPlayer();
         super.onDestroy();
     }
 

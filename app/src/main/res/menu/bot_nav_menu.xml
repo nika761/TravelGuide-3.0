@@ -14,7 +14,7 @@
         android:title="" />
     <item
         android:id="@+id/bot_nav_ntf"
-        android:icon="@drawable/ic_notification_test"
+        android:icon="@drawable/icon_xd_notification"
         android:title="" />
     <item
         android:id="@+id/bot_nav_profile"

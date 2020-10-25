@@ -23,6 +23,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".ui.language.LanguageActivity" />
+
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -40,7 +41,7 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name=".ui.login.activity.SignInActivity">
+        <activity android:name=".ui.login.signIn.SignInActivity">
 
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -64,28 +65,33 @@
             </intent-filter>
 
         </activity>
+
         <activity
-            android:name=".ui.login.activity.SignUpActivity"
+            android:name=".ui.login.signUp.SignUpActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name=".ui.home.profile.userFollowActivity.UserFollowActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.gallery.MediaDetailActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.search.SearchActivity"
             android:theme="@style/SecondAppTheme" />
 
-        <activity android:name=".ui.login.activity.SavedUserActivity" />
+        <activity android:name=".ui.login.loggedUsers.SavedUserActivity" />
 
         <activity
-            android:name=".ui.login.activity.ForgotPasswordActivity"
+            android:name=".ui.login.password.FPasswordActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.webView.WebActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.splashScreen.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
@@ -114,6 +120,7 @@
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -122,20 +129,25 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
+
         </activity>
 
         <activity
             android:name=".ui.editPost.filterActivity.FilterActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.home.profile.editProfile.ChangePhotoActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.upload.UploadPostActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.music.ChooseMusicActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.editPost.sortActivity.SortStoriesActivity"
             android:theme="@style/SecondAppTheme" />
@@ -149,9 +161,8 @@
             android:name=".ui.searchPost.SearchPostActivity"
             android:theme="@style/SecondAppTheme" />
 
-
         <activity
-            android:name=".ui.login.activity.ResetPasswordActivity"
+            android:name=".ui.login.password.RPasswordActivity"
             android:theme="@style/SecondAppTheme">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -175,11 +186,17 @@
             </intent-filter>
 
         </activity>
+
         <activity
-            android:name=".ui.login.activity.DateActivity"
+            android:name=".ui.login.signUp.BirthDateActivity"
             android:theme="@style/SecondAppTheme" />
+
         <activity
             android:name=".ui.upload.tag.TagPostActivity"
+            android:theme="@style/SecondAppTheme" />
+
+        <activity
+            android:name=".ui.home.profile.editProfile.ProfileEditActivity"
             android:theme="@style/SecondAppTheme" />
 
     </application>

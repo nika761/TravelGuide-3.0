@@ -47,9 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:maxLines="1"
-        android:text="1990/25/15"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/comments_replies"
+        app:layout_constraintBottom_toTopOf="@+id/com_replies_body"
         app:layout_constraintStart_toStartOf="@id/com_replies_user_name"
         app:layout_constraintTop_toBottomOf="@id/com_replies_body" />
 
@@ -69,7 +68,7 @@
         android:layout_height="wrap_content"
         android:text="5"
         android:textColor="@color/blackStatusBar"
-        android:textSize="10sp"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/com_replies_like"
         app:layout_constraintStart_toStartOf="@id/com_replies_like"
         app:layout_constraintTop_toBottomOf="@id/com_replies_like" />

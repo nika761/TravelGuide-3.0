@@ -161,13 +161,14 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.describe_post_post_btn:
+                loaderContainer.setVisibility(View.VISIBLE);
                 if (itemMedia.get(0).getType() == 0) {
                     if (HelperSystem.isWriteStoragePermission(this)) {
                         startUpload();
                     } else {
                         HelperSystem.requestWriteStoragePermission(this);
                     }
-                }else {
+                } else {
                     startUpload();
                 }
 //                ArrayList<String> files = new ArrayList<>();
@@ -198,7 +199,6 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void startUpload() {
-        loaderContainer.setVisibility(View.VISIBLE);
         if (itemMedia.get(0).getType() == 0) {
             List<ItemMedia> convertedImages = convertImagesToPng(itemMedia);
             fileForUpload = new File(convertedImages.get(0).getPath());

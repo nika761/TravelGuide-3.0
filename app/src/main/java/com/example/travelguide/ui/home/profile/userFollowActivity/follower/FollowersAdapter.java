@@ -18,12 +18,10 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.FollowersViewHolder> {
-    private Context context;
     private List<FollowerResponse.Followers> followers;
     private FollowersFragmentListener followerFragmentListener;
 
-    FollowersAdapter(Context context, List<FollowerResponse.Followers> followers, FollowersFragmentListener followerFragmentListener) {
-        this.context = context;
+    FollowersAdapter(List<FollowerResponse.Followers> followers, FollowersFragmentListener followerFragmentListener) {
         this.followers = followers;
         this.followerFragmentListener = followerFragmentListener;
     }
@@ -37,7 +35,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.Foll
 
     @Override
     public void onBindViewHolder(@NonNull FollowersViewHolder holder, int position) {
-        HelperMedia.loadCirclePhoto(context, followers.get(position).getProfile_pic(), holder.userImage);
+        HelperMedia.loadCirclePhoto(holder.followBtn.getContext(), followers.get(position).getProfile_pic(), holder.userImage);
         holder.userName.setText(followers.get(position).getName());
         holder.nickName.setText(followers.get(position).getNickname());
         if (followers.get(position).getIs_following() == 1) {

@@ -9,27 +9,30 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AboutPresenter {
+class AboutPresenter {
     private AboutListener iAboutFragment;
     private ApiService apiService;
 
-    public AboutPresenter(AboutListener iAboutFragment) {
+    AboutPresenter(AboutListener iAboutFragment) {
         this.iAboutFragment = iAboutFragment;
         apiService = RetrofitManager.getApiService();
     }
 
-    public void sendAboutRequest(AboutRequest aboutRequest){
+    void sendAboutRequest(AboutRequest aboutRequest) {
         apiService.getAbout(aboutRequest).enqueue(new Callback<AboutResponse>() {
             @Override
             public void onResponse(Call<AboutResponse> call, Response<AboutResponse> response) {
-                if (response.isSuccessful()){
-                    iAboutFragment.onGetAboutResult(response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus() == 0)
+                        iAboutFragment.onGetAbout(response.body().getAbout());
+                } else {
+                    iAboutFragment.onGetError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<AboutResponse> call, Throwable t) {
-
+                iAboutFragment.onGetError(t.getMessage());
             }
         });
     }

@@ -26,7 +26,6 @@ import java.util.Objects;
 
 public class AboutFragment extends Fragment implements AboutListener {
 
-    private Context context;
     private Button cancelBtn;
     private LottieAnimationView animationView;
     private TextView aboutHeader;
@@ -39,12 +38,15 @@ public class AboutFragment extends Fragment implements AboutListener {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
 
         cancelBtn = view.findViewById(R.id.cancel_btn_about);
+        cancelBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
+
         animationView = view.findViewById(R.id.animation_view_about);
         aboutHeader = view.findViewById(R.id.about_header);
         aboutTextWebView = view.findViewById(R.id.about_text);
-        aboutPresenter = new AboutPresenter(this);
         aboutTextWebView.getSettings();
-        aboutTextWebView.setBackgroundColor(getResources().getColor(R.color.whiteNone));
+        aboutTextWebView.setBackgroundColor(getResources().getColor(R.color.whiteNone, null));
+
+        aboutPresenter = new AboutPresenter(this);
 
         return view;
     }
@@ -52,41 +54,32 @@ public class AboutFragment extends Fragment implements AboutListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setClickListeners();
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
-        if (HelperPref.getLanguageId(context) != 0) {
-            aboutPresenter.sendAboutRequest(new AboutRequest(String.valueOf(HelperPref.getLanguageId(context))));
-        }
-    }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
+        aboutPresenter.sendAboutRequest(new AboutRequest(String.valueOf(HelperPref.getLanguageId(cancelBtn.getContext()))));
     }
 
     private void loadAnimation(View target, int animationId, int offset) {
-        Animation animation = AnimationUtils.loadAnimation(context, animationId);
+        Animation animation = AnimationUtils.loadAnimation(cancelBtn.getContext(), animationId);
         animation.setStartOffset(offset);
         target.startAnimation(animation);
     }
 
-    private void setClickListeners() {
-        cancelBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
+    private void updateUI(AboutResponse.About about) {
+        aboutHeader.setText(about.getAbout_title());
+        aboutTextWebView.loadData("<html><body>" + about.getAbout_text() + "</body></html>", "text/html", "UTF-8");
+        animationView.setVisibility(View.GONE);
     }
 
 
     @Override
-    public void onGetAboutResult(AboutResponse aboutResponse) {
-        if (aboutResponse.getStatus() == 0) {
+    public void onGetAbout(AboutResponse.About about) {
+        updateUI(about);
+    }
 
-            aboutHeader.setText(aboutResponse.getAbout().getAbout_title());
-            aboutTextWebView.loadData("<html><body>" + aboutResponse.getAbout().getAbout_text() + "</body></html>", "text/html", "UTF-8");
-            animationView.setVisibility(View.GONE);
-
-        } else {
-            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
-        }
+    @Override
+    public void onGetError(String message) {
+        Toast.makeText(cancelBtn.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

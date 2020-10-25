@@ -25,14 +25,8 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 public class FollowersFragment extends Fragment implements FollowersFragmentListener {
 
     private Context context;
-    private int userId;
     private RecyclerView recyclerView;
     private FollowersFragmentPresenter followersFragmentPresenter;
-
-
-    public FollowersFragment(int userId) {
-        this.userId = userId;
-    }
 
     @Nullable
     @Override
@@ -47,7 +41,8 @@ public class FollowersFragment extends Fragment implements FollowersFragmentList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        followersFragmentPresenter.getFollowers(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new FollowersRequest(userId));
+        followersFragmentPresenter.getFollowers(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
+                new FollowersRequest(HelperPref.getCurrentUserId(context)));
     }
 
     @Override
@@ -60,8 +55,7 @@ public class FollowersFragment extends Fragment implements FollowersFragmentList
     public void onGetFollowers(FollowerResponse followerResponse) {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
-        RecyclerView.Adapter mAdapter = new FollowersAdapter(context, followerResponse.getFollowers(), this);
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(new FollowersAdapter(followerResponse.getFollowers(), this));
     }
 
     @Override

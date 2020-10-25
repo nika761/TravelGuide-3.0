@@ -21,6 +21,9 @@ import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.response.PostResponse;
+import com.example.travelguide.ui.home.profile.ProfileFragment;
+
+import java.util.List;
 
 import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
@@ -30,8 +33,11 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     private View contentList;
     private Context context;
     private RecyclerView recyclerView;
+
     private boolean visible = true;
+    private List<PostResponse.Posts> posts;
     private FavoritePostPresenter favoritePostPresenter;
+    private ProfileFragment.OnPostChooseListener onPostChooseListener;
 
     @Nullable
     @Override
@@ -42,25 +48,18 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.e("lifecycle", "onviewcreated");
-        iniUI(view);
+        onPostChooseListener = (ProfileFragment.OnPostChooseListener) context;
+        initUI(view);
         favoritePostPresenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new FavoritePostRequest(0));
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
-        Log.e("lifecycle", "onatach");
         super.onAttach(context);
         this.context = context;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.e("lifecycle", "onaccreated");
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    private void iniUI(View v) {
+    private void initUI(View v) {
 
         favoritePostPresenter = new FavoritePostPresenter(this);
 
@@ -140,6 +139,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     @Override
     public void onGetPosts(PostResponse postResponse) {
         if (postResponse.getStatus() == 0) {
+            this.posts = postResponse.getPosts();
             FavoritePostAdapter adapter = new FavoritePostAdapter(postResponse.getPosts(), this);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
             recyclerView.setLayoutManager(gridLayoutManager);
@@ -156,19 +156,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     @Override
     public void onPostChoose(int postId) {
-
-    }
-
-    @Override
-    public void onPause() {
-        Log.e("lifecycle", "onpause");
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        Log.e("lifecycle", "onresume");
-        super.onResume();
+        onPostChooseListener.onPostChoose(posts);
     }
 
     @Override
@@ -176,19 +164,6 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         if (favoritePostPresenter != null) {
             favoritePostPresenter = null;
         }
-        Log.e("lifecycle", "ondestroy");
         super.onDestroy();
-    }
-
-    @Override
-    public void onStop() {
-        Log.e("lifecycle", "onstop");
-        super.onStop();
-    }
-
-    @Override
-    public void onStart() {
-        Log.e("lifecycle", "onstart");
-        super.onStart();
     }
 }

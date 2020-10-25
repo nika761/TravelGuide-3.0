@@ -28,7 +28,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     private int playingPosition = -1;
     private int checkedPosition = -1;
 
-    public SearchMusicAdapter(List<MusicResponse.Album> musics, SearchMusicListener searchMusicListener, Context context) {
+    SearchMusicAdapter(List<MusicResponse.Album> musics, SearchMusicListener searchMusicListener, Context context) {
         this.musics = musics;
         this.searchMusicListener = searchMusicListener;
         listener = (SearchMusicFragment.OnChooseMusic) context;
@@ -42,42 +42,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SearchMusicHolder holder, int position) {
-        holder.musicTitle.setText(musics.get(position).getTitle());
-        holder.musicTitle.setSelected(true);
-        holder.musicAuthor.setText(musics.get(position).getAuthor());
-        holder.musicAuthor.setSelected(true);
-        holder.musicDuration.setText(musics.get(position).getDuration());
-
-        if (musics.get(position).getNew_label() == 1) {
-            holder.musicNewLabel.setVisibility(View.VISIBLE);
-        } else {
-            holder.musicNewLabel.setVisibility(View.GONE);
-        }
-
-        if (playingPosition == position) {
-            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.greyLight, null));
-            holder.playBtn.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-        } else {
-            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.white, null));
-            holder.playBtn.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
-        }
-
-        if (musics.get(position).getCategories().size() != 0) {
-            holder.musicCategory.setText(musics.get(position).getCategories().get(0).getCategory());
-        }
-        HelperMedia.loadPhoto(holder.musicImage.getContext(), musics.get(position).getImage(), holder.musicImage);
-
-        if (musics.get(position).getIs_favorite() == 1) {
-            holder.favorite.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-        } else {
-            holder.favorite.setBackground(holder.musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
-        }
-//
-//        if (checkedPosition == position) {
-//            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.blue, null));
-//        } else {
-//            holder.container.setBackgroundColor(holder.playBtn.getContext().getResources().getColor(R.color.white, null));
-//        }
+        holder.bindUI(position);
     }
 
     @Override
@@ -90,7 +55,6 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         TextView musicTitle, musicAuthor, musicCategory, musicDuration, musicNewLabel;
         ImageView musicImage;
         ImageButton favorite, playBtn;
-        CheckBox checkBox;
         ConstraintLayout container;
 
         SearchMusicHolder(@NonNull View itemView) {
@@ -113,6 +77,38 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             playBtn.setOnClickListener(this);
         }
 
+        void bindUI(int position) {
+            musicTitle.setText(musics.get(position).getTitle());
+            musicTitle.setSelected(true);
+            musicAuthor.setText(musics.get(position).getAuthor());
+            musicAuthor.setSelected(true);
+            musicDuration.setText(musics.get(position).getDuration());
+
+            if (musics.get(position).getNew_label() == 1) {
+                musicNewLabel.setVisibility(View.VISIBLE);
+            } else {
+                musicNewLabel.setVisibility(View.GONE);
+            }
+
+            if (playingPosition == position) {
+                container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
+                playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+            } else {
+                container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
+                playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+            }
+
+            if (musics.get(position).getCategories().size() != 0) {
+                musicCategory.setText(musics.get(position).getCategories().get(0).getCategory());
+            }
+            HelperMedia.loadPhoto(musicImage.getContext(), musics.get(position).getImage(), musicImage);
+
+            if (musics.get(position).getIs_favorite() == 1) {
+                favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+            } else {
+                favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
+            }
+        }
 
         @Override
         public void onClick(View v) {
@@ -146,15 +142,6 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                     }
 
                     break;
-
-//                case R.id.search_music_container:
-//                    if (checkedPosition == getLayoutPosition()) {
-//                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
-//                    }
-//                    checkedPosition = getLayoutPosition();
-//                    listener.onMusicChoose(musics.get(getLayoutPosition()).getMusic_id());
-//                    notifyDataSetChanged();
-//                    break;
             }
         }
     }

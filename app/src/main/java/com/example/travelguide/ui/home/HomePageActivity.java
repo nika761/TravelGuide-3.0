@@ -3,6 +3,7 @@ package com.example.travelguide.ui.home;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.ui.home.comments.CommentFragment;
@@ -37,31 +39,27 @@ import static com.example.travelguide.helper.HelperSystem.READ_EXTERNAL_STORAGE;
 public class HomePageActivity extends AppCompatActivity implements ProfileFragment.OnPostChooseListener {
 
     private GoogleSignInClient mGoogleSignInClient;
-    private Bundle userDataForFragments;
     private BottomNavigationView bottomNavigationView;
-    private ViewPager navViewPager;
+    public boolean commentFieldState;
 
-    public HomePageActivity() {
-
-    }
+    public HomePageActivity() {}
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
+
         String changed = getIntent().getStringExtra("password_changed");
         String option = getIntent().getStringExtra("option");
 
         if (changed != null)
             if (changed.equals("password_changed"))
-                HelperUI.loadFragment(new ProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
-
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, this);
 
         if (option != null)
             if (option.equals("uploaded"))
-                HelperUI.loadFragment(new ProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, this);
 
-        ongGetUserDate();
         initBtmNav();
         initGoogleSignClient();
     }
@@ -77,30 +75,6 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         HelperUI.loadFragment(new CommentFragment(storyId, postId), null, R.id.notification_fragment_container, true, this);
     }
 
-    public void closeLoadedFragment() {
-//        getFragmentManager().beginTransaction().remove(this).commit();
-    }
-
-    private void ongGetUserDate() {
-
-        LoginResponse.User loggedUser = (LoginResponse.User) getIntent().getSerializableExtra("server_user");
-        if (loggedUser != null) {
-            userDataForFragments = new Bundle();
-//            userDataForFragments.putSerializable("user", loggedUser);
-        }
-//        VerifyEmailResponse.User verifyUser = (VerifyEmailResponse.User) getIntent().getSerializableExtra("server_user");
-//        if (verifyUser != null) {
-//            userDataForFragments = new Bundle();
-//            userDataForFragments.putSerializable("user", verifyUser);
-//        }
-//
-//        User loggedUser = (User) getIntent().getSerializableExtra("loggedUser");
-//        if (loggedUser != null) {
-//            userDataForFragments = new Bundle();
-//            userDataForFragments.putSerializable("user", loggedUser);
-//        }
-    }
-
     private void initBtmNav() {
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
@@ -114,7 +88,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                HelperUI.loadFragment(new HomeFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new HomeFragment(), null, R.id.user_page_frg_container, false, this);
                 break;
 
             case R.id.bot_nav_search:
@@ -134,11 +108,15 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                 break;
 
             case R.id.bot_nav_profile:
-                HelperUI.loadFragment(new ProfileFragment(), userDataForFragments, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, this);
                 break;
         }
         return true;
     };
+
+    public void setCommentFieldState(boolean commentFieldState) {
+        this.commentFieldState = commentFieldState;
+    }
 
     private void initGoogleSignClient() {
         GoogleSignInOptions gso = new GoogleSignInOptions
@@ -152,9 +130,6 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         LoginManager.getInstance().logOut();
         HelperPref.saveAccessToken(this, null);
         HelperPref.saveCurrentUserId(this, 0);
-//        if (user != null) {
-//            HelperPref.deleteUser(this, user);
-//        }
         finish();
     }
 
@@ -165,30 +140,15 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void signOutFromGoogleAccount() {
-        Toast.makeText(this, "Google sign out started", Toast.LENGTH_SHORT).show();
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
             HelperPref.saveAccessToken(this, null);
             HelperPref.saveCurrentUserId(this, 0);
-//            if (user != null) {
-//                HelperPref.deleteUser(this, user);
-//            }
-        }).addOnCanceledListener(this, () -> {
-            Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(this, e -> {
-            e.printStackTrace();
-            Toast.makeText(this, e.getMessage() + "Google Failed", Toast.LENGTH_SHORT).show();
-        });
-
-        Toast.makeText(this, "Method space", Toast.LENGTH_SHORT).show();
+        })
+                .addOnCanceledListener(this, () -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(this, e -> Toast.makeText(this, e.getMessage() + "Google Failed", Toast.LENGTH_SHORT).show());
 
         finish();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     @Override
@@ -217,4 +177,5 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     public void onPostChoose(List<PostResponse.Posts> posts) {
         HelperUI.loadFragment(new HomeFragment(posts), null, R.id.user_page_frg_container, false, this);
     }
+
 }

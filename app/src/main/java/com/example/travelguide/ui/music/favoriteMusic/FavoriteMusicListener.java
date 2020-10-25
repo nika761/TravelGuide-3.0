@@ -7,5 +7,5 @@ import java.util.List;
 public interface FavoriteMusicListener {
     void onGetFavoriteMusics(List<FavoriteMusicResponse.Favotite_musics> favoriteMusics);
 
-    void onGetFavoriteFailed();
+    void onGetFavoriteFailed(String message);
 }

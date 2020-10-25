@@ -13,50 +13,54 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchMusicPresenter {
+class SearchMusicPresenter {
     private SearchMusicListener searchMusicListener;
     private ApiService apiService;
 
-    public SearchMusicPresenter(SearchMusicListener searchMusicListener) {
+    SearchMusicPresenter(SearchMusicListener searchMusicListener) {
         this.searchMusicListener = searchMusicListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
-    public void getMusics(String accessToken) {
+    void getMusics(String accessToken) {
         apiService.getMusics(accessToken).enqueue(new Callback<MusicResponse>() {
             @Override
             public void onResponse(Call<MusicResponse> call, Response<MusicResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     searchMusicListener.onGetMusic(response.body());
+                } else {
+                    searchMusicListener.onGetError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<MusicResponse> call, Throwable t) {
-                searchMusicListener.onGetResponseError(t.getMessage());
+                searchMusicListener.onGetError(t.getMessage());
             }
         });
     }
 
 
-    public void addFavorite(String accessToken, AddFavoriteMusic addFavoriteMusic) {
+    void addFavorite(String accessToken, AddFavoriteMusic addFavoriteMusic) {
         apiService.addFavoriteMusic(accessToken, addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
             @Override
             public void onResponse(Call<AddFavoriteMusicResponse> call, Response<AddFavoriteMusicResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     searchMusicListener.onFavoriteAdded(response.body());
+                } else {
+                    searchMusicListener.onGetError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<AddFavoriteMusicResponse> call, Throwable t) {
-                searchMusicListener.onGetResponseError(t.getMessage());
+                searchMusicListener.onGetError(t.getMessage());
             }
         });
 
     }
 
-    public void getMoods(String accessToken) {
+    void getMoods(String accessToken) {
         apiService.getMoods(accessToken).enqueue(new Callback<MoodResponse>() {
             @Override
             public void onResponse(Call<MoodResponse> call, Response<MoodResponse> response) {
@@ -64,21 +68,21 @@ public class SearchMusicPresenter {
                     if (response.body().getStatus() == 0 && response.body().getMoods().size() != 0) {
                         searchMusicListener.onGetMoods(response.body().getMoods());
                     } else {
-                        searchMusicListener.onGetResponseError(response.message());
+                        searchMusicListener.onGetError(response.message());
                     }
                 } else {
-                    searchMusicListener.onGetResponseError(response.message());
+                    searchMusicListener.onGetError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<MoodResponse> call, Throwable t) {
-                searchMusicListener.onGetResponseError(t.getMessage());
+                searchMusicListener.onGetError(t.getMessage());
             }
         });
     }
 
-    public void getMusicByMood(String accessToken, ByMoodRequest byMoodRequest) {
+    void getMusicByMood(String accessToken, ByMoodRequest byMoodRequest) {
         apiService.getMusicsByMood(accessToken, byMoodRequest).enqueue(new Callback<MusicResponse>() {
             @Override
             public void onResponse(Call<MusicResponse> call, Response<MusicResponse> response) {
@@ -86,33 +90,34 @@ public class SearchMusicPresenter {
                     if (response.body().getStatus() == 0 && response.body().getAlbum().size() != 0) {
                         searchMusicListener.onGetMusic(response.body());
                     } else {
-                        searchMusicListener.onGetResponseError(response.message());
+                        searchMusicListener.onGetError(response.message());
                     }
                 } else {
-                    searchMusicListener.onGetResponseError(response.message());
+                    searchMusicListener.onGetError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<MusicResponse> call, Throwable t) {
-                searchMusicListener.onGetResponseError(t.getMessage());
+                searchMusicListener.onGetError(t.getMessage());
             }
         });
     }
 
-    public void searchMusic(String accessToken, SearchMusicRequest searchMusicRequest) {
+    void searchMusic(String accessToken, SearchMusicRequest searchMusicRequest) {
         apiService.searchMusic(accessToken, searchMusicRequest).enqueue(new Callback<MusicResponse>() {
             @Override
             public void onResponse(Call<MusicResponse> call, Response<MusicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     searchMusicListener.onGetMusic(response.body());
+                } else {
+                    searchMusicListener.onGetError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<MusicResponse> call, Throwable t) {
-                searchMusicListener.onGetResponseError(t.getMessage());
-
+                searchMusicListener.onGetError(t.getMessage());
             }
         });
     }

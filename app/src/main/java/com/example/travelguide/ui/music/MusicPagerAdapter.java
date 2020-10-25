@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 
 public class MusicPagerAdapter extends FragmentStatePagerAdapter {
-    
+
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ArrayList<String> fragmentsTitle = new ArrayList<>();
 

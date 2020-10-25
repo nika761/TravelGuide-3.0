@@ -24,10 +24,11 @@ public class WebActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terms_policy);
-        checkCurrentFragment();
+
+        checkInputType();
     }
 
-    private void checkCurrentFragment() {
+    private void checkInputType() {
         String type = getIntent().getStringExtra(HelperUI.TYPE);
         if (type != null) {
             switch (type) {
@@ -44,7 +45,7 @@ public class WebActivity extends AppCompatActivity {
                     break;
             }
         } else {
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Type = null", Toast.LENGTH_SHORT).show();
         }
     }
 }

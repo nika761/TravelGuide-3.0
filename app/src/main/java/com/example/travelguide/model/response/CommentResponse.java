@@ -54,15 +54,12 @@ public class CommentResponse {
         @Expose
         @SerializedName("i_can_edit_comment")
         private boolean i_can_edit_comment;
-
         @Expose
         @SerializedName("i_can_reply_comment")
         private boolean i_can_reply_comment;
-
         @Expose
         @SerializedName("comment_liked_by_me")
         private boolean comment_liked_by_me;
-
         @Expose
         @SerializedName("profile_pic")
         private String profile_pic;
@@ -116,7 +113,6 @@ public class CommentResponse {
         public void setI_can_edit_comment(boolean i_can_edit_comment) {
             this.i_can_edit_comment = i_can_edit_comment;
         }
-
 
         public boolean isI_can_reply_comment() {
             return i_can_reply_comment;
@@ -193,6 +189,9 @@ public class CommentResponse {
 
     public static class Comment_reply {
         @Expose
+        @SerializedName("reply_time")
+        private String reply_time;
+        @Expose
         @SerializedName("profile_pic")
         private String profile_pic;
         @Expose
@@ -210,6 +209,14 @@ public class CommentResponse {
         @Expose
         @SerializedName("comment_reply_id")
         private int comment_reply_id;
+
+        public String getReply_time() {
+            return reply_time;
+        }
+
+        public void setReply_time(String reply_time) {
+            this.reply_time = reply_time;
+        }
 
         public String getProfile_pic() {
             return profile_pic;
