@@ -36,26 +36,29 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SearchMusicFragment extends Fragment implements SearchMusicListener {
     private RecyclerView searchMusicRecycler, moodsRecycler;
+    private EditText searchField;
+
     private SearchMusicPresenter searchMusicPresenter;
+    private MediaPlayer musicPlayer;
+
     private int playingPosition;
     private int musicId;
-    private MediaPlayer musicPlayer;
-    private EditText searchField;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_music, container, false);
+        searchMusicPresenter = new SearchMusicPresenter(this);
         searchMusicRecycler = view.findViewById(R.id.search_music_recycler);
         moodsRecycler = view.findViewById(R.id.moods_recycler);
         searchField = view.findViewById(R.id.search_fragment_search_field);
-        searchMusicPresenter = new SearchMusicPresenter(this);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
                 (searchMusicRecycler.getContext()));
 
@@ -81,6 +84,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     public void onGetMusic(MusicResponse musicResponse) {
         if (musicResponse.getStatus() == 0) {
             searchMusicRecycler.setLayoutManager(new LinearLayoutManager(searchMusicRecycler.getContext()));
+            searchMusicRecycler.setHasFixedSize(true);
             searchMusicRecycler.setAdapter(new SearchMusicAdapter(musicResponse.getAlbum(), this, searchField.getContext()));
         } else {
             Toast.makeText(searchField.getContext(), String.valueOf(musicResponse.getStatus()), Toast.LENGTH_SHORT).show();
@@ -187,6 +191,9 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     }
 
     public interface OnChooseMusic {
+
         void onMusicChoose(int musicId);
+
     }
+
 }

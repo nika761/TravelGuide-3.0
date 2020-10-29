@@ -42,7 +42,8 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     private BottomNavigationView bottomNavigationView;
     public boolean commentFieldState;
 
-    public HomePageActivity() {}
+    public HomePageActivity() {
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +73,12 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void loadCommentFragment(int storyId, int postId) {
-        HelperUI.loadFragment(new CommentFragment(storyId, postId), null, R.id.notification_fragment_container, true, this);
+
+        Bundle commentFragmentData = new Bundle();
+        commentFragmentData.putInt("storyId", storyId);
+        commentFragmentData.putInt("postId", postId);
+
+        HelperUI.loadFragment(new CommentFragment(), commentFragmentData, R.id.notification_fragment_container, true, this);
     }
 
     private void initBtmNav() {
@@ -140,11 +146,11 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void signOutFromGoogleAccount() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, task -> {
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
             HelperPref.saveAccessToken(this, null);
-            HelperPref.saveCurrentUserId(this, 0);
-        })
+            HelperPref.saveCurrentUserId(this, 0);})
                 .addOnCanceledListener(this, () -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(this, e -> Toast.makeText(this, e.getMessage() + "Google Failed", Toast.LENGTH_SHORT).show());
 

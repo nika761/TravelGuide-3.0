@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class AddCommentReplyResponse {
 
-
     @Expose
     @SerializedName("message")
     private String message;
@@ -28,4 +27,5 @@ public class AddCommentReplyResponse {
     public void setStatus(int status) {
         this.status = status;
     }
+
 }

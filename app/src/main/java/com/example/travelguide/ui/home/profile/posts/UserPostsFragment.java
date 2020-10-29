@@ -77,12 +77,14 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     @Override
     public void onGetPosts(PostResponse postResponse) {
+
         this.posts = postResponse.getPosts();
 
         UserPostAdapter adapter = new UserPostAdapter(postResponse.getPosts(), this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
+
     }
 
     @Override

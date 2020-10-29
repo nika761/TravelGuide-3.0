@@ -46,27 +46,31 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener {
 
-    private RecyclerView recyclerView;
     private HomeFragmentPresenter homeFragmentPresenter;
-    private Context context;
-    private LinearLayout storyContainer;
+    private List<PostResponse.Posts> posts;
+    private PostAdapter postRecyclerAdapter;
+    private CountDownTimer countDownTimer;
+
     private LottieAnimationView lottieAnimationView;
     private ConstraintLayout loaderConstraint;
-    private int oldPosition = -1;
-    private CountDownTimer countDownTimer;
+    private LinearLayout storyContainer;
+    private RecyclerView recyclerView;
+    private Context context;
+
     private static final long POST_VIEW_TIMER = 3000;
     private static final long POST_VIEW_INTERVAL = 500;
     private static final int SHARING_REQUEST_CODE = 1;
-    private long timeLeft = POST_VIEW_TIMER;
+
     private boolean timerRunning;
     private boolean loading = true;
+    private long timeLeft = POST_VIEW_TIMER;
     private int postId;
+    private int oldPosition = -1;
     private int storyPosition;
     private int pastVisibleItems;
     private int visibleItemCount;
     private int totalItemCount;
-    private PostAdapter postRecyclerAdapter;
-    private List<PostResponse.Posts> posts;
+
 
     public HomeFragment() {
 

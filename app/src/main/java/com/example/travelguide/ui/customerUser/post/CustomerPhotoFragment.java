@@ -21,6 +21,7 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class CustomerPhotoFragment extends Fragment implements CustomerPhotoListener {
     private RecyclerView recyclerView;
+
     private CustomerPhotoPresenter customerPhotoPresenter;
     private int userId;
 

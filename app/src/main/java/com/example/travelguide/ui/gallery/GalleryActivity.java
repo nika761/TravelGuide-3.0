@@ -9,11 +9,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
+import com.example.travelguide.helper.HelperPref;
+import com.example.travelguide.helper.HelperUI;
 import com.example.travelguide.ui.editPost.EditPostActivity;
 import com.google.android.material.tabs.TabLayout;
 
@@ -22,15 +25,17 @@ import java.util.ArrayList;
 
 import static com.example.travelguide.ui.editPost.EditPostActivity.STORIES_PATHS;
 
-public class GalleryActivity extends AppCompatActivity implements GalleryFragment.ItemCountChangeListener, View.OnClickListener {
+public class GalleryActivity extends AppCompatActivity implements GalleryFragment.ItemCountChangeListener {
 
+    private ConstraintLayout fragmentContainer;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Button nextBtn;
-    private ImageButton closeBtn;
-    private ArrayList<String> pickedItems = new ArrayList<>();
+
     private GalleryAdapterMin galleryAdapterMin;
+    private ArrayList<String> pickedItems = new ArrayList<>();
+
     private final int MAX_SIZE_WITH_VIDEO = 8;
     private final int MAX_SIZE_DEFAULT = 9;
     boolean isVideo = true;
@@ -39,10 +44,16 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_picker);
+
         iniUI();
-        setViewPager(viewPager);
-        tabLayout.setupWithViewPager(viewPager);
+
+        if (HelperPref.getCurrentUserRole(this) == 0)
+            loadGalleryFragment();
+        else
+            iniViewPager(viewPager);
+
         initRecycler();
+
     }
 
     private void iniUI() {
@@ -51,10 +62,20 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         recyclerView = findViewById(R.id.choosed_photos_min_recycler);
 
         nextBtn = findViewById(R.id.next_btn);
-        nextBtn.setOnClickListener(this);
+        nextBtn.setOnClickListener(v -> {
+            if (pickedItems.size() >= 1) {
+                Intent intent = new Intent(GalleryActivity.this, EditPostActivity.class);
+                intent.putStringArrayListExtra(STORIES_PATHS, pickedItems);
+                startActivity(intent);
+            } else {
+                Toast.makeText(GalleryActivity.this, "Please choose item", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        closeBtn = findViewById(R.id.close_btn);
-        closeBtn.setOnClickListener(this);
+        ImageButton closeBtn = findViewById(R.id.close_btn);
+        closeBtn.setOnClickListener(v -> finish());
+
+        fragmentContainer = findViewById(R.id.gallery_fragment_container);
     }
 
     private void initRecycler() {
@@ -64,9 +85,30 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         recyclerView.setAdapter(galleryAdapterMin);
     }
 
-    private void setViewPager(ViewPager viewPager) {
+    private void loadGalleryFragment() {
+
+        fragmentContainer.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+
+        GalleryFragment galleryFragment = new GalleryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("is_image", true);
+        HelperUI.loadFragment(galleryFragment, bundle, R.id.gallery_fragment_container, false, this);
+
+    }
+
+    private void iniViewPager(ViewPager viewPager) {
+
+        fragmentContainer.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
+
         GalleryPagerAdapter galleryPagerAdapter = new GalleryPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(galleryPagerAdapter);
+
+        tabLayout.setupWithViewPager(viewPager);
+
     }
 
     private void choosedItemRecyclerVisibility(boolean isShow) {
@@ -136,22 +178,4 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.next_btn:
-                if (pickedItems.size() >= 1) {
-                    Intent intent = new Intent(GalleryActivity.this, EditPostActivity.class);
-                    intent.putStringArrayListExtra(STORIES_PATHS, pickedItems);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "Please choose item", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.close_btn:
-                finish();
-                break;
-        }
-    }
 }

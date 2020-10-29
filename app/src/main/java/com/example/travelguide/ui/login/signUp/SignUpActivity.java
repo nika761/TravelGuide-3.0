@@ -52,18 +52,18 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
     private SignUpPresenter signUpPresenter;
+    private File profilePhotoFile;
 
     private String photoUrl, userName, userSurname, nickName, birthDate, phoneIndex, phoneNumber, nickNameFirst, nickNameSecond;
     private final static int PICK_IMAGE = 29;
-    private File profilePhotoFile;
-    private long timeStamp;
     private int blackColor, gender;
+    private long timeStamp;
 
-    private LinearLayout phoneNumberContainer;
     private EditText eName, eSurname, eNickName, eMail, ePhoneNumber, ePassword, eConfirmPassword;
     private TextView eNameHead, eSurnameHead, eNickNameHead, registerBirthDate, registerBirthDateHead, eEmailHead,
             ePhoneNumberHead, ePasswordHead, eConfirmPasswordHead, registerNickOffer, registerNickOfferOne,
             registerNickOfferTwo;
+    private LinearLayout phoneNumberContainer;
     private LottieAnimationView loader;
     private CircleImageView profileImage;
     private FrameLayout loaderBackground;
@@ -153,12 +153,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
                 case R.id.radio_male:
                     gender = 0;
-                    Log.e("gender", String.valueOf(gender));
                     break;
 
                 case R.id.radio_female:
                     gender = 1;
-                    Log.e("gender", String.valueOf(gender));
                     break;
 
                 case R.id.radio_other:
@@ -257,6 +255,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
     @Override
     public void onError(String message) {
+        loader.setVisibility(View.GONE);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

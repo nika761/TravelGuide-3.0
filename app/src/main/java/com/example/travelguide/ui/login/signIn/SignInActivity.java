@@ -268,12 +268,12 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
             @Override
             public void onCancel() {
-
+                Toast.makeText(SignInActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d("fbShame", error.toString());
+                Toast.makeText(SignInActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -291,13 +291,16 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
     @Override
     public void onVerify(VerifyEmailResponse verifyEmailResponse) {
+
         HelperPref.saveAccessToken(this, verifyEmailResponse.getAccess_token());
         HelperPref.saveCurrentUserId(this, verifyEmailResponse.getUser().getId());
+//        HelperPref.saveCurrentUserRole(this, verifyEmailResponse.getUser().getRole());
         HelperPref.saveCurrentPlatform(this, HelperPref.TRAVEL_GUIDE);
 
         Intent intent = new Intent(this, HomePageActivity.class);
         startActivity(intent);
         finish();
+
     }
 
     @Override
@@ -342,15 +345,17 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
         switch (loginResponse.getStatus()) {
             case 0:
 
-                HelperPref.saveAccessToken(this, loginResponse.getAccess_token());
                 HelperPref.saveUser(this, loginResponse.getUser());
+                HelperPref.saveAccessToken(this, loginResponse.getAccess_token());
                 HelperPref.saveCurrentUserId(this, loginResponse.getUser().getId());
+                HelperPref.saveCurrentUserRole(this, loginResponse.getUser().getRole());
                 HelperPref.saveCurrentPlatform(this, HelperPref.TRAVEL_GUIDE);
 
                 Intent intent = new Intent(this, HomePageActivity.class);
                 loadingVisibility(false);
                 startActivity(intent);
                 finish();
+
                 break;
 
             case 1:

@@ -186,105 +186,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/post_description" />
 
-                <!--                <TextView-->
-                <!--                    android:id="@+id/hashtags"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="2dp"-->
-                <!--                    android:maxLines="2"-->
-                <!--                    android:text="#lamborghini #ferrari #maserati #Pagani #modena #italy #automotive #autotour"-->
-                <!--                    android:textColor="@color/white"-->
-                <!--                    android:textSize="14sp"-->
-                <!--                    app:layout_constraintBottom_toTopOf="@id/music_name_post"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent" />-->
-
-                <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
-                <!--                    android:id="@+id/hashtag_container"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:visibility="gone">-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/hashtag_1"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginStart="5dp"-->
-                <!--                        android:autoSizeTextType="uniform"-->
-                <!--                        app:layout_constraintStart_toStartOf="parent"-->
-                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/hashtag_2"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginStart="5dp"-->
-                <!--                        android:autoSizeTextType="uniform"-->
-                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_1"-->
-                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/hashtag_3"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginStart="5dp"-->
-                <!--                        android:autoSizeTextType="uniform"-->
-                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_2"-->
-                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/hashtag_4"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginStart="5dp"-->
-                <!--                        android:autoSizeTextType="uniform"-->
-                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_3"-->
-                <!--                        app:layout_constraintTop_toTopOf="parent" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/hashtag_5"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginStart="5dp"-->
-                <!--                        android:autoSizeTextType="uniform"-->
-                <!--                        app:layout_constraintStart_toStartOf="parent"-->
-                <!--                        app:layout_constraintTop_toBottomOf="@id/hashtag_1" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/hashtag_6"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginStart="5dp"-->
-                <!--                        android:autoSizeTextType="uniform"-->
-                <!--                        app:layout_constraintStart_toEndOf="@+id/hashtag_5"-->
-                <!--                        app:layout_constraintTop_toTopOf="@id/hashtag_5" />-->
-
-                <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/hashtag_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
-
-                <!--                <co.hkm.soltag.TagContainerLayout-->
-                <!--                    android:id="@+id/hashtags"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    app:container_background_color="@android:color/transparent"-->
-                <!--                    app:container_border_color="@android:color/transparent"-->
-                <!--                    app:container_enable_drag="false"-->
-                <!--                    app:horizontal_interval="1dp"-->
-                <!--                    app:layout_constraintBottom_toTopOf="@id/music_name_post"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:tag_background_color="@android:color/transparent"-->
-                <!--                    app:tag_border_color="@android:color/transparent"-->
-                <!--                    app:tag_horizontal_padding="2dp"-->
-                <!--                    app:tag_text_color="@color/white"-->
-                <!--                    app:tag_theme="none"-->
-                <!--                    app:tag_vertical_padding="2dp"-->
-                <!--                    app:vertical_interval="1dp" />-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -302,7 +208,7 @@
 
                     <TextView
                         android:id="@+id/music_name_post"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="5dp"

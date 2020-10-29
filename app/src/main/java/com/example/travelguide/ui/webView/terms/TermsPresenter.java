@@ -9,33 +9,33 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-class TermsPresenter {
-    private TermsListener iTermsFragment;
+class TermsPresenter implements TermsContract.Presenter{
+    private TermsContract.View view;
     private ApiService apiService;
 
-    TermsPresenter(TermsListener iTermsFragment) {
-        this.iTermsFragment = iTermsFragment;
+    TermsPresenter(TermsContract.View view) {
+        this.view = view;
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void sendTermsResponse(TermsPolicyRequest termsPolicyRequest) {
+    @Override
+    public void getTerms(TermsPolicyRequest termsPolicyRequest) {
         apiService.getTerms(termsPolicyRequest).enqueue(new Callback<TermsPolicyResponse>() {
             @Override
             public void onResponse(Call<TermsPolicyResponse> call, Response<TermsPolicyResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0)
-                        iTermsFragment.onGetTerms(response.body().getTerms());
+                        view.onGetTerms(response.body().getTerms());
                 } else {
-                    iTermsFragment.onGetError(response.message());
+                    view.onGetError(response.message());
                 }
 
             }
 
             @Override
             public void onFailure(Call<TermsPolicyResponse> call, Throwable t) {
-                iTermsFragment.onGetError(t.getMessage());
+                view.onGetError(t.getMessage());
             }
         });
     }
-
 }

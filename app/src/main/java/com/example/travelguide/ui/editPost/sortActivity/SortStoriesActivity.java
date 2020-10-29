@@ -35,7 +35,9 @@ public class SortStoriesActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sort_stories);
+
         this.itemMedia = (List<ItemMedia>) getIntent().getSerializableExtra(STORIES_PATHS);
+
         initUI();
         initRecycler();
     }
@@ -46,7 +48,6 @@ public class SortStoriesActivity extends AppCompatActivity implements View.OnCli
 
         backBtn = findViewById(R.id.sort_stories_back_btn);
         backBtn.setOnClickListener(this);
-
     }
 
     private void initRecycler() {

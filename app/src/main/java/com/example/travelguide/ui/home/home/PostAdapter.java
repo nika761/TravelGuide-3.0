@@ -56,14 +56,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         }
     }
 
-    public void setStoryLike(int type, int position, int likeCount) {
-        storyRecyclerAdapter.setStoryLike(type, position, likeCount);
-    }
-
-    public void setStoryFavorite(int type, int position, int favoriteCount) {
-        storyRecyclerAdapter.setStoryFavorite(type, position, favoriteCount);
-    }
-
     int getPostId() {
         return postId;
     }

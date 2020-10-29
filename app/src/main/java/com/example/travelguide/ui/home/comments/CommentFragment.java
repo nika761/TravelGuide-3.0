@@ -53,24 +53,26 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
     private LottieAnimationView loading;
     private RecyclerView commentRecycler;
     private Context context;
-    private TextView commentsHead;
+    private TextView commentsHead, loadMore;
     private EditText commentField;
     private ImageButton addCommentBtn;
+
+    private CommentAdapter commentAdapter;
 
     private boolean isReply;
     private int commentId;
     private int storyId;
     private int postId;
 
-    public CommentFragment(int storyId, int postId) {
-        this.storyId = storyId;
-        this.postId = postId;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
+
+        if (getArguments() != null) {
+            this.storyId = getArguments().getInt("storyId");
+            this.postId = getArguments().getInt("postId");
+        }
 
         presenter = new CommentFragmentPresenter(this);
 
@@ -79,6 +81,7 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
 
         loading = view.findViewById(R.id.loading_comment);
         commentField = view.findViewById(R.id.comments_add_txt);
+        loadMore = view.findViewById(R.id.comments_load_more);
 
         ImageButton closeBtn = view.findViewById(R.id.comments_close_btn);
         closeBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
@@ -107,7 +110,8 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId));
+        presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId, 0));
+
     }
 
     @Override
@@ -125,18 +129,30 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
 
     @Override
     public void onGetComments(CommentResponse commentResponse) {
-        commentsHead.setText(MessageFormat.format("Comments  {0}", commentResponse.getCount()));
+        if (commentAdapter == null) {
+            commentsHead.setText(MessageFormat.format("Comments  {0}", commentResponse.getCount()));
 
-        CommentAdapter commentAdapter = new CommentAdapter(commentResponse.getPost_story_comments(), this);
-        commentRecycler.setLayoutManager(new LinearLayoutManager(context));
-        commentRecycler.setAdapter(commentAdapter);
+            commentAdapter = new CommentAdapter(this);
+            commentAdapter.setComments(commentResponse.getPost_story_comments());
+            commentRecycler.setLayoutManager(new LinearLayoutManager(context));
+            commentRecycler.setAdapter(commentAdapter);
 
-        loading.setVisibility(View.GONE);
+            loading.setVisibility(View.GONE);
+
+        } else {
+            commentAdapter.setComments(commentResponse.getPost_story_comments());
+        }
+
     }
 
     @Override
     public void onAddComment(AddCommentResponse addCommentResponse) {
         loading.setVisibility(View.GONE);
+
+        commentFieldFocus(false);
+
+        commentAdapter.setComments(addCommentResponse.getPost_story_comments());
+
     }
 
     @Override
@@ -153,11 +169,37 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
     public void onReplyChoose(int commendId) {
         this.commentId = commendId;
         this.isReply = true;
-        commentField.requestFocus();
+
+        commentFieldFocus(true);
+    }
+
+    @Override
+    public void onMoreCommentCallback(boolean visible, int commentId) {
+
+        if (visible) {
+            loadMore.setVisibility(View.VISIBLE);
+            loadMore.setOnClickListener(v -> presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId, commentId)));
+        } else {
+            loadMore.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void commentFieldFocus(boolean requestFocus) {
+
         if (getActivity() != null) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null)
-                imm.showSoftInput(commentField, InputMethodManager.SHOW_FORCED);
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+
+                if (requestFocus) {
+                    commentField.requestFocus();
+                    inputMethodManager.showSoftInput(commentField, InputMethodManager.SHOW_FORCED);
+                } else {
+                    commentField.getText().clear();
+                    commentField.clearFocus();
+                    inputMethodManager.hideSoftInputFromWindow(commentField.getWindowToken(), 0);
+                }
+            }
         }
     }
 
@@ -191,6 +233,7 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
         switch (v.getId()) {
 
             case R.id.comments_add_image_btn:
+
                 loading.setVisibility(View.VISIBLE);
 
                 if (isReply) {

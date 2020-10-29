@@ -42,7 +42,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SearchMusicHolder holder, int position) {
-        holder.bindUI(position);
+        holder.bindView(position);
     }
 
     @Override
@@ -77,11 +77,13 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             playBtn.setOnClickListener(this);
         }
 
-        void bindUI(int position) {
+        void bindView(int position) {
             musicTitle.setText(musics.get(position).getTitle());
             musicTitle.setSelected(true);
+
             musicAuthor.setText(musics.get(position).getAuthor());
             musicAuthor.setSelected(true);
+
             musicDuration.setText(musics.get(position).getDuration());
 
             if (musics.get(position).getNew_label() == 1) {
@@ -128,14 +130,19 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                     if (playingPosition == getLayoutPosition()) {
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+
                         searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
                         listener.onMusicChoose(0);
+
                         playingPosition = -1;
                         notifyDataSetChanged();
+
                     } else {
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+
                         searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+
                         listener.onMusicChoose(musics.get(getLayoutPosition()).getMusic_id());
                         playingPosition = getLayoutPosition();
                         notifyDataSetChanged();

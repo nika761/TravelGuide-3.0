@@ -2,10 +2,7 @@ package com.example.travelguide.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import com.example.travelguide.model.User;
-import com.example.travelguide.model.UserModel;
 import com.example.travelguide.model.response.LoginResponse;
 import com.example.travelguide.model.response.ProfileResponse;
 import com.google.gson.Gson;
@@ -16,15 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelperPref {
+
+    public static final String FACEBOOK = "facebook";
+    public static final String GOOGLE = "google";
+    public static final String TRAVEL_GUIDE = "travel_guide";
+
     private static final String LANGUAGE_PREFERENCES = "language_preference";
     private static final String LANGUAGE_KEY = "language_Id";
 
     private static final String USER_PREFERENCES = "users_preference";
     private static final String USER_KEY = "users";
-
-    public static final String FACEBOOK = "facebook";
-    public static final String GOOGLE = "google";
-    public static final String TRAVEL_GUIDE = "travel_guide";
 
     private static final String LOGGED_USER_PREFERENCES = "logged_user_preference";
     private static final String LOGGED_USER_KEY = "logged_user";
@@ -38,13 +36,15 @@ public class HelperPref {
     private static final String USER_ID_PREF = "user_id_prefs";
     private static final String USER_ID_KEY = "user_id";
 
+    private static final String USER_ROLE_PREF = "user_role_prefs";
+    private static final String USER_ROLE_KEY = "user_role";
+
     private static final String PLATFORM_PREF = "platform_pref";
     private static final String PLATFORM_KEY = "platform_key";
 
-//    public enum LoginTypeEnum {
+//    public enum SignedAccountType {
 //        GOOGLE, FACEBOOK, TRAVEL_GUIDE
 //    }
-
 
     public static void saveUserProfileInfo(Context context, ProfileResponse.Userinfo userinfo) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
@@ -58,6 +58,22 @@ public class HelperPref {
         Gson gson = new Gson();
         return gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null),
                 ProfileResponse.Userinfo.class);
+    }
+
+    public static void saveCurrentUserRole(Context context, int userRole) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_ROLE_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(USER_ROLE_KEY, userRole);
+        editor.apply();
+    }
+
+    public static int getCurrentUserRole(Context context) {
+        int userRole = 0;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_ROLE_PREF, Context.MODE_PRIVATE);
+        if (sharedPreferences.getInt(USER_ROLE_KEY, 0) != 0) {
+            userRole = sharedPreferences.getInt(USER_ROLE_KEY, 0);
+        }
+        return userRole;
     }
 
     public static void saveCurrentUserId(Context context, int userId) {

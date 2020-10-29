@@ -24,20 +24,20 @@ public class CustomerProfilePresenter {
         apiService.getProfile(accessToken, profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().getStatus() == 0) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus() == 0) {
                         customerProfileListener.onGetProfile(response.body());
                     } else {
-                        customerProfileListener.onGerProfileError(response.message());
+                        customerProfileListener.onError(response.body().getStatus() + response.message());
                     }
                 } else {
-                    customerProfileListener.onGerProfileError(response.message());
+                    customerProfileListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
-                customerProfileListener.onGerProfileError(t.getMessage());
+                customerProfileListener.onError(t.getMessage());
             }
         });
     }
@@ -50,14 +50,14 @@ public class CustomerProfilePresenter {
                     if (response.body() != null) {
                         customerProfileListener.onFollowSuccess(response.body());
                     } else {
-                        customerProfileListener.onFollowError(response.message());
+                        customerProfileListener.onError(response.message());
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<FollowResponse> call, Throwable t) {
-                customerProfileListener.onFollowError(t.getMessage());
+                customerProfileListener.onError(t.getMessage());
 
             }
         });

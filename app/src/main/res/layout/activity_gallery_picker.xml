@@ -64,6 +64,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/media_tab" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gallery_fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@id/choosed_photos_min_recycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/all" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/choosed_photos_min_recycler"
         android:layout_width="0dp"

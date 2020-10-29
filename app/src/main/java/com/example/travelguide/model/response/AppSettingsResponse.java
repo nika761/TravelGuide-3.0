@@ -16,19 +16,23 @@ public class AppSettingsResponse {
         return app_settings;
     }
 
-    public void setApp_settings(App_settings app_settings) {
-        this.app_settings = app_settings;
-    }
-
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public static class App_settings {
+        @Expose
+        @SerializedName("story_video_template_for_photo")
+        private int story_video_template_for_photo;
+        @Expose
+        @SerializedName("story_photo_crop_height")
+        private int story_photo_crop_height;
+        @Expose
+        @SerializedName("story_photo_crop_width")
+        private int story_photo_crop_width;
+        @Expose
+        @SerializedName("age_restriction")
+        private int age_restriction;
         @Expose
         @SerializedName("output_video_from_photo_bitrate")
         private int output_video_from_photo_bitrate;
@@ -60,150 +64,102 @@ public class AppSettingsResponse {
         @SerializedName("post_view_deley")
         private int post_view_deley;
         @Expose
-        @SerializedName("storage_video_duration_max")
-        private int storage_video_duration_max;
+        @SerializedName("story_video_duration_max")
+        private int story_video_duration_max;
         @Expose
         @SerializedName("post_description_lenght")
         private int post_description_lenght;
         @Expose
-        @SerializedName("storage_photo_quantity")
-        private int storage_photo_quantity;
+        @SerializedName("story_photo_quantity")
+        private int story_photo_quantity;
         @Expose
-        @SerializedName("storage_photo_duration")
-        private int storage_photo_duration;
+        @SerializedName("story_photo_duration")
+        private int story_photo_duration;
         @Expose
-        @SerializedName("storage_video_duration_min")
-        private int storage_video_duration_min;
+        @SerializedName("story_video_duration_min")
+        private int story_video_duration_min;
         @Expose
         @SerializedName("post_videos_duration")
         private int post_videos_duration;
 
-        public int getOutput_video_from_photo_bitrate() {
-            return output_video_from_photo_bitrate;
+        public int getStory_video_template_for_photo() {
+            return story_video_template_for_photo;
         }
 
-        public void setOutput_video_from_photo_bitrate(int output_video_from_photo_bitrate) {
-            this.output_video_from_photo_bitrate = output_video_from_photo_bitrate;
+        public int getStory_photo_crop_height() {
+            return story_photo_crop_height;
+        }
+
+        public int getStory_photo_crop_width() {
+            return story_photo_crop_width;
+        }
+
+        public int getAge_restriction() {
+            return age_restriction;
+        }
+
+        public int getOutput_video_from_photo_bitrate() {
+            return output_video_from_photo_bitrate;
         }
 
         public int getOutput_video_bitrate() {
             return output_video_bitrate;
         }
 
-        public void setOutput_video_bitrate(int output_video_bitrate) {
-            this.output_video_bitrate = output_video_bitrate;
-        }
-
         public int getProfile_posts_quntity_per_page() {
             return profile_posts_quntity_per_page;
-        }
-
-        public void setProfile_posts_quntity_per_page(int profile_posts_quntity_per_page) {
-            this.profile_posts_quntity_per_page = profile_posts_quntity_per_page;
         }
 
         public int getHome_posts_quntity_per_page() {
             return home_posts_quntity_per_page;
         }
 
-        public void setHome_posts_quntity_per_page(int home_posts_quntity_per_page) {
-            this.home_posts_quntity_per_page = home_posts_quntity_per_page;
-        }
-
         public int getOpenapp_redirect_link() {
             return openapp_redirect_link;
-        }
-
-        public void setOpenapp_redirect_link(int openapp_redirect_link) {
-            this.openapp_redirect_link = openapp_redirect_link;
         }
 
         public int getIos_download_link() {
             return ios_download_link;
         }
 
-        public void setIos_download_link(int ios_download_link) {
-            this.ios_download_link = ios_download_link;
-        }
-
         public int getAndroid_download_link() {
             return android_download_link;
-        }
-
-        public void setAndroid_download_link(int android_download_link) {
-            this.android_download_link = android_download_link;
         }
 
         public int getRegistration_deley() {
             return registration_deley;
         }
 
-        public void setRegistration_deley(int registration_deley) {
-            this.registration_deley = registration_deley;
-        }
-
         public int getPost_location_radius() {
             return post_location_radius;
-        }
-
-        public void setPost_location_radius(int post_location_radius) {
-            this.post_location_radius = post_location_radius;
         }
 
         public int getPost_view_deley() {
             return post_view_deley;
         }
 
-        public void setPost_view_deley(int post_view_deley) {
-            this.post_view_deley = post_view_deley;
-        }
-
-        public int getStorage_video_duration_max() {
-            return storage_video_duration_max;
-        }
-
-        public void setStorage_video_duration_max(int storage_video_duration_max) {
-            this.storage_video_duration_max = storage_video_duration_max;
+        public int getStory_video_duration_max() {
+            return story_video_duration_max;
         }
 
         public int getPost_description_lenght() {
             return post_description_lenght;
         }
 
-        public void setPost_description_lenght(int post_description_lenght) {
-            this.post_description_lenght = post_description_lenght;
+        public int getStory_photo_quantity() {
+            return story_photo_quantity;
         }
 
-        public int getStorage_photo_quantity() {
-            return storage_photo_quantity;
+        public int getStory_photo_duration() {
+            return story_photo_duration;
         }
 
-        public void setStorage_photo_quantity(int storage_photo_quantity) {
-            this.storage_photo_quantity = storage_photo_quantity;
-        }
-
-        public int getStorage_photo_duration() {
-            return storage_photo_duration;
-        }
-
-        public void setStorage_photo_duration(int storage_photo_duration) {
-            this.storage_photo_duration = storage_photo_duration;
-        }
-
-        public int getStorage_video_duration_min() {
-            return storage_video_duration_min;
-        }
-
-        public void setStorage_video_duration_min(int storage_video_duration_min) {
-            this.storage_video_duration_min = storage_video_duration_min;
+        public int getStory_video_duration_min() {
+            return story_video_duration_min;
         }
 
         public int getPost_videos_duration() {
             return post_videos_duration;
-        }
-
-        public void setPost_videos_duration(int post_videos_duration) {
-            this.post_videos_duration = post_videos_duration;
         }
     }
 }

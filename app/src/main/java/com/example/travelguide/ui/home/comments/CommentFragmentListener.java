@@ -17,6 +17,8 @@ public interface CommentFragmentListener {
 
     void onReplyChoose(int commendId);
 
+    void onMoreCommentCallback(boolean visible, int commentId);
+
     void onCommentLiked(LikeCommentResponse likeCommentResponse);
 
     void onError(String message);

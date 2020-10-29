@@ -57,24 +57,18 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
 
-    private TextView nickName;
-    private TextView name;
-    private TextView userBioText;
-    private TextView bioText;
-    private TextView following;
-    private TextView follower;
-    private TextView reaction;
-    private View myLayout;
+    private TextView nickName, name, userBioText, bioText, following, follower, reaction;
     private ImageButton bioVisibleBtn, bioInvisibleBtn;
-    private CircleImageView userPrfImage;
     private LottieAnimationView lottieAnimationView;
-    private ImageView userBioTextState;
+    private CircleImageView userPrfImage;
     private ActionBarDrawerToggle toggle;
+    private ImageView userBioTextState;
     private Context context;
+    private View myLayout;
 
-    private ProfileFragmentPresenter profileFragmentPresenter;
-    private int userId;
+    private ProfileFragmentPresenter presenter;
     private String userName;
+    private int userId;
 
     @Nullable
     @Override
@@ -89,6 +83,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         toggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.open, R.string.close);
         toggle.syncState();
+
         toolbar.setNavigationOnClickListener(v -> {
             drawerLayout.addDrawerListener(toggle);
             drawerLayout.openDrawer(GravityCompat.START);
@@ -97,7 +92,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         NavigationView navigationView = view.findViewById(R.id.burger_navigation_view);
         navigationView.setNavigationItemSelectedListener(navListener);
 
-        profileFragmentPresenter = new ProfileFragmentPresenter(this);
+        presenter = new ProfileFragmentPresenter(this);
 
         lottieAnimationView = view.findViewById(R.id.loader_profile);
 
@@ -146,7 +141,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         lottieAnimationView.setVisibility(View.VISIBLE);
-        profileFragmentPresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(userId));
+        presenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(userId));
     }
 
     @Override
@@ -163,8 +158,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.settings_language:
-                ChangeLangFragment f = new ChangeLangFragment();
-                f.show(getChildFragmentManager(), "fr");
+                ChangeLangFragment changeLangFragment = new ChangeLangFragment();
+                changeLangFragment.show(getChildFragmentManager(), "fr");
                 break;
 
             case R.id.settings_about:
@@ -194,13 +189,13 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                     if (loginType != null) {
                         switch (loginType) {
                             case FACEBOOK:
-                                ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromFbAccount();
+                                ((HomePageActivity) context).signOutFromFbAccount();
                                 break;
                             case GOOGLE:
-                                ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromGoogleAccount();
+                                ((HomePageActivity) context).signOutFromGoogleAccount();
                                 break;
                             case TRAVEL_GUIDE:
-                                ((HomePageActivity) Objects.requireNonNull(getActivity())).signOutFromAccount();
+                                ((HomePageActivity) context).signOutFromAccount();
                                 break;
                         }
                     } else {
@@ -244,6 +239,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onGetProfile(ProfileResponse.Userinfo userInfo) {
 
+        HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
+
         HelperPref.saveUserProfileInfo(context, userInfo);
 
         lottieAnimationView.setVisibility(View.GONE);
@@ -252,23 +249,28 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         userName = userInfo.getName() + " " + userInfo.getLastname();
         name.setText(String.format("%s %s", userInfo.getName(), userInfo.getLastname()));
         nickName.setText(String.format("@%s", userInfo.getNickname()));
+
         bioText.setText(userInfo.getBiography());
+
         follower.setText(String.valueOf(userInfo.getFollower()));
         following.setText(String.valueOf(userInfo.getFollowing()));
         reaction.setText(String.valueOf(userInfo.getReactions()));
-        HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
+
         this.userId = userInfo.getId();
+
     }
 
     @Override
     public void onGetError(String message) {
+        lottieAnimationView.setVisibility(View.GONE);
+
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
-        if (profileFragmentPresenter != null) {
-            profileFragmentPresenter = null;
+        if (presenter != null) {
+            presenter = null;
         }
         super.onDestroy();
     }

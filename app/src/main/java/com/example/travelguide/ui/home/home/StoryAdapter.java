@@ -45,9 +45,9 @@ import static com.example.travelguide.helper.HelperUI.UI_LOCATION;
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder> {
 
     private List<PostResponse.Post_stories> stories;
-    private StoryHolder storyHolder;
     private PostResponse.Posts currentPost;
     private HomeFragmentListener homeFragmentListener;
+
     private StoryView storyView;
 
     StoryAdapter(HomeFragmentListener homeFragmentListener) {
@@ -62,11 +62,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
     @Override
     public void onBindViewHolder(@NonNull StoryHolder storyHolder, int position) {
-        this.storyHolder = storyHolder;
-        Log.e("postsdsdsd", currentPost.getPost_id() + "post id from story");
-
-//        storyHolder.storyCover.setVisibility(View.VISIBLE);
-//        HelperMedia.loadPhoto(storyHolder.like.getContext(), currentPost.getCover(), storyHolder.storyCover);
 
         storyHolder.setVideoItem();
 
@@ -108,10 +103,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         storyHolder.storyComments.setText(String.valueOf(stories.get(position).getStory_comments()));
         storyHolder.storyShares.setText(String.valueOf(currentPost.getPost_shares()));
         storyHolder.storyFavorites.setText(String.valueOf(currentPost.getPost_favorites()));
+
         storyHolder.musicName.setText(currentPost.getMusic_text());
         storyHolder.musicName.setSelected(true);
-
-//        viewHolder.tagContainerLayout.setTags(currentPost.getHashtags());
 
         if (currentPost.getPost_locations().size() != 0)
             storyHolder.location.setText(currentPost.getPost_locations().get(0).getAddress());
@@ -126,56 +120,12 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         return stories.size();
     }
 
-    void setStoryLike(int type, int position, int likeCounts) {
-        switch (type) {
-            case 0:
-                storyHolder.like.setBackground(storyHolder.like.getContext().getResources().
-                        getDrawable(R.drawable.emoji_heart_red, null));
-                storyHolder.storyLikes.setText(String.valueOf(likeCounts));
-                stories.get(position).setStory_like_by_me(true);
-                stories.get(position).setStory_likes(likeCounts);
-                notifyItemChanged(position);
-                break;
-
-            case 1:
-                storyHolder.like.setBackground(storyHolder.like.getContext().getResources().
-                        getDrawable(R.drawable.emoji_heart, null));
-                storyHolder.storyLikes.setText(String.valueOf(likeCounts));
-                stories.get(position).setStory_like_by_me(false);
-                stories.get(position).setStory_likes(likeCounts);
-                notifyItemChanged(position);
-                break;
-        }
-    }
-
-    void setStoryFavorite(int type, int position, int favoritesCount) {
-        switch (type) {
-            case 0:
-                storyHolder.favorite.setBackground(storyHolder.like.getContext().getResources().
-                        getDrawable(R.drawable.emoji_link_yellow, null));
-                storyHolder.storyFavorites.setText(String.valueOf(favoritesCount));
-                notifyItemChanged(position);
-                break;
-
-            case 1:
-                storyHolder.like.setBackground(storyHolder.like.getContext().getResources().
-                        getDrawable(R.drawable.emoji_link, null));
-                storyHolder.storyFavorites.setText(String.valueOf(favoritesCount));
-                notifyItemChanged(position);
-                break;
-        }
-    }
-
-    public StoryHolder getStoryHolder() {
-        return storyHolder;
-    }
-
     void setStories(List<PostResponse.Post_stories> stories) {
         this.stories = stories;
         notifyDataSetChanged();
     }
 
-    public void setStoryView(StoryView storyView) {
+    void setStoryView(StoryView storyView) {
         this.storyView = storyView;
     }
 
@@ -227,24 +177,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
             profileImage = itemView.findViewById(R.id.user_image_post);
             profileImage.setOnClickListener(this);
-
-//            tagContainerLayout = itemView.findViewById(R.id.hashtags);
-//            tagContainerLayout.setTagMaxLength(9);
-
-//            tagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
-//                @Override
-//                public void onTagClick(int position, String text) {
-//                    Intent postHashtagIntent = new Intent(videoItem.getContext(), SearchPostActivity.class);
-//                    postHashtagIntent.putExtra("search_type", UI_HASHTAG);
-//                    postHashtagIntent.putExtra("search_hashtag", text);
-//                    videoItem.getContext().startActivity(postHashtagIntent);
-//                }
-//
-//                @Override
-//                public void onTagLongClick(int position, String text) {
-//
-//                }
-//            });
 
         }
 

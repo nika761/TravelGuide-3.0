@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperMedia;
+import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.helper.HelperSystem;
 
 import java.util.ArrayList;
@@ -28,15 +30,19 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_media, container, false);
         RecyclerView recyclerView = layout.findViewById(R.id.media_recyclerview);
+
         if (getArguments() != null) {
             adapter = new GalleryAdapter(context, getArguments().getBoolean("is_image"));
             GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(adapter);
+
             if (HelperSystem.isReadStoragePermission(getActivity())) {
                 adapter.setItems(fetchMedia(getArguments().getBoolean("is_image") ? 1 : 2));
             }
+
         }
+
         return layout;
     }
 
@@ -49,6 +55,7 @@ public class GalleryFragment extends Fragment {
         ArrayList<String> listOfAllItems;
         if (type == 1) {
             listOfAllItems = HelperMedia.getImagesPathByDate(context);
+
             return listOfAllItems;
         }
         listOfAllItems = HelperMedia.getVideosPathByDate(context);

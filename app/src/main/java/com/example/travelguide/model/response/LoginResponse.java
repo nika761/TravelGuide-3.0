@@ -44,6 +44,9 @@ public class LoginResponse {
 
     public static class User {
         @Expose
+        @SerializedName("role")
+        private int role;
+        @Expose
         @SerializedName("updated_at")
         private String updated_at;
         @Expose
@@ -89,25 +92,8 @@ public class LoginResponse {
         @SerializedName("id")
         private int id;
 
-        public User(String updated_at, String created_at, String profile_pic, String country, String date_of_birth, String user_lang, int admin, String email_verified_at, int gender, String phone_number, String email, String nickname, String lastname, String name, int id) {
-            this.updated_at = updated_at;
-            this.created_at = created_at;
-            this.profile_pic = profile_pic;
-            this.country = country;
-            this.date_of_birth = date_of_birth;
-            this.user_lang = user_lang;
-            this.admin = admin;
-            this.email_verified_at = email_verified_at;
-            this.gender = gender;
-            this.phone_number = phone_number;
-            this.email = email;
-            this.nickname = nickname;
-            this.lastname = lastname;
-            this.name = name;
-            this.id = id;
-        }
-
-        public User() {
+        public int getRole() {
+            return role;
         }
 
         public String getUpdated_at() {

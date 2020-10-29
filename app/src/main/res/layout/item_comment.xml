@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="3dp"
-    android:paddingTop="7dp"
+    android:paddingTop="5dp"
     android:paddingEnd="3dp"
-    android:paddingBottom="7dp">
+    android:paddingBottom="25dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/comments_user_image"
@@ -48,10 +48,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:visibility="gone"
         android:maxLines="1"
         android:text="View more"
         android:textSize="13sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/comments_user_name"
         app:layout_constraintTop_toBottomOf="@id/comments_body" />
 
@@ -74,7 +74,7 @@
         android:maxLines="1"
         android:text="View replies (1)"
         android:textSize="13sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/comments_user_name"
         app:layout_constraintTop_toBottomOf="@id/comments_date" />
 
@@ -106,6 +106,7 @@
         android:id="@+id/comments_like_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/ic_icon_like"
         app:layout_constraintBottom_toBottomOf="@id/comments_user_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/comments_body"
@@ -134,5 +135,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/comments_replies_recycler"
         app:layout_constraintTop_toBottomOf="@id/comments_replies_recycler" />
+
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:layout_marginTop="7dp"-->
+<!--        android:background="@color/blackStatusBar"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/comments_view_replies" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

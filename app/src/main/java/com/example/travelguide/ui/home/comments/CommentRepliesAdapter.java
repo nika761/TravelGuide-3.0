@@ -42,7 +42,8 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
     }
 
     class RepliesHolder extends RecyclerView.ViewHolder {
-        private TextView userName, commentBody, commentDate, likeCount;
+
+        private TextView userName, commentBody, commentDate, likeCount, replyBtn;
         private CircleImageView userImage;
         private ImageButton like;
 
@@ -54,15 +55,32 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
             commentDate = itemView.findViewById(R.id.com_replies_date);
             likeCount = itemView.findViewById(R.id.com_replies_like_count);
             userImage = itemView.findViewById(R.id.com_replies_user_image);
+            replyBtn = itemView.findViewById(R.id.com_replies_reply);
             like = itemView.findViewById(R.id.com_replies_like);
 
         }
 
         void bindView(int position) {
+
             HelperMedia.loadCirclePhoto(like.getContext(), commentReplies.get(position).getProfile_pic(), userImage);
+
             userName.setText(commentReplies.get(position).getNickname());
             commentBody.setText(commentReplies.get(position).getText());
             commentDate.setText(commentReplies.get(position).getReply_time());
+            likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
+
+            if (commentReplies.get(position).isReply_liked_by_me())
+                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+            else
+                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.ic_icon_like, null));
+
+
+            if (commentReplies.get(position).isI_can_reply_comment_reply())
+                replyBtn.setVisibility(View.VISIBLE);
+            else
+                replyBtn.setVisibility(View.GONE);
+
+
         }
     }
 }

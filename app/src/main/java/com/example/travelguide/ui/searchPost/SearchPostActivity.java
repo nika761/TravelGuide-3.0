@@ -24,9 +24,10 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
 
     private SearchPostPresenter searchPostPresenter;
     private TextView head;
-    private int postId;
+
     private String type;
     private String hashtag;
+    private int postId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,18 +35,20 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
         setContentView(R.layout.activity_posts_locatiom);
 
         this.postId = getIntent().getIntExtra("search_post_id", 0);
-        this.type = getIntent().getStringExtra("search_type");
         this.hashtag = getIntent().getStringExtra("search_hashtag");
+        this.type = getIntent().getStringExtra("search_type");
 
         initUI();
 
         switch (type) {
+
             case UI_LOCATION:
                 searchPostPresenter.getPostsByLocation(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new PostByLocationRequest(postId));
                 break;
             case UI_HASHTAG:
                 searchPostPresenter.getPostsByHashtag(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new PostByHashtagRequest(hashtag));
                 break;
+
         }
     }
 
@@ -61,6 +64,7 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     @Override
     public void onGetPosts(PostResponse postResponse) {
         switch (type) {
+
             case UI_LOCATION:
                 if (postResponse.getPosts() != null)
                     if (postResponse.getPosts().size() != 0)
@@ -70,6 +74,7 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
             case UI_HASHTAG:
                 head.setText(hashtag);
                 break;
+
         }
 
         SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts());

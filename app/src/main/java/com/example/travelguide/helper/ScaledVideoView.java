@@ -35,27 +35,31 @@ public class ScaledVideoView extends VideoView {
         int width = getDefaultSize(0, widthMeasureSpec);
         int height = getDefaultSize(mVideoHeight, heightMeasureSpec);
 
-        if (displayMode == DisplayMode.ORIGINAL) {
-            if (mVideoWidth > 0 && mVideoHeight > 0) {
-                if (mVideoWidth * height > width * mVideoHeight) {
-                    // video height exceeds screen, shrink it
-                    height = width * mVideoHeight / mVideoWidth;
-                } else if (mVideoWidth * height < width * mVideoHeight) {
-                    // video width exceeds screen, shrink it
-                    width = height * mVideoWidth / mVideoHeight;
-                } else {
-                    // aspect ratio is correct
+        switch (displayMode) {
+            case ORIGINAL:
+                if (mVideoWidth > 0 && mVideoHeight > 0) {
+                    if (mVideoWidth * height > width * mVideoHeight) {
+                        // video height exceeds screen, shrink it
+                        height = width * mVideoHeight / mVideoWidth;
+                    } else if (mVideoWidth * height < width * mVideoHeight) {
+                        // video width exceeds screen, shrink it
+                        width = height * mVideoWidth / mVideoHeight;
+                    }
                 }
-            }
-        } else if (displayMode == DisplayMode.FULL_SCREEN) {
-            // just use the default screen width and screen height
-        } else if (displayMode == DisplayMode.ZOOM) {
-            // zoom video
-            if (mVideoWidth > 0 && mVideoHeight > 0 && mVideoWidth < width) {
-                height = mVideoHeight * width / mVideoWidth;
-            }
-        }
 
+                break;
+            case FULL_SCREEN:
+
+                break;
+
+            case ZOOM:
+
+                if (mVideoWidth > 0 && mVideoHeight > 0 && mVideoWidth < width) {
+                    height = mVideoHeight * width / mVideoWidth;
+                }
+
+                break;
+        }
         setMeasuredDimension(width, height);
     }
 

@@ -23,7 +23,7 @@ import com.example.travelguide.model.request.TermsPolicyRequest;
 
 import java.util.Objects;
 
-public class TermsFragment extends Fragment implements TermsListener {
+public class TermsFragment extends Fragment implements TermsContract.View {
 
     private Button cancelBtn;
     private TextView termsHeader;
@@ -56,7 +56,7 @@ public class TermsFragment extends Fragment implements TermsListener {
 
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
-        termsPresenter.sendTermsResponse(new TermsPolicyRequest(HelperPref.getLanguageId(cancelBtn.getContext())));
+        termsPresenter.getTerms(new TermsPolicyRequest(HelperPref.getLanguageId(cancelBtn.getContext())));
 
     }
 
@@ -80,6 +80,7 @@ public class TermsFragment extends Fragment implements TermsListener {
 
     @Override
     public void onGetError(String message) {
+        animationView.setVisibility(View.GONE);
         Toast.makeText(cancelBtn.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 

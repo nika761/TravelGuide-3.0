@@ -73,7 +73,6 @@ public class User implements Serializable {
         this.url = url;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -34,29 +34,35 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
 
     private PhotoEditorView photoEditorView;
     private PhotoEditor photoEditor;
-    private int position;
-    private String path;
+
     private String newPath;
+    private String path;
+    private int position;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
+
         this.position = getIntent().getIntExtra("position_for_image", 0);
         this.path = getIntent().getStringExtra("image_for_filter");
+
         initPhotoEditor(path);
         initFiltersAdapter();
     }
 
     private void initFiltersAdapter() {
+
         RecyclerView recyclerView = findViewById(R.id.recycler_filter);
         FilterAdapter filterAdapter = new FilterAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(filterAdapter);
+
     }
 
     private void initPhotoEditor(String path) {
+
         TextView done = findViewById(R.id.filter_done);
         done.setOnClickListener(this);
 
@@ -78,7 +84,8 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
         try {
             if (HelperSystem.isWriteStoragePermission(this))
                 saveFilterImage();
-            else HelperSystem.requestWriteStoragePermission(this);
+            else
+                HelperSystem.requestWriteStoragePermission(this);
 
         } catch (Exception e) {
             Toast.makeText(this, "error while saving", Toast.LENGTH_SHORT).show();
@@ -100,9 +107,7 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
 
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.e("taggggg", exception.toString());
                 Toast.makeText(FilterActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-
             }
         });
     }
