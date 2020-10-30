@@ -1,25 +1,26 @@
 package com.example.travelguide.ui.home.comments;
 
-import com.example.travelguide.model.response.AddCommentReplyResponse;
 import com.example.travelguide.model.response.AddCommentResponse;
 import com.example.travelguide.model.response.CommentResponse;
 import com.example.travelguide.model.response.LikeCommentResponse;
 
-public interface CommentFragmentListener {
+import java.util.List;
+
+public interface CommentListener {
 
     void onGetComments(CommentResponse commentResponse);
 
     void onAddComment(AddCommentResponse addCommentResponse);
 
-    void onAddCommentReply(AddCommentReplyResponse addCommentReplyResponse);
-
     void onLikeChoose(int commentId);
 
-    void onReplyChoose(int commendId);
+    void onLikeSuccess(LikeCommentResponse likeCommentResponse);
 
-    void onMoreCommentCallback(boolean visible, int commentId);
+    void onReplyChoose(CommentResponse.Post_story_comments currentComment,
+                       List<CommentResponse.Comment_reply> replies, boolean requestReply);
 
-    void onCommentLiked(LikeCommentResponse likeCommentResponse);
+    void onLazyLoad(boolean visible, int commentId);
+
 
     void onError(String message);
 

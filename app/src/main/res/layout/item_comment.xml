@@ -57,11 +57,10 @@
 
     <TextView
         android:id="@+id/comments_date"
-        android:layout_width="55dp"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:maxLines="1"
-        android:text="1990/25/15"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="@id/comments_user_name"
         app:layout_constraintTop_toBottomOf="@id/comments_see_more_body" />
@@ -71,6 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackground"
         android:maxLines="1"
         android:text="View replies (1)"
         android:textSize="13sp"
@@ -93,7 +93,7 @@
         android:id="@+id/comments_reply_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:background="?attr/selectableItemBackground"
         android:maxLines="1"
         android:text="Reply"
         android:textSize="13sp"
@@ -136,14 +136,14 @@
         app:layout_constraintStart_toEndOf="@id/comments_replies_recycler"
         app:layout_constraintTop_toBottomOf="@id/comments_replies_recycler" />
 
-<!--    <View-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="1dp"-->
-<!--        android:layout_marginTop="7dp"-->
-<!--        android:background="@color/blackStatusBar"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/comments_view_replies" />-->
+    <!--    <View-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="1dp"-->
+    <!--        android:layout_marginTop="7dp"-->
+    <!--        android:background="@color/blackStatusBar"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/comments_view_replies" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

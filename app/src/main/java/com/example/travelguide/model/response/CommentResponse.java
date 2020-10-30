@@ -3,9 +3,10 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CommentResponse {
+public class CommentResponse implements Serializable {
 
     @Expose
     @SerializedName("post_story_comments")
@@ -43,7 +44,7 @@ public class CommentResponse {
         this.status = status;
     }
 
-    public static class Post_story_comments {
+    public static class Post_story_comments implements Serializable {
         @Expose
         @SerializedName("can_load_more_comments")
         private boolean can_load_more_comments;
@@ -214,7 +215,16 @@ public class CommentResponse {
         }
     }
 
-    public static class Comment_reply {
+    public static class Comment_reply implements Serializable {
+
+        @Expose
+        @SerializedName("comment_id")
+        private int comment_id;
+
+        @Expose
+        @SerializedName("can_load_more_replies")
+        private boolean can_load_more_replies;
+
         @Expose
         @SerializedName("i_can_reply_comment_reply")
         private boolean i_can_reply_comment_reply;
@@ -259,6 +269,13 @@ public class CommentResponse {
         @SerializedName("comment_reply_id")
         private int comment_reply_id;
 
+        public int getComment_id() {
+            return comment_id;
+        }
+
+        public boolean can_load_more_replies() {
+            return can_load_more_replies;
+        }
 
         public boolean isI_can_reply_comment_reply() {
             return i_can_reply_comment_reply;

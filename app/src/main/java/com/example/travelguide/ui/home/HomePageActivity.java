@@ -2,7 +2,9 @@ package com.example.travelguide.ui.home;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -10,13 +12,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperClients;
 import com.example.travelguide.helper.HelperPref;
+import com.example.travelguide.model.response.CommentResponse;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.ui.home.comments.CommentFragment;
+import com.example.travelguide.ui.home.comments.RepliesFragment;
 import com.example.travelguide.ui.home.home.HomeFragment;
 import com.example.travelguide.ui.home.notifications.NotificationsFragment;
 import com.example.travelguide.ui.home.profile.ProfileFragment;
@@ -31,6 +36,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,11 +61,11 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
         if (changed != null)
             if (changed.equals("password_changed"))
-                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
 
         if (option != null)
             if (option.equals("uploaded"))
-                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
 
         initBtmNav();
         initGoogleSignClient();
@@ -78,7 +84,18 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         commentFragmentData.putInt("storyId", storyId);
         commentFragmentData.putInt("postId", postId);
 
-        HelperUI.loadFragment(new CommentFragment(), commentFragmentData, R.id.notification_fragment_container, true, this);
+//        Display display = getWindowManager().getDefaultDisplay();
+//        Point size = new Point();
+//        display.getSize(size);
+//
+//        int width = size.x * 1 / 3;
+//        int height = size.y * 1 / 2;
+
+        HelperUI.loadFragment(new CommentFragment(), commentFragmentData, R.id.notification_fragment_container, true, true, this);
+    }
+
+    public void loadRepliesFragment(Bundle repliesFragmentData) {
+        HelperUI.loadFragment(new RepliesFragment(), repliesFragmentData, R.id.notification_fragment_container, true, false, this);
     }
 
     private void initBtmNav() {
@@ -94,7 +111,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                HelperUI.loadFragment(new HomeFragment(), null, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new HomeFragment(), null, R.id.user_page_frg_container, false, true, this);
                 break;
 
             case R.id.bot_nav_search:
@@ -110,11 +127,11 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                 break;
 
             case R.id.bot_nav_ntf:
-                HelperUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, this);
+                HelperUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, true, this);
                 break;
 
             case R.id.bot_nav_profile:
-                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, this);
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
                 break;
         }
         return true;
@@ -148,9 +165,10 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     public void signOutFromGoogleAccount() {
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, task -> {
-            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-            HelperPref.saveAccessToken(this, null);
-            HelperPref.saveCurrentUserId(this, 0);})
+                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+                    HelperPref.saveAccessToken(this, null);
+                    HelperPref.saveCurrentUserId(this, 0);
+                })
                 .addOnCanceledListener(this, () -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(this, e -> Toast.makeText(this, e.getMessage() + "Google Failed", Toast.LENGTH_SHORT).show());
 
@@ -181,7 +199,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     @Override
     public void onPostChoose(List<PostResponse.Posts> posts) {
-        HelperUI.loadFragment(new HomeFragment(posts), null, R.id.user_page_frg_container, false, this);
+        HelperUI.loadFragment(new HomeFragment(posts), null, R.id.user_page_frg_container, false, true, this);
     }
 
 }

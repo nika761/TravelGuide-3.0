@@ -23,11 +23,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     private List<CommentResponse.Post_story_comments> comments;
 
-    private CommentFragmentListener listener;
+    private CommentListener listener;
 
     private int visiblePosition = -1;
 
-    CommentAdapter(CommentFragmentListener listener) {
+    CommentAdapter(CommentListener listener) {
         this.listener = listener;
     }
 
@@ -55,6 +55,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         notifyDataSetChanged();
     }
 
+    void setCommentAdd(List<CommentResponse.Post_story_comments> comments) {
+        this.comments = comments;
+        notifyDataSetChanged();
+    }
+
+    void setCommentReplies(int position, List<CommentResponse.Comment_reply> replies) {
+        this.comments.get(position).getComment_reply().addAll(replies);
+        notifyItemChanged(position);
+    }
+
     @Override
     public int getItemCount() {
         return comments.size();
@@ -63,6 +73,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     class CommentHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView userName, body, date, replyBtn, showReplies, hideReplies, likeCount, bodyMore;
+        RepliesAdapter commentRepliesAdapter;
         RecyclerView repliesRecycler;
         CircleImageView userImage;
         ImageButton likeBtn;
@@ -100,12 +111,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
             if (comments.get(position).can_load_more_comments()) {
                 if (position == comments.size() - 1) {
-                    listener.onMoreCommentCallback(true, comments.get(position).getComment_id());
+                    listener.onLazyLoad(true, comments.get(position).getComment_id());
                 } else {
-                    listener.onMoreCommentCallback(false, 0);
+                    listener.onLazyLoad(false, 0);
                 }
             } else {
-                listener.onMoreCommentCallback(false, 0);
+                listener.onLazyLoad(false, 0);
             }
 
         }
@@ -150,11 +161,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.comments_view_replies:
-                    showReplies(true, getLayoutPosition());
+                    listener.onReplyChoose(comments.get(getLayoutPosition()), comments.get(getLayoutPosition()).getComment_reply(), false);
                     break;
 
                 case R.id.comments_reply_btn:
-                    listener.onReplyChoose(comments.get(getLayoutPosition()).getComment_id());
+                    listener.onReplyChoose(comments.get(getLayoutPosition()), comments.get(getLayoutPosition()).getComment_reply(), true);
+//                    listener.onShowReplies(comments.get(getLayoutPosition()).getNickname(),
+//                            comments.get(getLayoutPosition()).getProfile_pic(),
+//                            comments.get(getLayoutPosition()).getText(),
+//                            comments.get(getLayoutPosition()).getComment_time(),
+//                            String.valueOf(comments.get(getLayoutPosition()).getComment_likes()),
+//                            comments.get(getLayoutPosition()).getComment_reply());
+//                    showReplies(true, getLayoutPosition());
                     break;
 
                 case R.id.comments_like_btn:
@@ -185,8 +203,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 hideReplies.setVisibility(View.VISIBLE);
                 repliesRecycler.setVisibility(View.VISIBLE);
 
-                repliesRecycler.setLayoutManager(new LinearLayoutManager(body.getContext()));
-                repliesRecycler.setAdapter(new CommentRepliesAdapter(comments.get(position).getComment_reply()));
+                if (commentRepliesAdapter == null) {
+                    repliesRecycler.setLayoutManager(new LinearLayoutManager(body.getContext()));
+//                    commentRepliesAdapter = new RepliesAdapter();
+                    commentRepliesAdapter.setCommentReplies(comments.get(position).getComment_reply());
+                    repliesRecycler.setAdapter(commentRepliesAdapter);
+                } else {
+                    commentRepliesAdapter.setCommentReplies(comments.get(position).getComment_reply());
+                }
 
                 visiblePosition = position;
 

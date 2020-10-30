@@ -2,15 +2,11 @@ package com.example.travelguide.ui.home.comments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,20 +20,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
-import com.example.travelguide.model.request.AddCommentReplyRequest;
 import com.example.travelguide.model.request.AddCommentRequest;
 import com.example.travelguide.model.request.CommentRequest;
 import com.example.travelguide.model.request.LikeCommentRequest;
-import com.example.travelguide.model.request.SearchMusicRequest;
-import com.example.travelguide.model.response.AddCommentReplyResponse;
 import com.example.travelguide.model.response.AddCommentResponse;
 import com.example.travelguide.model.response.CommentResponse;
 import com.example.travelguide.model.response.LikeCommentResponse;
 import com.example.travelguide.ui.home.HomePageActivity;
-import com.facebook.appevents.suggestedevents.ViewOnClickListener;
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -46,9 +40,9 @@ import io.reactivex.rxjava3.functions.Consumer;
 
 import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
-public class CommentFragment extends Fragment implements CommentFragmentListener, View.OnClickListener {
+public class CommentFragment extends Fragment implements CommentListener, View.OnClickListener {
 
-    private CommentFragmentPresenter presenter;
+    private CommentPresenter presenter;
 
     private LottieAnimationView loading;
     private RecyclerView commentRecycler;
@@ -59,8 +53,6 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
 
     private CommentAdapter commentAdapter;
 
-    private boolean isReply;
-    private int commentId;
     private int storyId;
     private int postId;
 
@@ -74,7 +66,7 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
             this.postId = getArguments().getInt("postId");
         }
 
-        presenter = new CommentFragmentPresenter(this);
+        presenter = new CommentPresenter(this);
 
         commentRecycler = view.findViewById(R.id.comments_recycler);
         commentsHead = view.findViewById(R.id.comments_head);
@@ -123,13 +115,13 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (context != null)
-            ((HomePageActivity) context).hideBottomNavigation(false);
+        ((HomePageActivity) context).hideBottomNavigation(false);
     }
 
     @Override
     public void onGetComments(CommentResponse commentResponse) {
         if (commentAdapter == null) {
+
             commentsHead.setText(MessageFormat.format("Comments  {0}", commentResponse.getCount()));
 
             commentAdapter = new CommentAdapter(this);
@@ -140,6 +132,8 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
             loading.setVisibility(View.GONE);
 
         } else {
+            loading.setVisibility(View.GONE);
+            loadMore.setVisibility(View.GONE);
             commentAdapter.setComments(commentResponse.getPost_story_comments());
         }
 
@@ -151,13 +145,8 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
 
         commentFieldFocus(false);
 
-        commentAdapter.setComments(addCommentResponse.getPost_story_comments());
+        commentAdapter.setCommentAdd(addCommentResponse.getPost_story_comments());
 
-    }
-
-    @Override
-    public void onAddCommentReply(AddCommentReplyResponse addCommentReplyResponse) {
-        loading.setVisibility(View.GONE);
     }
 
     @Override
@@ -166,21 +155,28 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
     }
 
     @Override
-    public void onReplyChoose(int commendId) {
-        this.commentId = commendId;
-        this.isReply = true;
+    public void onReplyChoose(CommentResponse.Post_story_comments currentComment, List<CommentResponse.Comment_reply> replies, boolean requestReply) {
+        Bundle repliesFragmentData = new Bundle();
+        repliesFragmentData.putSerializable("repliesComment", (Serializable) replies);
+        repliesFragmentData.putSerializable("currentComment", currentComment);
+        repliesFragmentData.putBoolean("requestReply", requestReply);
+        repliesFragmentData.putInt("storyId", storyId);
+        repliesFragmentData.putInt("postId", postId);
 
-        commentFieldFocus(true);
+        ((HomePageActivity) context).loadRepliesFragment(repliesFragmentData);
     }
 
     @Override
-    public void onMoreCommentCallback(boolean visible, int commentId) {
+    public void onLazyLoad(boolean visible, int commentId) {
 
-        if (visible) {
-            loadMore.setVisibility(View.VISIBLE);
-            loadMore.setOnClickListener(v -> presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId, commentId)));
-        } else {
+        if (!visible) {
             loadMore.setVisibility(View.GONE);
+        } else {
+            loadMore.setVisibility(View.VISIBLE);
+            loadMore.setOnClickListener(v -> {
+                loading.setVisibility(View.VISIBLE);
+                presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId, commentId));
+            });
         }
 
     }
@@ -190,7 +186,6 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
         if (getActivity() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (inputMethodManager != null) {
-
                 if (requestFocus) {
                     commentField.requestFocus();
                     inputMethodManager.showSoftInput(commentField, InputMethodManager.SHOW_FORCED);
@@ -204,7 +199,7 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
     }
 
     @Override
-    public void onCommentLiked(LikeCommentResponse likeCommentResponse) {
+    public void onLikeSuccess(LikeCommentResponse likeCommentResponse) {
         Toast.makeText(context, likeCommentResponse.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
@@ -233,19 +228,12 @@ public class CommentFragment extends Fragment implements CommentFragmentListener
         switch (v.getId()) {
 
             case R.id.comments_add_image_btn:
-
                 loading.setVisibility(View.VISIBLE);
-
-                if (isReply) {
-                    presenter.addCommentReply(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new AddCommentReplyRequest(storyId, postId, commentId, commentField.getText().toString()));
-                } else {
-                    presenter.addComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
-                }
-
-                isReply = false;
-
+                presenter.addComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
                 break;
 
         }
     }
+
+
 }

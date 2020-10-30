@@ -40,17 +40,21 @@ public class HelperUI {
     }
 
     public static void loadFragment(Fragment currentFragment, Bundle data, int fragmentID,
-                                    boolean backStack, FragmentActivity fragmentActivity) {
+                                    boolean backStack, boolean replace, FragmentActivity fragmentActivity) {
         currentFragment.setArguments(data);
         FragmentTransaction fragmentTransaction = fragmentActivity
                 .getSupportFragmentManager()
                 .beginTransaction();
 
-        if (backStack) {
+        if (backStack)
             fragmentTransaction.addToBackStack(null);
-        }
+
+        if (replace)
+            fragmentTransaction.replace(fragmentID, currentFragment);
+        else
+            fragmentTransaction.add(fragmentID, currentFragment);
+
         fragmentTransaction
-                .replace(fragmentID, currentFragment)
                 .commit();
     }
 

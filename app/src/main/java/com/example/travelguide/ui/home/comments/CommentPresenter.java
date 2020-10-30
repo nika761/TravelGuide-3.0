@@ -1,12 +1,8 @@
 package com.example.travelguide.ui.home.comments;
 
-import android.util.Log;
-
-import com.example.travelguide.model.request.AddCommentReplyRequest;
 import com.example.travelguide.model.request.AddCommentRequest;
 import com.example.travelguide.model.request.CommentRequest;
 import com.example.travelguide.model.request.LikeCommentRequest;
-import com.example.travelguide.model.response.AddCommentReplyResponse;
 import com.example.travelguide.model.response.AddCommentResponse;
 import com.example.travelguide.model.response.CommentResponse;
 import com.example.travelguide.model.response.LikeCommentResponse;
@@ -17,12 +13,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-class CommentFragmentPresenter {
-    private CommentFragmentListener commentFragmentListener;
+class CommentPresenter {
+    private CommentListener commentListener;
     private ApiService apiService;
 
-    CommentFragmentPresenter(CommentFragmentListener commentFragmentListener) {
-        this.commentFragmentListener = commentFragmentListener;
+    CommentPresenter(CommentListener commentListener) {
+        this.commentListener = commentListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
@@ -32,17 +28,17 @@ class CommentFragmentPresenter {
             public void onResponse(Call<CommentResponse> call, Response<CommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0)
-                        commentFragmentListener.onGetComments(response.body());
+                        commentListener.onGetComments(response.body());
                     else
-                        commentFragmentListener.onError(response.body().getStatus() + " ");
+                        commentListener.onError(response.body().getStatus() + " ");
                 } else {
-                    commentFragmentListener.onError(response.message());
+                    commentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<CommentResponse> call, Throwable t) {
-                commentFragmentListener.onError(t.getMessage());
+                commentListener.onError(t.getMessage());
             }
         });
     }
@@ -53,40 +49,18 @@ class CommentFragmentPresenter {
             public void onResponse(Call<AddCommentResponse> call, Response<AddCommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
-                        commentFragmentListener.onAddComment(response.body());
+                        commentListener.onAddComment(response.body());
                     } else {
-                        commentFragmentListener.onError(response.body().getStatus() + " ");
+                        commentListener.onError(response.body().getStatus() + " ");
                     }
                 } else {
-                    commentFragmentListener.onError(response.message());
+                    commentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<AddCommentResponse> call, Throwable t) {
-                commentFragmentListener.onError(t.getMessage());
-            }
-        });
-    }
-
-    void addCommentReply(String accessToken, AddCommentReplyRequest addCommentReplyRequest) {
-        apiService.addStoryCommentReply(accessToken, addCommentReplyRequest).enqueue(new Callback<AddCommentReplyResponse>() {
-            @Override
-            public void onResponse(Call<AddCommentReplyResponse> call, Response<AddCommentReplyResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0) {
-                        commentFragmentListener.onAddCommentReply(response.body());
-                    } else {
-                        commentFragmentListener.onError(response.body().getStatus() + " " + response.body().getMessage());
-                    }
-                } else {
-                    commentFragmentListener.onError(response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AddCommentReplyResponse> call, Throwable t) {
-                commentFragmentListener.onError(t.getMessage());
+                commentListener.onError(t.getMessage());
             }
         });
     }
@@ -97,19 +71,21 @@ class CommentFragmentPresenter {
             public void onResponse(Call<LikeCommentResponse> call, Response<LikeCommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
-                        commentFragmentListener.onCommentLiked(response.body());
+                        commentListener.onLikeSuccess(response.body());
                     } else {
-                        commentFragmentListener.onError(response.body().getStatus() + " ");
+                        commentListener.onError(response.body().getStatus() + " ");
                     }
                 } else {
-                    commentFragmentListener.onError(response.message());
+                    commentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<LikeCommentResponse> call, Throwable t) {
-                commentFragmentListener.onError(t.getMessage());
+                commentListener.onError(t.getMessage());
             }
         });
     }
+
+
 }

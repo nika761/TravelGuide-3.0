@@ -9,6 +9,7 @@ import com.example.travelguide.model.request.ByMoodRequest;
 import com.example.travelguide.model.request.ChangeLangRequest;
 import com.example.travelguide.model.request.CommentRequest;
 import com.example.travelguide.model.request.LikeCommentRequest;
+import com.example.travelguide.model.request.GetMoreCommentRequest;
 import com.example.travelguide.model.request.PostByUserRequest;
 import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.request.FollowersRequest;
@@ -48,6 +49,7 @@ import com.example.travelguide.model.response.ForgotPasswordResponse;
 import com.example.travelguide.model.response.HashtagResponse;
 import com.example.travelguide.model.response.LikeCommentResponse;
 import com.example.travelguide.model.response.MoodResponse;
+import com.example.travelguide.model.response.MoreReplyResponse;
 import com.example.travelguide.model.response.MusicResponse;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.ProfileResponse;
@@ -68,6 +70,8 @@ import com.example.travelguide.model.response.SignUpWithFirebaseResponse;
 import com.example.travelguide.model.response.TermsPolicyResponse;
 import com.example.travelguide.model.response.UploadPostResponse;
 import com.example.travelguide.model.response.VerifyEmailResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -226,7 +230,7 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("search/followers")
     Call<FollowerResponse> searchFollowers(@Header("Authorization") String token,
-                                      @Body SearchFollowersRequest searchFollowersRequest);
+                                           @Body SearchFollowersRequest searchFollowersRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/post_story_comments")
@@ -234,9 +238,14 @@ public interface ApiService {
                                            @Body CommentRequest commentRequest);
 
     @Headers({"Accept: application/json"})
+    @POST("get/post_comment_replies")
+    Call<MoreReplyResponse> getMoreCommentReplies(@Header("Authorization") String token,
+                                                  @Body GetMoreCommentRequest moreCommentRequest);
+
+    @Headers({"Accept: application/json"})
     @POST("set/post_story_comment")
     Call<AddCommentResponse> addStoryComment(@Header("Authorization") String token,
-                                              @Body AddCommentRequest addCommentRequest);
+                                             @Body AddCommentRequest addCommentRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/post_story_comment_reply")
@@ -246,7 +255,7 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("set/post_story_comment_like")
     Call<LikeCommentResponse> likeStoryComment(@Header("Authorization") String token,
-                                              @Body LikeCommentRequest likeCommentRequest);
+                                               @Body LikeCommentRequest likeCommentRequest);
 
 
     @Headers({"Accept: application/json"})

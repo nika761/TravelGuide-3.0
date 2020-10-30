@@ -17,12 +17,16 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAdapter.RepliesHolder> {
+public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesHolder> {
 
     private List<CommentResponse.Comment_reply> commentReplies;
 
-    CommentRepliesAdapter(List<CommentResponse.Comment_reply> commentReplies) {
-        this.commentReplies = commentReplies;
+    private RepliesListener listener;
+
+    private int currentPosition = -1;
+
+    RepliesAdapter(RepliesListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,7 +37,23 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
 
     @Override
     public void onBindViewHolder(@NonNull RepliesHolder holder, int position) {
+        holder.loadMoreCallback(position);
+
         holder.bindView(position);
+    }
+
+    void setCommentReplies(List<CommentResponse.Comment_reply> commentReplies) {
+        if (this.commentReplies != null && this.commentReplies.size() != 0) {
+            this.commentReplies.addAll(commentReplies);
+        } else {
+            this.commentReplies = commentReplies;
+        }
+        notifyDataSetChanged();
+    }
+
+    void setCommentAdd(List<CommentResponse.Comment_reply> replies) {
+        this.commentReplies = replies;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -55,10 +75,27 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
             commentDate = itemView.findViewById(R.id.com_replies_date);
             likeCount = itemView.findViewById(R.id.com_replies_like_count);
             userImage = itemView.findViewById(R.id.com_replies_user_image);
-            replyBtn = itemView.findViewById(R.id.com_replies_reply);
-            like = itemView.findViewById(R.id.com_replies_like);
 
+            replyBtn = itemView.findViewById(R.id.com_replies_reply);
+            replyBtn.setOnClickListener(v -> listener.onChooseReply(commentReplies.get(getLayoutPosition()).getComment_id()));
+
+            like = itemView.findViewById(R.id.com_replies_like);
         }
+
+
+        void loadMoreCallback(int position) {
+
+            if (commentReplies.get(position).can_load_more_replies()) {
+                if (position == commentReplies.size() - 1) {
+                    listener.onLazyLoad(true, commentReplies.get(position).getComment_reply_id());
+                } else {
+                    listener.onLazyLoad(false, 0);
+                }
+            } else {
+                listener.onLazyLoad(false, 0);
+            }
+        }
+
 
         void bindView(int position) {
 
@@ -79,7 +116,6 @@ public class CommentRepliesAdapter extends RecyclerView.Adapter<CommentRepliesAd
                 replyBtn.setVisibility(View.VISIBLE);
             else
                 replyBtn.setVisibility(View.GONE);
-
 
         }
     }

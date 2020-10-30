@@ -94,7 +94,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         GalleryFragment galleryFragment = new GalleryFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("is_image", true);
-        HelperUI.loadFragment(galleryFragment, bundle, R.id.gallery_fragment_container, false, this);
+        HelperUI.loadFragment(galleryFragment, bundle, R.id.gallery_fragment_container, false, true, this);
 
     }
 

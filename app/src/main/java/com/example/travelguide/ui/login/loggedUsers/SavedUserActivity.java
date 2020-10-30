@@ -3,6 +3,7 @@ package com.example.travelguide.ui.login.loggedUsers;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -19,7 +20,7 @@ public class SavedUserActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_user);
-        HelperUI.loadFragment(new UsersSavedFragment(),null,SAVED_USER_FRG_CONTAINER_ID,false,this);
+        HelperUI.loadFragment(new UsersSavedFragment(), null, SAVED_USER_FRG_CONTAINER_ID, false, true, this);
     }
 
     @Override

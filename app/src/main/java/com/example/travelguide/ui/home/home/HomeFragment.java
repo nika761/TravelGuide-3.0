@@ -166,18 +166,16 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                             recyclerView.findViewHolderForAdapterPosition(firstVisibleItem));
 
                     if (postHolder != null) {
-                        postHolder.recyclerView.post(() -> {
-                            postHolder.recyclerView.smoothScrollToPosition(0);
-                        });
+                        postHolder.recyclerView.post(() -> postHolder.recyclerView.smoothScrollToPosition(0));
                         postHolder.iniStory(firstVisibleItem);
                     }
 
-                    PostAdapter.PostHolder oldHolder = ((PostAdapter.PostHolder)
-                            recyclerView.findViewHolderForAdapterPosition(oldPosition));
+                    PostAdapter.PostHolder oldHolder = ((PostAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(oldPosition));
 
                     if (oldHolder != null) {
                         oldHolder.storyView.removeAllViews();
                     }
+
                     oldPosition = firstVisibleItem;
                 }
             }

@@ -50,7 +50,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             storyRecyclerAdapter.setStoryView(holder.storyView);
             postId = posts.get(position).getPost_id();
 //            homeFragmentListener.startTimer(posts.get(position).getPost_id());
-            Log.e("postsdsdsd", posts.get(position).getPost_id() + "post id from post");
         } else {
             Toast.makeText(context, "NO STORY", Toast.LENGTH_SHORT).show();
         }
@@ -96,10 +95,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         }
 
         private void initRecycler(RecyclerView storiesRecycler) {
-            layoutManager = new LinearLayoutManager(storiesRecycler.getContext(),
-                    RecyclerView.HORIZONTAL, false);
+            layoutManager = new LinearLayoutManager(storiesRecycler.getContext(), RecyclerView.HORIZONTAL, false);
             storiesRecycler.setLayoutManager(layoutManager);
-//            videoPlayerRecyclerView.setStories(stories);
             SnapHelper helper = new PagerSnapHelper();
             helper.attachToRecyclerView(storiesRecycler);
             storiesRecycler.setAdapter(storyRecyclerAdapter);
@@ -123,15 +120,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                             break;
 
                     }
-
-//                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-//                        storyView.stop(true);
-//                    } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-//                        storyView.stop(true);
-//                    } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-//                        storyView.stop(false);
-//                    }
-
                 }
 
                 @Override
@@ -145,6 +133,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                         oldPosition = firstVisibleItem;
                     }
                 }
+
             });
         }
 
@@ -152,7 +141,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         public void storyFinished(int finishedPosition) {
             if (layoutManager.findLastVisibleItemPosition() == storyView.size - 1) {
                 recyclerView.post(() -> recyclerView.smoothScrollToPosition(0));
-
             } else {
                 recyclerView.post(() -> recyclerView.smoothScrollToPosition(finishedPosition + 1));
             }

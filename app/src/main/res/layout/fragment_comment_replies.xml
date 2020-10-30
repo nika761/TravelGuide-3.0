@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
+
+    <TextView
+        android:id="@+id/replies_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="Replies"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/comments_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/comments_body"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_fragment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/replies_head">
+
+        <ImageButton
+            android:id="@+id/replies_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/icon_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/replies_user_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toStartOf="@id/replies_user_name"
+            app:layout_constraintStart_toStartOf="@+id/replies_back_btn"
+            app:layout_constraintTop_toBottomOf="@+id/replies_back_btn" />
+
+        <TextView
+            android:id="@+id/replies_user_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:maxLines="1"
+            android:text="nikabutskhrikidze"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/replies_like"
+            app:layout_constraintStart_toEndOf="@id/replies_user_image"
+            app:layout_constraintTop_toTopOf="@id/replies_user_image" />
+
+        <TextView
+            android:id="@+id/replies_body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:maxLines="3"
+            android:text="asdasdasdasjcnxjcxljgfdflkgjdfggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+            android:textSize="14sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@id/replies_date"
+            app:layout_constraintEnd_toStartOf="@id/replies_like"
+            app:layout_constraintStart_toStartOf="@id/replies_user_name"
+            app:layout_constraintTop_toBottomOf="@id/replies_user_name" />
+
+        <TextView
+            android:id="@+id/replies_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:maxLines="1"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/replies_body"
+            app:layout_constraintStart_toStartOf="@id/replies_user_name"
+            app:layout_constraintTop_toBottomOf="@id/replies_body" />
+
+        <ImageButton
+            android:id="@+id/replies_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/ic_icon_like"
+            app:layout_constraintBottom_toBottomOf="@id/replies_user_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/replies_body"
+            app:layout_constraintTop_toTopOf="@id/replies_user_image" />
+
+        <TextView
+            android:id="@+id/replies_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:textColor="@color/blackStatusBar"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/replies_like"
+            app:layout_constraintStart_toStartOf="@id/replies_like"
+            app:layout_constraintTop_toBottomOf="@id/replies_like" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/replies_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/replies_view_more"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/replies_user_image"
+            app:layout_constraintTop_toBottomOf="@id/replies_date" />
+
+        <TextView
+            android:id="@+id/replies_view_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:maxLines="1"
+            android:padding="7dp"
+            android:text="View more comments"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/replies_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/replies_recycler" />
+
+        <View
+            android:id="@+id/replies_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/blackStatusBar"
+            app:layout_constraintBottom_toTopOf="@id/replies_add_field"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/replies_view_more" />
+
+        <EditText
+            android:id="@+id/replies_add_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="Add Comment.."
+            android:padding="10dp"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/replies_add_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/replies_line" />
+
+        <ImageButton
+            android:id="@+id/replies_add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/icon_add_comment_black"
+            app:layout_constraintBottom_toBottomOf="@id/replies_add_field"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/replies_add_field"
+            app:layout_constraintTop_toTopOf="@id/replies_add_field" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/replies_loader"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/horizontal_loading" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

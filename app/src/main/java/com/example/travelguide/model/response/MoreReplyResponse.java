@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class AddCommentReplyResponse {
-
+public class MoreReplyResponse {
 
     @Expose
     @SerializedName("comment_replies")
