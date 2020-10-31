@@ -22,8 +22,11 @@ class FavoritePostPresenter {
         apiService.getFavoritePosts(accessToken, favoritePostRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
-                if (response.isSuccessful()) {
-                    favoritePostListener.onGetPosts(response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus() == 0)
+                        favoritePostListener.onGetPosts(response.body());
+                    else
+                        favoritePostListener.onGetPostsError(response.message() + response.body().getStatus());
                 } else {
                     favoritePostListener.onGetPostsError(response.message());
                 }
@@ -35,4 +38,6 @@ class FavoritePostPresenter {
             }
         });
     }
+
+
 }

@@ -21,8 +21,10 @@ import com.example.travelguide.R;
 import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.response.PostResponse;
+import com.example.travelguide.ui.home.home.HomeFragment;
 import com.example.travelguide.ui.home.profile.ProfileFragment;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
@@ -37,19 +39,39 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     private boolean visible = true;
     private List<PostResponse.Posts> posts;
     private FavoritePostPresenter favoritePostPresenter;
-    private ProfileFragment.OnPostChooseListener onPostChooseListener;
+    private ProfileFragment.OnPostChooseListener listener;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_p_liked, container, false);
+        View view = inflater.inflate(R.layout.fragment_p_liked, container, false);
+
+        favoritePostPresenter = new FavoritePostPresenter(this);
+
+        listener = (ProfileFragment.OnPostChooseListener) context;
+
+        contentList = view.findViewById(R.id.tab_liked_main_cont);
+
+        recyclerView = view.findViewById(R.id.favorite_post_recycler);
+
+        tabVideos = view.findViewById(R.id.tab_liked_video);
+        tabVideos.setOnClickListener(this::onTabItemClick);
+
+        tabPhotos = view.findViewById(R.id.tab_liked_photo);
+        tabPhotos.setOnClickListener(this::onTabItemClick);
+
+        tabMain = view.findViewById(R.id.tab_liked_main);
+        tabMain.setOnClickListener(this::onTabItemClick);
+
+        tabAll = view.findViewById(R.id.tab_liked_all);
+        tabAll.setOnClickListener(this::onTabItemClick);
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        onPostChooseListener = (ProfileFragment.OnPostChooseListener) context;
-        initUI(view);
         favoritePostPresenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new FavoritePostRequest(0));
     }
 
@@ -57,28 +79,6 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-    }
-
-    private void initUI(View v) {
-
-        favoritePostPresenter = new FavoritePostPresenter(this);
-
-        tabMain = v.findViewById(R.id.tab_liked_main);
-        tabMain.setOnClickListener(this::onTabItemClick);
-
-        contentList = v.findViewById(R.id.tab_liked_main_cont);
-
-        recyclerView = v.findViewById(R.id.favorite_post_recycler);
-
-        tabVideos = v.findViewById(R.id.tab_liked_video);
-        tabVideos.setOnClickListener(this::onTabItemClick);
-
-        tabPhotos = v.findViewById(R.id.tab_liked_photo);
-        tabPhotos.setOnClickListener(this::onTabItemClick);
-
-        tabAll = v.findViewById(R.id.tab_liked_all);
-        tabAll.setOnClickListener(this::onTabItemClick);
-
     }
 
     private void loadAnimation(View target, int animationId, int offset) {
@@ -138,15 +138,14 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     @Override
     public void onGetPosts(PostResponse postResponse) {
-        if (postResponse.getStatus() == 0) {
-            this.posts = postResponse.getPosts();
-            FavoritePostAdapter adapter = new FavoritePostAdapter(postResponse.getPosts(), this);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
-            recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.setAdapter(adapter);
-        } else {
-            Toast.makeText(context, "Error while loading", Toast.LENGTH_SHORT).show();
-        }
+        this.posts = postResponse.getPosts();
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        FavoritePostAdapter adapter = new FavoritePostAdapter(postResponse.getPosts(), this);
+        recyclerView.setAdapter(adapter);
+
     }
 
     @Override
@@ -156,7 +155,20 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     @Override
     public void onPostChoose(int postId) {
-        onPostChooseListener.onPostChoose(posts);
+        int position = 0;
+
+        for (int i = 0; i < posts.size(); i++) {
+            if (posts.get(i).getPost_id() == postId) {
+                position = i;
+            }
+        }
+
+        Bundle data = new Bundle();
+        data.putInt("postPosition", position);
+        data.putSerializable("PostShowType", HomeFragment.LoadPostType.FAVORITES);
+        data.putSerializable("favoritePosts", (Serializable) posts);
+
+        listener.onPostChoose(data);
     }
 
     @Override

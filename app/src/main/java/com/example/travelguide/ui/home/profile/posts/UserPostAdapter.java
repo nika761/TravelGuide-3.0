@@ -17,7 +17,7 @@ import com.example.travelguide.ui.customerUser.post.CustomerPhotoListener;
 
 import java.util.List;
 
-public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostHolder>{
+public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;
     private UserPostListener userPostListener;
 
@@ -55,7 +55,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             reactions = itemView.findViewById(R.id.favorite_post_reactions);
             nickName = itemView.findViewById(R.id.item_customer_post_nick);
             postImage = itemView.findViewById(R.id.favorite_post_cover);
-            postImage.setOnClickListener(v -> userPostListener.onPostChoose());
+            postImage.setOnClickListener(v -> userPostListener.onPostChoose(posts.get(getLayoutPosition()).getPost_id()));
         }
     }
 }

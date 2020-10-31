@@ -8,6 +8,6 @@ public interface UserPostListener {
 
     void onGetPostsError(String message);
 
-    void onPostChoose();
+    void onPostChoose(int postId);
 
 }

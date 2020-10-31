@@ -1,16 +1,13 @@
 package com.example.travelguide.ui.home.home;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +21,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.travelguide.R;
+import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.request.FollowRequest;
 import com.example.travelguide.model.request.SetPostFavoriteRequest;
 import com.example.travelguide.model.request.SetStoryLikeRequest;
@@ -36,8 +34,11 @@ import com.example.travelguide.model.request.PostRequest;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.model.response.SharePostResponse;
 import com.example.travelguide.ui.home.HomePageActivity;
+import com.example.travelguide.ui.home.comments.CommentAdapter;
 import com.example.travelguide.ui.login.signIn.SignInActivity;
 
+import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,38 +47,28 @@ import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener {
 
-    private HomeFragmentPresenter homeFragmentPresenter;
-    private List<PostResponse.Posts> posts;
-    private PostAdapter postRecyclerAdapter;
-    private CountDownTimer countDownTimer;
+    private HomeFragmentPresenter presenter;
+    private PostAdapter postAdapter;
 
-    private LottieAnimationView lottieAnimationView;
-    private ConstraintLayout loaderConstraint;
-    private LinearLayout storyContainer;
-    private RecyclerView recyclerView;
-    private Context context;
+    private LottieAnimationView loader;
+    private ConstraintLayout loaderContainer;
+    private RecyclerView postRecycler;
 
-    private static final long POST_VIEW_TIMER = 3000;
-    private static final long POST_VIEW_INTERVAL = 500;
     private static final int SHARING_REQUEST_CODE = 1;
 
-    private boolean timerRunning;
-    private boolean loading = true;
-    private long timeLeft = POST_VIEW_TIMER;
     private int postId;
     private int oldPosition = -1;
-    private int storyPosition;
+
+    private boolean isFavorite;
+
     private int pastVisibleItems;
     private int visibleItemCount;
     private int totalItemCount;
 
+    private LoadPostType loadPostType;
 
-    public HomeFragment() {
-
-    }
-
-    public HomeFragment(List<PostResponse.Posts> posts) {
-        this.posts = posts;
+    public enum LoadPostType {
+        FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED
     }
 
     @Nullable
@@ -88,12 +79,15 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         Window window = Objects.requireNonNull(getActivity()).getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        lottieAnimationView = view.findViewById(R.id.loader_post);
-        loaderConstraint = view.findViewById(R.id.loader_constraint);
-        recyclerView = view.findViewById(R.id.recycler_story);
+        presenter = new HomeFragmentPresenter(this);
 
-//        View decorView = window.getDecorView();
-//        decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        loader = view.findViewById(R.id.loader_post);
+        loaderContainer = view.findViewById(R.id.loader_constraint);
+
+        postRecycler = view.findViewById(R.id.recycler_story);
+        SnapHelper helper = new PagerSnapHelper();
+        helper.attachToRecyclerView(postRecycler);
+
 
         return view;
     }
@@ -101,62 +95,69 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (posts != null) {
-            initRecyclerView(posts);
-        } else {
-            homeFragmentPresenter = new HomeFragmentPresenter(this);
-            homeFragmentPresenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
-                    new PostRequest(0));
+        if (getArguments() != null) {
+            loadPostType = (LoadPostType) getArguments().getSerializable("PostShowType");
+            if (loadPostType != null) {
+                switch (loadPostType) {
+
+                    case FAVORITES:
+                        int scrollPosition = getArguments().getInt("postPosition");
+
+                        List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
+
+                        initRecyclerView(favoritePosts, true, scrollPosition);
+
+                        break;
+
+                    case MY_POSTS:
+                        int scroll = getArguments().getInt("postPosition");
+
+                        List<PostResponse.Posts> myPosts = (List<PostResponse.Posts>) getArguments().getSerializable("myPosts");
+
+                        initRecyclerView(myPosts, true, scroll);
+
+                        break;
+
+                    case CUSTOMER_POSTS:
+                        break;
+
+                    case FEED:
+                        presenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostRequest(0));
+                        break;
+                }
+            }
         }
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
-
-    private void initRecyclerView(List<PostResponse.Posts> posts) {
+    private void initRecyclerView(List<PostResponse.Posts> posts, boolean scrollToPosition, int scrollPosition) {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        postRecyclerAdapter = new PostAdapter(this, context, posts);
-        SnapHelper helper = new PagerSnapHelper();
-        helper.attachToRecyclerView(recyclerView);
-        recyclerView.setAdapter(postRecyclerAdapter);
+        postRecycler.setLayoutManager(layoutManager);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        postAdapter = new PostAdapter(this);
+        postAdapter.setPosts(posts);
+        postRecycler.setAdapter(postAdapter);
+
+        postRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
-//                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-//                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-//                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-//                }
-
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                if (dy > 0) {
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-
-                    Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
-
-                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                        loading = false;
-                        homeFragmentPresenter.getLazyPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
-                                new PostRequest(postRecyclerAdapter.getPostId()));
-
-                        Log.e("postsdsdsd", String.valueOf(postRecyclerAdapter.getPostId()));
-
-                    }
-                }
+//                if (dy > 0) {
+//                    visibleItemCount = layoutManager.getChildCount();
+//                    totalItemCount = layoutManager.getItemCount();
+//                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+//
+//                    Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
+//
+//                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+//                    }
+//                }
 
                 int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
 
@@ -166,7 +167,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                             recyclerView.findViewHolderForAdapterPosition(firstVisibleItem));
 
                     if (postHolder != null) {
-                        postHolder.recyclerView.post(() -> postHolder.recyclerView.smoothScrollToPosition(0));
+                        postHolder.storyRecycler.post(() -> postHolder.storyRecycler.smoothScrollToPosition(0));
                         postHolder.iniStory(firstVisibleItem);
                     }
 
@@ -179,31 +180,34 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                     oldPosition = firstVisibleItem;
                 }
             }
+
         });
 
-    }
-
-    @Override
-    public void onGetPosts(PostResponse postResponse) {
-        if (postResponse.getStatus() == 0) {
-            initRecyclerView(postResponse.getPosts());
+        if (scrollToPosition) {
+            postRecycler.post(() -> postRecycler.scrollToPosition(scrollPosition));
         }
+
     }
 
     @Override
-    public void onGetLazyPosts(PostResponse postResponse) {
-        if (postResponse.getStatus() == 0)
-            postRecyclerAdapter.setPosts(postResponse.getPosts());
-    }
+    public void onGetPosts(List<PostResponse.Posts> posts) {
 
-    @Override
-    public void onGetPostsError(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        if (postAdapter == null) {
+            Log.e("lazyLoad", "adapter first time");
+
+            initRecyclerView(posts, false, 0);
+
+        } else {
+            postAdapter.setPosts(posts);
+
+            Log.e("lazyLoad", "adapter second time posts loaded");
+        }
+
     }
 
     @Override
     public void onFollowChoose(int userId) {
-        homeFragmentPresenter.follow(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new FollowRequest(userId));
+        presenter.follow(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new FollowRequest(userId));
     }
 
     @Override
@@ -211,20 +215,15 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (followResponse.getStatus()) {
             case 0:
             case 1:
-                Toast.makeText(context, followResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(postRecycler.getContext(), followResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
-    @Override
-    public void onFollowError(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onFavoriteChoose(int post_id, int position) {
-        this.storyPosition = position;
-        homeFragmentPresenter.setPostFavorite(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new SetPostFavoriteRequest(post_id));
+        presenter.setPostFavorite(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new SetPostFavoriteRequest(post_id));
     }
 
     @Override
@@ -239,10 +238,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         }
     }
 
-    @Override
-    public void onFavoriteError(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onShareChoose(String postLink, int post_id) {
@@ -256,100 +251,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onShareSuccess(SharePostResponse sharePostResponse) {
-        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+        Log.e("shared", String.valueOf(sharePostResponse.getStatus()));
     }
 
-    @Override
-    public void onShareError(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCommentChoose(int storyId, int postId) {
-        ((HomePageActivity) context).loadCommentFragment(storyId, postId);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SHARING_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                homeFragmentPresenter.setPostShare(ACCESS_TOKEN_BEARER +
-                        HelperPref.getAccessToken(context), new SharePostRequest(postId));
-            }
-        }
-    }
-
-    private void startCountDownTimer(int postId) {
-        if (countDownTimer != null)
-            resetCountDownTimer();
-
-
-        countDownTimer = new CountDownTimer(POST_VIEW_TIMER, POST_VIEW_INTERVAL) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeft = millisUntilFinished;
-            }
-
-            @Override
-            public void onFinish() {
-//                homeFragmentPresenter.setPostView(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context),
-//                        new SetPostViewRequest(postId));
-//                Log.e("mmmmnjjjj", "sent");
-
-            }
-        }.start();
-        timerRunning = true;
-    }
-
-    private void resetCountDownTimer() {
-        countDownTimer.cancel();
-        countDownTimer = null;
-        timerRunning = false;
-    }
-
-    @Override
-    public void onDestroy() {
-
-        if (homeFragmentPresenter != null) {
-            homeFragmentPresenter = null;
-        }
-
-        if (countDownTimer != null) {
-            countDownTimer = null;
-        }
-
-        super.onDestroy();
-    }
-
-    @Override
-    public void stopLoader() {
-        loaderConstraint.setVisibility(View.GONE);
-        lottieAnimationView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void startTimer(int postId) {
-        startCountDownTimer(postId);
-    }
-
-    @Override
-    public void resetTimer() {
-        resetCountDownTimer();
-    }
-
-    @Override
-    public void onLoginError() {
-        Intent intent = new Intent(context, SignInActivity.class);
-        startActivity(intent);
-        Objects.requireNonNull(getActivity()).finish();
-    }
 
     @Override
     public void onStoryLikeChoose(int postId, int storyId, int position) {
-        this.storyPosition = position;
-        homeFragmentPresenter.setStoryLike(ACCESS_TOKEN_BEARER +
-                HelperPref.getAccessToken(context), new SetStoryLikeRequest(storyId, postId));
+        presenter.setStoryLike(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new SetStoryLikeRequest(storyId, postId));
     }
 
     @Override
@@ -365,9 +273,78 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         }
     }
 
+
     @Override
-    public void onStoryLikeError(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    public void onCommentChoose(int storyId, int postId) {
+        if (getContext() != null)
+            ((HomePageActivity) getContext()).loadCommentFragment(storyId, postId);
+    }
+
+    @Override
+    public void onLazyLoad(int fromPostId) {
+
+        switch (loadPostType) {
+
+            case FAVORITES:
+                presenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(postId));
+                break;
+
+            case MY_POSTS:
+                break;
+
+            case CUSTOMER_POSTS:
+                break;
+
+                case FEED:
+                presenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostRequest(fromPostId));
+                break;
+        }
+
+        Log.e("lazyLoad", "from post id " + fromPostId);
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SHARING_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                presenter.setPostShare(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new SharePostRequest(postId));
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+
+        if (presenter != null) {
+            presenter = null;
+        }
+
+        if (postAdapter != null) {
+            postAdapter = null;
+        }
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void stopLoader() {
+        loaderContainer.setVisibility(View.GONE);
+        loader.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoginError() {
+        Intent intent = new Intent(postRecycler.getContext(), SignInActivity.class);
+        startActivity(intent);
+        Objects.requireNonNull(getActivity()).finish();
+    }
+
+    @Override
+    public void onError(String message) {
+        Toast.makeText(postRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
 

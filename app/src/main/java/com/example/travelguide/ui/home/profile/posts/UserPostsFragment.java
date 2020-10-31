@@ -21,8 +21,10 @@ import com.example.travelguide.helper.HelperPref;
 import com.example.travelguide.model.request.PostByUserRequest;
 import com.example.travelguide.model.response.PostResponse;
 import com.example.travelguide.ui.gallery.GalleryFragment;
+import com.example.travelguide.ui.home.home.HomeFragment;
 import com.example.travelguide.ui.home.profile.ProfileFragment;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static com.example.travelguide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
@@ -35,7 +37,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     private RecyclerView recyclerView;
     private Context context;
     private int userId;
-    private ProfileFragment.OnPostChooseListener onPostChooseListener;
+    private ProfileFragment.OnPostChooseListener listener;
 
     public UserPostsFragment() {
     }
@@ -43,7 +45,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     public UserPostsFragment(int userId, Context context) {
         this.userId = userId;
         this.context = context;
-        this.onPostChooseListener = (ProfileFragment.OnPostChooseListener) context;
+        this.listener = (ProfileFragment.OnPostChooseListener) context;
     }
 
     @Nullable
@@ -93,8 +95,25 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     }
 
     @Override
-    public void onPostChoose() {
-        onPostChooseListener.onPostChoose(posts);
+    public void onPostChoose(int postId) {
+
+        int position = getPositionById(postId);
+
+        Bundle data = new Bundle();
+        data.putInt("postPosition", position);
+        data.putSerializable("PostShowType", HomeFragment.LoadPostType.MY_POSTS);
+        data.putSerializable("myPosts", (Serializable) posts);
+
+        listener.onPostChoose(data);
+    }
+
+    private int getPositionById(int postId) {
+        for (int i = 0; i < posts.size(); i++) {
+            if (posts.get(i).getPost_id() == postId) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override

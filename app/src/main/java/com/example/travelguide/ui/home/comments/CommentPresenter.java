@@ -70,11 +70,7 @@ class CommentPresenter {
             @Override
             public void onResponse(Call<LikeCommentResponse> call, Response<LikeCommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0) {
-                        commentListener.onLikeSuccess(response.body());
-                    } else {
-                        commentListener.onError(response.body().getStatus() + " ");
-                    }
+                    commentListener.onLikeSuccess(response.body());
                 } else {
                     commentListener.onError(response.message());
                 }

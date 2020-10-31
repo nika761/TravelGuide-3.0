@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="7dp"
+    android:paddingStart="2dp"
     android:paddingTop="10dp"
-    android:paddingEnd="7dp"
+    android:paddingEnd="10dp"
     android:paddingBottom="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        android:maxLines="3"
+        android:maxLines="10"
         android:text="asdasdasdasjcnxjcxljgfdflkgjdfggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
         android:textSize="14sp"
         app:autoSizeTextType="uniform"
@@ -70,8 +70,8 @@
 
     <ImageButton
         android:id="@+id/com_replies_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="18dp"
         android:background="@drawable/ic_icon_like"
         app:layout_constraintBottom_toBottomOf="@id/com_replies_user_image"
         app:layout_constraintEnd_toEndOf="parent"

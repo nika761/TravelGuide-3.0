@@ -111,7 +111,9 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
         switch (item.getItemId()) {
             case R.id.bot_nav_home:
-                HelperUI.loadFragment(new HomeFragment(), null, R.id.user_page_frg_container, false, true, this);
+                Bundle data = new Bundle();
+                data.putSerializable("PostShowType", HomeFragment.LoadPostType.FEED);
+                HelperUI.loadFragment(new HomeFragment(), data, R.id.user_page_frg_container, false, true, this);
                 break;
 
             case R.id.bot_nav_search:
@@ -197,9 +199,10 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         super.onBackPressed();
     }
 
+
     @Override
-    public void onPostChoose(List<PostResponse.Posts> posts) {
-        HelperUI.loadFragment(new HomeFragment(posts), null, R.id.user_page_frg_container, false, true, this);
+    public void onPostChoose(Bundle fragmentData) {
+        HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.user_page_frg_container, false, true, this);
     }
 
 }

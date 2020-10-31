@@ -276,7 +276,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     }
 
     public interface OnPostChooseListener {
-        void onPostChoose(List<PostResponse.Posts> posts);
+        void onPostChoose(Bundle fragmentData);
     }
 
 

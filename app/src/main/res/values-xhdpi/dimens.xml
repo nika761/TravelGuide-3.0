@@ -4,5 +4,6 @@
     <dimen name="main_log_margin_top">60dp</dimen>
     <dimen name="sign_up_head_margin_top">40dp</dimen>
     <dimen name="sign_up_fragment_margin_top">160dp</dimen>
+    <dimen name="comment_fragment_container_height">500dp</dimen>
 
 </resources>

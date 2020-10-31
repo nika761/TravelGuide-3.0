@@ -3,6 +3,7 @@ package com.example.travelguide.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class PostResponse {
@@ -30,7 +31,7 @@ public class PostResponse {
         this.status = status;
     }
 
-    public static class Posts {
+    public static class Posts implements Serializable {
         @Expose
         @SerializedName("post_stories")
         private List<Post_stories> post_stories;
@@ -297,7 +298,7 @@ public class PostResponse {
         }
     }
 
-    public static class Post_stories {
+    public static class Post_stories implements Serializable {
         @Expose
         @SerializedName("story_like_by_me")
         private boolean story_like_by_me;
@@ -366,7 +367,7 @@ public class PostResponse {
         }
     }
 
-    public static class Post_locations {
+    public static class Post_locations implements Serializable {
         @Expose
         @SerializedName("lng")
         private String lng;

@@ -1,15 +1,12 @@
 package com.example.travelguide.ui.home.home;
 
-import android.util.Log;
-
+import com.example.travelguide.model.request.FavoritePostRequest;
 import com.example.travelguide.model.request.FollowRequest;
 import com.example.travelguide.model.request.SetPostFavoriteRequest;
-import com.example.travelguide.model.request.SetPostViewRequest;
 import com.example.travelguide.model.request.SetStoryLikeRequest;
 import com.example.travelguide.model.request.SharePostRequest;
 import com.example.travelguide.model.response.FollowResponse;
 import com.example.travelguide.model.response.SetPostFavoriteResponse;
-import com.example.travelguide.model.response.SetPostViewResponse;
 import com.example.travelguide.model.response.SetStoryLikeResponse;
 import com.example.travelguide.model.request.PostRequest;
 import com.example.travelguide.model.response.PostResponse;
@@ -34,79 +31,56 @@ public class HomeFragmentPresenter {
         apiService.getPosts(accessToken, postRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-
-                        if (response.body().getStatus() == -100) {
+                if (response.isSuccessful() && response.body() != null) {
+                    switch (response.body().getStatus()) {
+                        case -100:
                             homeFragmentListener.onLoginError();
-                        }
-                        //to do
-                        if (response.body().getPosts() != null)
-                            homeFragmentListener.onGetPosts(response.body());
-                        else {
-                            homeFragmentListener.onGetPostsError("no posts");
-                        }
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().size()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(0).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(1).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(2).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(3).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(4).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(5).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(6).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(7).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(8).getPost_id()));
-//                        Log.e("postsdsdsd", String.valueOf(response.body().getPosts().get(9).getPost_id()));
+                            break;
+
+                        case 0:
+                            if (response.body().getPosts() != null) {
+                                if (response.body().getPosts().size() > 0) {
+                                    homeFragmentListener.onGetPosts(response.body().getPosts());
+                                }
+                            }
+                            break;
+
+                        default:
+                            homeFragmentListener.onError("no posts");
+                            break;
+
                     }
                 } else {
-                    homeFragmentListener.onGetPostsError(response.message());
+                    homeFragmentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                homeFragmentListener.onGetPostsError(t.getMessage());
+                homeFragmentListener.onError(t.getMessage());
             }
         });
     }
 
-    void getLazyPosts(String accessToken, PostRequest postRequest) {
-        apiService.getPosts(accessToken, postRequest).enqueue(new Callback<PostResponse>() {
+    void getFavoritePosts(String accessToken, FavoritePostRequest favoritePostRequest) {
+        apiService.getFavoritePosts(accessToken, favoritePostRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
-                if (response.isSuccessful()) {
-                    homeFragmentListener.onGetLazyPosts(response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus() == 0)
+                        homeFragmentListener.onGetPosts(response.body().getPosts());
+                    else
+                        homeFragmentListener.onError(response.message() + response.body().getStatus());
                 } else {
-                    homeFragmentListener.onGetPostsError(response.message());
-
+                    homeFragmentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                homeFragmentListener.onGetPostsError(t.getMessage());
+                homeFragmentListener.onError(t.getMessage());
             }
         });
-
-    }
-
-    void setPostView(String accessToken, SetPostViewRequest setPostViewRequest) {
-        apiService.setPostView(accessToken, setPostViewRequest).enqueue(new Callback<SetPostViewResponse>() {
-            @Override
-            public void onResponse(Call<SetPostViewResponse> call, Response<SetPostViewResponse> response) {
-                if (response.isSuccessful() && response.body().getStatus() == 0) {
-                    Log.e("mmmmnjasdasdasjjj", response.body().getStatus() + "sent");
-                } else {
-                    Log.e("mmmmnjasdasdasjjj", String.valueOf(response.body().getStatus()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SetPostViewResponse> call, Throwable t) {
-                Log.e("mmmmnjasdasdasjjj", String.valueOf(t.getLocalizedMessage()));
-            }
-        });
-
     }
 
     void setStoryLike(String accessToken, SetStoryLikeRequest setStoryLikeRequest) {
@@ -118,17 +92,16 @@ public class HomeFragmentPresenter {
                         homeFragmentListener.onStoryLiked(response.body());
                     }
                 } else {
-                    homeFragmentListener.onStoryLikeError(response.message());
+                    homeFragmentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<SetStoryLikeResponse> call, Throwable t) {
-                homeFragmentListener.onStoryLikeError(t.getMessage());
+                homeFragmentListener.onError(t.getMessage());
             }
         });
     }
-
 
     void setPostFavorite(String accessToken, SetPostFavoriteRequest setPostFavoriteRequest) {
         apiService.setPostFavorite(accessToken, setPostFavoriteRequest).enqueue(new Callback<SetPostFavoriteResponse>() {
@@ -139,13 +112,13 @@ public class HomeFragmentPresenter {
                         homeFragmentListener.onFavoriteSuccess(response.body());
                     }
                 } else {
-                    homeFragmentListener.onFavoriteError(response.message());
+                    homeFragmentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<SetPostFavoriteResponse> call, Throwable t) {
-                homeFragmentListener.onFavoriteError(t.getMessage());
+                homeFragmentListener.onError(t.getMessage());
             }
         });
     }
@@ -159,17 +132,16 @@ public class HomeFragmentPresenter {
                         homeFragmentListener.onShareSuccess(response.body());
                     }
                 } else {
-                    homeFragmentListener.onShareError(response.message());
+                    homeFragmentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<SharePostResponse> call, Throwable t) {
-                homeFragmentListener.onShareError(t.getMessage());
+                homeFragmentListener.onError(t.getMessage());
             }
         });
     }
-
 
     public void follow(String accessToken, FollowRequest followRequest) {
         apiService.follow(accessToken, followRequest).enqueue(new Callback<FollowResponse>() {
@@ -180,15 +152,16 @@ public class HomeFragmentPresenter {
                         homeFragmentListener.onFollowSuccess(response.body());
                     }
                 } else {
-                    homeFragmentListener.onFollowError(response.message());
+                    homeFragmentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<FollowResponse> call, Throwable t) {
-                homeFragmentListener.onFollowError(t.getMessage());
+                homeFragmentListener.onError(t.getMessage());
             }
         });
 
     }
+
 }

@@ -2,7 +2,9 @@ package com.example.travelguide.ui.home.comments;
 
 import com.example.travelguide.model.request.AddCommentReplyRequest;
 import com.example.travelguide.model.request.GetMoreCommentRequest;
+import com.example.travelguide.model.request.LikeCommentReplyRequest;
 import com.example.travelguide.model.response.AddCommentReplyResponse;
+import com.example.travelguide.model.response.LikeCommentReplyResponse;
 import com.example.travelguide.model.response.MoreReplyResponse;
 import com.example.travelguide.network.ApiService;
 import com.example.travelguide.network.RetrofitManager;
@@ -56,6 +58,24 @@ class RepliesPresenter {
 
             @Override
             public void onFailure(Call<AddCommentReplyResponse> call, Throwable t) {
+                repliesListener.onError(t.getMessage());
+            }
+        });
+    }
+
+    void addCommentReplyLike(String accessToken, LikeCommentReplyRequest likeCommentReplyRequest) {
+        apiService.likeCommentReply(accessToken, likeCommentReplyRequest).enqueue(new Callback<LikeCommentReplyResponse>() {
+            @Override
+            public void onResponse(Call<LikeCommentReplyResponse> call, Response<LikeCommentReplyResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    repliesListener.onLikeSuccess(response.body());
+                } else {
+                    repliesListener.onError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LikeCommentReplyResponse> call, Throwable t) {
                 repliesListener.onError(t.getMessage());
             }
         });

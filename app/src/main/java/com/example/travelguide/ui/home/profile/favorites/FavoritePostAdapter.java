@@ -56,8 +56,7 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
             nickName = itemView.findViewById(R.id.item_customer_post_nick);
 
             postImage = itemView.findViewById(R.id.favorite_post_cover);
-            postImage.setOnClickListener(v -> favoritePostListener.onPostChoose(posts.get
-                    (getLayoutPosition()).getPost_id()));
+            postImage.setOnClickListener(v -> favoritePostListener.onPostChoose(posts.get(getLayoutPosition()).getPost_id()));
         }
 
     }

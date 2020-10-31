@@ -1,12 +1,10 @@
 package com.example.travelguide.ui.home.home;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,14 +23,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     private List<PostResponse.Posts> posts;
     private HomeFragmentListener homeFragmentListener;
-    private Context context;
-    private int postId = -1;
-    private StoryAdapter storyRecyclerAdapter;
 
-    PostAdapter(HomeFragmentListener homeFragmentListener, Context context, List<PostResponse.Posts> posts) {
+    PostAdapter(HomeFragmentListener homeFragmentListener) {
         this.homeFragmentListener = homeFragmentListener;
-        this.context = context;
-        this.posts = posts;
     }
 
     @NonNull
@@ -44,28 +37,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PostHolder holder, int position) {
-        if (posts.get(position).getPost_stories() != null) {
-            storyRecyclerAdapter.setStories(posts.get(position).getPost_stories());
-            storyRecyclerAdapter.setCurrentPost(posts.get(position));
-            storyRecyclerAdapter.setStoryView(holder.storyView);
-            postId = posts.get(position).getPost_id();
-//            homeFragmentListener.startTimer(posts.get(position).getPost_id());
-        } else {
-            Toast.makeText(context, "NO STORY", Toast.LENGTH_SHORT).show();
-        }
-    }
+        holder.initStoryAdapter(position);
 
-    int getPostId() {
-        return postId;
+        holder.loadMoreCallback(position);
     }
 
     void setPosts(List<PostResponse.Posts> posts) {
-        this.posts.addAll(posts);
-        notifyDataSetChanged();
-    }
 
-    public StoryAdapter getStoryRecyclerAdapter() {
-        return storyRecyclerAdapter;
+        if (this.posts != null && this.posts.size() != 0)
+            this.posts.addAll(posts);
+
+        else {
+            this.posts = posts;
+            notifyDataSetChanged();
+        }
+
     }
 
     @Override
@@ -74,18 +60,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     }
 
     public class PostHolder extends RecyclerView.ViewHolder implements StoryView.StoryListener {
-        public RecyclerView recyclerView;
+
         private LinearLayoutManager layoutManager;
+        private StoryAdapter storyAdapter;
+        public RecyclerView storyRecycler;
+
         public StoryView storyView;
+
         int oldPosition;
 
         PostHolder(@NonNull View itemView) {
             super(itemView);
-            recyclerView = itemView.findViewById(R.id.post_recycler_new);
+            storyRecycler = itemView.findViewById(R.id.post_recycler_new);
+            SnapHelper helper = new PagerSnapHelper();
+            helper.attachToRecyclerView(storyRecycler);
+
             storyView = itemView.findViewById(R.id.story_container_new_new);
-            storyRecyclerAdapter = new StoryAdapter(homeFragmentListener);
+
             storyView.setListener(this);
-            initRecycler(recyclerView);
+
         }
 
         void iniStory(int position) {
@@ -94,13 +87,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 //            storyView.start(0, duration + 2000);
         }
 
-        private void initRecycler(RecyclerView storiesRecycler) {
-            layoutManager = new LinearLayoutManager(storiesRecycler.getContext(), RecyclerView.HORIZONTAL, false);
-            storiesRecycler.setLayoutManager(layoutManager);
-            SnapHelper helper = new PagerSnapHelper();
-            helper.attachToRecyclerView(storiesRecycler);
-            storiesRecycler.setAdapter(storyRecyclerAdapter);
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        @Override
+        public void storyFinished(int finishedPosition) {
+            if (layoutManager.findLastVisibleItemPosition() == storyView.size - 1) {
+                storyRecycler.post(() -> storyRecycler.smoothScrollToPosition(0));
+            } else {
+                storyRecycler.post(() -> storyRecycler.smoothScrollToPosition(finishedPosition + 1));
+            }
+        }
+
+        void loadMoreCallback(int position) {
+            if (position == posts.size() - 2) {
+                homeFragmentListener.onLazyLoad(posts.get(position).getPost_id());
+            }
+        }
+
+        void initStoryAdapter(int position) {
+
+            storyAdapter = new StoryAdapter(homeFragmentListener);
+
+            layoutManager = new LinearLayoutManager(storyRecycler.getContext(), RecyclerView.HORIZONTAL, false);
+            storyRecycler.setLayoutManager(layoutManager);
+
+            storyRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
@@ -108,8 +118,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                     switch (newState) {
 
                         case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
-                            storyView.stop(true);
-                            break;
 
                         case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
                             storyView.stop(true);
@@ -135,15 +143,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                 }
 
             });
+
+            storyAdapter.setStories(posts.get(position).getPost_stories());
+            storyAdapter.setCurrentPost(posts.get(position));
+            storyAdapter.setStoryView(storyView);
+
+            storyRecycler.setAdapter(storyAdapter);
+
+            Log.e("lazyLoad", "post id " + posts.get(position).getPost_id());
+
+
         }
 
-        @Override
-        public void storyFinished(int finishedPosition) {
-            if (layoutManager.findLastVisibleItemPosition() == storyView.size - 1) {
-                recyclerView.post(() -> recyclerView.smoothScrollToPosition(0));
-            } else {
-                recyclerView.post(() -> recyclerView.smoothScrollToPosition(finishedPosition + 1));
-            }
-        }
+
     }
+
 }
+
+
+

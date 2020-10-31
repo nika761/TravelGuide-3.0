@@ -67,6 +67,8 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
         private CircleImageView userImage;
         private ImageButton like;
 
+        private boolean isLikedNow = false;
+
         RepliesHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -80,6 +82,12 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
             replyBtn.setOnClickListener(v -> listener.onChooseReply(commentReplies.get(getLayoutPosition()).getComment_id()));
 
             like = itemView.findViewById(R.id.com_replies_like);
+            like.setOnClickListener(v -> {
+                listener.onChooseLike(commentReplies.get(getLayoutPosition()).getComment_id(),
+                        commentReplies.get(getLayoutPosition()).getComment_reply_id());
+                setCommentLike(getLayoutPosition());
+            });
+
         }
 
 
@@ -107,9 +115,9 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
             likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
 
             if (commentReplies.get(position).isReply_liked_by_me())
-                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
             else
-                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.ic_icon_like, null));
+                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
 
 
             if (commentReplies.get(position).isI_can_reply_comment_reply())
@@ -118,5 +126,29 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
                 replyBtn.setVisibility(View.GONE);
 
         }
+
+        void setCommentLike(int position) {
+            if (commentReplies.get(position).isReply_liked_by_me()) {
+
+                if (isLikedNow) {
+                    likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
+                    isLikedNow = false;
+                } else
+                    likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes() - 1));
+
+                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
+                commentReplies.get(position).setReply_liked_by_me(false);
+
+            } else {
+
+                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
+                likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes() + 1));
+                commentReplies.get(position).setReply_liked_by_me(true);
+
+                isLikedNow = true;
+
+            }
+        }
+
     }
 }

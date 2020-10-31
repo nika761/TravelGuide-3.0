@@ -35,7 +35,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="@dimen/comment_fragment_container_height"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

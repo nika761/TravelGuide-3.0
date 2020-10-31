@@ -2,6 +2,7 @@ package com.example.travelguide.ui.home.comments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,9 @@ import com.example.travelguide.model.request.AddCommentReplyRequest;
 import com.example.travelguide.model.request.AddCommentRequest;
 import com.example.travelguide.model.request.CommentRequest;
 import com.example.travelguide.model.request.GetMoreCommentRequest;
+import com.example.travelguide.model.request.LikeCommentReplyRequest;
 import com.example.travelguide.model.response.CommentResponse;
+import com.example.travelguide.model.response.LikeCommentReplyResponse;
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import java.util.List;
@@ -105,6 +108,12 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                 userName.setText(currentComment.getNickname());
                 commentBody.setText(currentComment.getText());
                 date.setText(currentComment.getComment_time());
+
+                if (currentComment.getComment_liked_by_me())
+                    likeBtn.setBackground(likeBtn.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
+                else
+                    likeBtn.setBackground(likeBtn.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
+
                 likeCount.setText(String.valueOf(currentComment.getComment_likes()));
 
                 this.commentId = currentComment.getComment_id();
@@ -150,6 +159,17 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     public void onChooseReply(int commentId) {
         this.commentId = commentId;
         commentFieldFocus(true);
+    }
+
+    @Override
+    public void onChooseLike(int commentId, int commentReplyId) {
+        this.commentId = commentId;
+        presenter.addCommentReplyLike(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(userName.getContext()), new LikeCommentReplyRequest(storyId, postId, commentId, commentReplyId));
+    }
+
+    @Override
+    public void onLikeSuccess(LikeCommentReplyResponse likeCommentReplyResponse) {
+        Log.e("commentLikeResponse", likeCommentReplyResponse.getMessage());
     }
 
     @Override

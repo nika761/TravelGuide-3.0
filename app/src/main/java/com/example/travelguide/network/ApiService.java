@@ -8,6 +8,7 @@ import com.example.travelguide.model.request.AuthWitFirebaseRequest;
 import com.example.travelguide.model.request.ByMoodRequest;
 import com.example.travelguide.model.request.ChangeLangRequest;
 import com.example.travelguide.model.request.CommentRequest;
+import com.example.travelguide.model.request.LikeCommentReplyRequest;
 import com.example.travelguide.model.request.LikeCommentRequest;
 import com.example.travelguide.model.request.GetMoreCommentRequest;
 import com.example.travelguide.model.request.PostByUserRequest;
@@ -47,6 +48,7 @@ import com.example.travelguide.model.response.FollowerResponse;
 import com.example.travelguide.model.response.FollowingResponse;
 import com.example.travelguide.model.response.ForgotPasswordResponse;
 import com.example.travelguide.model.response.HashtagResponse;
+import com.example.travelguide.model.response.LikeCommentReplyResponse;
 import com.example.travelguide.model.response.LikeCommentResponse;
 import com.example.travelguide.model.response.MoodResponse;
 import com.example.travelguide.model.response.MoreReplyResponse;
@@ -256,6 +258,11 @@ public interface ApiService {
     @POST("set/post_story_comment_like")
     Call<LikeCommentResponse> likeStoryComment(@Header("Authorization") String token,
                                                @Body LikeCommentRequest likeCommentRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_story_comment_reply_like")
+    Call<LikeCommentReplyResponse> likeCommentReply(@Header("Authorization") String token,
+                                                    @Body LikeCommentReplyRequest likeCommentReplyRequest);
 
 
     @Headers({"Accept: application/json"})

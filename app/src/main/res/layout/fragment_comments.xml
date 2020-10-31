@@ -56,6 +56,7 @@
             android:id="@+id/comments_load_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:padding="10dp"
             android:text="View more comments"
             android:visibility="gone"

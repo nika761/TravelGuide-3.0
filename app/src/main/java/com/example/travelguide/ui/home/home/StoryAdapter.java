@@ -56,16 +56,30 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
     @NonNull
     @Override
-    public StoryHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public StoryHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         return new StoryHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_story, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull StoryHolder storyHolder, int position) {
 
-        storyHolder.setVideoItem();
+        storyHolder.setVideoItem(position);
 
-        storyHolder.nickName.setText(currentPost.getNickname());
+        if (stories.get(position).getStory_like_by_me())
+            storyHolder.like.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+        else
+            storyHolder.like.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
+
+        if (currentPost.getI_follow_post_owner())
+            storyHolder.follow.setVisibility(View.GONE);
+        else
+            storyHolder.follow.setVisibility(View.VISIBLE);
+
+        if (currentPost.getI_favor_post())
+            storyHolder.favorite.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+        else
+            storyHolder.favorite.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
+
 
         if (currentPost.getDescription().isEmpty()) {
             storyHolder.description.setVisibility(View.GONE);
@@ -74,23 +88,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             storyHolder.description.setText(currentPost.getDescription());
         }
 
-        if (stories.get(position).getStory_like_by_me()) {
-            storyHolder.like.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
-        } else {
-            storyHolder.like.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
-        }
-
-        if (currentPost.getI_follow_post_owner()) {
-            storyHolder.follow.setVisibility(View.GONE);
-        } else {
-            storyHolder.follow.setVisibility(View.VISIBLE);
-        }
-
-        if (currentPost.getI_favor_post()) {
-            storyHolder.favorite.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-        } else {
-            storyHolder.favorite.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
-        }
 
         if (currentPost.getHashtags().size() > 0) {
             storyHolder.setHashtagRecycler();
@@ -99,16 +96,19 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             storyHolder.hashtagRecycler.setVisibility(View.GONE);
         }
 
-        storyHolder.storyLikes.setText(String.valueOf(stories.get(position).getStory_likes()));
-        storyHolder.storyComments.setText(String.valueOf(stories.get(position).getStory_comments()));
+        if (currentPost.getPost_locations().size() != 0)
+            storyHolder.location.setText(currentPost.getPost_locations().get(0).getAddress());
+
+
+        storyHolder.nickName.setText(currentPost.getNickname());
         storyHolder.storyShares.setText(String.valueOf(currentPost.getPost_shares()));
         storyHolder.storyFavorites.setText(String.valueOf(currentPost.getPost_favorites()));
+        storyHolder.storyLikes.setText(String.valueOf(stories.get(position).getStory_likes()));
+        storyHolder.storyComments.setText(String.valueOf(stories.get(position).getStory_comments()));
 
         storyHolder.musicName.setText(currentPost.getMusic_text());
         storyHolder.musicName.setSelected(true);
 
-        if (currentPost.getPost_locations().size() != 0)
-            storyHolder.location.setText(currentPost.getPost_locations().get(0).getAddress());
         HelperMedia.loadCirclePhoto(storyHolder.profileImage.getContext(), currentPost.getProfile_pic(), storyHolder.profileImage);
 
         homeFragmentListener.stopLoader();
@@ -142,6 +142,8 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         ImageButton like, follow, share, favorite, comment;
         ImageView storyCover;
         RecyclerView hashtagRecycler;
+
+        boolean isLikedNow = false;
 
         StoryHolder(@NonNull View itemView) {
             super(itemView);
@@ -185,15 +187,15 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             hashtagRecycler.setAdapter(new HashtagAdapter(currentPost.getHashtags()));
         }
 
-        void setVideoItem() {
-            videoItem.setVideoURI(Uri.parse(stories.get(getLayoutPosition()).getUrl()));
+        void setVideoItem(int position) {
+            videoItem.setVideoURI(Uri.parse(stories.get(position).getUrl()));
             videoItem.requestFocus();
             videoItem.setOnPreparedListener(mp -> {
 
                 mp.setLooping(true);
                 videoItem.start();
-                int duration = currentPost.getPost_stories().get(0).getSecond();
-                storyView.start(0, duration);
+                int duration = stories.get(position).getSecond();
+                storyView.start(position, duration);
 
             });
 
@@ -222,14 +224,22 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
                             currentPost.getPost_stories().get(getLayoutPosition()).getStory_id(), getLayoutPosition());
 
                     if (stories.get(getLayoutPosition()).getStory_like_by_me()) {
+
+                        if (isLikedNow) {
+                            storyLikes.setText(String.valueOf(stories.get(getLayoutPosition()).getStory_likes()));
+                            isLikedNow = false;
+                        } else
+                            storyLikes.setText(String.valueOf(stories.get(getLayoutPosition()).getStory_likes() - 1));
+
                         like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
-                        storyLikes.setText(String.valueOf(stories.get(getLayoutPosition()).getStory_likes()));
                         stories.get(getLayoutPosition()).setStory_like_by_me(false);
 
                     } else {
                         like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
                         storyLikes.setText(String.valueOf(stories.get(getLayoutPosition()).getStory_likes() + 1));
                         stories.get(getLayoutPosition()).setStory_like_by_me(true);
+
+                        isLikedNow = true;
                     }
 
                     break;
@@ -263,5 +273,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             }
 
         }
+
     }
 }

@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:maxLines="3"
+            android:maxLines="10"
             android:text="asdasdasdasjcnxjcxljgfdflkgjdfggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
             android:textSize="14sp"
             app:autoSizeTextType="uniform"
@@ -91,10 +91,9 @@
 
         <ImageButton
             android:id="@+id/replies_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="18dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/ic_icon_like"
             app:layout_constraintBottom_toBottomOf="@id/replies_user_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/replies_body"

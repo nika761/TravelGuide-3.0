@@ -2,6 +2,7 @@ package com.example.travelguide.ui.home.comments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,7 +156,8 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     }
 
     @Override
-    public void onReplyChoose(CommentResponse.Post_story_comments currentComment, List<CommentResponse.Comment_reply> replies, boolean requestReply) {
+    public void onReplyChoose(CommentResponse.Post_story_comments currentComment,
+                              List<CommentResponse.Comment_reply> replies, boolean requestReply) {
         Bundle repliesFragmentData = new Bundle();
         repliesFragmentData.putSerializable("repliesComment", (Serializable) replies);
         repliesFragmentData.putSerializable("currentComment", currentComment);
@@ -200,13 +202,25 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onLikeSuccess(LikeCommentResponse likeCommentResponse) {
-        Toast.makeText(context, likeCommentResponse.getMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("commentLikeResponse", likeCommentResponse.getMessage());
     }
 
     @Override
     public void onError(String message) {
         loading.setVisibility(View.GONE);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.comments_add_image_btn:
+                loading.setVisibility(View.VISIBLE);
+                presenter.addComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
+                break;
+
+        }
     }
 
     @Override
@@ -222,18 +236,5 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
         super.onDestroy();
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.comments_add_image_btn:
-                loading.setVisibility(View.VISIBLE);
-                presenter.addComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
-                break;
-
-        }
-    }
-
 
 }

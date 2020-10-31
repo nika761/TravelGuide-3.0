@@ -289,6 +289,10 @@ public class CommentResponse implements Serializable {
             return reply_likes;
         }
 
+        public void setReply_liked_by_me(boolean reply_liked_by_me) {
+            this.reply_liked_by_me = reply_liked_by_me;
+        }
+
         public boolean isReply_liked_by_me() {
             return reply_liked_by_me;
         }

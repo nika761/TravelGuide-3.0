@@ -25,8 +25,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     private CommentListener listener;
 
-    private int visiblePosition = -1;
-
     CommentAdapter(CommentListener listener) {
         this.listener = listener;
     }
@@ -47,22 +45,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     void setComments(List<CommentResponse.Post_story_comments> comments) {
-        if (this.comments != null && this.comments.size() != 0) {
+
+        if (this.comments != null && this.comments.size() != 0)
             this.comments.addAll(comments);
-        } else {
+
+        else
             this.comments = comments;
-        }
+
         notifyDataSetChanged();
     }
 
     void setCommentAdd(List<CommentResponse.Post_story_comments> comments) {
         this.comments = comments;
         notifyDataSetChanged();
-    }
-
-    void setCommentReplies(int position, List<CommentResponse.Comment_reply> replies) {
-        this.comments.get(position).getComment_reply().addAll(replies);
-        notifyItemChanged(position);
     }
 
     @Override
@@ -72,17 +67,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     class CommentHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView userName, body, date, replyBtn, showReplies, hideReplies, likeCount, bodyMore;
-        RepliesAdapter commentRepliesAdapter;
-        RecyclerView repliesRecycler;
+        TextView userName, body, date, replyBtn, likeCount, bodyMore, showReplies;
         CircleImageView userImage;
         ImageButton likeBtn;
+
+        boolean isLikedNow = false;
 
         CommentHolder(@NonNull View itemView) {
 
             super(itemView);
-
-            repliesRecycler = itemView.findViewById(R.id.comments_replies_recycler);
 
             likeCount = itemView.findViewById(R.id.comments_like_count);
             userImage = itemView.findViewById(R.id.comments_user_image);
@@ -98,9 +91,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
             showReplies = itemView.findViewById(R.id.comments_view_replies);
             showReplies.setOnClickListener(this);
-
-            hideReplies = itemView.findViewById(R.id.comments_hide_replies);
-            hideReplies.setOnClickListener(this);
 
             likeBtn = itemView.findViewById(R.id.comments_like_btn);
             likeBtn.setOnClickListener(this);
@@ -130,12 +120,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
             HelperMedia.loadCirclePhoto(body.getContext(), comments.get(position).getProfile_pic(), userImage);
 
-            if (visiblePosition == position)
-                showReplies(true, visiblePosition);
-            else
-                showReplies(false, visiblePosition);
-
-
             if (comments.get(position).getComment_reply().size() > 0) {
                 showReplies.setVisibility(View.VISIBLE);
                 showReplies.setText(MessageFormat.format("View replies ({0})", comments.get(position).getComment_replies_count()));
@@ -144,9 +128,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             }
 
             if (comments.get(position).getComment_liked_by_me())
-                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
             else
-                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.ic_icon_like, null));
+                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
 
 
             if (comments.get(position).getI_can_reply_comment())
@@ -166,17 +150,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
                 case R.id.comments_reply_btn:
                     listener.onReplyChoose(comments.get(getLayoutPosition()), comments.get(getLayoutPosition()).getComment_reply(), true);
-//                    listener.onShowReplies(comments.get(getLayoutPosition()).getNickname(),
-//                            comments.get(getLayoutPosition()).getProfile_pic(),
-//                            comments.get(getLayoutPosition()).getText(),
-//                            comments.get(getLayoutPosition()).getComment_time(),
-//                            String.valueOf(comments.get(getLayoutPosition()).getComment_likes()),
-//                            comments.get(getLayoutPosition()).getComment_reply());
-//                    showReplies(true, getLayoutPosition());
                     break;
 
                 case R.id.comments_like_btn:
-
                     listener.onLikeChoose(comments.get(getLayoutPosition()).getComment_id());
 
                     setCommentLike(getLayoutPosition());
@@ -186,70 +162,30 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 case R.id.comments_see_more_body:
                     body.setMaxLines(10);
                     break;
-
-                case R.id.comments_hide_replies:
-                    showReplies(false, getLayoutPosition());
-                    break;
             }
-        }
-
-        void showReplies(boolean show, int position) {
-
-            if (show) {
-
-                showReplies.setVisibility(View.GONE);
-                replyBtn.setVisibility(View.GONE);
-
-                hideReplies.setVisibility(View.VISIBLE);
-                repliesRecycler.setVisibility(View.VISIBLE);
-
-                if (commentRepliesAdapter == null) {
-                    repliesRecycler.setLayoutManager(new LinearLayoutManager(body.getContext()));
-//                    commentRepliesAdapter = new RepliesAdapter();
-                    commentRepliesAdapter.setCommentReplies(comments.get(position).getComment_reply());
-                    repliesRecycler.setAdapter(commentRepliesAdapter);
-                } else {
-                    commentRepliesAdapter.setCommentReplies(comments.get(position).getComment_reply());
-                }
-
-                visiblePosition = position;
-
-            } else {
-
-                hideReplies.setVisibility(View.GONE);
-                repliesRecycler.setVisibility(View.GONE);
-
-                showReplies.setVisibility(View.VISIBLE);
-
-                if (comments.get(getLayoutPosition()).getI_can_reply_comment())
-                    replyBtn.setVisibility(View.VISIBLE);
-                else
-                    replyBtn.setVisibility(View.GONE);
-
-                visiblePosition = -1;
-
-            }
-
         }
 
         void setCommentLike(int position) {
-
             if (comments.get(position).getComment_liked_by_me()) {
 
-                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.ic_icon_like, null));
-                likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
+                if (isLikedNow) {
+                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
+                    isLikedNow = false;
+                } else
+                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes() - 1));
 
+                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
                 comments.get(position).setComment_liked_by_me(false);
 
             } else {
 
-                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
                 likeCount.setText(String.valueOf(comments.get(position).getComment_likes() + 1));
-
                 comments.get(position).setComment_liked_by_me(true);
 
-            }
+                isLikedNow = true;
 
+            }
         }
 
     }
