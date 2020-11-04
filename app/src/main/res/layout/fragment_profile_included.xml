@@ -42,11 +42,11 @@
                     android:id="@+id/user_prf_nickName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="25dp"
                     android:layout_marginTop="15dp"
                     android:text=""
+                    android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@id/profile_image"
+                    app:layout_constraintStart_toStartOf="@id/edit_profile"
                     app:layout_constraintTop_toTopOf="@id/profile_image" />
 
                 <TextView
@@ -58,10 +58,10 @@
                     android:padding="9dp"
                     android:text="Edit Profile"
                     android:textColor="@color/yellowTextView"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/states_test"
-                    app:layout_constraintStart_toStartOf="@id/user_prf_nickName"
+                    app:layout_constraintEnd_toEndOf="@id/states_test"
                     app:layout_constraintTop_toBottomOf="@id/user_prf_nickName" />
 
 
@@ -83,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Following"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/following" />
 
@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:text="Followers"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toEndOf="@id/following"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -111,7 +111,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toStartOf="@id/followers"
                         app:layout_constraintTop_toBottomOf="@id/followers" />
 
@@ -121,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:text="Reactions"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toEndOf="@id/followers"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -130,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toStartOf="@id/reactions"
                         app:layout_constraintTop_toBottomOf="@id/reactions" />
 

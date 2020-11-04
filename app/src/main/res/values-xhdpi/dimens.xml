@@ -5,5 +5,7 @@
     <dimen name="sign_up_head_margin_top">40dp</dimen>
     <dimen name="sign_up_fragment_margin_top">160dp</dimen>
     <dimen name="comment_fragment_container_height">500dp</dimen>
+    <dimen name="user_post_item_size_width">115dp</dimen>
+    <dimen name="user_post_item_size_height">125dp</dimen>
 
 </resources>

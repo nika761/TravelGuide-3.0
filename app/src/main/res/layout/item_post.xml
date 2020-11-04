@@ -11,9 +11,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/post_recycler_new"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="visible" />
 
-        <com.example.travelguide.helper.StoryView
+        <com.travelguide.travelguide.helper.StoryView
             android:id="@+id/story_container_new_new"
             android:layout_width="match_parent"
             android:layout_height="10dp"

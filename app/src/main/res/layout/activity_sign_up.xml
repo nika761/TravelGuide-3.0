@@ -75,7 +75,7 @@
                 <EditText
                     android:id="@+id/register_name"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:inputType="text"
                     android:maxLines="1"
@@ -94,7 +94,7 @@
                 <EditText
                     android:id="@+id/register_surname"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:inputType="text"
                     android:maxLines="1"
@@ -113,7 +113,7 @@
                 <EditText
                     android:id="@+id/register_nick_name"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:maxLines="1"
                     android:padding="10dp"
@@ -156,7 +156,7 @@
                 <TextView
                     android:id="@+id/register_birth_date"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:gravity="center_horizontal"
                     android:hint="DD -- MM -- YYYY"
@@ -175,7 +175,7 @@
                 <EditText
                     android:id="@+id/register_email"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:maxLines="1"
                     android:padding="10dp"
@@ -193,7 +193,7 @@
                 <LinearLayout
                     android:id="@+id/register_phone_number_container"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:orientation="horizontal">
 
@@ -231,7 +231,7 @@
                 <EditText
                     android:id="@+id/register_password"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:hint="min 8 symbols"
                     android:inputType="textPassword"
@@ -254,7 +254,7 @@
                 <EditText
                     android:id="@+id/register_confirm_password"
                     android:layout_width="282dp"
-                    android:layout_height="42dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/bg_register_field"
                     android:hint="min 8 symbols"
                     android:inputType="textPassword"
@@ -269,28 +269,33 @@
                     android:id="@+id/radio_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
                     <RadioButton
                         android:id="@+id/radio_male"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Male" />
 
                     <RadioButton
                         android:id="@+id/radio_female"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Female" />
 
                     <RadioButton
                         android:id="@+id/radio_other"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Other" />
 
                 </RadioGroup>
-
 
             </LinearLayout>
 
