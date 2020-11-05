@@ -1,5 +1,6 @@
 package com.travel.guide.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -77,7 +78,6 @@ public class HelperMedia {
 //            out.write(decodedBytes);
 //            out.close();
 //        } catch (Exception e) {
-//            // TODO: handle exception
 //            Log.e("Error", e.toString());
 //
 //        }
@@ -306,14 +306,40 @@ public class HelperMedia {
         try {
             String[] proj = {MediaStore.Video.Media.DATA};
             cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
+            if (cursor != null) {
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            } else {
+                return null;
+            }
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
+    }
+
+    public static String getPathFromImageUri(Activity activity, Uri uri) {
+        Cursor cursor = null;
+        String picturePath;
+        try {
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            cursor = activity.getContentResolver().query(uri, filePathColumn, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                picturePath = cursor.getString(columnIndex);
+                cursor.close();
+            } else {
+                picturePath = null;
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return picturePath;
     }
 
 }

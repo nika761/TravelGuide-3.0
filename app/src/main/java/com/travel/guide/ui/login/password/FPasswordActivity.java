@@ -44,16 +44,15 @@ public class FPasswordActivity extends AppCompatActivity implements FPasswordLis
                 inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
             }
         });
+
         emailHead = findViewById(R.id.forgot_password_email_head);
 
         Button save = findViewById(R.id.forgot_password_save_btn);
         save.setOnClickListener(v -> {
-            email = HelperUI.checkEditTextData(eEmail, emailHead, "Email",
-                    HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, eEmail.getContext());
+            email = HelperUI.checkEditTextData(eEmail, emailHead, "Email", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, eEmail.getContext());
 
             if (email != null && HelperUI.checkEmail(email)) {
-                HelperUI.setBackgroundDefault(eEmail, emailHead, "Email",
-                        HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eEmail, emailHead, "Email", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
                 forgotPasswordPresenter.forgotPassword(new ForgotPasswordRequest(email, HelperPref.getLanguageId(this)));
                 eEmail.clearFocus();
             } else {

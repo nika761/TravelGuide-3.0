@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.travel.guide.R;
-import com.travel.guide.enums.Enums;
+import com.travel.guide.enums.LoadWebViewEnum;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.ui.webView.about.AboutFragment;
 import com.travel.guide.ui.webView.policy.PolicyFragment;
@@ -28,9 +28,9 @@ public class WebActivity extends AppCompatActivity {
     }
 
     private void checkRequestType() {
-        Enums.LoadWebViewType loadWebViewType = (Enums.LoadWebViewType) getIntent().getSerializableExtra(TYPE);
-        if (loadWebViewType != null) {
-            switch (loadWebViewType) {
+        LoadWebViewEnum loadWebViewEnum = (LoadWebViewEnum) getIntent().getSerializableExtra(TYPE);
+        if (loadWebViewEnum != null) {
+            switch (loadWebViewEnum) {
                 case TERMS:
                     HelperUI.loadFragment(new TermsFragment(), null, WEB_FRAGMENT_CONTAINER, false, true, this);
                     break;

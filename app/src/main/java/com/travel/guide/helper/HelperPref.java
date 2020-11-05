@@ -47,7 +47,6 @@ public class HelperPref {
 //    }
 
 
-
     /// User Role
 
     public static void saveUserRole(Context context, int userRole) {

@@ -71,7 +71,6 @@ public class StoryView extends LinearLayout {
         this.stop = stop;
     }
 
-
     public void start(final int position, int duration) {
         clearPrevious(position);
         ProgressBar progressBar = (ProgressBar) getChildAt(position);

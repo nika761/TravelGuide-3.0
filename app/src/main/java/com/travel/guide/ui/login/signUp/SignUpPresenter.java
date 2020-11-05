@@ -84,7 +84,7 @@ class SignUpPresenter {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
-                    signUpListener.onPhotoUploadSuccess();
+                    signUpListener.onPhotoUploadToS3();
                 } else if (TransferState.FAILED == state) {
                     signUpListener.onError("error");
                 }

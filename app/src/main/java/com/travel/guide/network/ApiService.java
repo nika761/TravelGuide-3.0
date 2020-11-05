@@ -127,7 +127,7 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("get/posts_by_user")
-    Call<PostResponse> getCustomerPosts(@Header("Authorization") String token,
+    Call<PostResponse> getPostsByUser(@Header("Authorization") String token,
                                         @Body PostByUserRequest customerPostRequest);
 
     @Headers({"Accept: application/json"})

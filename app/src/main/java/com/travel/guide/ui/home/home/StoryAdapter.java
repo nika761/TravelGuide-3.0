@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.enums.Enums;
+import com.travel.guide.enums.StoryEmotionEnum;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.helper.StoryView;
@@ -59,14 +59,13 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             storyHolder.like.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
 
 
-        if (currentPost.getUser_id() == storyHolder.ownerUserId)
-            storyHolder.follow.setVisibility(View.GONE);
-
-
         if (currentPost.getI_follow_post_owner())
             storyHolder.follow.setVisibility(View.GONE);
         else
             storyHolder.follow.setVisibility(View.VISIBLE);
+
+        if (currentPost.getUser_id() == storyHolder.ownerUserId)
+            storyHolder.follow.setVisibility(View.GONE);
 
 
         if (currentPost.getI_favor_post())
@@ -271,12 +270,12 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
                 case R.id.story_like:
                     homeFragmentListener.onStoryLikeChoose(currentPost.getPost_id(), currentPost.getPost_stories().get(getLayoutPosition()).getStory_id(), getLayoutPosition());
-                    setStoryEmotion(getLayoutPosition(), Enums.StoryEmotionType.LIKE);
+                    setStoryEmotion(getLayoutPosition(), StoryEmotionEnum.LIKE);
                     break;
 
                 case R.id.story_follow_btn:
                     homeFragmentListener.onFollowChoose(currentPost.getUser_id());
-                    setStoryEmotion(getLayoutPosition(), Enums.StoryEmotionType.FOLLOW);
+                    setStoryEmotion(getLayoutPosition(), StoryEmotionEnum.FOLLOW);
                     break;
 
                 case R.id.story_share:
@@ -285,7 +284,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
                 case R.id.story_favorites:
                     homeFragmentListener.onFavoriteChoose(currentPost.getPost_id(), getLayoutPosition());
-                    setStoryEmotion(getLayoutPosition(), Enums.StoryEmotionType.FAVORITE);
+                    setStoryEmotion(getLayoutPosition(), StoryEmotionEnum.FAVORITE);
                     break;
 
                 case R.id.story_comment:
@@ -295,9 +294,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
         }
 
-        void setStoryEmotion(int position, Enums.StoryEmotionType storyEmotionType) {
+        void setStoryEmotion(int position, StoryEmotionEnum storyEmotionEnum) {
 
-            switch (storyEmotionType) {
+            switch (storyEmotionEnum) {
                 case LIKE:
                     if (stories.get(position).getStory_like_by_me()) {
 

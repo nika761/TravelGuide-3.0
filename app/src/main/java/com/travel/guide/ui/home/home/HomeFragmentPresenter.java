@@ -2,6 +2,7 @@ package com.travel.guide.ui.home.home;
 
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
+import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.request.SetPostFavoriteRequest;
 import com.travel.guide.model.request.SetStoryLikeRequest;
 import com.travel.guide.model.request.SharePostRequest;
@@ -49,6 +50,28 @@ public class HomeFragmentPresenter {
                             homeFragmentListener.onError("no posts");
                             break;
 
+                    }
+                } else {
+                    homeFragmentListener.onError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                homeFragmentListener.onError(t.getMessage());
+            }
+        });
+    }
+
+    void getUserPosts(String accessToken, PostByUserRequest postByUserRequest) {
+        apiService.getPostsByUser(accessToken, postByUserRequest).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null && response.body().getStatus() == 0) {
+                        homeFragmentListener.onGetPosts(response.body().getPosts());
+                    } else {
+                        homeFragmentListener.onError(response.message());
                     }
                 } else {
                     homeFragmentListener.onError(response.message());

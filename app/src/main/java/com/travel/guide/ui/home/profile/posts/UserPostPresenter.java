@@ -20,7 +20,7 @@ class UserPostPresenter {
     }
 
     void getUserPosts(String accessToken, PostByUserRequest postByUserRequest) {
-        apiService.getCustomerPosts(accessToken, postByUserRequest).enqueue(new Callback<PostResponse>() {
+        apiService.getPostsByUser(accessToken, postByUserRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {

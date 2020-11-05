@@ -19,7 +19,7 @@ class CustomerPhotoPresenter {
     }
 
     void getCustomerPosts(String accessToken, PostByUserRequest customerPostRequest) {
-        apiService.getCustomerPosts(accessToken, customerPostRequest).enqueue(new Callback<PostResponse>() {
+        apiService.getPostsByUser(accessToken, customerPostRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {

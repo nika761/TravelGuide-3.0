@@ -26,10 +26,20 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import static com.travel.guide.enums.LoadPostEnum.FEED;
 import static com.travel.guide.helper.HelperPref.FACEBOOK;
 import static com.travel.guide.helper.HelperPref.GOOGLE;
 import static com.travel.guide.helper.HelperPref.TRAVEL_GUIDE;
 import static com.travel.guide.helper.HelperSystem.READ_EXTERNAL_STORAGE;
+
+/**
+ * Created by n.butskhrikidze on 01/07/2020.
+ * <p>
+ * დასაბამიდან იყო სიტყვა, და სიტყვა იყო ღმერთთან და ღმერთი იყო სიტყვა.
+ * In the beginning was the Word, and the Word was with God, and the Word was God.
+ * <p>
+ * Good luck buddy.
+ */
 
 public class HomePageActivity extends AppCompatActivity implements ProfileFragment.OnPostChooseListener {
 
@@ -67,15 +77,13 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
 
-
-
     private void initBtmNav() {
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.bot_nav_home:
                     Bundle data = new Bundle();
-                    data.putSerializable("PostShowType", HomeFragment.GetPostType.FEED);
+                    data.putSerializable("PostShowType", FEED);
                     HelperUI.loadFragment(new HomeFragment(), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
                     break;
 

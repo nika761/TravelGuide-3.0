@@ -55,8 +55,6 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     private CommentAdapter commentAdapter;
 
-    String ssd;
-
     private int storyId;
     private int postId;
     private int commentPosition;

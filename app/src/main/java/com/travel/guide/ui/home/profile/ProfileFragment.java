@@ -27,7 +27,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.enums.Enums;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
@@ -47,6 +46,9 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.travel.guide.enums.LoadWebViewEnum.ABOUT;
+import static com.travel.guide.enums.LoadWebViewEnum.POLICY;
+import static com.travel.guide.enums.LoadWebViewEnum.TERMS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
@@ -160,15 +162,15 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.settings_about:
-                HelperUI.startWebActivity(context, Enums.LoadWebViewType.ABOUT);
+                HelperUI.startWebActivity(context, ABOUT);
                 break;
 
             case R.id.settings_privacy:
-                HelperUI.startWebActivity(context, Enums.LoadWebViewType.POLICY);
+                HelperUI.startWebActivity(context, POLICY);
                 break;
 
             case R.id.settings_terms:
-                HelperUI.startWebActivity(context, Enums.LoadWebViewType.TERMS);
+                HelperUI.startWebActivity(context, TERMS);
                 break;
 
             case R.id.settings_sing_out:

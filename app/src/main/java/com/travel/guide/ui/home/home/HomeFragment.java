@@ -21,8 +21,10 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
+import com.travel.guide.enums.LoadPostEnum;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
+import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.request.SetPostFavoriteRequest;
 import com.travel.guide.model.request.SetStoryLikeRequest;
 import com.travel.guide.model.request.SharePostRequest;
@@ -60,11 +62,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     private int visibleItemCount;
     private int totalItemCount;
 
-    private GetPostType getPostType;
-
-    public enum GetPostType {
-        FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED
-    }
+    private LoadPostEnum loadPostEnum;
 
     @Nullable
     @Override
@@ -92,26 +90,18 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
-            getPostType = (GetPostType) getArguments().getSerializable("PostShowType");
-            if (getPostType != null) {
-                switch (getPostType) {
-
+            loadPostEnum = (LoadPostEnum) getArguments().getSerializable("PostShowType");
+            int scrollPosition = getArguments().getInt("postPosition");
+            if (loadPostEnum != null) {
+                switch (loadPostEnum) {
                     case FAVORITES:
-                        int scrollPosition = getArguments().getInt("postPosition");
-
                         List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
-
                         initRecyclerView(favoritePosts, true, scrollPosition);
-
                         break;
 
                     case MY_POSTS:
-                        int scroll = getArguments().getInt("postPosition");
-
                         List<PostResponse.Posts> myPosts = (List<PostResponse.Posts>) getArguments().getSerializable("myPosts");
-
-                        initRecyclerView(myPosts, true, scroll);
-
+                        initRecyclerView(myPosts, true, scrollPosition);
                         break;
 
                     case CUSTOMER_POSTS:
@@ -127,13 +117,16 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     private void initRecyclerView(List<PostResponse.Posts> posts, boolean scrollToPosition, int scrollPosition) {
 
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         postRecycler.setLayoutManager(layoutManager);
 
         postAdapter = new PostAdapter(this);
         postAdapter.setPosts(posts);
         postRecycler.setAdapter(postAdapter);
+
+        if (scrollToPosition) {
+            postRecycler.post(() -> postRecycler.scrollToPosition(scrollPosition));
+        }
 
         postRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -180,10 +173,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
         });
 
-        if (scrollToPosition) {
-            postRecycler.post(() -> postRecycler.scrollToPosition(scrollPosition));
-        }
-
     }
 
     @Override
@@ -207,7 +196,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (followResponse.getStatus()) {
             case 0:
             case 1:
-                Toast.makeText(postRecycler.getContext(), followResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("PostEmotion", followResponse.getMessage() + followResponse.getStatus());
                 break;
         }
     }
@@ -243,7 +232,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onShareSuccess(SharePostResponse sharePostResponse) {
-        Log.e("shared", String.valueOf(sharePostResponse.getStatus()));
+        Log.e("PostEmotion", " " + sharePostResponse.getStatus());
     }
 
 
@@ -256,11 +245,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onStoryLiked(SetStoryLikeResponse setStoryLikeResponse) {
         switch (setStoryLikeResponse.getStatus()) {
             case 0:
-//                postRecyclerAdapter.setStoryLike(0, storyPosition, setStoryLikeResponse.getStory().getStory_likes());
-//                Toast.makeText(context, setStoryLikeResponse.getMessage(), Toast.LENGTH_SHORT).show();
             case 1:
-//                postRecyclerAdapter.setStoryLike(1, storyPosition, setStoryLikeResponse.getStory().getStory_likes());
-//                Toast.makeText(context, setStoryLikeResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("PostEmotion", setStoryLikeResponse.getMessage() + setStoryLikeResponse.getStatus());
                 break;
         }
     }
@@ -288,13 +274,14 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onLazyLoad(int fromPostId) {
 
-        switch (getPostType) {
+        switch (loadPostEnum) {
 
             case FAVORITES:
                 presenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));
                 break;
 
             case MY_POSTS:
+                presenter.getUserPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostByUserRequest(HelperPref.getUserId(postRecycler.getContext())));
                 break;
 
             case CUSTOMER_POSTS:

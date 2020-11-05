@@ -3,12 +3,10 @@ package com.travel.guide.ui.login.signUp;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -26,8 +24,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
-import com.travel.guide.enums.Enums;
 import com.travel.guide.helper.HelperClients;
+import com.travel.guide.helper.HelperDialogs;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.model.request.CheckNickRequest;
@@ -42,6 +40,9 @@ import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.travel.guide.enums.LoadWebViewEnum.POLICY;
+import static com.travel.guide.enums.LoadWebViewEnum.TERMS;
+
 public class SignUpActivity extends AppCompatActivity implements SignUpListener, View.OnClickListener {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -51,8 +52,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
     private String photoUrl, userName, userSurname, nickName, birthDate, phoneIndex, phoneNumber, nickNameFirst, nickNameSecond;
     private final static int PICK_IMAGE = 29;
-    private int blackColor, gender;
+    private int blackColor, gender = 3;
     private long timeStamp;
+    private boolean genderChecked = false;
 
     private EditText eName, eSurname, eNickName, eMail, ePhoneNumber, ePassword, eConfirmPassword;
     private TextView eNameHead, eSurnameHead, eNickNameHead, registerBirthDate, registerBirthDateHead, eEmailHead,
@@ -146,7 +148,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         RadioGroup genderGroup = findViewById(R.id.radio_group);
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
-
                 case R.id.radio_male:
                     gender = 0;
                     break;
@@ -159,8 +160,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
                     gender = 2;
                     break;
             }
+            genderChecked = true;
         });
-
     }
 
     @Override
@@ -179,18 +180,15 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
     }
 
     public void pickProfileImage(Uri uri) {
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
+        String picturePath = HelperMedia.getPathFromImageUri(this, uri);
+        if (picturePath != null) {
             profilePhotoFile = new File(picturePath);
             signUpPresenter.uploadToS3(HelperClients.transferObserver(this, profilePhotoFile));
             HelperMedia.loadCirclePhoto(this, picturePath, profileImage);
         }
+
     }
+
 
     public void loadingVisibility(boolean visible) {
         if (visible) {
@@ -204,13 +202,13 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
     @Override
     public void onSignUpResponse(SignUpResponse signUpResponse) {
-        int authResultStatus = signUpResponse.getStatus();
 
         loadingVisibility(false);
 
-        switch (authResultStatus) {
+        switch (signUpResponse.getStatus()) {
             case 0:
-                showConfirmDialog(signUpResponse.getTitle(), signUpResponse.getMessage());
+                HelperDialogs.signUpConfirmDialog(this, signUpResponse.getTitle(), signUpResponse.getMessage());
+//                showConfirmDialog(signUpResponse.getTitle(), signUpResponse.getMessage());
                 break;
 
             case 2:
@@ -256,7 +254,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
     }
 
     @Override
-    public void onPhotoUploadSuccess() {
+    public void onPhotoUploadToS3() {
         photoUrl = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, profilePhotoFile.getName());
     }
 
@@ -303,21 +301,19 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
             case R.id.nickName_offer_1:
                 eNickName.setText(nickNameFirst);
-                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, "NickName",
-                        HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, "NickName", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
                 break;
             case R.id.nickName_offer_2:
                 eNickName.setText(nickNameSecond);
-                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, "NickName",
-                        HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, "NickName", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
                 break;
 
             case R.id.terms_register:
-                HelperUI.startWebActivity(this, Enums.LoadWebViewType.TERMS);
+                HelperUI.startWebActivity(this, TERMS);
                 break;
 
             case R.id.policy_register:
-                HelperUI.startWebActivity(this, Enums.LoadWebViewType.POLICY);
+                HelperUI.startWebActivity(this, POLICY);
                 break;
 
         }
@@ -328,6 +324,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         boolean numberValidate = false;
 
         countryCodePicker.registerCarrierNumberEditText(enteredNumber);
+
         if (countryCodePicker.isValidFullNumber()) {
             numberValidate = true;
         }
@@ -336,45 +333,34 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
     private void onGetData() {
 
-        if (gender != 0) {
+        if (!genderChecked) {
             Toast.makeText(this, "Please enter gender", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        userName = HelperUI.checkEditTextData(eName, eNameHead, "Name",
-                blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        userName = HelperUI.checkEditTextData(eName, eNameHead, "Name", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
 
-        userSurname = HelperUI.checkEditTextData(eSurname, eSurnameHead, "Surname",
-                blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        userSurname = HelperUI.checkEditTextData(eSurname, eSurnameHead, "Surname", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
 
-        nickName = HelperUI.checkEditTextData(eNickName, eNickNameHead, "NickName",
-                blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        nickName = HelperUI.checkEditTextData(eNickName, eNickNameHead, "NickName", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
 
-        String email = HelperUI.checkEditTextData(eMail, eEmailHead, "Email",
-                blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
-
+        String email = HelperUI.checkEditTextData(eMail, eEmailHead, "Email", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
         if (email != null && HelperUI.checkEmail(email)) {
-            HelperUI.setBackgroundDefault(eMail, eEmailHead, "Email",
-                    blackColor, HelperUI.BACKGROUND_DEF_BLACK);
+            HelperUI.setBackgroundDefault(eMail, eEmailHead, "Email", blackColor, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
             HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email", this);
         }
 
-        String password = HelperUI.checkEditTextData(ePassword, ePasswordHead, "Password",
-                blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
-
+        String password = HelperUI.checkEditTextData(ePassword, ePasswordHead, "Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
         if (password != null && HelperUI.checkPassword(password)) {
-            HelperUI.setBackgroundDefault(ePassword, ePasswordHead, "Password",
-                    blackColor, HelperUI.BACKGROUND_DEF_BLACK);
+            HelperUI.setBackgroundDefault(ePassword, ePasswordHead, "Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
             HelperUI.setBackgroundWarning(ePassword, ePasswordHead, "Password", this);
         }
 
-        String confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",
-                blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
-
+        String confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, eConfirmPasswordHead, "Confirm Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
         if (password != null && confirmPassword != null && HelperUI.checkConfirmPassword(password, confirmPassword)) {
-            HelperUI.setBackgroundDefault(eConfirmPassword, eConfirmPasswordHead, "Confirm Password",
-                    blackColor, HelperUI.BACKGROUND_DEF_BLACK);
+            HelperUI.setBackgroundDefault(eConfirmPassword, eConfirmPasswordHead, "Confirm Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
             HelperUI.setBackgroundWarning(eConfirmPassword, eConfirmPasswordHead, "Confirm Password", this);
         }
@@ -414,8 +400,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
             birthDate = registerBirthDate.getText().toString();
         }
 
-        //to do
-//        if (photoUrl != null)
+        //TODO: check photoUrl on null
 
         if (userName != null &&
                 userSurname != null &&
@@ -428,32 +413,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
             loadingVisibility(true);
             SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password, confirmPassword, String.valueOf(timeStamp), phoneIndex, photoUrl, phoneNumber, String.valueOf(HelperPref.getLanguageId(this)), gender);
             signUpPresenter.signUp(signUpRequest);
-            //Toast.makeText(getContext(), "Welcome " + userName, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, " Error ", Toast.LENGTH_LONG).show();
         }
 
-    }
-
-    private void showConfirmDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View customLayout = getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
-        TextView verifyTitle, verifyMessage;
-
-        verifyTitle = customLayout.findViewById(R.id.confirm_title);
-        verifyMessage = customLayout.findViewById(R.id.confirm_message);
-
-        verifyTitle.setText(title);
-        verifyMessage.setText(message);
-
-        builder.setView(customLayout);
-
-        AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_transparent, null));
-        }
-
-        dialog.show();
     }
 
     private void showDatePickerDialog() {
@@ -462,13 +425,12 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog dialog = new DatePickerDialog(this,
-                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                mDateSetListener,
-                year, month, day);
+        DatePickerDialog dialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
+
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
+
         dialog.show();
     }
 

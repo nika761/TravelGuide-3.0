@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.enums.Enums;
 import com.travel.guide.helper.HelperClients;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.model.request.LoginRequest;
@@ -53,6 +52,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.travel.guide.enums.LoadWebViewEnum.POLICY;
+import static com.travel.guide.enums.LoadWebViewEnum.TERMS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SignInActivity extends AppCompatActivity implements SignInListener {
@@ -202,11 +203,11 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
                 break;
 
             case R.id.terms_of_services:
-                HelperUI.startWebActivity(this, Enums.LoadWebViewType.TERMS);
+                HelperUI.startWebActivity(this, TERMS);
                 break;
 
             case R.id.privacy_policy:
-                HelperUI.startWebActivity(this, Enums.LoadWebViewType.POLICY);
+                HelperUI.startWebActivity(this, POLICY);
                 break;
 
             case R.id.forgot_password_sign_in:

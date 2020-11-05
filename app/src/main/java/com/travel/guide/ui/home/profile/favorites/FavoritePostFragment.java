@@ -26,6 +26,7 @@ import com.travel.guide.ui.home.profile.ProfileFragment;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.travel.guide.enums.LoadPostEnum.FAVORITES;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class FavoritePostFragment extends Fragment implements FavoritePostListener {
@@ -164,7 +165,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
         Bundle data = new Bundle();
         data.putInt("postPosition", position);
-        data.putSerializable("PostShowType", HomeFragment.GetPostType.FAVORITES);
+        data.putSerializable("PostShowType", FAVORITES);
         data.putSerializable("favoritePosts", (Serializable) posts);
 
         listener.onPostChoose(data);

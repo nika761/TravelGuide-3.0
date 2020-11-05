@@ -33,9 +33,9 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
 
     @Override
     public void onGetFavoriteMusics(List<FavoriteMusicResponse.Favotite_musics> favoriteMusics) {
-            favoriteMusicRecycler.setLayoutManager(new LinearLayoutManager(favoriteMusicRecycler.getContext()));
-            favoriteMusicRecycler.setAdapter(new FavoriteMusicAdapter(favoriteMusics));
-            favoriteMusicRecycler.setHasFixedSize(true);
+        favoriteMusicRecycler.setLayoutManager(new LinearLayoutManager(favoriteMusicRecycler.getContext()));
+        favoriteMusicRecycler.setAdapter(new FavoriteMusicAdapter(favoriteMusics));
+        favoriteMusicRecycler.setHasFixedSize(true);
     }
 
     @Override

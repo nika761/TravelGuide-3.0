@@ -9,7 +9,7 @@ public interface SignUpListener {
 
     void onError(String message);
 
-    void onPhotoUploadSuccess();
+    void onPhotoUploadToS3();
 
 //    void onGetEmailCheckResult(CheckMailResponse checkMailResponse);
 

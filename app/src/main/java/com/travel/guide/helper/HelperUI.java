@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
-import com.travel.guide.enums.Enums;
+import com.travel.guide.enums.LoadWebViewEnum;
 import com.travel.guide.ui.webView.WebActivity;
 
 import java.util.Calendar;
@@ -39,7 +39,7 @@ public class HelperUI {
     public static final String UI_HASHTAG = "hashtags";
     public static final String UI_LOCATION = "location";
 
-    public static void startWebActivity(Context context, Enums.LoadWebViewType requestFor) {
+    public static void startWebActivity(Context context, LoadWebViewEnum requestFor) {
         Intent termsIntent = new Intent(context, WebActivity.class);
         termsIntent.putExtra(TYPE, requestFor);
         context.startActivity(termsIntent);

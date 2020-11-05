@@ -26,12 +26,15 @@ public class MediaDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_detail);
-        Window window = Objects.requireNonNull(this).getWindow();
+
+        Window window = getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         iniUI();
+
     }
 
     private void iniUI() {
+
         imageView = findViewById(R.id.image_detail);
         videoView = findViewById(R.id.video_detail);
 
@@ -42,7 +45,6 @@ public class MediaDetailActivity extends AppCompatActivity {
                     .load(path)
                     .centerInside()
                     .into(imageView);
-//            HelperGlide.loadPhoto(this, path, imageView);
         } else {
             Uri video = Uri.parse(path);
             imageView.setVisibility(View.GONE);

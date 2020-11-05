@@ -24,6 +24,7 @@ import com.travel.guide.ui.home.profile.ProfileFragment;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.travel.guide.enums.LoadPostEnum.MY_POSTS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class UserPostsFragment extends Fragment implements UserPostListener {
@@ -73,6 +74,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         UserPostAdapter adapter = new UserPostAdapter(postResponse.getPosts(), this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
     }
@@ -89,7 +91,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
         Bundle data = new Bundle();
         data.putInt("postPosition", position);
-        data.putSerializable("PostShowType", HomeFragment.GetPostType.MY_POSTS);
+        data.putSerializable("PostShowType", MY_POSTS);
         data.putSerializable("myPosts", (Serializable) posts);
 
         listener.onPostChoose(data);

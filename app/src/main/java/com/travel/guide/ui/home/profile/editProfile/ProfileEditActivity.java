@@ -78,7 +78,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 break;
 
             case R.id.change_photo_btn:
-
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, PICK_IMAGE);
                 break;
@@ -100,17 +99,11 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     }
 
     public void pickProfileImage(Uri uri) {
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            imageFile = new File(picturePath);
+        String picturePath = HelperMedia.getPathFromImageUri(this, uri);
+        imageFile = new File(picturePath);
 //            signUpPresenter.uploadToS3(HelperClients.transferObserver(this, profilePhotoFile));
-            HelperMedia.loadCirclePhoto(this, picturePath, userImage);
-        }
+        HelperMedia.loadCirclePhoto(this, picturePath, userImage);
+
     }
 
     @Override

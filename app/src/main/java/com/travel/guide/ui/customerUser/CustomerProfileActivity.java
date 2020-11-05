@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
@@ -46,6 +47,8 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     private int customerUserId;
     private String customerUserName;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +61,26 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         if (customerUserId != 0) {
             customerProfilePresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new ProfileRequest(customerUserId));
         }
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(customerUserId));
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "first");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+
+        //Sets whether analytics collection is enabled for this app on this device.
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+
+        //Sets the minimum engagement time required before starting a session. The default value is 10000 (10 seconds). Let's make it 20 seconds just for the fun
+        //Sets the duration of inactivity that terminates the current session. The default value is 1800000 (30 minutes).
+        mFirebaseAnalytics.setSessionTimeoutDuration(500);
+
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+        mFirebaseAnalytics.setUserId(String.valueOf(customerUserId));
     }
 
     private void initUI() {

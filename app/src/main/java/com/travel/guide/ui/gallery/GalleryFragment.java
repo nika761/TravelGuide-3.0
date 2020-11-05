@@ -53,7 +53,6 @@ public class GalleryFragment extends Fragment {
         ArrayList<String> listOfAllItems;
         if (type == 1) {
             listOfAllItems = HelperMedia.getImagesPathByDate(context);
-
             return listOfAllItems;
         }
         listOfAllItems = HelperMedia.getVideosPathByDate(context);
