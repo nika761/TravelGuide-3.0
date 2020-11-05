@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40.377" height="37.595" viewBox="0 0 40.377 37.595">
+  <defs>
+    <filter id="path" x="0" y="0" width="40.377" height="37.595" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feFlood flood-opacity="0.349"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="hear_emoji" transform="translate(4.5 3.5)">
+    <rect id="rectangle" width="24" height="24" transform="translate(5.377 3.492)" fill="none"/>
+    <g transform="matrix(1, 0, 0, 1, -4.5, -3.5)" filter="url(#path)">
+      <path id="path-2" data-name="path" d="M18.689,10.362A8.6,8.6,0,0,0,10.844,5,7.791,7.791,0,0,0,3,13.042C3,19.349,9.612,24.227,18.689,33.6c9.077-9.368,15.689-14.246,15.689-20.553A7.791,7.791,0,0,0,26.533,5,8.6,8.6,0,0,0,18.689,10.362Z" transform="translate(1.5 -1.5)" fill="rgba(255,255,255,0.9)" fill-rule="evenodd"/>
+    </g>
+  </g>
+</svg>

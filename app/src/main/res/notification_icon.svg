@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="19.353" height="24.376" viewBox="0 0 19.353 24.376">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_35" data-name="Rectangle 35" width="11" height="6" transform="translate(250 572)" fill="none" stroke="#fff" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="notification_icon" transform="translate(0.507 0.5)">
+    <g id="Component_92_1" data-name="Component 92 – 1">
+      <path id="Path_115" data-name="Path 115" d="M277.051,575.707s-7.244.076-8.021,0-2.8-.542-.777-1.863,2.253-.777,2.486-2.8-.078-5.206.544-7.459,4.273-2.8,4.273-2.8a4.654,4.654,0,0,1,0-1.072c.077-.381.207-.594.77-.594h.724" transform="translate(-267.381 -559.124)" fill="none" stroke="#fff" stroke-width="1"/>
+      <path id="Path_116" data-name="Path 116" d="M267.381,575.707s7.244.076,8.021,0,2.8-.542.777-1.863-2.253-.777-2.486-2.8.078-5.206-.544-7.459-4.273-2.8-4.273-2.8a4.654,4.654,0,0,0,0-1.072c-.077-.381-.207-.594-.77-.594h-.724" transform="translate(-258.711 -559.124)" fill="none" stroke="#fff" stroke-width="1"/>
+    </g>
+    <g id="Mask_Group_17" data-name="Mask Group 17" transform="translate(264.619 595.876) rotate(180)" clip-path="url(#clip-path)">
+      <g id="Ellipse_10" data-name="Ellipse 10" transform="translate(252 575)" fill="none" stroke="#fff" stroke-width="1">
+        <ellipse cx="3.5" cy="3" rx="3.5" ry="3" stroke="none"/>
+        <ellipse cx="3.5" cy="3" rx="3" ry="2.5" fill="none"/>
+      </g>
+    </g>
+  </g>
+</svg>
