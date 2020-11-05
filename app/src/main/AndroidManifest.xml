@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.travelguide.travelguide">
+    package="com.travel.guide">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -23,18 +23,18 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name="com.travelguide.travelguide.ui.language.LanguageActivity" />
+        <activity android:name="com.travel.guide.ui.language.LanguageActivity" />
 
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.editPost.EditPostActivity"
+            android:name="com.travel.guide.ui.editPost.EditPostActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.home.HomePageActivity"
+            android:name="com.travel.guide.ui.home.HomePageActivity"
             android:theme="@style/SecondAppTheme"
             android:windowSoftInputMode="adjustResize" />
 
@@ -42,7 +42,7 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name="com.travelguide.travelguide.ui.login.signIn.SignInActivity">
+        <activity android:name="com.travel.guide.ui.login.signIn.SignInActivity">
 
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -68,33 +68,33 @@
         </activity>
 
         <activity
-            android:name="com.travelguide.travelguide.ui.login.signUp.SignUpActivity"
+            android:name="com.travel.guide.ui.login.signUp.SignUpActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.home.profile.userFollowActivity.UserFollowActivity"
+            android:name="com.travel.guide.ui.home.profile.userFollowActivity.UserFollowActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.gallery.MediaDetailActivity"
+            android:name="com.travel.guide.ui.gallery.MediaDetailActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.search.SearchActivity"
+            android:name="com.travel.guide.ui.search.SearchActivity"
             android:theme="@style/SecondAppTheme" />
 
-        <activity android:name="com.travelguide.travelguide.ui.login.loggedUsers.SavedUserActivity" />
+        <activity android:name="com.travel.guide.ui.login.loggedUsers.SavedUserActivity" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.login.password.FPasswordActivity"
-            android:theme="@style/SecondAppTheme" />
-
-        <activity
-            android:name="com.travelguide.travelguide.ui.webView.WebActivity"
+            android:name="com.travel.guide.ui.login.password.FPasswordActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.splashScreen.SplashScreenActivity"
+            android:name="com.travel.guide.ui.webView.WebActivity"
+            android:theme="@style/SecondAppTheme" />
+
+        <activity
+            android:name="com.travel.guide.ui.splashScreen.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
 
             <intent-filter>
@@ -115,7 +115,7 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.gallery.GalleryActivity"
+            android:name="com.travel.guide.ui.gallery.GalleryActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
@@ -134,32 +134,31 @@
         </activity>
 
         <activity
-            android:name="com.travelguide.travelguide.ui.editPost.filterActivity.FilterActivity"
+            android:name="com.travel.guide.ui.editPost.filterActivity.FilterActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.upload.UploadPostActivity"
+            android:name="com.travel.guide.ui.upload.UploadPostActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.music.ChooseMusicActivity"
+            android:name="com.travel.guide.ui.music.ChooseMusicActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.editPost.sortActivity.SortStoriesActivity"
+            android:name="com.travel.guide.ui.editPost.sortActivity.SortStoriesActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.customerUser.CustomerProfileActivity"
-            android:theme="@style/SecondAppTheme" />
-
-        <activity android:name="com.travelguide.travelguide.ui.customerUser.followerActivity.CustomerFollowerActivity" />
-        <activity
-            android:name="com.travelguide.travelguide.ui.searchPost.SearchPostActivity"
+            android:name="com.travel.guide.ui.customerUser.CustomerProfileActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.login.password.RPasswordActivity"
+            android:name="com.travel.guide.ui.searchPost.SearchPostActivity"
+            android:theme="@style/SecondAppTheme" />
+
+        <activity
+            android:name="com.travel.guide.ui.login.password.RPasswordActivity"
             android:theme="@style/SecondAppTheme">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -185,15 +184,15 @@
         </activity>
 
         <activity
-            android:name="com.travelguide.travelguide.ui.login.signUp.SignUpFireBaseActivity"
+            android:name="com.travel.guide.ui.login.signUp.SignUpFireBaseActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.upload.tag.TagPostActivity"
+            android:name="com.travel.guide.ui.upload.tag.TagPostActivity"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travelguide.travelguide.ui.home.profile.editProfile.ProfileEditActivity"
+            android:name="com.travel.guide.ui.home.profile.editProfile.ProfileEditActivity"
             android:theme="@style/SecondAppTheme" />
 
     </application>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,7 +9,6 @@
         android:id="@+id/search_fragment_search_field"
         android:layout_width="0dp"
         android:layout_height="38dp"
-        android:layout_marginTop="10dp"
         android:background="@drawable/bg_signup_fields"
         android:hint="Search"
         android:paddingStart="5dp"

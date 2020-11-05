@@ -169,6 +169,7 @@
                 android:drawableEnd="@drawable/icon_edit"
                 android:gravity="center_horizontal"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView
