@@ -23,18 +23,27 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name="com.travel.guide.ui.language.LanguageActivity" />
+        <activity
+            android:name="com.travel.guide.ui.language.LanguageActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
 
         <activity
             android:name="com.travel.guide.ui.editPost.EditPostActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.home.HomePageActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme"
             android:windowSoftInputMode="adjustResize" />
 
@@ -42,7 +51,10 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name="com.travel.guide.ui.login.signIn.SignInActivity">
+        <activity
+            android:name="com.travel.guide.ui.login.signIn.SignInActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -69,32 +81,49 @@
 
         <activity
             android:name="com.travel.guide.ui.login.signUp.SignUpActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.home.profile.userFollowActivity.UserFollowActivity"
+            android:name="com.travel.guide.ui.home.profile.follow.FollowActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.gallery.MediaDetailActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.search.SearchActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
-        <activity android:name="com.travel.guide.ui.login.loggedUsers.SavedUserActivity" />
+        <activity
+            android:name="com.travel.guide.ui.login.loggedUsers.SavedUserActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.travel.guide.ui.login.password.FPasswordActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.webView.WebActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.splashScreen.SplashScreenActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashScreenTheme">
 
             <intent-filter>
@@ -116,6 +145,8 @@
 
         <activity
             android:name="com.travel.guide.ui.gallery.GalleryActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
@@ -135,30 +166,44 @@
 
         <activity
             android:name="com.travel.guide.ui.editPost.filterActivity.FilterActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.upload.UploadPostActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.music.ChooseMusicActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.editPost.sortActivity.SortStoriesActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.customerUser.CustomerProfileActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.searchPost.SearchPostActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.login.password.RPasswordActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -185,14 +230,20 @@
 
         <activity
             android:name="com.travel.guide.ui.login.signUp.SignUpFireBaseActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.upload.tag.TagPostActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="com.travel.guide.ui.home.profile.editProfile.ProfileEditActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
     </application>

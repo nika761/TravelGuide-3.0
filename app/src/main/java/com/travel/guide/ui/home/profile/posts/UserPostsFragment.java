@@ -18,13 +18,12 @@ import com.travel.guide.R;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.response.PostResponse;
-import com.travel.guide.ui.home.home.HomeFragment;
 import com.travel.guide.ui.home.profile.ProfileFragment;
 
 import java.io.Serializable;
 import java.util.List;
 
-import static com.travel.guide.enums.LoadPostEnum.MY_POSTS;
+import static com.travel.guide.enums.GetPostType.MY_POSTS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class UserPostsFragment extends Fragment implements UserPostListener {

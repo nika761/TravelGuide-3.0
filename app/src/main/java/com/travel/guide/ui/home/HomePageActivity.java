@@ -26,7 +26,7 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import static com.travel.guide.enums.LoadPostEnum.FEED;
+import static com.travel.guide.enums.GetPostType.FEED;
 import static com.travel.guide.helper.HelperPref.FACEBOOK;
 import static com.travel.guide.helper.HelperPref.GOOGLE;
 import static com.travel.guide.helper.HelperPref.TRAVEL_GUIDE;

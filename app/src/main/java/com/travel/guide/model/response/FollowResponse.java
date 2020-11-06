@@ -27,4 +27,5 @@ public class FollowResponse {
     public void setStatus(int status) {
         this.status = status;
     }
+
 }

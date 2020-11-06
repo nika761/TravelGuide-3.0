@@ -26,7 +26,7 @@ import com.travel.guide.model.response.ProfileResponse;
 import com.travel.guide.ui.customerUser.post.CustomerPhotoFragment;
 import com.travel.guide.ui.customerUser.tour.CustomerTourFragment;
 import com.google.android.material.tabs.TabLayout;
-import com.travel.guide.ui.home.profile.userFollowActivity.UserFollowActivity;
+import com.travel.guide.ui.home.profile.follow.FollowActivity;
 
 import java.util.Objects;
 
@@ -68,7 +68,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(customerUserId));
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "first");
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
 
 
         //Sets whether analytics collection is enabled for this app on this device.
@@ -78,7 +78,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         //Sets the duration of inactivity that terminates the current session. The default value is 1800000 (30 minutes).
         mFirebaseAnalytics.setSessionTimeoutDuration(500);
 
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
 
         mFirebaseAnalytics.setUserId(String.valueOf(customerUserId));
     }
@@ -203,7 +203,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
                 break;
 
             case R.id.customer_profile_follow_container:
-                Intent intent = new Intent(this, UserFollowActivity.class);
+                Intent intent = new Intent(this, FollowActivity.class);
                 intent.putExtra("user_name", customerUserName);
                 intent.putExtra("customer_user_id", customerUserId);
                 startActivity(intent);

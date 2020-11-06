@@ -9,6 +9,6 @@ package com.travel.guide.enums;
  * FEED - get posts random.
  */
 
-public enum LoadPostEnum {
+public enum GetPostType {
     FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED
 }

@@ -35,7 +35,7 @@ import com.travel.guide.ui.home.profile.editProfile.ProfileEditActivity;
 import com.travel.guide.ui.home.profile.favorites.FavoritePostFragment;
 import com.travel.guide.ui.home.profile.posts.UserPostsFragment;
 import com.travel.guide.ui.home.profile.tours.UserToursFragment;
-import com.travel.guide.ui.home.profile.userFollowActivity.UserFollowActivity;
+import com.travel.guide.ui.home.profile.follow.FollowActivity;
 import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.helper.HelperUI;
@@ -46,9 +46,9 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.travel.guide.enums.LoadWebViewEnum.ABOUT;
-import static com.travel.guide.enums.LoadWebViewEnum.POLICY;
-import static com.travel.guide.enums.LoadWebViewEnum.TERMS;
+import static com.travel.guide.enums.LoadWebViewType.ABOUT;
+import static com.travel.guide.enums.LoadWebViewType.POLICY;
+import static com.travel.guide.enums.LoadWebViewType.TERMS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
@@ -225,7 +225,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.states_test:
-                Intent intent = new Intent(context, UserFollowActivity.class);
+                Intent intent = new Intent(context, FollowActivity.class);
                 intent.putExtra("user_name", userName);
                 startActivity(intent);
                 break;

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,9 +74,11 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
             playBtn = itemView.findViewById(R.id.item_play_music);
             playBtn.setOnClickListener(this);
+
         }
 
         void bindView(int position) {
+
             musicTitle.setText(musics.get(position).getTitle());
             musicTitle.setSelected(true);
 
@@ -83,11 +87,13 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
             musicDuration.setText(musics.get(position).getDuration());
 
+
             if (musics.get(position).getNew_label() == 1) {
                 musicNewLabel.setVisibility(View.VISIBLE);
             } else {
                 musicNewLabel.setVisibility(View.GONE);
             }
+
 
             if (playingPosition == position) {
                 container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
@@ -97,16 +103,19 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                 playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
             }
 
+
             if (musics.get(position).getCategories().size() != 0) {
                 musicCategory.setText(musics.get(position).getCategories().get(0).getCategory());
             }
             HelperMedia.loadPhoto(musicImage.getContext(), musics.get(position).getImage(), musicImage);
+
 
             if (musics.get(position).getIs_favorite() == 1) {
                 favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
             } else {
                 favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
             }
+
         }
 
         @Override
@@ -130,10 +139,8 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
                         searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
                         listener.onMusicChoose(0);
-
                         playingPosition = -1;
                         notifyDataSetChanged();
-
                     } else {
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));

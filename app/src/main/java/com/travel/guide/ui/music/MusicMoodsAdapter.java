@@ -3,6 +3,8 @@ package com.travel.guide.ui.music;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,12 +35,7 @@ public class MusicMoodsAdapter extends RecyclerView.Adapter<MusicMoodsAdapter.Mo
 
     @Override
     public void onBindViewHolder(@NonNull MoodsHolder holder, int position) {
-        if (currentPosition == position) {
-            holder.moodTitle.setTextColor(holder.moodTitle.getResources().getColor(R.color.yellowTextView, null));
-        }else {
-            holder.moodTitle.setTextColor(holder.moodTitle.getResources().getColor(R.color.blackStatusBar, null));
-        }
-        holder.moodTitle.setText(moods.get(position).getMood());
+        holder.bindView(position);
     }
 
     @Override
@@ -51,12 +48,29 @@ public class MusicMoodsAdapter extends RecyclerView.Adapter<MusicMoodsAdapter.Mo
 
         MoodsHolder(@NonNull View itemView) {
             super(itemView);
+
             moodTitle = itemView.findViewById(R.id.item_moods_title);
             moodTitle.setOnClickListener(v -> {
                 currentPosition = getLayoutPosition();
                 searchMusicListener.onChooseMood(moods.get(getLayoutPosition()).getId());
                 notifyDataSetChanged();
             });
+
+//            Animation animation = AnimationUtils.loadAnimation(moodTitle.getContext(), R.anim.anim_follow_item_left);
+//            itemView.startAnimation(animation);
+
+        }
+
+        void bindView(int position) {
+
+            if (currentPosition == position) {
+                moodTitle.setTextColor(moodTitle.getResources().getColor(R.color.yellowTextView, null));
+            } else {
+                moodTitle.setTextColor(moodTitle.getResources().getColor(R.color.blackStatusBar, null));
+            }
+
+            moodTitle.setText(moods.get(position).getMood());
+
         }
     }
 }

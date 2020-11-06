@@ -11,13 +11,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
+import com.travel.guide.enums.SearchPostType;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.model.request.PostByHashtagRequest;
 import com.travel.guide.model.request.PostByLocationRequest;
 import com.travel.guide.model.response.PostResponse;
 
-import static com.travel.guide.helper.HelperUI.UI_HASHTAG;
-import static com.travel.guide.helper.HelperUI.UI_LOCATION;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SearchPostActivity extends AppCompatActivity implements SearchPostListener {
@@ -25,7 +24,7 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     private SearchPostPresenter searchPostPresenter;
     private TextView head;
 
-    private String type;
+    private SearchPostType type;
     private String hashtag;
     private int postId;
 
@@ -36,16 +35,16 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
 
         this.postId = getIntent().getIntExtra("search_post_id", 0);
         this.hashtag = getIntent().getStringExtra("search_hashtag");
-        this.type = getIntent().getStringExtra("search_type");
+        this.type = (SearchPostType) getIntent().getSerializableExtra("search_type");
 
         initUI();
 
         switch (type) {
 
-            case UI_LOCATION:
+            case LOCATION:
                 searchPostPresenter.getPostsByLocation(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new PostByLocationRequest(postId));
                 break;
-            case UI_HASHTAG:
+            case HASHTAG:
                 searchPostPresenter.getPostsByHashtag(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new PostByHashtagRequest(hashtag));
                 break;
 
@@ -65,13 +64,13 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     public void onGetPosts(PostResponse postResponse) {
         switch (type) {
 
-            case UI_LOCATION:
+            case LOCATION:
                 if (postResponse.getPosts() != null)
                     if (postResponse.getPosts().size() != 0)
                         head.setText(postResponse.getPosts().get(0).getPost_locations().get(0).getAddress());
                 break;
 
-            case UI_HASHTAG:
+            case HASHTAG:
                 head.setText(hashtag);
                 break;
 

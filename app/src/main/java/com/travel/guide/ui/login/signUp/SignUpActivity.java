@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -40,8 +39,8 @@ import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.travel.guide.enums.LoadWebViewEnum.POLICY;
-import static com.travel.guide.enums.LoadWebViewEnum.TERMS;
+import static com.travel.guide.enums.LoadWebViewType.POLICY;
+import static com.travel.guide.enums.LoadWebViewType.TERMS;
 
 public class SignUpActivity extends AppCompatActivity implements SignUpListener, View.OnClickListener {
 

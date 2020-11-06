@@ -8,6 +8,6 @@ package com.travel.guide.enums;
  * FOLLOW - Follow user.
  */
 
-public enum StoryEmotionEnum {
+public enum StoryEmotionType {
     LIKE, FAVORITE, FOLLOW
 }

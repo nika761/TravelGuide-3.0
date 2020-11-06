@@ -33,10 +33,11 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == 0) {
+        if (viewType == 0)
             return new PhotoItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_edit_story_photo, parent, false));
-        }
-        return new VideoItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_edit_story_video, parent, false));
+        else
+            return new VideoItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_edit_story_video, parent, false));
+
     }
 
     @Override
@@ -218,4 +219,5 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
     }
+
 }

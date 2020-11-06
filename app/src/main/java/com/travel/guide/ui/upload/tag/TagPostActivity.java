@@ -39,15 +39,37 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
     private RecyclerView recyclerView;
     private TagPostPresenter postPresenter;
     private LottieAnimationView loader;
-    private String type;
-    private TextView title;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_tags);
-        this.type = getIntent().getStringExtra("tag_type");
         initUI();
+    }
+
+    private void initUI() {
+
+        postPresenter = new TagPostPresenter(this);
+
+        loader = findViewById(R.id.loader_tags);
+
+        ImageButton backBtn = findViewById(R.id.tag_post_back_btn);
+        backBtn.setOnClickListener(this);
+
+        TextView searchBtn = findViewById(R.id.tag_post_search_btn);
+        searchBtn.setOnClickListener(this);
+
+        TextView doneBtn = findViewById(R.id.tag_post_done_btn);
+        doneBtn.setOnClickListener(this);
+        doneBtn.setVisibility(View.INVISIBLE);
+
+        searchEditTxt = findViewById(R.id.tag_post_search);
+        TextView title = findViewById(R.id.tag_post_title);
+
+        recyclerView = findViewById(R.id.tag_post_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        String type = getIntent().getStringExtra("tag_type");
         if (type != null)
             switch (type) {
                 case TAG_USERS:
@@ -78,29 +100,6 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                             });
                     break;
             }
-    }
-
-    private void initUI() {
-
-        postPresenter = new TagPostPresenter(this);
-
-        loader = findViewById(R.id.loader_tags);
-
-        ImageButton backBtn = findViewById(R.id.tag_post_back_btn);
-        backBtn.setOnClickListener(this);
-
-        TextView searchBtn = findViewById(R.id.tag_post_search_btn);
-        searchBtn.setOnClickListener(this);
-
-        TextView doneBtn = findViewById(R.id.tag_post_done_btn);
-        doneBtn.setOnClickListener(this);
-        doneBtn.setVisibility(View.INVISIBLE);
-
-        searchEditTxt = findViewById(R.id.tag_post_search);
-        title = findViewById(R.id.tag_post_title);
-
-        recyclerView = findViewById(R.id.tag_post_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 

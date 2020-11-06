@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.enums.LoadPostEnum;
+import com.travel.guide.enums.GetPostType;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.PostByUserRequest;
@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     private int visibleItemCount;
     private int totalItemCount;
 
-    private LoadPostEnum loadPostEnum;
+    private GetPostType getPostType;
 
     @Nullable
     @Override
@@ -90,10 +90,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
-            loadPostEnum = (LoadPostEnum) getArguments().getSerializable("PostShowType");
+            getPostType = (GetPostType) getArguments().getSerializable("PostShowType");
             int scrollPosition = getArguments().getInt("postPosition");
-            if (loadPostEnum != null) {
-                switch (loadPostEnum) {
+            if (getPostType != null) {
+                switch (getPostType) {
                     case FAVORITES:
                         List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
                         initRecyclerView(favoritePosts, true, scrollPosition);
@@ -274,7 +274,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onLazyLoad(int fromPostId) {
 
-        switch (loadPostEnum) {
+        switch (getPostType) {
 
             case FAVORITES:
                 presenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));

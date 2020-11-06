@@ -69,6 +69,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     private RecyclerView hashtagRecycler;
     private HashtagAdapter hashtagAdapter;
     private EditText postDescription;
+    private Button uploadBtn;
 
     private String address, addressName, latLng, description, oldDesc, videoHeight, videoWidht;
     private int musicId;
@@ -93,8 +94,8 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
         ImageButton backBtn = findViewById(R.id.describe_post_back_btn);
         backBtn.setOnClickListener(this);
 
-        Button post = findViewById(R.id.describe_post_post_btn);
-        post.setOnClickListener(this);
+        uploadBtn = findViewById(R.id.describe_post_post_btn);
+        uploadBtn.setOnClickListener(this);
 
 //        View selectCover = findViewById(R.id.select_cover_btn);
 //        selectCover.setOnClickListener(this);
@@ -186,6 +187,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void startUpload() {
+        uploadBtn.setClickable(false);
         if (itemMedia.get(0).getType() == 0) {
             List<ItemMedia> convertedImages = convertImagesToPng(itemMedia);
             fileForUpload = new File(convertedImages.get(0).getPath());
@@ -226,7 +228,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
                                 String lon = String.valueOf(place.getLatLng().longitude);
                                 latLng = lat + "," + lon;
                             }
-                            Toast.makeText(this, addressName + " " + "added", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, addressName + " " + "added to post", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case RESULT_CANCELED:
@@ -320,10 +322,13 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
         UploadPostRequestModel uploadPostRequestModel = new UploadPostRequestModel(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
 
         uploadPostPresenter.uploadStory(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), uploadPostRequestModel);
+
     }
 
     @Override
     public void onPostUploadErrorS3(String message) {
+        uploadBtn.setClickable(true);
+        loaderContainer.setVisibility(View.GONE);
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -338,6 +343,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onPostUploadError(String message) {
+        uploadBtn.setClickable(true);
         loaderContainer.setVisibility(View.GONE);
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 

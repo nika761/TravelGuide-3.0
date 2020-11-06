@@ -2,7 +2,6 @@ package com.travel.guide.helper;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
@@ -16,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
-import com.travel.guide.enums.LoadWebViewEnum;
+import com.travel.guide.enums.LoadWebViewType;
 import com.travel.guide.ui.webView.WebActivity;
 
 import java.util.Calendar;
@@ -27,19 +26,12 @@ public class HelperUI {
     public static final int BACKGROUND_DEF_WHITE = R.drawable.bg_sign_in_fields;
     public static final int BACKGROUND_DEF_BLACK = R.drawable.bg_signup_fields;
 
-    public static final int RED = Color.red(R.color.red);
     public static final int BLACK = R.color.black;
     public static final int WHITE = R.color.white;
 
-//    public static final String TERMS = "terms";
-//    public static final String POLICY = "policy";
-//    public static final String ABOUT = "about";
     public static final String TYPE = "type";
 
-    public static final String UI_HASHTAG = "hashtags";
-    public static final String UI_LOCATION = "location";
-
-    public static void startWebActivity(Context context, LoadWebViewEnum requestFor) {
+    public static void startWebActivity(Context context, LoadWebViewType requestFor) {
         Intent termsIntent = new Intent(context, WebActivity.class);
         termsIntent.putExtra(TYPE, requestFor);
         context.startActivity(termsIntent);
@@ -83,7 +75,6 @@ public class HelperUI {
         return passwordValidate;
     }
 
-
     public static boolean checkConfirmPassword(String password, String confirmPassword) {
         boolean confirmPasswordValidate = false;
 
@@ -97,7 +88,7 @@ public class HelperUI {
 
         currentField.setBackgroundResource(BACKGROUND_WARNING);
         currentHead.setText(String.format("* %s", currentHeadText));
-        currentHead.setTextColor(context.getResources().getColor(R.color.red));
+        currentHead.setTextColor(context.getResources().getColor(R.color.red,null));
         YoYo.with(Techniques.Shake)
                 .duration(300)
                 .playOn(currentField);

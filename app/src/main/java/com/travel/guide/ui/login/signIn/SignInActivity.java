@@ -52,8 +52,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.travel.guide.enums.LoadWebViewEnum.POLICY;
-import static com.travel.guide.enums.LoadWebViewEnum.TERMS;
+import static com.travel.guide.enums.LoadWebViewType.POLICY;
+import static com.travel.guide.enums.LoadWebViewType.TERMS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SignInActivity extends AppCompatActivity implements SignInListener {

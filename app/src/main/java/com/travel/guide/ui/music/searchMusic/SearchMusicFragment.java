@@ -54,7 +54,16 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_music, container, false);
         searchMusicPresenter = new SearchMusicPresenter(this);
+
         searchMusicRecycler = view.findViewById(R.id.search_music_recycler);
+        searchMusicRecycler.setLayoutManager(new LinearLayoutManager(searchMusicRecycler.getContext()));
+        searchMusicRecycler.setHasFixedSize(true);
+
+        moodsRecycler = view.findViewById(R.id.moods_recycler);
+        moodsRecycler.setLayoutManager(new LinearLayoutManager(moodsRecycler.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        searchField = view.findViewById(R.id.search_fragment_search_field);
+
 //        searchMusicRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 ////            @Override
 ////            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -91,8 +100,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 ////                }
 ////            }
 //        });
-        moodsRecycler = view.findViewById(R.id.moods_recycler);
-        searchField = view.findViewById(R.id.search_fragment_search_field);
+
         return view;
     }
 
@@ -100,11 +108,9 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
-                (searchMusicRecycler.getContext()));
+        searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(searchMusicRecycler.getContext()));
 
-        searchMusicPresenter.getMoods(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
-                (searchMusicRecycler.getContext()));
+        searchMusicPresenter.getMoods(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(searchMusicRecycler.getContext()));
 
         RxTextView.textChanges(searchField)
                 .debounce(1200, TimeUnit.MILLISECONDS)
@@ -112,16 +118,13 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
                 .map(CharSequence::toString)
                 .subscribe((Consumer<CharSequence>) charSequence -> {
                     if (!charSequence.toString().isEmpty()) {
-                        searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken
-                                (moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
+                        searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
                     }
                 });
     }
 
     @Override
     public void onGetMusic(MusicResponse musicResponse) {
-        searchMusicRecycler.setLayoutManager(new LinearLayoutManager(searchMusicRecycler.getContext()));
-        searchMusicRecycler.setHasFixedSize(true);
         searchMusicRecycler.setAdapter(new SearchMusicAdapter(musicResponse.getAlbum(), this, searchField.getContext()));
     }
 
@@ -160,8 +163,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     @Override
     public void onFavoriteChoose(int musicId) {
         AddFavoriteMusic addFavoriteMusic = new AddFavoriteMusic(musicId);
-        searchMusicPresenter.addFavorite("Bearer" + " " + HelperPref.getAccessToken
-                (searchMusicRecycler.getContext()), addFavoriteMusic);
+        searchMusicPresenter.addFavorite("Bearer" + " " + HelperPref.getAccessToken(searchMusicRecycler.getContext()), addFavoriteMusic);
     }
 
     @Override
@@ -179,8 +181,6 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onGetMoods(List<MoodResponse.Moods> moods) {
-        moodsRecycler.setLayoutManager(new LinearLayoutManager(moodsRecycler.getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
         moodsRecycler.setAdapter(new MusicMoodsAdapter(moods, this));
     }
 
@@ -191,8 +191,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onChooseMood(int moodId) {
-        searchMusicPresenter.getMusicByMood(ACCESS_TOKEN_BEARER +
-                HelperPref.getAccessToken(moodsRecycler.getContext()), new ByMoodRequest(moodId));
+        searchMusicPresenter.getMusicByMood(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(moodsRecycler.getContext()), new ByMoodRequest(moodId));
     }
 
     private void play(String music) {
