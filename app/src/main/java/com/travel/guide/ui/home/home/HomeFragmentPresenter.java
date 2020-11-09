@@ -69,7 +69,8 @@ public class HomeFragmentPresenter {
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
-                        homeFragmentListener.onGetPosts(response.body().getPosts());
+                        if (response.body().getPosts().size() > 0)
+                            homeFragmentListener.onGetPosts(response.body().getPosts());
                     } else {
                         homeFragmentListener.onError(response.message());
                     }
@@ -90,9 +91,10 @@ public class HomeFragmentPresenter {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0)
-                        homeFragmentListener.onGetPosts(response.body().getPosts());
-                    else
+                    if (response.body().getStatus() == 0) {
+                        if (response.body().getPosts().size() > 0)
+                            homeFragmentListener.onGetPosts(response.body().getPosts());
+                    } else
                         homeFragmentListener.onError(response.message() + response.body().getStatus());
                 } else {
                     homeFragmentListener.onError(response.message());

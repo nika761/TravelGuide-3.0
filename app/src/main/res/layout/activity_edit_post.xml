@@ -48,19 +48,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_post_toolbar" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view_upload"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:background="@color/mainColorTransparent"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/loading_yellow" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

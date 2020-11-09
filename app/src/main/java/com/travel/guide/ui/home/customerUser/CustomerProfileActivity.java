@@ -1,4 +1,4 @@
-package com.travel.guide.ui.customerUser;
+package com.travel.guide.ui.home.customerUser;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,16 +17,23 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
+import com.travel.guide.enums.GetPostType;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
+import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.ProfileResponse;
-import com.travel.guide.ui.customerUser.post.CustomerPhotoFragment;
-import com.travel.guide.ui.customerUser.tour.CustomerTourFragment;
 import com.google.android.material.tabs.TabLayout;
+import com.travel.guide.ui.home.HomePageActivity;
+import com.travel.guide.ui.home.home.HomeFragment;
+import com.travel.guide.ui.home.profile.ProfileFragment;
+import com.travel.guide.ui.home.profile.ProfilePagerAdapter;
+import com.travel.guide.ui.home.profile.favorites.FavoritePostFragment;
 import com.travel.guide.ui.home.profile.follow.FollowActivity;
+import com.travel.guide.ui.home.profile.posts.UserPostsFragment;
+import com.travel.guide.ui.home.profile.tours.UserToursFragment;
 
 import java.util.Objects;
 
@@ -34,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
-public class CustomerProfileActivity extends AppCompatActivity implements CustomerProfileListener, View.OnClickListener {
+public class CustomerProfileActivity extends AppCompatActivity implements CustomerProfileListener, ProfileFragment.OnPostChooseListener, View.OnClickListener {
 
     private CustomerProfilePresenter customerProfilePresenter;
 
@@ -46,8 +53,6 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
     private int customerUserId;
     private String customerUserName;
-
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,24 +67,16 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
             customerProfilePresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new ProfileRequest(customerUserId));
         }
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(customerUserId));
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "first");
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
-
-
-        //Sets whether analytics collection is enabled for this app on this device.
+        bundle.putString(FirebaseAnalytics.Event.PURCHASE, "TESTING");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_UP, bundle);
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
-
-        //Sets the minimum engagement time required before starting a session. The default value is 10000 (10 seconds). Let's make it 20 seconds just for the fun
-        //Sets the duration of inactivity that terminates the current session. The default value is 1800000 (30 minutes).
         mFirebaseAnalytics.setSessionTimeoutDuration(500);
-
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
-
         mFirebaseAnalytics.setUserId(String.valueOf(customerUserId));
     }
 
@@ -90,18 +87,16 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         ViewPager viewPager = findViewById(R.id.customer_view_pager);
         TabLayout tabLayout = findViewById(R.id.customer_profile_tab);
 
-        CustomerPagerAdapter customerPagerAdapter = new CustomerPagerAdapter(getSupportFragmentManager());
-
-        customerPagerAdapter.addFragment(new CustomerPhotoFragment());
-        customerPagerAdapter.addFragment(new CustomerTourFragment());
-        customerPagerAdapter.setCustomerUserId(customerUserId);
-
-        viewPager.setAdapter(customerPagerAdapter);
+        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
+        profilePagerAdapter.setCustomerUserId(customerUserId);
+        profilePagerAdapter.setGetPostType(GetPostType.CUSTOMER_POSTS);
+        profilePagerAdapter.addFragment(new UserPostsFragment());
+        profilePagerAdapter.addFragment(new UserToursFragment());
+        viewPager.setAdapter(profilePagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
-
-        (Objects.requireNonNull(tabLayout.getTabAt(0))).setIcon(R.drawable.profile_photos);
-        (Objects.requireNonNull(tabLayout.getTabAt(1))).setIcon(R.drawable.profile_tour);
+        tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
+        tabLayout.getTabAt(1).setIcon(R.drawable.profile_tour);
 
         ConstraintLayout followersContainer = findViewById(R.id.customer_profile_follow_container);
         followersContainer.setOnClickListener(this);
@@ -218,5 +213,14 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         }
         super.onDestroy();
     }
+
+    @Override
+    public void onPostChoose(Bundle fragmentData) {
+        Intent intent = new Intent(this, HomePageActivity.class);
+        intent.putExtra("request_from", "customer_profile");
+        intent.putExtra("fragment_data", fragmentData);
+        startActivity(intent);
+    }
+
 }
 

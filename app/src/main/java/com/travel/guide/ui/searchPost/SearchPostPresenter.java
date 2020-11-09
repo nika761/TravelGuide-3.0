@@ -10,7 +10,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchPostPresenter {
+class SearchPostPresenter {
+
     private SearchPostListener searchPostListener;
     private ApiService apiService;
 
@@ -40,7 +41,7 @@ public class SearchPostPresenter {
         });
     }
 
-    public void getPostsByHashtag(String accessToken, PostByHashtagRequest postByHashtagRequest) {
+    void getPostsByHashtag(String accessToken, PostByHashtagRequest postByHashtagRequest) {
         apiService.getPostsByHashtag(accessToken, postByHashtagRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {

@@ -3,6 +3,7 @@ package com.travel.guide.model.request;
 public class DeleteCommentRequest {
 
     private int post_id;
+
     private int story_id;
     private int comment_id;
 

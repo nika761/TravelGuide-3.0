@@ -189,7 +189,7 @@
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.customerUser.CustomerProfileActivity"
+            android:name=".ui.home.customerUser.CustomerProfileActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />

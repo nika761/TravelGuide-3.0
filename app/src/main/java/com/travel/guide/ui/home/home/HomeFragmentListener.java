@@ -1,5 +1,7 @@
 package com.travel.guide.ui.home.home;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
@@ -15,6 +17,11 @@ public interface HomeFragmentListener {
     void onStoryLikeChoose(int postId, int storyId, int position);
 
     void onStoryLiked(SetStoryLikeResponse setStoryLikeResponse);
+
+
+    void onGetHolder(RecyclerView storyRecycler, StoryAdapter.StoryHolder storyHolder, int storyHolderPosition, PostAdapter.PostHolder postHolder, int postHolderPosition);
+
+    void onExoPlayerReady();
 
 
     void onGetPosts(List<PostResponse.Posts> posts);

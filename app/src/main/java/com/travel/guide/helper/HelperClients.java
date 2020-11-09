@@ -78,7 +78,8 @@ public class HelperClients {
     }
 
     public static TransferObserver transferObserver(Context context, File file) {
-        return HelperClients.transferUtility(context, amazonS3Client(context))
+        return HelperClients
+                .transferUtility(context, amazonS3Client(context))
                 .upload(HelperClients.S3_BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
     }
 
@@ -102,22 +103,22 @@ public class HelperClients {
 //
         TransferManager transferManager = new TransferManager(s3Client);
         try {
-            MultipleFileUpload xfer = transferManager.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files);
+            MultipleFileUpload transferCallback = transferManager.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files);
             try {
-                xfer.waitForCompletion();
+                transferCallback.waitForCompletion();
             } catch (InterruptedException e) {
-                Log.e("ssss", e.getMessage());
                 e.printStackTrace();
             }
-            xfer.addProgressListener((ProgressListener) progressEvent ->
-                    Log.e("ssss", String.valueOf(progressEvent.getEventCode())));
-            if (xfer.isDone()) {
-                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
+            transferCallback.addProgressListener((ProgressListener) progressEvent -> Log.e("ssss", String.valueOf(progressEvent.getEventCode())));
+
+            if (transferCallback.isDone()) {
+                Log.e("ssss", String.valueOf(transferCallback.getProgress().getPercentTransferred()));
             } else {
-                Log.e("ssss", String.valueOf(xfer.getProgress().getPercentTransferred()));
+                Log.e("ssss", String.valueOf(transferCallback.getProgress().getPercentTransferred()));
             }
+
         } catch (AmazonS3Exception s3Exception) {
-            Log.e("ssss", Objects.requireNonNull(s3Exception.getMessage()));
+            s3Exception.printStackTrace();
         }
         transferManager.shutdownNow();
     }

@@ -28,8 +28,7 @@ public class SortStoriesAdapter extends RecyclerView.Adapter<SortStoriesAdapter.
     @NonNull
     @Override
     public SortStoriesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sort_stories, parent, false);
-        return new SortStoriesHolder(view);
+        return new SortStoriesHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sort_stories, parent, false));
     }
 
     @Override

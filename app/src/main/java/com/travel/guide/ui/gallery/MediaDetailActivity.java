@@ -19,9 +19,6 @@ import java.util.Objects;
 
 public class MediaDetailActivity extends AppCompatActivity {
 
-    private ImageView imageView;
-    private VideoView videoView;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,14 +26,15 @@ public class MediaDetailActivity extends AppCompatActivity {
 
         Window window = getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         iniUI();
 
     }
 
     private void iniUI() {
 
-        imageView = findViewById(R.id.image_detail);
-        videoView = findViewById(R.id.video_detail);
+        ImageView imageView = findViewById(R.id.image_detail);
+        VideoView videoView = findViewById(R.id.video_detail);
 
         String path = getIntent().getStringExtra("path");
 
@@ -50,7 +48,6 @@ public class MediaDetailActivity extends AppCompatActivity {
             imageView.setVisibility(View.GONE);
             videoView.setVisibility(View.VISIBLE);
             videoView.setVideoPath(path);
-//            videoView.setVideoURI(video);
             videoView.requestFocus();
             videoView.setOnPreparedListener(mp -> {
                 videoView.setMediaController(new MediaController(MediaDetailActivity.this));

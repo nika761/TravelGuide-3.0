@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,12 +15,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostType;
 import com.travel.guide.enums.StoryEmotionType;
+import com.travel.guide.helper.HelperExoPlayer;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.StoryView;
+import com.travel.guide.helper.custom.StoryView;
 import com.travel.guide.ui.searchPost.SearchPostActivity;
 import com.travel.guide.model.response.PostResponse;
 
@@ -35,10 +42,13 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
     private HomeFragmentListener homeFragmentListener;
     private int currentPosition = -1;
 
+    private StoryPlayingListener storyHolderListener;
+
     private StoryView storyView;
 
-    StoryAdapter(HomeFragmentListener homeFragmentListener) {
+    StoryAdapter(HomeFragmentListener homeFragmentListener, StoryPlayingListener storyHolderListener) {
         this.homeFragmentListener = homeFragmentListener;
+        this.storyHolderListener = storyHolderListener;
     }
 
     @NonNull
@@ -50,8 +60,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
     @Override
     public void onBindViewHolder(@NonNull StoryHolder storyHolder, int position) {
 
-//        storyHolder.onPlayStory(stories.get(position).getUrl());
-        storyHolder.setVideoItem(position);
+        storyHolderListener.onGetStoryHolder(storyHolder, position);
+//        storyHolder.setVideoItem(position);
+        HelperMedia.loadPhoto(storyHolder.like.getContext(), currentPost.getCover(), storyHolder.storyCover);
 
         if (stories.get(position).getStory_like_by_me())
             storyHolder.like.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
@@ -135,6 +146,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         ImageView storyCover;
         RecyclerView hashtagRecycler;
 
+        FrameLayout frameLayout;
+        PlayerView playerView;
+        ExoPlayer exoPlayer;
+
         int countLikeUp = -1;
         int countLikeDown = Integer.MAX_VALUE;
 
@@ -179,6 +194,18 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             profileImage.setOnClickListener(this);
 
             ownerUserId = HelperPref.getUserId(like.getContext());
+
+            frameLayout = itemView.findViewById(R.id.pl_container);
+
+            exoPlayer = HelperExoPlayer.getExoPlayer(like.getContext());
+
+            playerView = new PlayerView(like.getContext());
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
+            playerView.setUseController(false);
+            playerView.requestFocus();
+            playerView.setVisibility(View.VISIBLE);
+            playerView.setAlpha(1);
+
         }
 
         void setHashtagRecycler() {
@@ -190,9 +217,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             videoItem.setVideoURI(Uri.parse(stories.get(position).getUrl()));
             videoItem.requestFocus();
             videoItem.setOnPreparedListener(mp -> {
-
                 mp.setLooping(true);
                 videoItem.start();
+
                 int duration = stories.get(position).getSecond();
                 storyView.start(position, duration);
 
@@ -200,58 +227,43 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
         }
 
-//        public void onPlayStory(String url) {
-//
-//            LoadControl loadControl = new DefaultLoadControl();
-//            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-//            TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
-//
-//            videoPlayer = ExoPlayerFactory.newSimpleInstance(postRecycler.getContext(), trackSelector, loadControl);
-//
-//            public void removeVideoView() {
-//                frameLayout.removeView(playerView);
-//                videoPlayer.release();
-////            videoPlayer.release();
-//                isVideoViewAdded = false;
-//            }
-//
-//            private void addVideoView(PlayerView playerView) {
-//                frameLayout.addView(playerView);
-//                playerView.requestFocus();
-//                playerView.setUseController(false);
-//                playerView.setVisibility(VISIBLE);
-//                playerView.setAlpha(1);
-//                isVideoViewAdded = true;
-//            }
-//
-//
-//            playerView = new PlayerView(nickName.getContext());
-//            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
-//
-//            addVideoView(playerView);
-//
-//            DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory("Travel Guide");
-//            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-//            MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(url), factory, extractorsFactory, null, null);
-//
-//            playerView.setPlayer(videoPlayer);
-//            playerView.setKeepScreenOn(true);
-//
-//            videoPlayer.prepare(mediaSource);
-//            videoPlayer.setPlayWhenReady(true);
-//
-//            videoPlayer.addListener(new Player.EventListener() {
-//                @Override
-//                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-//                    switch (playbackState) {
-//                        case Player.STATE_ENDED:
-//                            videoPlayer.seekTo(0);
-//                            break;
-//                    }
-//                }
-//            });
-//
-//        }
+        void playVideo(int position) {
+            frameLayout.addView(playerView);
+
+            MediaSource mediaSource = HelperExoPlayer.getMediaLink(stories.get(position).getUrl());
+
+            playerView.setPlayer(exoPlayer);
+            exoPlayer.prepare(mediaSource);
+            exoPlayer.setPlayWhenReady(true);
+            exoPlayer.addListener(new Player.EventListener() {
+                @Override
+                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                    switch (playbackState) {
+                        case Player.STATE_ENDED:
+                            exoPlayer.seekTo(0);
+                            break;
+                        case Player.STATE_READY:
+//                            homeFragmentListener.onExoPlayerReady();
+                            break;
+                    }
+                }
+            });
+
+
+        }
+
+        void stopVideo() {
+            storyCover.setVisibility(View.VISIBLE);
+            HelperMedia.loadPhoto(like.getContext(), currentPost.getCover(), storyCover);
+            playerView.setVisibility(View.GONE);
+            frameLayout.removeView(playerView);
+            playerView = null;
+            if (exoPlayer != null) {
+                exoPlayer.release();
+                exoPlayer = null;
+            }
+
+        }
 
         @Override
         public void onClick(View v) {

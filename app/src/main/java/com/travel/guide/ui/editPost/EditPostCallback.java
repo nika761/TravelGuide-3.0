@@ -7,7 +7,7 @@ import com.travel.guide.model.response.UploadPostResponse;
 import java.util.List;
 
 
-public interface EditPostListener {
+public interface EditPostCallback {
 
     void onCropChoose(String path, int position);
 
@@ -19,9 +19,4 @@ public interface EditPostListener {
 
     void onStoryDeleted(List<ItemMedia> stories);
 
-    void onStoryUploaded(UploadPostResponse uploadPostResponse);
-
-    void onFileUploaded();
-
-    void onFileUploadError();
 }

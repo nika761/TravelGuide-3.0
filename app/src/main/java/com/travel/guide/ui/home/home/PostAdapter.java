@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.StoryView;
+import com.travel.guide.helper.custom.StoryView;
 import com.travel.guide.model.response.PostResponse;
 
 import java.util.List;
@@ -23,6 +23,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     private List<PostResponse.Posts> posts;
     private HomeFragmentListener homeFragmentListener;
+
+    private PostHolder postHolder;
+    private int postHolderPosition;
 
     PostAdapter(HomeFragmentListener homeFragmentListener) {
         this.homeFragmentListener = homeFragmentListener;
@@ -36,6 +39,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PostHolder holder, int position) {
+        this.postHolder = holder;
+        this.postHolderPosition = position;
+
         holder.initStoryAdapter(position);
 
         holder.loadMoreCallback(position);
@@ -58,8 +64,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         return posts.size();
     }
 
-
-    public class PostHolder extends RecyclerView.ViewHolder implements StoryView.StoryListener {
+    public class PostHolder extends RecyclerView.ViewHolder implements StoryView.StoryListener, StoryPlayingListener {
 
         private LinearLayoutManager layoutManager;
         public RecyclerView storyRecycler;
@@ -88,14 +93,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 //            storyView.start(0, duration + 2000);
         }
 
-//        void delete(int position) {
+        void delete(int position) {
 //            StoryAdapter.StoryHolder oldHolder = ((StoryAdapter.StoryHolder) storyRecycler.findViewHolderForAdapterPosition(position));
 //            oldHolder.removeVideoView();
-////            StoryAdapter.StoryHolder storyHolder = ((StoryAdapter.StoryHolder) storyRecycler.findViewHolderForAdapterPosition(position));
-////            if (storyHolder != null) {
-////                storyHolder.removeVideoView();
-////            }
-//        }
+
+            StoryAdapter.StoryHolder storyHolder = ((StoryAdapter.StoryHolder) storyRecycler.findViewHolderForAdapterPosition(position));
+            if (storyHolder != null) {
+                storyHolder.stopVideo();
+            }
+        }
+
+        void play(int position) {
+            StoryAdapter.StoryHolder storyHolder = ((StoryAdapter.StoryHolder) storyRecycler.findViewHolderForAdapterPosition(position));
+            if (storyHolder != null) {
+                storyHolder.playVideo(position);
+            }
+        }
 
 
         @Override
@@ -118,7 +131,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             layoutManager = new LinearLayoutManager(storyRecycler.getContext(), RecyclerView.HORIZONTAL, false);
             storyRecycler.setLayoutManager(layoutManager);
 
-            storyAdapter = new StoryAdapter(homeFragmentListener);
+            storyAdapter = new StoryAdapter(homeFragmentListener, this);
             storyAdapter.setStories(posts.get(position).getPost_stories());
             storyAdapter.setCurrentPost(posts.get(position));
             storyAdapter.setStoryView(storyView);
@@ -162,6 +175,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
         }
 
+        @Override
+        public void onGetStoryHolder(StoryAdapter.StoryHolder storyHolder, int storyHolderPosition) {
+            homeFragmentListener.onGetHolder(storyRecycler, storyHolder, storyHolderPosition, postHolder, postHolderPosition);
+        }
     }
 
 }

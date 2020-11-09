@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperClients;
 import com.travel.guide.helper.HelperPref;
@@ -54,19 +55,32 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
-
-        String changed = getIntent().getStringExtra("password_changed");
-        String option = getIntent().getStringExtra("option");
-
-        if (changed != null)
-            if (changed.equals("password_changed"))
-                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
-
-        if (option != null)
-            if (option.equals("uploaded"))
-                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
-
+        checkRequestType();
         initBtmNav();
+    }
+
+    public void checkRequestType() {
+        String changed = getIntent().getStringExtra("password_changed");
+        if (changed != null)
+            if (changed.equals("password_changed")) {
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
+            }
+
+        String option = getIntent().getStringExtra("option");
+        if (option != null)
+            if (option.equals("uploaded")) {
+                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
+            }
+
+        String requestFrom = getIntent().getStringExtra("request_from");
+        if (requestFrom != null) {
+            if (requestFrom.equals("customer_profile")) {
+                if (getIntent().getBundleExtra("fragment_data") != null) {
+                    Bundle fragmentData = getIntent().getBundleExtra("fragment_data");
+                    HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.user_page_frg_container, false, true, this);
+                }
+            }
+        }
     }
 
     public void hideBottomNavigation(Boolean visible) {
@@ -115,6 +129,12 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         });
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         bottomNavigationView.setItemIconSize(60);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.METHOD, "with_testing");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
 //        navViewPager = findViewById(R.id.user_page_view_pager);
 //        navViewPagerAdapter = new BottomNavigationPageAdapter(getSupportFragmentManager());
     }
@@ -134,8 +154,9 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     public void onLogOutChoose() {
         String loginType = HelperPref.getLoginType(this);
-
-        if (loginType != null) {
+        if (loginType == null) {
+            Toast.makeText(this, "Please try again ", Toast.LENGTH_SHORT).show();
+        } else {
             switch (loginType) {
                 case FACEBOOK:
                     logOutFromFacebook();
@@ -149,8 +170,6 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                     onLogOutSuccess();
                     break;
             }
-        } else {
-            Toast.makeText(this, "Please try again ", Toast.LENGTH_SHORT).show();
         }
     }
 

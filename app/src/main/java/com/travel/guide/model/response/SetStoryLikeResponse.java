@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class SetStoryLikeResponse {
 
-
     @Expose
     @SerializedName("message")
     private String message;

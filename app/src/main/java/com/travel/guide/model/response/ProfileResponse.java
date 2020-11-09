@@ -1,5 +1,8 @@
 package com.travel.guide.model.response;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -27,7 +30,7 @@ public class ProfileResponse {
         this.status = status;
     }
 
-    public static class Userinfo {
+    public static class Userinfo implements Parcelable {
         @Expose
         @SerializedName("reactions")
         private int reactions;
@@ -79,6 +82,37 @@ public class ProfileResponse {
         @Expose
         @SerializedName("id")
         private int id;
+
+        protected Userinfo(Parcel in) {
+            reactions = in.readInt();
+            follower = in.readInt();
+            following = in.readInt();
+            follow = in.readInt();
+            share_profile = in.readString();
+            profile_pic = in.readString();
+            biography = in.readString();
+            phone_number = in.readString();
+            city = in.readString();
+            gender = in.readInt();
+            date_of_birth = in.readString();
+            nickname = in.readString();
+            email = in.readString();
+            lastname = in.readString();
+            name = in.readString();
+            id = in.readInt();
+        }
+
+        public static final Creator<Userinfo> CREATOR = new Creator<Userinfo>() {
+            @Override
+            public Userinfo createFromParcel(Parcel in) {
+                return new Userinfo(in);
+            }
+
+            @Override
+            public Userinfo[] newArray(int size) {
+                return new Userinfo[size];
+            }
+        };
 
         public int getId() {
             return id;
@@ -206,6 +240,31 @@ public class ProfileResponse {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(reactions);
+            dest.writeInt(follower);
+            dest.writeInt(following);
+            dest.writeInt(follow);
+            dest.writeString(share_profile);
+            dest.writeString(profile_pic);
+            dest.writeString(biography);
+            dest.writeString(phone_number);
+            dest.writeString(city);
+            dest.writeInt(gender);
+            dest.writeString(date_of_birth);
+            dest.writeString(nickname);
+            dest.writeString(email);
+            dest.writeString(lastname);
+            dest.writeString(name);
+            dest.writeInt(id);
         }
     }
 }

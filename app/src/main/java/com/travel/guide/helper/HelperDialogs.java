@@ -34,4 +34,29 @@ public class HelperDialogs {
         dialog.show();
     }
 
+
+    public static void profileInfoUpdatedDialog(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        View customLayout = activity.getLayoutInflater().inflate(R.layout.dialog_profile_updated, null);
+
+        TextView verifyTitle, verifyMessage;
+
+        verifyTitle = customLayout.findViewById(R.id.confirm_title);
+        verifyMessage = customLayout.findViewById(R.id.confirm_message);
+
+//        verifyTitle.setText(title);
+//        verifyMessage.setText(message);
+
+        builder.setView(customLayout);
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.bg_transparent, null));
+        }
+
+        dialog.show();
+    }
+
+
 }

@@ -46,11 +46,11 @@
                     android:text=""
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@id/edit_profile"
+                    app:layout_constraintStart_toStartOf="@id/profile_edit_profile_btn"
                     app:layout_constraintTop_toTopOf="@id/profile_image" />
 
                 <TextView
-                    android:id="@+id/edit_profile"
+                    android:id="@+id/profile_edit_profile_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_field_profile"
@@ -60,13 +60,13 @@
                     android:textColor="@color/yellowTextView"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/states_test"
-                    app:layout_constraintEnd_toEndOf="@id/states_test"
+                    app:layout_constraintBottom_toTopOf="@id/profile_follow_states"
+                    app:layout_constraintEnd_toEndOf="@id/profile_follow_states"
                     app:layout_constraintTop_toBottomOf="@id/user_prf_nickName" />
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/states_test"
+                    android:id="@+id/profile_follow_states"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -148,8 +148,8 @@
                     android:padding="5dp"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/states_test"
-                    app:layout_constraintTop_toBottomOf="@id/states_test">
+                    app:layout_constraintStart_toStartOf="@id/profile_follow_states"
+                    app:layout_constraintTop_toBottomOf="@id/profile_follow_states">
 
                     <TextView
                         android:id="@+id/bio_text"
@@ -181,7 +181,7 @@
                     app:layout_constraintTop_toTopOf="@id/profile_bio" />
 
                 <ImageButton
-                    android:id="@+id/bio_visible_btn"
+                    android:id="@+id/profile_see_bio_btn"
                     android:layout_width="18dp"
                     android:layout_height="12dp"
                     android:layout_marginEnd="10dp"
@@ -194,7 +194,7 @@
                     app:layout_constraintTop_toBottomOf="@id/profile_bio" />
 
                 <ImageButton
-                    android:id="@+id/bio_invisible_btn"
+                    android:id="@+id/profile_hide_bio_btn"
                     android:layout_width="18dp"
                     android:layout_height="12dp"
                     android:layout_marginEnd="10dp"
@@ -211,7 +211,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs_test"
+            android:id="@+id/profile_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -219,7 +219,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bio_visible_btn"
+            app:layout_constraintTop_toBottomOf="@id/profile_see_bio_btn"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/yellowTextView"
             app:tabIndicatorFullWidth="false"
@@ -254,7 +254,7 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpager_test"
+            android:id="@+id/profile_view_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -3,7 +3,6 @@ package com.travel.guide.ui.editPost;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,16 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.model.ItemMedia;
 import com.travel.guide.ui.music.ChooseMusicActivity;
 import com.travel.guide.ui.editPost.filterActivity.FilterActivity;
 import com.travel.guide.ui.editPost.sortActivity.SortStoriesActivity;
-import com.travel.guide.helper.HelperClients;
-import com.travel.guide.model.request.UploadPostRequest;
-import com.travel.guide.model.response.UploadPostResponse;
-import com.travel.guide.ui.upload.UploadPostPresenter;
 import com.gowtham.library.ui.ActVideoTrimmer;
 import com.gowtham.library.utils.TrimmerConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -35,28 +29,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EditPostActivity extends AppCompatActivity implements EditPostListener, View.OnClickListener {
+public class EditPostActivity extends AppCompatActivity implements EditPostCallback {
+
+    public static final String STORIES_PATHS = "selectedPaths";
 
     private static final int FILTER_ACTIVITY = 1;
     private static final int SORT_ACTIVITY = 2;
     private static final int TRIM_ACTIVITY = 3;
-    public static final String STORIES_PATHS = "selectedPaths";
-    private ArrayList<String> storiesPath = new ArrayList<>();
+
+
     private List<ItemMedia> itemMedias = new ArrayList<>();
+
     private EditPostAdapter editPostAdapter;
+    private RecyclerView editPostRecycler;
+
     private int adapterPosition;
-    private UploadPostPresenter uploadPostPresenter;
-    private LottieAnimationView lottieAnimationView;
-    private UploadPostRequest uploadPostRequest;
-    private File fileForUpload;
-    private RecyclerView recyclerEditStories;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
         initUI();
-        this.storiesPath = getIntent().getStringArrayListExtra(STORIES_PATHS);
+        sortData();
+    }
+
+    private void sortData() {
+        ArrayList<String> storiesPath = getIntent().getStringArrayListExtra(STORIES_PATHS);
 
         if (storiesPath != null) {
             for (String currentPath : storiesPath) {
@@ -66,50 +64,30 @@ public class EditPostActivity extends AppCompatActivity implements EditPostListe
                     itemMedias.add(new ItemMedia(0, currentPath));
                 }
             }
-            initStoriesEditRecycler(itemMedias);
+            if (itemMedias.size() > 0)
+                initRecycler(itemMedias);
         }
     }
 
     private void initUI() {
 
         TextView btnNext = findViewById(R.id.edit_post_next_btn);
-        btnNext.setOnClickListener(this);
+        btnNext.setOnClickListener(v -> {
+            Intent intent = new Intent(EditPostActivity.this, ChooseMusicActivity.class);
+            intent.putExtra(STORIES_PATHS, (Serializable) itemMedias);
+            startActivity(intent);
+        });
 
         ImageView btnBack = findViewById(R.id.edit_post_back_btn);
-        btnBack.setOnClickListener(this);
+        btnBack.setOnClickListener(v -> onBackPressed());
 
-//        uploadPostPresenter = new UploadPostPresenter(this);
+        editPostRecycler = findViewById(R.id.recycler_post);
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(editPostRecycler);
+        editPostRecycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        editPostRecycler.setHasFixedSize(true);
+        editPostAdapter = new EditPostAdapter(this, this);
 
-        recyclerEditStories = findViewById(R.id.recycler_post);
-        lottieAnimationView = findViewById(R.id.animation_view_upload);
-    }
-
-    private void setItemsForUpload() {
-        if (storiesPath != null) {
-            for (String current : storiesPath) {
-                if (current.endsWith(".mp4")) {
-                    uploadFile(current);
-//                    String videoBinary = HelperMedia.encodeVideo(current);
-//                    videos.add(videoBinary);
-                } else {
-                    uploadFile(current);
-//                    final Uri itemUri = Uri.parse(current);
-//                    final InputStream imageStream;
-//                    try {
-//                        imageStream = getContentResolver().openInputStream(itemUri);
-//                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//                        String encodedImage = HelperMedia.encodeImage(selectedImage);
-//                        photos.add(encodedImage);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-                }
-
-            }
-//            uploadPostRequest = new UploadPostRequest(17, photos, videos);
-//            uploadPostPresenter.uploadStory("Bearer" + " " + HelperPref.getAccessToken(this), uploadPostRequest);
-
-        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -132,14 +110,9 @@ public class EditPostActivity extends AppCompatActivity implements EditPostListe
         }
     }
 
-    private void initStoriesEditRecycler(List<ItemMedia> itemMedia) {
-        editPostAdapter = new EditPostAdapter(this, this);
-        recyclerEditStories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        recyclerEditStories.setHasFixedSize(true);
-        PagerSnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(recyclerEditStories);
-        recyclerEditStories.setAdapter(editPostAdapter);
+    private void initRecycler(List<ItemMedia> itemMedia) {
         editPostAdapter.setItemMedias(itemMedia);
+        editPostRecycler.setAdapter(editPostAdapter);
     }
 
     @Override
@@ -166,7 +139,6 @@ public class EditPostActivity extends AppCompatActivity implements EditPostListe
         this.itemMedias = stories;
         Intent intent = new Intent(this, SortStoriesActivity.class);
         intent.putExtra(STORIES_PATHS, (Serializable) itemMedias);
-//        intent.putStringArrayListExtra(STORIES_PATHS, itemMedias);
         startActivityForResult(intent, SORT_ACTIVITY);
     }
 
@@ -220,7 +192,6 @@ public class EditPostActivity extends AppCompatActivity implements EditPostListe
     private void onSortFinish(int resultCode, Intent data) {
         switch (resultCode) {
             case RESULT_OK:
-//                this.storiesPath = data.getStringArrayListExtra(STORIES_PATHS);
                 this.itemMedias = (List<ItemMedia>) data.getSerializableExtra(STORIES_PATHS);
                 editPostAdapter.setItemMedias((itemMedias));
                 Toast.makeText(this, "Item Sort Successful", Toast.LENGTH_LONG).show();
@@ -250,93 +221,80 @@ public class EditPostActivity extends AppCompatActivity implements EditPostListe
         }
     }
 
-    @Override
-    public void onStoryUploaded(UploadPostResponse uploadPostResponse) {
-        lottieAnimationView.setVisibility(View.GONE);
-        if (uploadPostResponse.getStatus() == 0) {
-            Toast.makeText(this, "uploaded", Toast.LENGTH_SHORT).show();
-        } else if (uploadPostResponse.getStatus() == 1) {
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Some error", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onFileUploaded() {
-        lottieAnimationView.setVisibility(View.GONE);
-        Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-        finish();
-        String url = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, fileForUpload.getName());
-//        String url = HelperClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
-    }
-
-    @Override
-    public void onFileUploadError() {
-        Toast.makeText(getApplicationContext(), "error while", Toast.LENGTH_SHORT).show();
-    }
-
-    private void uploadFile(String fileName) {
-        fileForUpload = new File(fileName);
-//        final Uri itemUri = Uri.parse(fileName);
-
-//        createFile(getApplicationContext(), itemUri, file);
+//    private void uploadFile(String fileName) {
+//        fileForUpload = new File(fileName);
+////        final Uri itemUri = Uri.parse(fileName);
 //
-//        PutObjectRequest putObjectRequest = new PutObjectRequest("travel-guide-3", file.getName(), file)
-//                .withCannedAcl(CannedAccessControlList.PublicRead);
-
-//        transferUtility.upload("travel-guide-3", file.getName(), file, CannedAccessControlList.PublicRead);
-
-//        s3Client.putObject(putObjectRequest);
-
-        uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
-//        uploadObserver.setTransferListener(new TransferListener() {
+////        createFile(getApplicationContext(), itemUri, file);
+////
+////        PutObjectRequest putObjectRequest = new PutObjectRequest("travel-guide-3", file.getName(), file)
+////                .withCannedAcl(CannedAccessControlList.PublicRead);
 //
-//            @Override
-//            public void onStateChanged(int id, TransferState state) {
-//                if (TransferState.COMPLETED == state) {
-//                    lottieAnimationView.setVisibility(View.GONE);
-//                    Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-//                    String url = HelperClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
-//                    Log.e("link", url);
-////                    file.delete();
-//                } else if (TransferState.FAILED == state) {
-////                    file.delete();
+////        transferUtility.upload("travel-guide-3", file.getName(), file, CannedAccessControlList.PublicRead);
+//
+////        s3Client.putObject(putObjectRequest);
+//
+//        uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
+////        uploadObserver.setTransferListener(new TransferListener() {
+////
+////            @Override
+////            public void onStateChanged(int id, TransferState state) {
+////                if (TransferState.COMPLETED == state) {
+////                    lottieAnimationView.setVisibility(View.GONE);
+////                    Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+////                    String url = HelperClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
+////                    Log.e("link", url);
+//////                    file.delete();
+////                } else if (TransferState.FAILED == state) {
+//////                    file.delete();
+////                }
+////            }
+////
+////            @Override
+////            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+////                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+////                int percentDone = (int) percentDonef;
+////
+//////                tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
+////            }
+////
+////            @Override
+////            public void onError(int id, Exception er) {
+////                Toast.makeText(getApplicationContext(), "error while", Toast.LENGTH_SHORT).show();
+////                Log.e("fatalerror  ", "" + er);
+////            }
+////
+////        });
+//    }
+//
+//    private void setItemsForUpload() {
+//        if (storiesPath != null) {
+//            for (String current : storiesPath) {
+//                if (current.endsWith(".mp4")) {
+//                    uploadFile(current);
+////                    String videoBinary = HelperMedia.encodeVideo(current);
+////                    videos.add(videoBinary);
+//                } else {
+//                    uploadFile(current);
+////                    final Uri itemUri = Uri.parse(current);
+////                    final InputStream imageStream;
+////                    try {
+////                        imageStream = getContentResolver().openInputStream(itemUri);
+////                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+////                        String encodedImage = HelperMedia.encodeImage(selectedImage);
+////                        photos.add(encodedImage);
+////                    } catch (FileNotFoundException e) {
+////                        e.printStackTrace();
+////                    }
 //                }
+//
 //            }
+////            uploadPostRequest = new UploadPostRequest(17, photos, videos);
+////            uploadPostPresenter.uploadStory("Bearer" + " " + HelperPref.getAccessToken(this), uploadPostRequest);
 //
-//            @Override
-//            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-//                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-//                int percentDone = (int) percentDonef;
+//        }
+//    }
 //
-////                tvFileName.setText("ID:" + id + "|bytesCurrent: " + bytesCurrent + "|bytesTotal: " + bytesTotal + "|" + percentDone + "%");
-//            }
-//
-//            @Override
-//            public void onError(int id, Exception er) {
-//                Toast.makeText(getApplicationContext(), "error while", Toast.LENGTH_SHORT).show();
-//                Log.e("fatalerror  ", "" + er);
-//            }
-//
-//        });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.edit_post_back_btn:
-                onBackPressed();
-
-                break;
-            case R.id.edit_post_next_btn:
-                Intent intent = new Intent(this, ChooseMusicActivity.class);
-                intent.putExtra(STORIES_PATHS, (Serializable) itemMedias);
-                startActivity(intent);
-                break;
-        }
-    }
-
 //    private void createFile(Context context, Uri srcUri, File dstFile) {
 //        try {
 //            InputStream inputStream = context.getContentResolver().openInputStream(srcUri);

@@ -24,12 +24,9 @@ import java.util.List;
 
 import static com.travel.guide.ui.editPost.EditPostActivity.STORIES_PATHS;
 
-public class SortStoriesActivity extends AppCompatActivity implements View.OnClickListener {
+public class SortStoriesActivity extends AppCompatActivity {
 
     private List<ItemMedia> itemMedia = new ArrayList<>();
-    private TextView doneBtn;
-    private ImageButton backBtn;
-    private SortStoriesAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,26 +40,30 @@ public class SortStoriesActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initUI() {
-        doneBtn = findViewById(R.id.sort_stories_done_btn);
-        doneBtn.setOnClickListener(this);
+        TextView doneBtn = findViewById(R.id.sort_stories_done_btn);
+        doneBtn.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(STORIES_PATHS, (Serializable) itemMedia);
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+        });
 
-        backBtn = findViewById(R.id.sort_stories_back_btn);
-        backBtn.setOnClickListener(this);
+        ImageButton backBtn = findViewById(R.id.sort_stories_back_btn);
+        backBtn.setOnClickListener(v -> finish());
+
     }
 
     private void initRecycler() {
         RecyclerView recyclerSortStories = findViewById(R.id.stories_sort_recycler);
-        adapter = new SortStoriesAdapter(itemMedia);
+        SortStoriesAdapter adapter = new SortStoriesAdapter(itemMedia);
+
         recyclerSortStories.setLayoutManager(new GridLayoutManager(this, 3));
-//        recyclerSortStories.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerSortStories.setHasFixedSize(true);
         recyclerSortStories.setAdapter(adapter);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
-                ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
-                                  @NonNull RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
 
                 int fromPosition = viewHolder.getLayoutPosition();
                 int toPosition = target.getLayoutPosition();
@@ -80,22 +81,5 @@ public class SortStoriesActivity extends AppCompatActivity implements View.OnCli
         });
 
         itemTouchHelper.attachToRecyclerView(recyclerSortStories);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.sort_stories_done_btn:
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra(STORIES_PATHS, (Serializable) itemMedia);
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
-                break;
-
-            case R.id.sort_stories_back_btn:
-                finish();
-                break;
-        }
     }
 }

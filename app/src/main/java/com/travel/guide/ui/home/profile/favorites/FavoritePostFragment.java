@@ -47,7 +47,11 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
         favoritePostPresenter = new FavoritePostPresenter(this);
 
-        listener = (ProfileFragment.OnPostChooseListener) context;
+        try {
+            this.listener = (ProfileFragment.OnPostChooseListener) context;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 
         contentList = view.findViewById(R.id.tab_liked_main_cont);
 

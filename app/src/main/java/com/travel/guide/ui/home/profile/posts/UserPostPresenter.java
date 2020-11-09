@@ -25,7 +25,8 @@ class UserPostPresenter {
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
-                        userPostListener.onGetPosts(response.body());
+                        if (response.body().getPosts().size() > 0)
+                            userPostListener.onGetPosts(response.body().getPosts());
                     } else {
                         userPostListener.onGetPostsError(response.message());
                     }

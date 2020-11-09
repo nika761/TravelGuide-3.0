@@ -5,7 +5,7 @@ import android.util.Log;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.travel.guide.model.request.UploadPostRequestModel;
+import com.travel.guide.model.request.UploadPostRequest;
 import com.travel.guide.model.response.UploadPostResponse;
 import com.travel.guide.network.ApiService;
 import com.travel.guide.network.RetrofitManager;
@@ -23,7 +23,7 @@ public class UploadPostPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void uploadStory(String accessToken, UploadPostRequestModel uploadPostRequest) {
+    void uploadStory(String accessToken, UploadPostRequest uploadPostRequest) {
         String unc = "application/x-www-form-urlencoded";
         apiService.uploadPost(accessToken, unc, uploadPostRequest).enqueue(new Callback<UploadPostResponse>() {
             @Override

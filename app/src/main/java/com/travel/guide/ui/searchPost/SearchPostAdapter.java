@@ -18,7 +18,7 @@ import java.util.List;
 public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.PostLocationHolder> {
     private List<PostResponse.Posts> posts;
 
-    public SearchPostAdapter(List<PostResponse.Posts> posts) {
+    SearchPostAdapter(List<PostResponse.Posts> posts) {
         this.posts = posts;
     }
 

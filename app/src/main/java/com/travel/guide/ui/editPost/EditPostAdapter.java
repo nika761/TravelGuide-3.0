@@ -23,11 +23,11 @@ import java.util.List;
 public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private List<ItemMedia> itemMedias;
-    private EditPostListener editPostListener;
+    private EditPostCallback editPostCallback;
 
-    EditPostAdapter(Context context, EditPostListener editPostListener) {
+    EditPostAdapter(Context context, EditPostCallback editPostCallback) {
         this.context = context;
-        this.editPostListener = editPostListener;
+        this.editPostCallback = editPostCallback;
     }
 
     @NonNull
@@ -83,7 +83,6 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-
     class PhotoItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView photoItem;
@@ -111,21 +110,21 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.crop_image:
-                    editPostListener.onCropChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
+                    editPostCallback.onCropChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
                     break;
 
                 case R.id.filter_image:
-                    editPostListener.onFilterChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
+                    editPostCallback.onFilterChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
                     break;
 
                 case R.id.sort_image:
-                    editPostListener.onSortChoose(itemMedias);
+                    editPostCallback.onSortChoose(itemMedias);
                     break;
 
                 case R.id.delete_image:
                     itemMedias.remove(getLayoutPosition());
                     notifyItemRemoved(getLayoutPosition());
-                    editPostListener.onStoryDeleted(itemMedias);
+                    editPostCallback.onStoryDeleted(itemMedias);
 
                     if (itemMedias.size() == 0) {
                         Intent intent = new Intent(context, GalleryActivity.class);
@@ -183,7 +182,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             switch (v.getId()) {
 
                 case R.id.trim_video:
-                    editPostListener.onTrimChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
+                    editPostCallback.onTrimChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
                     break;
 //                case R.id.speed_video:
 //                    if (visibility) {
@@ -195,7 +194,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //                    }
 //                    break;
                 case R.id.sort_video:
-                    editPostListener.onSortChoose(itemMedias);
+                    editPostCallback.onSortChoose(itemMedias);
                     break;
 
                 case R.id.video_item:
@@ -209,7 +208,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 case R.id.delete_image_video:
                     itemMedias.remove(getLayoutPosition());
                     notifyItemRemoved(getLayoutPosition());
-                    editPostListener.onStoryDeleted(itemMedias);
+                    editPostCallback.onStoryDeleted(itemMedias);
 
                     if (itemMedias.size() == 0) {
                         Intent intent = new Intent(context, GalleryActivity.class);

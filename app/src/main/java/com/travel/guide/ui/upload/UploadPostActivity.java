@@ -25,7 +25,7 @@ import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.helper.HelperSystem;
 import com.travel.guide.model.ItemMedia;
-import com.travel.guide.model.request.UploadPostRequestModel;
+import com.travel.guide.model.request.UploadPostRequest;
 import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.ui.upload.tag.HashtagAdapter;
 import com.travel.guide.ui.upload.tag.TagPostActivity;
@@ -304,22 +304,22 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onPostUploadedToS3() {
 
-        List<UploadPostRequestModel.Post_stories> stories = new ArrayList<>();
+        List<UploadPostRequest.Post_stories> stories = new ArrayList<>();
 
         //Get uploaded content url from S3 server
         String url = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, fileForUpload.getName());
 
         if (url.endsWith(".mp4")) {
             String videoDuration = String.valueOf(HelperMedia.getVideoDurationInt(itemMedia.get(0).getPath()));
-            stories.add(new UploadPostRequestModel.Post_stories(url, videoDuration, 1, 1));
+            stories.add(new UploadPostRequest.Post_stories(url, videoDuration, 1, 1));
         } else {
-            stories.add(new UploadPostRequestModel.Post_stories(url, "10", 1, 0));
+            stories.add(new UploadPostRequest.Post_stories(url, "10", 1, 0));
         }
 
         if (postDescription.getText() != null && !postDescription.toString().isEmpty())
             description = postDescription.getText().toString();
 
-        UploadPostRequestModel uploadPostRequestModel = new UploadPostRequestModel(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
+        UploadPostRequest uploadPostRequestModel = new UploadPostRequest(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
 
         uploadPostPresenter.uploadStory(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), uploadPostRequestModel);
 

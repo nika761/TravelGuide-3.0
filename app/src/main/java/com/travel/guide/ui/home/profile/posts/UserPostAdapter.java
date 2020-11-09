@@ -19,8 +19,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     private List<PostResponse.Posts> posts;
     private UserPostListener userPostListener;
 
-    UserPostAdapter(List<PostResponse.Posts> posts, UserPostListener userPostListener) {
-        this.posts = posts;
+    UserPostAdapter(UserPostListener userPostListener) {
         this.userPostListener = userPostListener;
     }
 
@@ -40,6 +39,16 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     @Override
     public int getItemCount() {
         return posts.size();
+    }
+
+    public void setPosts(List<PostResponse.Posts> posts) {
+        if (this.posts != null && this.posts.size() != 0)
+            this.posts.addAll(posts);
+
+        else {
+            this.posts = posts;
+            notifyDataSetChanged();
+        }
     }
 
     class UserPostHolder extends RecyclerView.ViewHolder {

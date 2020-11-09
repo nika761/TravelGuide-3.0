@@ -35,7 +35,7 @@ import com.travel.guide.model.request.SharePostRequest;
 import com.travel.guide.model.request.SignUpRequest;
 import com.travel.guide.model.request.SignUpWithFirebaseRequest;
 import com.travel.guide.model.request.TermsPolicyRequest;
-import com.travel.guide.model.request.UploadPostRequestModel;
+import com.travel.guide.model.request.UploadPostRequest;
 import com.travel.guide.model.request.VerifyEmailRequest;
 import com.travel.guide.model.response.AboutResponse;
 import com.travel.guide.model.response.AddCommentReplyResponse;
@@ -289,5 +289,5 @@ public interface ApiService {
     @POST("create/post")
     Call<UploadPostResponse> uploadPost(@Header("Authorization") String token,
                                         @Header("Content-type") String unc,
-                                        @Body UploadPostRequestModel uploadPostRequest);
+                                        @Body UploadPostRequest uploadPostRequest);
 }

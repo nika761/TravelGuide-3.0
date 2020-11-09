@@ -1,4 +1,4 @@
-package com.travel.guide.helper;
+package com.travel.guide.helper.custom;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

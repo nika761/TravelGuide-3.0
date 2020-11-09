@@ -1,4 +1,4 @@
-package com.travel.guide.ui.customerUser;
+package com.travel.guide.ui.home.customerUser;
 
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.request.FollowRequest;

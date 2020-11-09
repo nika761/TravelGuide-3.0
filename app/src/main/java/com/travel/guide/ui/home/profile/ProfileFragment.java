@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.request.ProfileRequest;
@@ -53,57 +54,56 @@ import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
 
-    private TextView nickName, name, userBioText, bioText, following, follower, reaction, bioHead;
-    private ImageButton bioVisibleBtn, bioInvisibleBtn;
-    private LottieAnimationView lottieAnimationView;
+    private TextView nickName, name, bioBody, following, follower, reaction, bioHead;
+    private ImageButton seeBio, hideBio;
+    private LottieAnimationView loader;
     private CircleImageView userPrfImage;
     private ActionBarDrawerToggle toggle;
-    private ImageView userBioTextState;
     private Context context;
-    private View myLayout;
-
+    private View mIncludedLayout;
     private LinearLayout bioContainer;
+
     private ProfileFragmentPresenter presenter;
     private String userName;
-    private int userId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
-        Window window = Objects.requireNonNull(getActivity()).getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (getActivity() != null) {
+            Window window = getActivity().getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
-        toolbar.setTitle("");
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
-        toggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.open, R.string.close);
-        toggle.syncState();
+            Toolbar toolbar = view.findViewById(R.id.toolbar);
+            toolbar.setTitle("");
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        toolbar.setNavigationOnClickListener(v -> {
-            drawerLayout.addDrawerListener(toggle);
-            drawerLayout.openDrawer(GravityCompat.START);
-        });
+            DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
+            toggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.open, R.string.close);
+            toggle.syncState();
 
-        NavigationView navigationView = view.findViewById(R.id.burger_navigation_view);
-        navigationView.setNavigationItemSelectedListener(navListener);
+            toolbar.setNavigationOnClickListener(v -> {
+                drawerLayout.addDrawerListener(toggle);
+                drawerLayout.openDrawer(GravityCompat.START);
+            });
+
+            NavigationView navigationView = view.findViewById(R.id.burger_navigation_view);
+            navigationView.setNavigationItemSelectedListener(navListener);
+        }
 
         presenter = new ProfileFragmentPresenter(this);
 
-        lottieAnimationView = view.findViewById(R.id.loader_profile);
+        loader = view.findViewById(R.id.loader_profile);
+        name = view.findViewById(R.id.user_prf_name_toolbar);
 
-        myLayout = view.findViewById(R.id.test);
-        ViewPager viewPager = myLayout.findViewById(R.id.viewpager_test);
-        TabLayout tabLayout = myLayout.findViewById(R.id.tabs_test);
+        mIncludedLayout = view.findViewById(R.id.profile_included_layout);
+        ViewPager viewPager = mIncludedLayout.findViewById(R.id.profile_view_pager);
+        TabLayout tabLayout = mIncludedLayout.findViewById(R.id.profile_tabs);
 
-        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
-
-        this.userId = HelperPref.getUserId(context);
+        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getChildFragmentManager());
         profilePagerAdapter.addFragment(new UserPostsFragment());
         profilePagerAdapter.addFragment(new FavoritePostFragment());
         profilePagerAdapter.addFragment(new UserToursFragment());
-
         viewPager.setAdapter(profilePagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -111,27 +111,26 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         tabLayout.getTabAt(1).setIcon(R.drawable.profile_liked);
         tabLayout.getTabAt(2).setIcon(R.drawable.profile_tour);
 
-        View followStates = myLayout.findViewById(R.id.states_test);
+        View followStates = mIncludedLayout.findViewById(R.id.profile_follow_states);
         followStates.setOnClickListener(this::onViewClick);
 
-        TextView editProfile = myLayout.findViewById(R.id.edit_profile);
+        TextView editProfile = mIncludedLayout.findViewById(R.id.profile_edit_profile_btn);
         editProfile.setOnClickListener(this::onViewClick);
 
-        bioVisibleBtn = myLayout.findViewById(R.id.bio_visible_btn);
-        bioVisibleBtn.setOnClickListener(this::onViewClick);
+        seeBio = mIncludedLayout.findViewById(R.id.profile_see_bio_btn);
+        seeBio.setOnClickListener(this::onViewClick);
 
-        bioInvisibleBtn = myLayout.findViewById(R.id.bio_invisible_btn);
-        bioInvisibleBtn.setOnClickListener(this::onViewClick);
+        hideBio = mIncludedLayout.findViewById(R.id.profile_hide_bio_btn);
+        hideBio.setOnClickListener(this::onViewClick);
 
-        userPrfImage = myLayout.findViewById(R.id.profile_image);
-        name = view.findViewById(R.id.user_prf_name_toolbar);
-        nickName = myLayout.findViewById(R.id.user_prf_nickName);
-        follower = myLayout.findViewById(R.id.followers_count);
-        following = myLayout.findViewById(R.id.following_count);
-        reaction = myLayout.findViewById(R.id.reactions_count);
-        bioText = myLayout.findViewById(R.id.bio_text);
-        bioContainer = myLayout.findViewById(R.id.profile_bio);
-        bioHead = myLayout.findViewById(R.id.profile_bio_head);
+        userPrfImage = mIncludedLayout.findViewById(R.id.profile_image);
+        nickName = mIncludedLayout.findViewById(R.id.user_prf_nickName);
+        follower = mIncludedLayout.findViewById(R.id.followers_count);
+        following = mIncludedLayout.findViewById(R.id.following_count);
+        reaction = mIncludedLayout.findViewById(R.id.reactions_count);
+        bioBody = mIncludedLayout.findViewById(R.id.bio_text);
+        bioContainer = mIncludedLayout.findViewById(R.id.profile_bio);
+        bioHead = mIncludedLayout.findViewById(R.id.profile_bio_head);
 
         return view;
     }
@@ -139,7 +138,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        lottieAnimationView.setVisibility(View.VISIBLE);
+        loader.setVisibility(View.VISIBLE);
         presenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(HelperPref.getUserId(context)));
     }
 
@@ -174,7 +173,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.settings_sing_out:
-//                String type = HelperPref.getLoginType(context);
                 logOutDialog();
                 break;
         }
@@ -184,26 +182,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     private void logOutDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle("Sign out ?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-//                    if (loginType != null) {
-//                        switch (loginType) {
-//                            case FACEBOOK:
-//                                ((HomePageActivity) context).signOutFromFbAccount();
-//                                break;
-//                            case GOOGLE:
-//                                ((HomePageActivity) context).signOutFromGoogleAccount();
-//                                break;
-//                            case TRAVEL_GUIDE:
-//                                ((HomePageActivity) context).signOutFromAccount();
-//                                break;
-//                        }
-//                    } else {
-//                        Toast.makeText(context, "Case error", Toast.LENGTH_SHORT).show();
-//                        Objects.requireNonNull(getActivity()).finish();
-//                    }
-                    ((HomePageActivity) context).onLogOutChoose();
-
-                })
+                .setPositiveButton("Yes", (dialog, which) -> ((HomePageActivity) context).onLogOutChoose())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create();
         alertDialog.show();
@@ -212,25 +191,21 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     private void onViewClick(View v) {
         switch (v.getId()) {
 
-            case R.id.bio_visible_btn:
-                bioText.setVisibility(View.VISIBLE);
-                bioVisibleBtn.setVisibility(View.GONE);
-                bioInvisibleBtn.setVisibility(View.VISIBLE);
+            case R.id.profile_see_bio_btn:
+                showBiography(true);
                 break;
 
-            case R.id.bio_invisible_btn:
-                bioText.setVisibility(View.GONE);
-                bioVisibleBtn.setVisibility(View.VISIBLE);
-                bioInvisibleBtn.setVisibility(View.GONE);
+            case R.id.profile_hide_bio_btn:
+                showBiography(false);
                 break;
 
-            case R.id.states_test:
+            case R.id.profile_follow_states:
                 Intent intent = new Intent(context, FollowActivity.class);
                 intent.putExtra("user_name", userName);
                 startActivity(intent);
                 break;
 
-            case R.id.edit_profile:
+            case R.id.profile_edit_profile_btn:
                 Intent editProfile = new Intent(context, ProfileEditActivity.class);
                 startActivity(editProfile);
                 break;
@@ -242,39 +217,56 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
         HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
 
-        lottieAnimationView.setVisibility(View.GONE);
-        myLayout.setVisibility(View.VISIBLE);
+        loader.setVisibility(View.GONE);
+        mIncludedLayout.setVisibility(View.VISIBLE);
 
         userName = userInfo.getName() + " " + userInfo.getLastname();
         name.setText(String.format("%s %s", userInfo.getName(), userInfo.getLastname()));
         nickName.setText(String.format("@%s", userInfo.getNickname()));
-
-        if (userInfo.getBiography() != null) {
-            bioContainer.setVisibility(View.VISIBLE);
-            bioVisibleBtn.setVisibility(View.VISIBLE);
-            bioHead.setVisibility(View.VISIBLE);
-            bioText.setVisibility(View.VISIBLE);
-            bioText.setText(userInfo.getBiography());
-        } else {
-            bioContainer.setVisibility(View.GONE);
-            bioHead.setVisibility(View.GONE);
-            bioText.setVisibility(View.GONE);
-            bioVisibleBtn.setVisibility(View.GONE);
-        }
-
         follower.setText(String.valueOf(userInfo.getFollower()));
         following.setText(String.valueOf(userInfo.getFollowing()));
         reaction.setText(String.valueOf(userInfo.getReactions()));
+        setBiography(userInfo.getBiography());
 
-        this.userId = userInfo.getId();
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(bioHead.getContext());
+        Bundle params = new Bundle();
+        params.putString("user_profile_page", "this user is" + " " + userInfo.getName() + userInfo.getLastname());
+        firebaseAnalytics.logEvent("profile_page_event", params);
 
     }
 
     @Override
     public void onGetError(String message) {
-        lottieAnimationView.setVisibility(View.GONE);
+        loader.setVisibility(View.GONE);
 
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showBiography(boolean show) {
+        if (show) {
+            bioBody.setVisibility(View.VISIBLE);
+            hideBio.setVisibility(View.VISIBLE);
+            seeBio.setVisibility(View.GONE);
+        } else {
+            bioBody.setVisibility(View.GONE);
+            hideBio.setVisibility(View.GONE);
+            seeBio.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setBiography(String biography) {
+        if (biography != null && !biography.isEmpty()) {
+            bioContainer.setVisibility(View.VISIBLE);
+            seeBio.setVisibility(View.VISIBLE);
+            bioHead.setVisibility(View.VISIBLE);
+            bioBody.setVisibility(View.VISIBLE);
+            bioBody.setText(biography);
+        } else {
+            bioContainer.setVisibility(View.GONE);
+            bioHead.setVisibility(View.GONE);
+            bioBody.setVisibility(View.GONE);
+            seeBio.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
     private boolean isImage;
     private GalleryFragment.ItemCountChangeListener listener;
 
-    public GalleryAdapter(Context context, boolean isImage) {
+    GalleryAdapter(Context context, boolean isImage) {
         this.isImage = isImage;
         this.context = context;
         listener = (GalleryFragment.ItemCountChangeListener) context;
@@ -58,6 +58,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
             holder.selectedItemCount.setText("");
             holder.selectedItemCount.setBackground(holder.itemView.getContext().getDrawable(R.drawable.selected_image_circle));
         }
+
     }
 
     @Override
@@ -65,7 +66,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
         return uris.size();
     }
 
-    public void setItems(ArrayList<String> uris) {
+    void setItems(ArrayList<String> uris) {
         this.uris = uris;
         notifyDataSetChanged();
     }
@@ -117,8 +118,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                     Intent intent = new Intent(context, MediaDetailActivity.class);
                     intent.putExtra("is_image", isImage);
                     intent.putExtra("path", uris.get(getLayoutPosition()));
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation((Activity) context, imageView, "image_transition");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, imageView, "image_transition");
                     context.startActivity(intent, options.toBundle());
             }
         }

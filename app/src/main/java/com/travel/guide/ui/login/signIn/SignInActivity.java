@@ -54,6 +54,7 @@ import java.util.List;
 
 import static com.travel.guide.enums.LoadWebViewType.POLICY;
 import static com.travel.guide.enums.LoadWebViewType.TERMS;
+import static com.travel.guide.helper.HelperUI.loadAnimation;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SignInActivity extends AppCompatActivity implements SignInListener {
@@ -388,11 +389,11 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
     }
 
-    private void loadAnimation(View target, int animationId, int offset) {
-        Animation animation = AnimationUtils.loadAnimation(this, animationId);
-        animation.setStartOffset(offset);
-        target.startAnimation(animation);
-    }
+//    private void loadAnimation(View target, int animationId, int offset) {
+//        Animation animation = AnimationUtils.loadAnimation(this, animationId);
+//        animation.setStartOffset(offset);
+//        target.startAnimation(animation);
+//    }
 
     @Override
     protected void onDestroy() {
