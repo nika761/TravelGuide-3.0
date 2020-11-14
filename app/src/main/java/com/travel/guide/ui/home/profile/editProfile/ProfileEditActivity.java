@@ -1,33 +1,44 @@
 package com.travel.guide.ui.home.profile.editProfile;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hbb20.CountryCodePicker;
 import com.travel.guide.R;
 import com.travel.guide.enums.InputFieldPairs;
 import com.travel.guide.helper.HelperDialogs;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.ProfileRequest;
+import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
 import com.travel.guide.helper.HelperPref;
+import com.travel.guide.model.response.UpdateProfileResponse;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.travel.guide.enums.InputFieldPairs.BIO;
+import static com.travel.guide.enums.InputFieldPairs.BIRTHDATE;
 import static com.travel.guide.enums.InputFieldPairs.COUNTRY;
 import static com.travel.guide.enums.InputFieldPairs.EMAIL;
 import static com.travel.guide.enums.InputFieldPairs.NAME;
@@ -39,16 +50,21 @@ import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener {
 
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
+    private CountryCodePicker countryCodePicker;
     private ProfileEditPresenter presenter;
+
     private File imageFile;
 
-    private EditText name, surName, nickName, email, phoneNumber, country, password, bio;
+    private EditText name, surName, nickName, email, phoneNumber, birthDate, country, password, bio;
     private TextView nameHead, surNameHead, nickNameHead, birthDateHead, emailHead, phoneNumberhead, countryHead, passwordHead, bioHead;
     private CircleImageView userImage;
-    private TextView birthDate;
     private String imagePath;
 
     private final static int PICK_IMAGE = 28;
+    private boolean genderChecked;
+    private long timeStamp;
+    private int gender;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,10 +101,14 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         bioHead = findViewById(R.id.edit_bio_head);
 
         birthDate = findViewById(R.id.edit_birth_date);
+        birthDate.setOnClickListener(v -> showDatePickerDialog());
+
         birthDateHead = findViewById(R.id.edit_birth_date_head);
 
         phoneNumber = findViewById(R.id.edit_phone_number);
         phoneNumberhead = findViewById(R.id.edit_phone_number_head);
+
+        countryCodePicker = findViewById(R.id.number_picker);
 
         TextView saveBtn = findViewById(R.id.edit_save_btn);
         saveBtn.setOnClickListener(v -> checkInputData());
@@ -102,6 +122,44 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             startActivityForResult(intent, PICK_IMAGE);
         });
 
+
+        mDateSetListener = (datePicker, year, month, day) -> {
+            month = month + 1;
+            String dayString = day < 10 ? "0" + day : String.valueOf(day);
+            String monthString = month < 10 ? "0" + month : String.valueOf(month);
+
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int age = currentYear - year;
+
+            if (age < 13) {
+                Toast.makeText(this, "Application age restriction 13+", Toast.LENGTH_SHORT).show();
+            } else {
+                String date = year + "/" + monthString + "/" + dayString;
+                birthDate.setText(date);
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day);
+                timeStamp = calendar.getTimeInMillis();
+                Log.e("datetime", String.valueOf(timeStamp));
+            }
+        };
+
+        RadioGroup genderGroup = findViewById(R.id.edit_radio_group);
+        genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.edit_radio_male:
+                    gender = 0;
+                    break;
+
+                case R.id.edit_radio_female:
+                    gender = 1;
+                    break;
+
+                case R.id.edit_radio_other:
+                    gender = 2;
+                    break;
+            }
+            genderChecked = true;
+        });
 
     }
 
@@ -120,12 +178,26 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         }
     }
 
+    private void showDatePickerDialog() {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        dialog.show();
+    }
+
     public void pickProfileImage(Uri uri) {
         String picturePath = HelperMedia.getPathFromImageUri(this, uri);
         imageFile = new File(picturePath);
 //            signUpPresenter.uploadToS3(HelperClients.transferObserver(this, profilePhotoFile));
         HelperMedia.loadCirclePhoto(this, picturePath, userImage);
-
     }
 
     @Override
@@ -137,6 +209,12 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     }
 
     void checkInputData() {
+
+        if (!genderChecked) {
+            Toast.makeText(this, "Please enter gender", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         HashMap<TextView, EditText> namePair = new HashMap<>();
         namePair.put(nameHead, name);
 
@@ -148,6 +226,9 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
         HashMap<TextView, EditText> emailPair = new HashMap<>();
         emailPair.put(emailHead, email);
+
+        HashMap<TextView, EditText> birthDatePair = new HashMap<>();
+        birthDatePair.put(birthDateHead, birthDate);
 
         HashMap<TextView, EditText> countryPair = new HashMap<>();
         countryPair.put(countryHead, country);
@@ -164,6 +245,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         inputFields.put(SURNAME, surnamePair);
         inputFields.put(NICKNAME, nickNamePair);
         inputFields.put(EMAIL, emailPair);
+        inputFields.put(BIRTHDATE, birthDatePair);
         inputFields.put(COUNTRY, countryPair);
         inputFields.put(PASSWORD, passwordPair);
         inputFields.put(BIO, bioPair);
@@ -173,23 +255,16 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         if (checkedInputData.size() != inputFields.size()) {
             Log.e("dasdasdas", "data null");
         } else {
-            String name = checkedInputData.get(NAME);
-            String surname = checkedInputData.get(SURNAME);
-            String nickname = checkedInputData.get(NICKNAME);
-            String email = checkedInputData.get(EMAIL);
-            String country = checkedInputData.get(COUNTRY);
-            String password = checkedInputData.get(PASSWORD);
-            String bio = checkedInputData.get(BIO);
 
-            HelperDialogs.profileInfoUpdatedDialog(this);
+//            presenter.updateProfile(HelperPref.getAccessToken(this), updateProfileRequest);
+//            Log.e("dasdasdas", "სახელი" + " " + name);
+//            Log.e("dasdasdas", "გვარი" + " " + surname);
+//            Log.e("dasdasdas", "ნიკი" + " " + nickname);
+//            Log.e("dasdasdas", "ემაილი" + " " + email);
+//            Log.e("dasdasdas", "ქვეყანა" + " " + country);
+//            Log.e("dasdasdas", "პაროლი" + " " + password);
+//            Log.e("dasdasdas", "ბიო" + " " + bio);
 
-            Log.e("dasdasdas", "სახელი" + " " + name);
-            Log.e("dasdasdas", "გვარი" + " " + surname);
-            Log.e("dasdasdas", "ნიკი" + " " + nickname);
-            Log.e("dasdasdas", "ემაილი" + " " + email);
-            Log.e("dasdasdas", "ქვეყანა" + " " + country);
-            Log.e("dasdasdas", "პაროლი" + " " + password);
-            Log.e("dasdasdas", "ბიო" + " " + bio);
         }
     }
 
@@ -210,6 +285,15 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
         birthDate.setText(userInfo.getDate_of_birth());
 
+    }
+
+    @Override
+    public void onUpdateProfile(UpdateProfileResponse updateProfileResponse) {
+        switch (updateProfileResponse.getStatus()) {
+            case 0:
+                HelperDialogs.profileInfoUpdatedDialog(this);
+                break;
+        }
     }
 
     @Override

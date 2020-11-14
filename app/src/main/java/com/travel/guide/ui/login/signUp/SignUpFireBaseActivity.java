@@ -39,7 +39,7 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
     private Button save;
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private SignUpFireBasePresenter signUpFireBasePresenter;
+    private SignUpFireBasePresenter presenter;
 
     private String nick1, nick2, key, name, nickName;
     private long startTime;
@@ -60,7 +60,7 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
     private void initUI() {
 
-        signUpFireBasePresenter = new SignUpFireBasePresenter(this);
+        presenter = new SignUpFireBasePresenter(this);
 
         dateHead = findViewById(R.id.enter_date_of_birth_head);
 
@@ -100,7 +100,7 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
                 loader.setVisibility(View.VISIBLE);
 
                 int languageId = HelperPref.getLanguageId(SignUpFireBaseActivity.this);
-                signUpFireBasePresenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(startTime), languageId, platformId, gender));
+                presenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(startTime), languageId, platformId, gender));
 
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (inputMethodManager != null)
@@ -216,7 +216,14 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
     @Override
     public void checkNickName() {
-        signUpFireBasePresenter.checkNick(new CheckNickRequest(nickName, name, null));
+        presenter.checkNick(new CheckNickRequest(nickName, name, null));
     }
 
+    @Override
+    protected void onDestroy() {
+        if (presenter != null) {
+            presenter = null;
+        }
+        super.onDestroy();
+    }
 }

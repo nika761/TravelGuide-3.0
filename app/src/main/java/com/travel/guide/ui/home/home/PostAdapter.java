@@ -99,16 +99,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
             StoryAdapter.StoryHolder storyHolder = ((StoryAdapter.StoryHolder) storyRecycler.findViewHolderForAdapterPosition(position));
             if (storyHolder != null) {
-                storyHolder.stopVideo();
+                storyHolder.frameLayout.releaseExoPlayer();
+                storyHolder.frameLayout.removeAllViews();
             }
         }
 
-        void play(int position) {
-            StoryAdapter.StoryHolder storyHolder = ((StoryAdapter.StoryHolder) storyRecycler.findViewHolderForAdapterPosition(position));
-            if (storyHolder != null) {
-                storyHolder.playVideo(position);
-            }
-        }
+//        void play(int position) {
+//            StoryAdapter.StoryHolder storyHolder = ((StoryAdapter.StoryHolder) storyRecycler.findViewHolderForAdapterPosition(position));
+//            if (storyHolder != null) {
+//                storyHolder.playVideo(position);
+//            }
+//        }
 
 
         @Override

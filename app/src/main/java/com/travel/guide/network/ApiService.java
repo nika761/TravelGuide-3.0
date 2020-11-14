@@ -35,6 +35,7 @@ import com.travel.guide.model.request.SharePostRequest;
 import com.travel.guide.model.request.SignUpRequest;
 import com.travel.guide.model.request.SignUpWithFirebaseRequest;
 import com.travel.guide.model.request.TermsPolicyRequest;
+import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.request.UploadPostRequest;
 import com.travel.guide.model.request.VerifyEmailRequest;
 import com.travel.guide.model.response.AboutResponse;
@@ -74,6 +75,7 @@ import com.travel.guide.model.response.LanguagesResponse;
 import com.travel.guide.model.response.LoginResponse;
 import com.travel.guide.model.response.SignUpWithFirebaseResponse;
 import com.travel.guide.model.response.TermsPolicyResponse;
+import com.travel.guide.model.response.UpdateProfileResponse;
 import com.travel.guide.model.response.UploadPostResponse;
 import com.travel.guide.model.response.VerifyEmailResponse;
 
@@ -134,6 +136,11 @@ public interface ApiService {
     @POST("get/profile")
     Call<ProfileResponse> getProfile(@Header("Authorization") String token,
                                      @Body ProfileRequest profileRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/profile")
+    Call<UpdateProfileResponse> updateProfile(@Header("Authorization") String token,
+                                              @Body UpdateProfileRequest updateProfileRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/musics")

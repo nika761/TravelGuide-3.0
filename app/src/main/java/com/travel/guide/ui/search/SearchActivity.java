@@ -1,6 +1,7 @@
 package com.travel.guide.ui.search;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
@@ -22,7 +23,6 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         initUI();
-        setClickListeners();
         setViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -31,12 +31,10 @@ public class SearchActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.search_tabs);
         viewPager = findViewById(R.id.search_view_pager);
         backBtn = findViewById(R.id.search_back_btn_second);
+        backBtn.setOnClickListener(v -> finish());
         searchBtn = findViewById(R.id.search_btn);
     }
 
-    private void setClickListeners() {
-        backBtn.setOnClickListener(v -> finish());
-    }
 
     private void setViewPager(ViewPager viewPager) {
         SearchPagerAdapter searchPagerAdapter = new SearchPagerAdapter(getSupportFragmentManager());

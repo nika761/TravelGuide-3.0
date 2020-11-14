@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,7 +78,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     private int oldStoryHolderPosition = -1;
     private int oldPostHolderPosition = -1;
-
 
     private GetPostType getPostType;
 
@@ -154,10 +154,48 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
             postRecycler.post(() -> postRecycler.scrollToPosition(scrollPosition));
         }
 
-//        postRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        postRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+//                if (dy > 0) {
+//                    visibleItemCount = layoutManager.getChildCount();
+//                    totalItemCount = layoutManager.getItemCount();
+//                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+//
+//                    Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
+//
+//                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+//                    }
+//                }
+
+                int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (firstVisibleItem != oldPosition) {
+
+                    PostAdapter.PostHolder postHolder = ((PostAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(firstVisibleItem));
+
+                    if (postHolder != null) {
+                        postHolder.storyRecycler.post(() -> postHolder.storyRecycler.smoothScrollToPosition(0));
+                        postHolder.iniStory(firstVisibleItem);
+                    }
+
+                    PostAdapter.PostHolder oldHolder = ((PostAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(oldPosition));
+
+                    if (oldHolder != null) {
+//                        oldHolder.delete(0);
+                        oldHolder.storyView.removeAllViews();
+                    }
+
+                    oldPosition = firstVisibleItem;
+                }
+            }
+
 //            @Override
 //            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 //                super.onScrollStateChanged(recyclerView, newState);
+//
 //                switch (newState) {
 //
 //                    case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
@@ -166,50 +204,16 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 //                        break;
 //
 //                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-//                        Log.e("movidaaaa", "shemovida");
+//                        if (oldHolder != null) {
+//                            oldHolder.delete(0);
+//                            oldHolder.storyView.removeAllViews();
+//                        }
 //                        break;
 //
 //                }
 //            }
-//
-////            @Override
-////            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-////                super.onScrolled(recyclerView, dx, dy);
-////
-//////                if (dy > 0) {
-//////                    visibleItemCount = layoutManager.getChildCount();
-//////                    totalItemCount = layoutManager.getItemCount();
-//////                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-//////
-//////                    Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
-//////
-//////                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-//////                    }
-//////                }
-////
-////                int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
-////
-////                if (firstVisibleItem != oldPosition) {
-////
-////                    PostAdapter.PostHolder postHolder = ((PostAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(firstVisibleItem));
-////
-////                    if (postHolder != null) {
-////                        postHolder.storyRecycler.post(() -> postHolder.storyRecycler.smoothScrollToPosition(0));
-////                        postHolder.iniStory(firstVisibleItem);
-////                    }
-////
-////                    PostAdapter.PostHolder oldHolder = ((PostAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(oldPosition));
-////
-////                    if (oldHolder != null) {
-//////                        oldHolder.delete(0);
-////                        oldHolder.storyView.removeAllViews();
-////                    }
-////
-////                    oldPosition = firstVisibleItem;
-////                }
-////            }
-//
-//        });
+        });
+
 
     }
 
@@ -291,12 +295,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onGetHolder(RecyclerView storyRecycler, StoryAdapter.StoryHolder storyHolder, int storyHolderPosition, PostAdapter.PostHolder postHolder, int postHolderPosition) {
         if (oldPostHolderPosition < postHolderPosition) {
             if (oldPostHolder == null) {
-                storyHolder.playVideo(storyHolderPosition);
+//                storyHolder.playVideo(storyHolderPosition);
             } else {
                 oldStoryHolder.stopVideo();
 //                if (!storyHolder.equals(oldStoryHolder))
 //                    oldStoryHolder.stopVideo();
-                storyHolder.playVideo(storyHolderPosition);
+//                storyHolder.playVideo(storyHolderPosition);
             }
         }
         this.oldStoryHolder = storyHolder;

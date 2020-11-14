@@ -14,7 +14,7 @@ public class HelperDialogs {
     public static void signUpConfirmDialog(Activity activity, String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        View customLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
+        View customLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm,null);
 
         TextView verifyTitle, verifyMessage;
 

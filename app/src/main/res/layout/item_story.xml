@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <com.travel.guide.helper.custom.CustomFrameLayout
         android:id="@+id/pl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,13 +14,6 @@
             android:id="@+id/scalable_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/sadsasda"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:visibility="visible" />
 
@@ -36,7 +29,7 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-    </FrameLayout>
+    </com.travel.guide.helper.custom.CustomFrameLayout>
 
     <FrameLayout
         android:id="@+id/story_react_container"

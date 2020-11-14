@@ -13,7 +13,7 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ArrayList<String> fragmentsTitle = new ArrayList<>();
 
-    public SearchPagerAdapter(@NonNull FragmentManager fm) {
+    SearchPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
 
@@ -28,7 +28,7 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
         return fragments.size();
     }
 
-    public void addFragment(Fragment fragment, String title) {
+    void addFragment(Fragment fragment, String title) {
         fragments.add(fragment);
         fragmentsTitle.add(title);
     }

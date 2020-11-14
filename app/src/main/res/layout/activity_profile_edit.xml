@@ -168,15 +168,17 @@
                 android:text="@string/birth_date"
                 android:textSize="14sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/edit_birth_date"
                 android:layout_width="282dp"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
+                android:cursorVisible="false"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
                 android:gravity="center_horizontal"
                 android:padding="10dp"
+                android:text="DD -- MM -- YYYY"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -303,7 +305,8 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
-                android:minEms="8"
+                android:maxLength="500"
+                android:minLines="3"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
                 android:textSize="14sp"

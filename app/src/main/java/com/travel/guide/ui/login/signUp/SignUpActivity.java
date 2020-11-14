@@ -410,7 +410,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
                 password != null &&
                 confirmPassword != null) {
             loadingVisibility(true);
-            SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password, confirmPassword, String.valueOf(timeStamp), phoneIndex, photoUrl, phoneNumber, String.valueOf(HelperPref.getLanguageId(this)), gender);
+            SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password,
+                    confirmPassword, String.valueOf(timeStamp), phoneIndex, photoUrl,
+                    phoneNumber, String.valueOf(HelperPref.getLanguageId(this)), gender);
             signUpPresenter.signUp(signUpRequest);
         } else {
             Toast.makeText(this, " Error ", Toast.LENGTH_LONG).show();
@@ -425,7 +427,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog dialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
-
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }

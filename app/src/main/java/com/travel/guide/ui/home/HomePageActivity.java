@@ -39,7 +39,6 @@ import static com.travel.guide.helper.HelperSystem.READ_EXTERNAL_STORAGE;
  * დასაბამიდან იყო სიტყვა, და სიტყვა იყო ღმერთთან და ღმერთი იყო სიტყვა.
  * In the beginning was the Word, and the Word was with God, and the Word was God.
  * <p>
- * Good luck buddy.
  */
 
 public class HomePageActivity extends AppCompatActivity implements ProfileFragment.OnPostChooseListener {

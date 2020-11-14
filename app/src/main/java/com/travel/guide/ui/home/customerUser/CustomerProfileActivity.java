@@ -216,10 +216,10 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onPostChoose(Bundle fragmentData) {
-        Intent intent = new Intent(this, HomePageActivity.class);
-        intent.putExtra("request_from", "customer_profile");
-        intent.putExtra("fragment_data", fragmentData);
-        startActivity(intent);
+//        Intent intent = new Intent(this, HomePageActivity.class);
+//        intent.putExtra("request_from", "customer_profile");
+//        intent.putExtra("fragment_data", fragmentData);
+//        startActivity(intent);
     }
 
 }

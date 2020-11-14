@@ -26,6 +26,7 @@ import com.travel.guide.enums.StoryEmotionType;
 import com.travel.guide.helper.HelperExoPlayer;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
+import com.travel.guide.helper.custom.CustomFrameLayout;
 import com.travel.guide.helper.custom.StoryView;
 import com.travel.guide.ui.searchPost.SearchPostActivity;
 import com.travel.guide.model.response.PostResponse;
@@ -60,9 +61,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
     @Override
     public void onBindViewHolder(@NonNull StoryHolder storyHolder, int position) {
 
-        storyHolderListener.onGetStoryHolder(storyHolder, position);
-//        storyHolder.setVideoItem(position);
-        HelperMedia.loadPhoto(storyHolder.like.getContext(), currentPost.getCover(), storyHolder.storyCover);
+//        storyHolder.playVideo(stories.get(position).getUrl());
+//        storyHolderListener.onGetStoryHolder(storyHolder, position);
+//        HelperMedia.loadPhoto(storyHolder.like.getContext(), currentPost.getCover(), storyHolder.storyCover);
+        storyHolder.setVideoItem(position);
 
         if (stories.get(position).getStory_like_by_me())
             storyHolder.like.setBackground(storyHolder.like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
@@ -146,7 +148,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         ImageView storyCover;
         RecyclerView hashtagRecycler;
 
-        FrameLayout frameLayout;
+        CustomFrameLayout frameLayout;
         PlayerView playerView;
         ExoPlayer exoPlayer;
 
@@ -197,14 +199,14 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
             frameLayout = itemView.findViewById(R.id.pl_container);
 
-            exoPlayer = HelperExoPlayer.getExoPlayer(like.getContext());
-
-            playerView = new PlayerView(like.getContext());
-            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
-            playerView.setUseController(false);
-            playerView.requestFocus();
-            playerView.setVisibility(View.VISIBLE);
-            playerView.setAlpha(1);
+//            exoPlayer = HelperExoPlayer.getExoPlayer(like.getContext());
+//
+//            playerView = new PlayerView(like.getContext());
+//            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
+//            playerView.setUseController(false);
+//            playerView.requestFocus();
+//            playerView.setVisibility(View.VISIBLE);
+//            playerView.setAlpha(1);
 
         }
 
@@ -227,27 +229,27 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
         }
 
-        void playVideo(int position) {
-            frameLayout.addView(playerView);
+        void playVideo(String url) {
+            frameLayout.addPlayerView();
+            frameLayout.playRequest(url);
 
-            MediaSource mediaSource = HelperExoPlayer.getMediaLink(stories.get(position).getUrl());
-
-            playerView.setPlayer(exoPlayer);
-            exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(true);
-            exoPlayer.addListener(new Player.EventListener() {
-                @Override
-                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                    switch (playbackState) {
-                        case Player.STATE_ENDED:
-                            exoPlayer.seekTo(0);
-                            break;
-                        case Player.STATE_READY:
-//                            homeFragmentListener.onExoPlayerReady();
-                            break;
-                    }
-                }
-            });
+//            MediaSource mediaSource = HelperExoPlayer.getMediaLink(stories.get(position).getUrl());
+//            frameLayout.getPlayerView().setPlayer(exoPlayer);
+//            exoPlayer.prepare(mediaSource);
+//            exoPlayer.setPlayWhenReady(true);
+//            exoPlayer.addListener(new Player.EventListener() {
+//                @Override
+//                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+//                    switch (playbackState) {
+//                        case Player.STATE_ENDED:
+//                            exoPlayer.seekTo(0);
+//                            break;
+//                        case Player.STATE_READY:
+////                            homeFragmentListener.onExoPlayerReady();
+//                            break;
+//                    }
+//                }
+//            });
 
 
         }

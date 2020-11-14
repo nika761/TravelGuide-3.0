@@ -150,7 +150,8 @@ public class HelperUI {
         textView.setTextColor(activity.getResources().getColor(R.color.black, null));
     }
 
-    public static HashMap<InputFieldPairs, String> checkInputData(Activity activity, HashMap<InputFieldPairs, HashMap<TextView, EditText>> inputFields) {
+    public static HashMap<InputFieldPairs, String> checkInputData(Activity activity, HashMap<InputFieldPairs,
+            HashMap<TextView, EditText>> inputFields) {
 
         HashMap<InputFieldPairs, String> vars = new HashMap<>();
 
