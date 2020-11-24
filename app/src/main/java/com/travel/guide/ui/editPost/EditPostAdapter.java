@@ -125,11 +125,6 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     itemMedias.remove(getLayoutPosition());
                     notifyItemRemoved(getLayoutPosition());
                     editPostCallback.onStoryDeleted(itemMedias);
-
-                    if (itemMedias.size() == 0) {
-                        Intent intent = new Intent(context, GalleryActivity.class);
-                        context.startActivity(intent);
-                    }
                     break;
             }
         }
@@ -209,11 +204,6 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     itemMedias.remove(getLayoutPosition());
                     notifyItemRemoved(getLayoutPosition());
                     editPostCallback.onStoryDeleted(itemMedias);
-
-                    if (itemMedias.size() == 0) {
-                        Intent intent = new Intent(context, GalleryActivity.class);
-                        context.startActivity(intent);
-                    }
                     break;
             }
         }

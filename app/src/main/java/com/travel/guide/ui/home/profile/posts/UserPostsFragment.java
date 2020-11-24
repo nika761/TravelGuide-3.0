@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.enums.GetPostType;
+import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -25,8 +23,8 @@ import com.travel.guide.ui.home.profile.ProfileFragment;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.travel.guide.enums.GetPostType.CUSTOMER_POSTS;
-import static com.travel.guide.enums.GetPostType.MY_POSTS;
+import static com.travel.guide.enums.GetPostsFrom.CUSTOMER_POSTS;
+import static com.travel.guide.enums.GetPostsFrom.MY_POSTS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class UserPostsFragment extends Fragment implements UserPostListener {
@@ -39,7 +37,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     private UserPostAdapter postAdapter;
 
-    private GetPostType getPostType;
+    private GetPostsFrom getPostsFrom;
     private int customerUserId;
 
     private int pastVisibleItems;
@@ -70,9 +68,9 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         if (getArguments() == null) {
             userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(HelperPref.getUserId(postsRecycler.getContext()), 0));
         } else {
-            this.getPostType = (GetPostType) getArguments().getSerializable("request_type");
+            this.getPostsFrom = (GetPostsFrom) getArguments().getSerializable("request_type");
 
-            if (getPostType == GetPostType.CUSTOMER_POSTS) {
+            if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
                 this.customerUserId = getArguments().getInt("customer_user_id");
                 userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
             }
@@ -102,9 +100,11 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                     }
+
                 }
             }
         });
+
     }
 
     @Override
@@ -113,7 +113,6 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
         if (postAdapter == null)
             initRecycler(posts);
-
         else
             postAdapter.setPosts(posts);
     }
@@ -130,7 +129,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
         Bundle data = new Bundle();
         data.putInt("postPosition", position);
-        if (getPostType == CUSTOMER_POSTS) {
+        if (getPostsFrom == CUSTOMER_POSTS) {
             data.putSerializable("PostShowType", CUSTOMER_POSTS);
             data.putInt("customer_user_id", customerUserId);
             data.putSerializable("customer_posts", (Serializable) posts);

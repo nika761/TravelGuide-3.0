@@ -178,7 +178,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
         @Override
         public void onGetStoryHolder(StoryAdapter.StoryHolder storyHolder, int storyHolderPosition) {
-            homeFragmentListener.onGetHolder(storyRecycler, storyHolder, storyHolderPosition, postHolder, postHolderPosition);
+//            homeFragmentListener.onGetHolder(storyRecycler, storyHolder, storyHolderPosition, postHolder, postHolderPosition);
         }
     }
 

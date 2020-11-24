@@ -2,17 +2,12 @@ package com.travel.guide.ui.home.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,9 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
-import com.travel.guide.enums.GetPostType;
+import com.travel.guide.enums.GetPostsFrom;
+import com.travel.guide.helper.custom.CustomPostAdapter;
+import com.travel.guide.helper.custom.CustomPostRecycler;
+import com.travel.guide.helper.custom.StoryView;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.PostByUserRequest;
@@ -35,7 +35,6 @@ import com.travel.guide.model.request.SetPostFavoriteRequest;
 import com.travel.guide.model.request.SetStoryLikeRequest;
 import com.travel.guide.model.request.SharePostRequest;
 import com.travel.guide.model.response.FollowResponse;
-import com.travel.guide.model.response.LanguagesResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
 import com.travel.guide.model.response.SetStoryLikeResponse;
 import com.travel.guide.helper.HelperPref;
@@ -44,11 +43,8 @@ import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.model.response.SharePostResponse;
 import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.ui.home.customerUser.CustomerProfileActivity;
-import com.travel.guide.ui.language.LanguageActivity;
 import com.travel.guide.ui.login.signIn.SignInActivity;
-import com.travel.guide.ui.splashScreen.SplashScreenActivity;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,39 +61,42 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     private LottieAnimationView loader;
     private ConstraintLayout loaderContainer;
     private RecyclerView postRecycler;
+    private StoryView storyView;
 
     private int postId;
-    private int oldPosition = -1;
-    private int pastVisibleItems;
-    private int visibleItemCount;
-    private int totalItemCount;
     private int customerUserId;
 
-    private StoryAdapter.StoryHolder oldStoryHolder = null;
-    private PostAdapter.PostHolder oldPostHolder = null;
-
-    private int oldStoryHolderPosition = -1;
-    private int oldPostHolderPosition = -1;
-
-    private GetPostType getPostType;
+    private GetPostsFrom getPostsFrom;
+    private CustomPostRecycler customPostRecycler;
+    private CustomPostAdapter customPostAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_home, container, false);
 
-        Window window = Objects.requireNonNull(getActivity()).getWindow();
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (getActivity() != null) {
+            Window window = getActivity().getWindow();
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
         presenter = new HomeFragmentPresenter(this);
 
         loader = view.findViewById(R.id.loader_post);
         loaderContainer = view.findViewById(R.id.loader_constraint);
 
-        postRecycler = view.findViewById(R.id.recycler_story);
+        storyView = view.findViewById(R.id.post_progress_container);
 
+        postRecycler = view.findViewById(R.id.recycler_story);
         SnapHelper helper = new PagerSnapHelper();
         helper.attachToRecyclerView(postRecycler);
+
+        customPostRecycler = view.findViewById(R.id.testing_recycler);
+        customPostRecycler.setLayoutManager(new LinearLayoutManager(customPostRecycler.getContext()));
+        customPostRecycler.setHomeFragmentListener(this);
+        customPostRecycler.setStoryView(storyView);
+        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+        pagerSnapHelper.attachToRecyclerView(customPostRecycler);
 
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(postRecycler.getContext());
 
@@ -113,10 +112,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
-            getPostType = (GetPostType) getArguments().getSerializable("PostShowType");
+            getPostsFrom = (GetPostsFrom) getArguments().getSerializable("PostShowType");
             int scrollPosition = getArguments().getInt("postPosition");
-            if (getPostType != null) {
-                switch (getPostType) {
+            if (getPostsFrom != null) {
+                switch (getPostsFrom) {
                     case FAVORITES:
                         List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
                         initRecyclerView(favoritePosts, true, scrollPosition);
@@ -134,6 +133,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                         break;
 
                     case FEED:
+                        loaderContainer.setVisibility(View.VISIBLE);
                         presenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostRequest(0));
                         break;
                 }
@@ -142,90 +142,119 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     }
 
     private void initRecyclerView(List<PostResponse.Posts> posts, boolean scrollToPosition, int scrollPosition) {
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        postRecycler.setLayoutManager(layoutManager);
-
-        postAdapter = new PostAdapter(this);
-        postAdapter.setPosts(posts);
-        postRecycler.setAdapter(postAdapter);
-
-        if (scrollToPosition) {
-            postRecycler.post(() -> postRecycler.scrollToPosition(scrollPosition));
+        customPostRecycler.setPosts(posts);
+        customPostAdapter = new CustomPostAdapter(this, initGlide());
+        customPostAdapter.setPosts(posts);
+        customPostRecycler.setAdapter(customPostAdapter);
+        try {
+            if (scrollToPosition) {
+                if (scrollPosition == 0)
+                    customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
+                else
+                    customPostRecycler.post(() -> customPostRecycler.smoothScrollToPosition(scrollPosition));
+            } else {
+                customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        postRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-//                if (dy > 0) {
-//                    visibleItemCount = layoutManager.getChildCount();
-//                    totalItemCount = layoutManager.getItemCount();
-//                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+//        postRecycler.setLayoutManager(layoutManager);
 //
-//                    Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
+//        postAdapter = new CustomPostAdapter(this);
+//        postAdapter.setPosts(posts);
+//        postRecycler.setAdapter(postAdapter);
 //
-//                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-//                    }
-//                }
-
-                int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-                if (firstVisibleItem != oldPosition) {
-
-                    PostAdapter.PostHolder postHolder = ((PostAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(firstVisibleItem));
-
-                    if (postHolder != null) {
-                        postHolder.storyRecycler.post(() -> postHolder.storyRecycler.smoothScrollToPosition(0));
-                        postHolder.iniStory(firstVisibleItem);
-                    }
-
-                    PostAdapter.PostHolder oldHolder = ((PostAdapter.PostHolder) recyclerView.findViewHolderForAdapterPosition(oldPosition));
-
-                    if (oldHolder != null) {
-//                        oldHolder.delete(0);
-                        oldHolder.storyView.removeAllViews();
-                    }
-
-                    oldPosition = firstVisibleItem;
-                }
-            }
-
+//        if (scrollToPosition) {
+//            postRecycler.post(() -> postRecycler.scrollToPosition(scrollPosition));
+//        }
+//
+//        postRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
 //
-//                switch (newState) {
+////                if (dy > 0) {
+////                    visibleItemCount = layoutManager.getChildCount();
+////                    totalItemCount = layoutManager.getItemCount();
+////                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+////
+////                    Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
+////
+////                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+////                    }
+////                }
 //
-//                    case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
+//                int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
 //
-//                    case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-//                        break;
+//                if (firstVisibleItem != oldPosition) {
 //
-//                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-//                        if (oldHolder != null) {
-//                            oldHolder.delete(0);
-//                            oldHolder.storyView.removeAllViews();
-//                        }
-//                        break;
+//                    CustomPostAdapter.CustomPostHolder postHolder = ((CustomPostAdapter.CustomPostHolder) recyclerView.findViewHolderForAdapterPosition(firstVisibleItem));
 //
+//                    if (postHolder != null) {
+//                        postHolder.storyRecycler.post(() -> postHolder.storyRecycler.smoothScrollToPosition(0));
+//                        postHolder.iniStory(firstVisibleItem);
+//                    }
+//
+//                    CustomPostAdapter.CustomPostHolder oldHolder = ((CustomPostAdapter.CustomPostHolder) recyclerView.findViewHolderForAdapterPosition(oldPosition));
+//
+//                    if (oldHolder != null) {
+////                        oldHolder.delete(0);
+//                        oldHolder.storyView.removeAllViews();
+//                    }
+//
+//                    oldPosition = firstVisibleItem;
 //                }
 //            }
-        });
+//
+////            @Override
+////            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+////                super.onScrollStateChanged(recyclerView, newState);
+////
+////                switch (newState) {
+////
+////                    case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
+////
+////                    case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+////                        break;
+////
+////                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+////                        if (oldHolder != null) {
+////                            oldHolder.delete(0);
+////                            oldHolder.storyView.removeAllViews();
+////                        }
+////                        break;
+////
+////                }
+////            }
+//        });
 
+    }
 
+    private RequestManager initGlide() {
+//        RequestOptions options = new RequestOptions()
+//                .placeholder(R.drawable.bg_confirmation)
+//                .error(R.drawable.bg_confirmation);
+
+        return Glide.with(customPostRecycler.getContext());
     }
 
     @Override
     public void onGetPosts(List<PostResponse.Posts> posts) {
+//
+//        if (postAdapter == null) {
+//            initRecyclerView(posts, false, 0);
+//        } else {
+//            postAdapter.setPosts(posts);
+//        }
 
-        if (postAdapter == null) {
+        if (customPostAdapter == null) {
             initRecyclerView(posts, false, 0);
         } else {
-            postAdapter.setPosts(posts);
+            customPostAdapter.setPosts(posts);
+            customPostRecycler.setPosts(posts);
         }
-
     }
 
     @Override
@@ -292,30 +321,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     }
 
     @Override
-    public void onGetHolder(RecyclerView storyRecycler, StoryAdapter.StoryHolder storyHolder, int storyHolderPosition, PostAdapter.PostHolder postHolder, int postHolderPosition) {
-        if (oldPostHolderPosition < postHolderPosition) {
-            if (oldPostHolder == null) {
-//                storyHolder.playVideo(storyHolderPosition);
-            } else {
-                oldStoryHolder.stopVideo();
-//                if (!storyHolder.equals(oldStoryHolder))
-//                    oldStoryHolder.stopVideo();
-//                storyHolder.playVideo(storyHolderPosition);
-            }
-        }
-        this.oldStoryHolder = storyHolder;
-        this.oldPostHolder = postHolder;
-        this.oldPostHolderPosition = postHolderPosition;
-        this.oldStoryHolderPosition = storyHolderPosition;
-    }
-
-    @Override
-    public void onExoPlayerReady() {
-        if (oldStoryHolder != null)
-            oldStoryHolder.stopVideo();
-    }
-
-    @Override
     public void onCommentChoose(int storyId, int postId) {
         if (getContext() != null)
             ((HomePageActivity) getContext()).loadCommentFragment(storyId, postId);
@@ -337,7 +342,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onLazyLoad(int fromPostId) {
 
-        switch (getPostType) {
+        switch (getPostsFrom) {
 
             case FAVORITES:
                 presenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));
@@ -372,28 +377,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     }
 
     @Override
-    public void onDestroy() {
-
-        if (presenter != null) {
-            presenter = null;
-        }
-
-        if (postAdapter != null) {
-            postAdapter = null;
-        }
-
-        super.onDestroy();
-    }
-
-    @Override
     public void onStop() {
-        if (oldStoryHolder != null) {
-            oldStoryHolder.stopVideo();
-            oldStoryHolder = null;
-        }
+        if (customPostRecycler != null)
+            customPostRecycler.releasePlayer();
 
-        if (oldPostHolder != null)
-            oldPostHolder = null;
+        if (presenter != null)
+            presenter = null;
 
         super.onStop();
     }
@@ -413,6 +402,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onError(String message) {
+        stopLoader();
         Toast.makeText(postRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

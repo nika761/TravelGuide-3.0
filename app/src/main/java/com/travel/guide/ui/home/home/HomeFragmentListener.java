@@ -18,12 +18,6 @@ public interface HomeFragmentListener {
 
     void onStoryLiked(SetStoryLikeResponse setStoryLikeResponse);
 
-
-    void onGetHolder(RecyclerView storyRecycler, StoryAdapter.StoryHolder storyHolder, int storyHolderPosition, PostAdapter.PostHolder postHolder, int postHolderPosition);
-
-    void onExoPlayerReady();
-
-
     void onGetPosts(List<PostResponse.Posts> posts);
 
 

@@ -206,6 +206,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme">
+
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />

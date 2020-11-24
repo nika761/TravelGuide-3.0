@@ -5,22 +5,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.travel.guide.enums.GetPostType;
+import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.ui.home.profile.favorites.FavoritePostFragment;
 import com.travel.guide.ui.home.profile.posts.UserPostsFragment;
 import com.travel.guide.ui.home.profile.tours.UserToursFragment;
 
 import java.util.ArrayList;
 
-import static com.travel.guide.enums.GetPostType.CUSTOMER_POSTS;
+import static com.travel.guide.enums.GetPostsFrom.CUSTOMER_POSTS;
 
 public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<Fragment> fragments = new ArrayList<>();
-    private GetPostType getPostType;
+    private GetPostsFrom getPostsFrom;
     private int customerUserId;
 
     public ProfilePagerAdapter(@NonNull FragmentManager fm) {
@@ -30,10 +29,10 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        if (getPostType == CUSTOMER_POSTS) {
+        if (getPostsFrom == CUSTOMER_POSTS) {
             Bundle data = new Bundle();
             data.putInt("customer_user_id", customerUserId);
-            data.putSerializable("request_type", getPostType);
+            data.putSerializable("request_type", getPostsFrom);
             switch (position) {
                 case 0:
                     UserPostsFragment userPostsFragment = new UserPostsFragment();
@@ -66,8 +65,8 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
         fragments.add(fragment);
     }
 
-    public void setGetPostType(GetPostType getPostType) {
-        this.getPostType = getPostType;
+    public void setGetPostsFrom(GetPostsFrom getPostsFrom) {
+        this.getPostsFrom = getPostsFrom;
     }
 
     public void setCustomerUserId(int customerUserId) {

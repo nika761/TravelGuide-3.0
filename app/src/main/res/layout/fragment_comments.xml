@@ -47,23 +47,45 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="5dp"
-            app:layout_constraintBottom_toTopOf="@+id/comments_load_more"
+            app:layout_constraintBottom_toTopOf="@+id/comments_paging_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/comments_close_btn" />
 
-        <TextView
-            android:id="@+id/comments_load_more"
+        <FrameLayout
+            android:id="@+id/comments_paging_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:padding="10dp"
-            android:text="View more comments"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/comments_add_txt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/comments_recycler" />
+            app:layout_constraintTop_toBottomOf="@id/comments_recycler">
+
+            <TextView
+                android:id="@+id/comments_load_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:padding="7dp"
+                android:text="View more comments"
+                android:visibility="visible" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/comment_paging_loader"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/horizontal_loading" />
+
+        </FrameLayout>
+
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loading_comment"
@@ -85,7 +107,7 @@
             app:layout_constraintBottom_toTopOf="@id/comments_add_txt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/comments_load_more" />
+            app:layout_constraintTop_toBottomOf="@id/comments_paging_container" />
 
         <EditText
             android:id="@+id/comments_add_txt"
@@ -98,7 +120,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/comments_add_image_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/comments_load_more" />
+            app:layout_constraintTop_toBottomOf="@id/comments_paging_container" />
 
         <ImageButton
             android:id="@+id/comments_add_image_btn"

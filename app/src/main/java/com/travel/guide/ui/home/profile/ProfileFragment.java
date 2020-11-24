@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loader.setVisibility(View.VISIBLE);
+//        loader.setVisibility(View.VISIBLE);
         presenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(HelperPref.getUserId(context)));
     }
 
@@ -157,6 +157,10 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
             case R.id.settings_language:
                 ChangeLangFragment changeLangFragment = new ChangeLangFragment();
+                if (changeLangFragment.getDialog() != null) {
+                    if (changeLangFragment.getDialog().getWindow() != null)
+                        changeLangFragment.getDialog().getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+                }
                 changeLangFragment.show(getChildFragmentManager(), "fr");
                 break;
 
@@ -180,12 +184,21 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     };
 
     private void logOutDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setTitle("Sign out ?")
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Sign out ?")
                 .setPositiveButton("Yes", (dialog, which) -> ((HomePageActivity) context).onLogOutChoose())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create();
-        alertDialog.show();
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_sign_out_dialog, null));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+        }
+
+        dialog.show();
+
     }
 
     private void onViewClick(View v) {
@@ -240,6 +253,12 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         loader.setVisibility(View.GONE);
 
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(HelperPref.getUserId(context)));
     }
 
     private void showBiography(boolean show) {

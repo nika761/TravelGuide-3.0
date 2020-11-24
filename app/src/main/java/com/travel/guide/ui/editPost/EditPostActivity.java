@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
 import com.travel.guide.model.ItemMedia;
+import com.travel.guide.ui.gallery.GalleryActivity;
 import com.travel.guide.ui.music.ChooseMusicActivity;
 import com.travel.guide.ui.editPost.filterActivity.FilterActivity;
 import com.travel.guide.ui.editPost.sortActivity.SortStoriesActivity;
@@ -156,7 +157,11 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
 
     @Override
     public void onStoryDeleted(List<ItemMedia> itemMedias) {
-        this.itemMedias = itemMedias;
+        if (itemMedias.size() == 0) {
+            finish();
+        } else {
+            this.itemMedias = itemMedias;
+        }
     }
 
     public void onCropFinish(int resultCode, Intent data) {

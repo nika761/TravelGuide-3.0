@@ -63,7 +63,6 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     @Override
     public void onGetPosts(PostResponse postResponse) {
         switch (type) {
-
             case LOCATION:
                 if (postResponse.getPosts() != null)
                     if (postResponse.getPosts().size() != 0)
@@ -73,7 +72,6 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
             case HASHTAG:
                 head.setText(hashtag);
                 break;
-
         }
 
         SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts());

@@ -1,6 +1,7 @@
 package com.travel.guide.ui.home.home;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;

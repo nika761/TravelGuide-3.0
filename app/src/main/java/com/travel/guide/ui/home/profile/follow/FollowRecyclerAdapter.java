@@ -73,6 +73,13 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         notifyDataSetChanged();
     }
 
+    void followActionDone(int position) {
+        if (requestType == FollowType.FOLLOWING) {
+            followings.remove(position);
+            notifyDataSetChanged();
+        }
+    }
+
     class FollowerHolder extends RecyclerView.ViewHolder {
 
         Animation animation;
@@ -88,13 +95,13 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             followBtn = itemView.findViewById(R.id.followers_user_follow);
             followBtn.setOnClickListener(v -> listener.onFollowChangeRequest(followers.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
 
-            animation = AnimationUtils.loadAnimation(nickName.getContext(), R.anim.anim_follow_item_up);
+//            animation = AnimationUtils.loadAnimation(nickName.getContext(), R.anim.anim_follow_item_up);
 
         }
 
         void bindView(int position) {
 
-            itemView.startAnimation(animation);
+//            itemView.startAnimation(animation);
 
             HelperMedia.loadCirclePhoto(followBtn.getContext(), followers.get(position).getProfile_pic(), userImage);
 
@@ -124,12 +131,12 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             unFollow = itemView.findViewById(R.id.following_user_unfollow);
             unFollow.setOnClickListener(v -> listener.onFollowChangeRequest(followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
 
-            animation = AnimationUtils.loadAnimation(userName.getContext(), R.anim.anim_follow_item_up);
+//            animation = AnimationUtils.loadAnimation(userName.getContext(), R.anim.anim_follow_item_up);
 
         }
 
         void bindView(int position) {
-            itemView.startAnimation(animation);
+//            itemView.startAnimation(animation);
 
             HelperMedia.loadCirclePhoto(userName.getContext(), followings.get(position).getProfile_pic(), userImage);
             userName.setText(followings.get(position).getName());

@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.hbb20.CountryCodePicker;
 import com.travel.guide.R;
 import com.travel.guide.enums.InputFieldPairs;
+import com.travel.guide.helper.HelperClients;
 import com.travel.guide.helper.HelperDialogs;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
@@ -59,7 +60,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     private EditText name, surName, nickName, email, phoneNumber, birthDate, country, password, bio;
     private TextView nameHead, surNameHead, nickNameHead, birthDateHead, emailHead, phoneNumberhead, countryHead, passwordHead, bioHead;
     private CircleImageView userImage;
-    private String imagePath;
+    private String photoUrl;
 
     private final static int PICK_IMAGE = 28;
     private boolean genderChecked;
@@ -93,9 +94,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
         country = findViewById(R.id.edit_country);
         countryHead = findViewById(R.id.edit_country_head);
-
-        password = findViewById(R.id.edit_password);
-        passwordHead = findViewById(R.id.edit_password_head);
 
         bio = findViewById(R.id.edit_bio);
         bioHead = findViewById(R.id.edit_bio_head);
@@ -194,10 +192,15 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     }
 
     public void pickProfileImage(Uri uri) {
-        String picturePath = HelperMedia.getPathFromImageUri(this, uri);
-        imageFile = new File(picturePath);
-//            signUpPresenter.uploadToS3(HelperClients.transferObserver(this, profilePhotoFile));
-        HelperMedia.loadCirclePhoto(this, picturePath, userImage);
+        try {
+            String picturePath = HelperMedia.getPathFromImageUri(this, uri);
+            imageFile = new File(picturePath);
+            presenter.uploadToS3(HelperClients.transferObserver(this, imageFile));
+            HelperMedia.loadCirclePhoto(this, picturePath, userImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -233,9 +236,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         HashMap<TextView, EditText> countryPair = new HashMap<>();
         countryPair.put(countryHead, country);
 
-        HashMap<TextView, EditText> passwordPair = new HashMap<>();
-        passwordPair.put(passwordHead, password);
-
         HashMap<TextView, EditText> bioPair = new HashMap<>();
         bioPair.put(bioHead, bio);
 
@@ -247,7 +247,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         inputFields.put(EMAIL, emailPair);
         inputFields.put(BIRTHDATE, birthDatePair);
         inputFields.put(COUNTRY, countryPair);
-        inputFields.put(PASSWORD, passwordPair);
         inputFields.put(BIO, bioPair);
 
         HashMap<InputFieldPairs, String> checkedInputData = HelperUI.checkInputData(this, inputFields);
@@ -264,7 +263,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 //            Log.e("dasdasdas", "ქვეყანა" + " " + country);
 //            Log.e("dasdasdas", "პაროლი" + " " + password);
 //            Log.e("dasdasdas", "ბიო" + " " + bio);
-
         }
     }
 
@@ -279,10 +277,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         phoneNumber.setText(userInfo.getPhone_number());
         country.setText(userInfo.getCity());
         bio.setText(userInfo.getBiography());
-
-//        TO_DO
-//        password.setText(userinfo.getpassword());
-
         birthDate.setText(userInfo.getDate_of_birth());
 
     }
@@ -294,6 +288,11 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 HelperDialogs.profileInfoUpdatedDialog(this);
                 break;
         }
+    }
+
+    @Override
+    public void onPhotoUploadedToS3() {
+        photoUrl = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, imageFile.getName());
     }
 
     @Override

@@ -1,7 +1,12 @@
 package com.travel.guide.ui.home;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -9,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
@@ -27,7 +33,7 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import static com.travel.guide.enums.GetPostType.FEED;
+import static com.travel.guide.enums.GetPostsFrom.FEED;
 import static com.travel.guide.helper.HelperPref.FACEBOOK;
 import static com.travel.guide.helper.HelperPref.GOOGLE;
 import static com.travel.guide.helper.HelperPref.TRAVEL_GUIDE;
@@ -92,6 +98,8 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     private void initBtmNav() {
         bottomNavigationView = findViewById(R.id.navigation);
+        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+        bottomNavigationView.setItemIconSize(60);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.bot_nav_home:
@@ -116,6 +124,9 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                     break;
 
                 case R.id.bot_nav_ntf:
+                    int reqCode = 1;
+                    showNotification(this, "Please Wait", "Your post is uploading.", new Intent(), reqCode);
+
 //                    HelperUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, true, HomePageActivity.this);
                     break;
 
@@ -126,8 +137,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
             return true;
         });
-        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
-        bottomNavigationView.setItemIconSize(60);
+
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -223,9 +233,21 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!(bottomNavigationView.getSelectedItemId() == R.id.bot_nav_profile)) {
+            bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+            Bundle data = new Bundle();
+            data.putSerializable("PostShowType", FEED);
+            HelperUI.loadFragment(new HomeFragment(), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
+        }
+    }
 
     @Override
     public void onPostChoose(Bundle fragmentData) {
+        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+
         HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.user_page_frg_container, false, true, this);
     }
 
@@ -235,5 +257,35 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     public void loadRepliesFragment(Bundle repliesFragmentData) {
         HelperUI.loadFragment(new RepliesFragment(), repliesFragmentData, R.id.notification_fragment_container, true, true, this);
+    }
+
+    public void showNotification(Context context, String title, String message, Intent intent, int reqCode) {
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        String CHANNEL_ID = "channel_name";// The id of the channel.
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.main_icon_sun)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        CharSequence name = "Channel Name";// The user-visible name of the channel.
+        int importance = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            importance = NotificationManager.IMPORTANCE_HIGH;
+        }
+        NotificationChannel mChannel;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(mChannel);
+            }
+        }
+        if (notificationManager != null) {
+            notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id
+        }
     }
 }

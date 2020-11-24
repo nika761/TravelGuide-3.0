@@ -14,7 +14,7 @@ public class HelperDialogs {
     public static void signUpConfirmDialog(Activity activity, String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        View customLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm,null);
+        View customLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
 
         TextView verifyTitle, verifyMessage;
 
@@ -29,6 +29,7 @@ public class HelperDialogs {
         AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.bg_transparent, null));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
 
         dialog.show();
@@ -53,6 +54,7 @@ public class HelperDialogs {
         AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.bg_transparent, null));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
 
         dialog.show();

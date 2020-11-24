@@ -25,7 +25,7 @@ import com.travel.guide.ui.home.profile.ProfileFragment;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.travel.guide.enums.GetPostType.FAVORITES;
+import static com.travel.guide.enums.GetPostsFrom.FAVORITES;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class FavoritePostFragment extends Fragment implements FavoritePostListener {

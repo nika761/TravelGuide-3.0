@@ -1,5 +1,8 @@
 package com.travel.guide.ui.home.profile.editProfile;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
@@ -60,5 +63,29 @@ class ProfileEditPresenter {
                 listener.onGetError(t.getMessage());
             }
         });
+    }
+
+    void uploadToS3(TransferObserver transferObserver) {
+        transferObserver.setTransferListener(new TransferListener() {
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                if (TransferState.COMPLETED == state) {
+                    listener.onPhotoUploadedToS3();
+                } else if (TransferState.FAILED == state) {
+                    listener.onGetError("error");
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                listener.onGetError(ex.getMessage());
+            }
+        });
+
     }
 }

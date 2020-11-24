@@ -9,6 +9,8 @@ public interface ProfileEditListener {
 
     void onUpdateProfile(UpdateProfileResponse updateProfileResponse);
 
+    void onPhotoUploadedToS3();
+
     void onGetError(String message);
 
 }

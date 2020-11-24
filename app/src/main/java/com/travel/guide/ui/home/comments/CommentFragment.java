@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,10 +47,11 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     private CommentPresenter presenter;
 
-    private LottieAnimationView loading;
+    private LottieAnimationView loader, pagingLoader;
     private RecyclerView commentRecycler;
     private Context context;
     private TextView commentsHead, loadMore;
+    private FrameLayout pagingContainer;
     private EditText commentField;
     private ImageButton addCommentBtn;
 
@@ -74,9 +76,11 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
         commentRecycler = view.findViewById(R.id.comments_recycler);
         commentsHead = view.findViewById(R.id.comments_head);
 
-        loading = view.findViewById(R.id.loading_comment);
+        loader = view.findViewById(R.id.loading_comment);
+        pagingLoader = view.findViewById(R.id.comment_paging_loader);
         commentField = view.findViewById(R.id.comments_add_txt);
         loadMore = view.findViewById(R.id.comments_load_more);
+        pagingContainer = view.findViewById(R.id.comments_paging_container);
 
         ImageButton closeBtn = view.findViewById(R.id.comments_close_btn);
         closeBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
@@ -123,6 +127,9 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onGetComments(CommentResponse commentResponse) {
+        loader.setVisibility(View.GONE);
+        pagingContainer.setVisibility(View.GONE);
+        pagingLoader.setVisibility(View.GONE);
         if (commentAdapter == null) {
 
             commentsHead.setText(MessageFormat.format("Comments  {0}", commentResponse.getCount()));
@@ -132,10 +139,8 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
             commentRecycler.setLayoutManager(new LinearLayoutManager(context));
             commentRecycler.setAdapter(commentAdapter);
 
-            loading.setVisibility(View.GONE);
 
         } else {
-            loading.setVisibility(View.GONE);
             loadMore.setVisibility(View.GONE);
             commentAdapter.setComments(commentResponse.getPost_story_comments());
         }
@@ -144,7 +149,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onAddComment(AddCommentResponse addCommentResponse) {
-        loading.setVisibility(View.GONE);
+        loader.setVisibility(View.GONE);
 
         commentFieldFocus(false);
         commentsHead.setText(MessageFormat.format("Comments  {0}", addCommentResponse.getCount()));
@@ -189,11 +194,13 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     public void onLazyLoad(boolean visible, int commentId) {
 
         if (!visible) {
-            loadMore.setVisibility(View.GONE);
+            pagingContainer.setVisibility(View.GONE);
         } else {
+            pagingContainer.setVisibility(View.VISIBLE);
             loadMore.setVisibility(View.VISIBLE);
             loadMore.setOnClickListener(v -> {
-                loading.setVisibility(View.VISIBLE);
+                pagingLoader.setVisibility(View.VISIBLE);
+                loadMore.setVisibility(View.GONE);
                 presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId, commentId));
             });
         }
@@ -242,7 +249,8 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onError(String message) {
-        loading.setVisibility(View.GONE);
+        loader.setVisibility(View.GONE);
+        pagingLoader.setVisibility(View.GONE);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -251,7 +259,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
         switch (v.getId()) {
 
             case R.id.comments_add_image_btn:
-                loading.setVisibility(View.VISIBLE);
+                loader.setVisibility(View.VISIBLE);
                 presenter.addComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
                 break;
         }

@@ -82,7 +82,7 @@ public class StoryView extends LinearLayout {
                 if (!stop) {
                     progressBar.setProgress((int) animation.getAnimatedValue());
                     if (progressBar.getProgress() == 100) {
-                        storyListener.storyFinished(position);
+//                        storyListener.storyFinished(position);
                     }
                 }
             } else {

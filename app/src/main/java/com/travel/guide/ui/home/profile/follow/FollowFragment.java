@@ -61,6 +61,57 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getFollowData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getFollowData();
+    }
+
+    @Override
+    public void onGetFollowData(Object object) {
+        try {
+            switch (requestType) {
+                case FOLLOWING:
+                    List<FollowingResponse.Followings> followings = ((FollowingResponse) object).getFollowings();
+                    followRecyclerAdapter.setFollowings(followings);
+                    break;
+                case FOLLOWER:
+                    List<FollowerResponse.Followers> followers = ((FollowerResponse) object).getFollowers();
+                    followRecyclerAdapter.setFollowers(followers);
+                    break;
+            }
+            followRecycler.setAdapter(followRecyclerAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void onFollowChangeRequest(int userId, int position) {
+        this.changeRequestPosition = position;
+        presenter.changeFollowState(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowRequest(userId));
+    }
+
+    @Override
+    public void onFollowChanged(FollowResponse followResponse) {
+        Toast.makeText(followRecycler.getContext(), followResponse.getMessage(), Toast.LENGTH_SHORT).show();
+        followRecyclerAdapter.followActionDone(changeRequestPosition);
+    }
+
+    @Override
+    public void onError(String message) {
+        Toast.makeText(followRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean checkRequestType() {
+        return requestType != null;
+    }
+
+    private void getFollowData() {
         if (checkRequestType()) {
             switch (requestType) {
                 case FOLLOWER:
@@ -76,58 +127,17 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
                         presenter.getFollowing(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
                     else
                         presenter.getFollowing(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowingRequest(HelperPref.getUserId(followRecycler.getContext())));
-
                     break;
             }
+        } else {
+            Toast.makeText(followRecycler.getContext(), "Error", Toast.LENGTH_SHORT).show();
         }
-    }
-
-
-    @Override
-    public void onGetFollowData(Object object) {
-        switch (requestType) {
-            case FOLLOWING:
-                List<FollowingResponse.Followings> followings = ((FollowingResponse) object).getFollowings();
-                followRecyclerAdapter.setFollowings(followings);
-                break;
-            case FOLLOWER:
-                List<FollowerResponse.Followers> followers = ((FollowerResponse) object).getFollowers();
-                followRecyclerAdapter.setFollowers(followers);
-                break;
-        }
-        followRecycler.setAdapter(followRecyclerAdapter);
-    }
-
-
-    @Override
-    public void onFollowChangeRequest(int userId, int position) {
-        this.changeRequestPosition = position;
-        presenter.changeFollowState(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowRequest(userId));
-    }
-
-    @Override
-    public void onFollowChanged(FollowResponse followResponse) {
-        Toast.makeText(followRecycler.getContext(), followResponse.getMessage(), Toast.LENGTH_SHORT).show();
-        followRecyclerAdapter.notifyItemChanged(changeRequestPosition);
-    }
-
-    @Override
-    public void onError(String message) {
-        Toast.makeText(followRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private boolean checkRequestType() {
-        return requestType != null;
     }
 
     @Override
     public void onStop() {
         if (presenter != null) {
             presenter = null;
-        }
-
-        if (followRecyclerAdapter != null) {
-            followRecyclerAdapter = null;
         }
         super.onStop();
     }

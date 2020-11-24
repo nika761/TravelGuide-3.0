@@ -17,25 +17,19 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
-import com.travel.guide.enums.GetPostType;
+import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.ProfileResponse;
 import com.google.android.material.tabs.TabLayout;
-import com.travel.guide.ui.home.HomePageActivity;
-import com.travel.guide.ui.home.home.HomeFragment;
 import com.travel.guide.ui.home.profile.ProfileFragment;
 import com.travel.guide.ui.home.profile.ProfilePagerAdapter;
-import com.travel.guide.ui.home.profile.favorites.FavoritePostFragment;
 import com.travel.guide.ui.home.profile.follow.FollowActivity;
 import com.travel.guide.ui.home.profile.posts.UserPostsFragment;
 import com.travel.guide.ui.home.profile.tours.UserToursFragment;
-
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -89,7 +83,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
         profilePagerAdapter.setCustomerUserId(customerUserId);
-        profilePagerAdapter.setGetPostType(GetPostType.CUSTOMER_POSTS);
+        profilePagerAdapter.setGetPostsFrom(GetPostsFrom.CUSTOMER_POSTS);
         profilePagerAdapter.addFragment(new UserPostsFragment());
         profilePagerAdapter.addFragment(new UserToursFragment());
         viewPager.setAdapter(profilePagerAdapter);

@@ -19,7 +19,7 @@ import java.util.List;
 public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagHolder> {
     private List<String> hashtags;
 
-    HashtagAdapter(List<String> hashtags) {
+    public HashtagAdapter(List<String> hashtags) {
         this.hashtags = hashtags;
     }
 
@@ -52,5 +52,6 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
                 hashtag.getContext().startActivity(postHashtagIntent);
             });
         }
+
     }
 }
