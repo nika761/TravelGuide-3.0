@@ -2,6 +2,7 @@ package com.travel.guide.ui.home.profile.editProfile;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -99,7 +100,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         bioHead = findViewById(R.id.edit_bio_head);
 
         birthDate = findViewById(R.id.edit_birth_date);
-        birthDate.setOnClickListener(v -> showDatePickerDialog());
+        birthDate.setOnClickListener(v -> HelperDialogs.datePickerDialog(this, mDateSetListener));
 
         birthDateHead = findViewById(R.id.edit_birth_date_head);
 
@@ -174,21 +175,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 }
             }
         }
-    }
-
-    private void showDatePickerDialog() {
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog dialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
-        dialog.show();
     }
 
     public void pickProfileImage(Uri uri) {

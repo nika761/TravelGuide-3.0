@@ -21,6 +21,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
 import com.travel.guide.enums.InputFieldPairs;
 import com.travel.guide.enums.LoadWebViewType;
+import com.travel.guide.ui.home.comments.CommentFragment;
 import com.travel.guide.ui.webView.WebActivity;
 
 import java.util.Calendar;
@@ -50,6 +51,9 @@ public class HelperUI {
         FragmentTransaction fragmentTransaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         currentFragment.setArguments(data);
 
+        if (currentFragment instanceof CommentFragment)
+            fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_slide_up, R.anim.anim_swipe_bottom);
+
         if (backStack)
             fragmentTransaction.addToBackStack(null);
 
@@ -57,6 +61,7 @@ public class HelperUI {
             fragmentTransaction.replace(fragmentID, currentFragment);
         else
             fragmentTransaction.add(fragmentID, currentFragment);
+
 
         fragmentTransaction.commit();
     }
