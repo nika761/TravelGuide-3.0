@@ -3,8 +3,6 @@ package com.travel.guide.ui.login.signUp;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +29,7 @@ import com.travel.guide.model.request.CheckNickRequest;
 import com.travel.guide.model.request.SignUpRequest;
 import com.travel.guide.model.response.CheckNickResponse;
 import com.travel.guide.model.response.SignUpResponse;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.hbb20.CountryCodePicker;
 
 import java.io.File;

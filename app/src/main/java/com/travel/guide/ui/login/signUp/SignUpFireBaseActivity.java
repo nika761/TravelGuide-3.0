@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.travel.guide.model.request.CheckNickRequest;
 import com.travel.guide.model.request.SignUpWithFirebaseRequest;
 import com.travel.guide.model.response.CheckNickResponse;

@@ -25,7 +25,7 @@ import com.travel.guide.ui.home.comments.RepliesFragment;
 import com.travel.guide.ui.home.home.HomeFragment;
 import com.travel.guide.ui.home.profile.ProfileFragment;
 import com.travel.guide.helper.HelperSystem;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.travel.guide.ui.login.signIn.SignInActivity;
 import com.travel.guide.ui.search.SearchActivity;
 import com.travel.guide.ui.gallery.GalleryActivity;

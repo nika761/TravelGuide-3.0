@@ -25,9 +25,9 @@ import com.bumptech.glide.RequestManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
-import com.travel.guide.helper.custom.CustomPostAdapter;
-import com.travel.guide.helper.custom.CustomPostRecycler;
-import com.travel.guide.helper.custom.StoryView;
+import com.travel.guide.helper.customView.CustomPostAdapter;
+import com.travel.guide.helper.customView.CustomPostRecycler;
+import com.travel.guide.helper.customView.CustomProgressBar;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.PostByUserRequest;
@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     private LottieAnimationView loader;
     private ConstraintLayout loaderContainer;
     private RecyclerView postRecycler;
-    private StoryView storyView;
+    private CustomProgressBar customProgressBar;
 
     private int postId;
     private int customerUserId;
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         loader = view.findViewById(R.id.loader_post);
         loaderContainer = view.findViewById(R.id.loader_constraint);
 
-        storyView = view.findViewById(R.id.post_progress_container);
+        customProgressBar = view.findViewById(R.id.post_progress_container);
 
         postRecycler = view.findViewById(R.id.recycler_story);
         SnapHelper helper = new PagerSnapHelper();
@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         customPostRecycler = view.findViewById(R.id.testing_recycler);
         customPostRecycler.setLayoutManager(new LinearLayoutManager(customPostRecycler.getContext()));
         customPostRecycler.setHomeFragmentListener(this);
-        customPostRecycler.setStoryView(storyView);
+        customPostRecycler.setCustomProgressBar(customProgressBar);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(customPostRecycler);
 

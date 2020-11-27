@@ -8,12 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.travel.guide.R;
 import com.travel.guide.enums.LoadWebViewType;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.travel.guide.ui.webView.about.AboutFragment;
 import com.travel.guide.ui.webView.policy.PolicyFragment;
 import com.travel.guide.ui.webView.terms.TermsFragment;
 
-import static com.travel.guide.helper.HelperUI.TYPE;
+import static com.travel.guide.helper.customView.HelperUI.TYPE;
 
 public class WebActivity extends AppCompatActivity {
 

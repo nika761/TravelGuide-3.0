@@ -1,4 +1,4 @@
-package com.travel.guide.helper.custom;
+package com.travel.guide.helper.customView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,19 +25,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -86,7 +81,7 @@ public class CustomPostRecycler extends RecyclerView {
     private VolumeState volumeState;
 
     private HomeFragmentListener homeFragmentListener;
-    private StoryView storyView;
+    private CustomProgressBar customProgressBar;
 
     public CustomPostRecycler(@NonNull Context context) {
         super(context);
@@ -130,18 +125,18 @@ public class CustomPostRecycler extends RecyclerView {
                     case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
 
                     case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-                        storyView.stop(true);
+                        customProgressBar.stop(true);
                         break;
 
                     case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-                        storyView.stop(false);
+                        customProgressBar.stop(false);
 
                         Log.d(TAG, "onScrollStateChanged: called.");
                         if (thumbnail != null) {
 //                        thumbnail.setVisibility(VISIBLE);
                         }
-                        storyView.removeAllViews();
-                        storyView.setStorySize(1);
+                        customProgressBar.removeAllViews();
+                        customProgressBar.setStorySize(1);
                         if (!recyclerView.canScrollVertically(1)) {
                             playVideo(true);
                         } else {
@@ -185,7 +180,7 @@ public class CustomPostRecycler extends RecyclerView {
                     case Player.STATE_ENDED:
                         Log.d(TAG, "onPlayerStateChanged: Video ended.");
                         videoPlayer.seekTo(0);
-                        storyView.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
+                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         break;
 
                     case Player.STATE_IDLE:
@@ -197,7 +192,7 @@ public class CustomPostRecycler extends RecyclerView {
                         if (progressBar != null) {
                             progressBar.setVisibility(GONE);
                         }
-                        storyView.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
+                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         break;
 
                     default:
@@ -413,18 +408,13 @@ public class CustomPostRecycler extends RecyclerView {
 
             volumeControl.setAlpha(1f);
 
-            volumeControl
-                    .animate()
-                    .alpha(0f)
-                    .setDuration(600)
-                    .setStartDelay(1000);
+            volumeControl.animate().alpha(0f).setDuration(600).setStartDelay(1000);
         }
     }
 
     public void setPosts(List<PostResponse.Posts> posts) {
         if (this.posts != null && this.posts.size() != 0)
             this.posts.addAll(posts);
-
         else {
             this.posts = posts;
         }
@@ -434,8 +424,8 @@ public class CustomPostRecycler extends RecyclerView {
         this.homeFragmentListener = homeFragmentListener;
     }
 
-    public void setStoryView(StoryView storyView) {
-        this.storyView = storyView;
+    public void setCustomProgressBar(CustomProgressBar customProgressBar) {
+        this.customProgressBar = customProgressBar;
     }
 
 }

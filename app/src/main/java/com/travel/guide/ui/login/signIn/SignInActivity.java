@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +32,7 @@ import com.travel.guide.model.response.AuthWithFirebaseResponse;
 import com.travel.guide.model.response.LoginResponse;
 import com.travel.guide.model.response.VerifyEmailResponse;
 import com.travel.guide.ui.home.HomePageActivity;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.travel.guide.ui.login.signUp.SignUpFireBaseActivity;
 import com.travel.guide.ui.login.password.FPasswordActivity;
 import com.travel.guide.ui.login.signUp.SignUpActivity;
@@ -54,7 +52,7 @@ import java.util.List;
 
 import static com.travel.guide.enums.LoadWebViewType.POLICY;
 import static com.travel.guide.enums.LoadWebViewType.TERMS;
-import static com.travel.guide.helper.HelperUI.loadAnimation;
+import static com.travel.guide.helper.customView.HelperUI.loadAnimation;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SignInActivity extends AppCompatActivity implements SignInListener {

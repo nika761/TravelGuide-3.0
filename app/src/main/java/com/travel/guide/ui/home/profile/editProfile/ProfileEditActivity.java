@@ -2,10 +2,7 @@ package com.travel.guide.ui.home.profile.editProfile;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,18 +21,15 @@ import com.travel.guide.enums.InputFieldPairs;
 import com.travel.guide.helper.HelperClients;
 import com.travel.guide.helper.HelperDialogs;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.travel.guide.model.request.ProfileRequest;
-import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
 import com.travel.guide.helper.HelperPref;
 import com.travel.guide.model.response.UpdateProfileResponse;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -45,7 +39,6 @@ import static com.travel.guide.enums.InputFieldPairs.COUNTRY;
 import static com.travel.guide.enums.InputFieldPairs.EMAIL;
 import static com.travel.guide.enums.InputFieldPairs.NAME;
 import static com.travel.guide.enums.InputFieldPairs.NICKNAME;
-import static com.travel.guide.enums.InputFieldPairs.PASSWORD;
 import static com.travel.guide.enums.InputFieldPairs.SURNAME;
 import static com.travel.guide.helper.HelperPref.getAccessToken;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;

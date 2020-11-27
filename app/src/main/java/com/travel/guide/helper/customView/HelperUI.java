@@ -1,4 +1,4 @@
-package com.travel.guide.helper;
+package com.travel.guide.helper.customView;
 
 import android.app.Activity;
 import android.content.Context;

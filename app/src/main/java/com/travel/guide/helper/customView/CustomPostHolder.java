@@ -1,4 +1,4 @@
-package com.travel.guide.helper.custom;
+package com.travel.guide.helper.customView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,12 +8,10 @@ import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -22,8 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostType;
 import com.travel.guide.enums.StoryEmotionType;

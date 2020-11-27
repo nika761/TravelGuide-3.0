@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.custom.StoryView;
+import com.travel.guide.helper.customView.CustomProgressBar;
 import com.travel.guide.model.response.PostResponse;
 
 import java.util.List;
@@ -64,13 +64,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         return posts.size();
     }
 
-    public class PostHolder extends RecyclerView.ViewHolder implements StoryView.StoryListener, StoryPlayingListener {
+    public class PostHolder extends RecyclerView.ViewHolder implements CustomProgressBar.StoryListener, StoryPlayingListener {
 
         private LinearLayoutManager layoutManager;
         public RecyclerView storyRecycler;
         public StoryAdapter storyAdapter;
 
-        public StoryView storyView;
+        public CustomProgressBar customProgressBar;
 
         int oldPosition;
 
@@ -81,14 +81,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             SnapHelper helper = new PagerSnapHelper();
             helper.attachToRecyclerView(storyRecycler);
 
-            storyView = itemView.findViewById(R.id.story_container_new_new);
+            customProgressBar = itemView.findViewById(R.id.story_container_new_new);
 
-            storyView.setListener(this);
+            customProgressBar.setListener(this);
 
         }
 
         void iniStory(int position) {
-            storyView.setStorySize(posts.get(position).getPost_stories().size());
+            customProgressBar.setStorySize(posts.get(position).getPost_stories().size());
 //            int duration = posts.get(position).getPost_stories().get(0).getSecond();
 //            storyView.start(0, duration + 2000);
         }
@@ -114,7 +114,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
         @Override
         public void storyFinished(int finishedPosition) {
-            if (layoutManager.findLastVisibleItemPosition() == storyView.size - 1) {
+            if (layoutManager.findLastVisibleItemPosition() == customProgressBar.size - 1) {
                 storyRecycler.post(() -> storyRecycler.smoothScrollToPosition(0));
             } else {
                 storyRecycler.post(() -> storyRecycler.smoothScrollToPosition(finishedPosition + 1));
@@ -135,7 +135,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             storyAdapter = new StoryAdapter(homeFragmentListener, this);
             storyAdapter.setStories(posts.get(position).getPost_stories());
             storyAdapter.setCurrentPost(posts.get(position));
-            storyAdapter.setStoryView(storyView);
+            storyAdapter.setCustomProgressBar(customProgressBar);
 
             storyRecycler.setAdapter(storyAdapter);
 
@@ -149,11 +149,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                         case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
 
                         case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-                            storyView.stop(true);
+                            customProgressBar.stop(true);
                             break;
 
                         case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-                            storyView.stop(false);
+                            customProgressBar.stop(false);
                             break;
 
                     }
@@ -165,7 +165,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                     int firstVisibleItem = layoutManager.findLastVisibleItemPosition();
 
                     if (oldPosition != firstVisibleItem) {
-                        storyView.start(firstVisibleItem, posts.get(getLayoutPosition()).getPost_stories().get(firstVisibleItem).getSecond() + 2000);
+                        customProgressBar.start(firstVisibleItem, posts.get(getLayoutPosition()).getPost_stories().get(firstVisibleItem).getSecond() + 2000);
                         oldPosition = firstVisibleItem;
                     }
                 }

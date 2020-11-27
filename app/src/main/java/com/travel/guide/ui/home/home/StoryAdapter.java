@@ -1,12 +1,10 @@
 package com.travel.guide.ui.home.home;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,18 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostType;
 import com.travel.guide.enums.StoryEmotionType;
-import com.travel.guide.helper.HelperExoPlayer;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.custom.CustomFrameLayout;
-import com.travel.guide.helper.custom.StoryView;
+import com.travel.guide.helper.customView.CustomFrameLayout;
+import com.travel.guide.helper.customView.CustomProgressBar;
 import com.travel.guide.ui.searchPost.SearchPostActivity;
 import com.travel.guide.model.response.PostResponse;
 
@@ -46,7 +40,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
     private StoryPlayingListener storyHolderListener;
 
-    private StoryView storyView;
+    private CustomProgressBar customProgressBar;
 
     StoryAdapter(HomeFragmentListener homeFragmentListener, StoryPlayingListener storyHolderListener) {
         this.homeFragmentListener = homeFragmentListener;
@@ -132,8 +126,8 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
         notifyDataSetChanged();
     }
 
-    void setStoryView(StoryView storyView) {
-        this.storyView = storyView;
+    void setCustomProgressBar(CustomProgressBar customProgressBar) {
+        this.customProgressBar = customProgressBar;
     }
 
     void setCurrentPost(PostResponse.Posts currentPost) {
@@ -224,7 +218,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
                 videoItem.start();
 
                 int duration = stories.get(position).getSecond();
-                storyView.start(position, duration);
+                customProgressBar.start(position, duration);
 
             });
 

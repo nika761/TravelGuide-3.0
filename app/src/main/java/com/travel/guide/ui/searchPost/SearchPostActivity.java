@@ -33,9 +33,9 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts_locatiom);
 
-        this.postId = getIntent().getIntExtra("search_post_id", 0);
-        this.hashtag = getIntent().getStringExtra("search_hashtag");
-        this.type = (SearchPostType) getIntent().getSerializableExtra("search_type");
+        getExtras();
+
+        searchPostPresenter = new SearchPostPresenter(this);
 
         initUI();
 
@@ -57,7 +57,12 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
         ImageButton backBtn = findViewById(R.id.posts_by_location_back_btn);
         backBtn.setOnClickListener(v -> finish());
 
-        searchPostPresenter = new SearchPostPresenter(this);
+    }
+
+    private void getExtras() {
+        this.postId = getIntent().getIntExtra("search_post_id", 0);
+        this.hashtag = getIntent().getStringExtra("search_hashtag");
+        this.type = (SearchPostType) getIntent().getSerializableExtra("search_type");
     }
 
     @Override
@@ -85,6 +90,5 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     public void onGetPostError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
 
 }

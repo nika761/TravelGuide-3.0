@@ -17,13 +17,13 @@
             android:orientation="vertical"
             android:visibility="gone" />
 
-        <com.travel.guide.helper.custom.CustomPostRecycler
+        <com.travel.guide.helper.customView.CustomPostRecycler
             android:id="@+id/testing_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible" />
 
-        <com.travel.guide.helper.custom.StoryView
+        <com.travel.guide.helper.customView.CustomProgressBar
             android:id="@+id/post_progress_container"
             android:layout_width="match_parent"
             android:layout_height="10dp"

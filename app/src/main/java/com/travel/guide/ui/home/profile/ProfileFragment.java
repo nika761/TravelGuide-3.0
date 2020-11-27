@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,11 +38,9 @@ import com.travel.guide.ui.home.profile.tours.UserToursFragment;
 import com.travel.guide.ui.home.profile.follow.FollowActivity;
 import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

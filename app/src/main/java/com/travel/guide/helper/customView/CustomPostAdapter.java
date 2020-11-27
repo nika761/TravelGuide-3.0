@@ -1,4 +1,4 @@
-package com.travel.guide.helper.custom;
+package com.travel.guide.helper.customView;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

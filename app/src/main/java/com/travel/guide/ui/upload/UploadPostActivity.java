@@ -1,8 +1,5 @@
 package com.travel.guide.ui.upload;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
@@ -19,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -328,7 +324,10 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
         UploadPostRequest uploadPostRequestModel = new UploadPostRequest(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
 
         uploadPostPresenter.uploadStory(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), uploadPostRequestModel);
-
+//
+//        UploadPostService uploadPostService = new UploadPostService();
+//        uploadPostService.uploadPost(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), uploadPostRequestModel);
+//
     }
 
     @Override

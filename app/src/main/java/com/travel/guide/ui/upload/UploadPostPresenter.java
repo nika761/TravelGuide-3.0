@@ -33,11 +33,7 @@ public class UploadPostPresenter {
                         uploadPostListener.onPostUploaded();
                     } else {
                         uploadPostListener.onPostUploadError(response.body().getResult());
-                        Log.e("zxcv", response.body().getStatus() + " status code  ");
                     }
-                    Log.e("zxcv", response.body().getStatus() + " status code  ");
-                    Log.e("zxcv", response.body().getResult());
-                    Log.e("zxcv", response.code() + " response code ");
                 } else {
                     uploadPostListener.onPostUploadError(response.message());
                 }
@@ -51,14 +47,20 @@ public class UploadPostPresenter {
     }
 
 
-    public void uploadToS3(TransferObserver transferObserver) {
+    void uploadToS3(TransferObserver transferObserver) {
         transferObserver.setTransferListener(new TransferListener() {
             @Override
             public void onStateChanged(int id, TransferState state) {
-                if (TransferState.COMPLETED == state) {
-                    uploadPostListener.onPostUploadedToS3();
-                } else if (TransferState.FAILED == state) {
-                    uploadPostListener.onPostUploadErrorS3("error");
+                switch (state) {
+                    case COMPLETED:
+                        uploadPostListener.onPostUploadedToS3();
+                        break;
+                    case FAILED:
+                        uploadPostListener.onPostUploadErrorS3("Failed");
+                        break;
+                    case CANCELED:
+                        uploadPostListener.onPostUploadErrorS3("Canceled");
+                        break;
                 }
             }
 

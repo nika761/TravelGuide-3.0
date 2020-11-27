@@ -1,4 +1,4 @@
-package com.travel.guide.helper.custom;
+package com.travel.guide.helper.customView;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.travel.guide.R;
 
-public class StoryView extends LinearLayout {
+public class CustomProgressBar extends LinearLayout {
 
     private Context context;
     private StoryListener storyListener;
@@ -21,24 +21,24 @@ public class StoryView extends LinearLayout {
     public int size;
 
 
-    public StoryView(Context context) {
+    public CustomProgressBar(Context context) {
         super(context);
         this.context = context;
     }
 
-    public StoryView(Context context, @Nullable AttributeSet attrs) {
+    public CustomProgressBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
 
     }
 
-    public StoryView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CustomProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
 
     }
 
-    public StoryView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CustomProgressBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
     }

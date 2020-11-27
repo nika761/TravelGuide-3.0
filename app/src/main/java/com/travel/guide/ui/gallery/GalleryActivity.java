@@ -16,7 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.customView.HelperUI;
 import com.travel.guide.ui.editPost.EditPostActivity;
 import com.google.android.material.tabs.TabLayout;
 

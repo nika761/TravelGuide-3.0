@@ -35,6 +35,8 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     private RecyclerView recyclerView;
     private LottieAnimationView lottieAnimationView;
 
+    private int languageId;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,8 +84,10 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     public void onLanguageChange(ChangeLangResponse changeLangResponse) {
 
         if (changeLangResponse.getStatus() == 0) {
+            HelperPref.saveLanguageId(context, languageId);
             Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
-            Objects.requireNonNull(getDialog()).dismiss();
+            if (getDialog() != null)
+                getDialog().dismiss();
         } else {
             Toast.makeText(context, "Error Language Change", Toast.LENGTH_SHORT).show();
         }
@@ -100,7 +104,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
 
     @Override
     public void onLanguageChoose(int langId) {
-        HelperPref.saveLanguageId(context, langId);
+        this.languageId = langId;
         ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(HelperPref.getLanguageId(context)));
         changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context));
     }
