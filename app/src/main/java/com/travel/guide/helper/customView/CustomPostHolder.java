@@ -24,7 +24,7 @@ import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostType;
 import com.travel.guide.enums.StoryEmotionType;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.ui.home.home.HashtagAdapter;
 import com.travel.guide.ui.home.home.HomeFragmentListener;
@@ -106,7 +106,7 @@ public class CustomPostHolder extends RecyclerView.ViewHolder {
         profileImage = itemView.findViewById(R.id.user_image_post);
         profileImage.setOnClickListener(v -> listener.onUserChoose(post.getUser_id()));
 
-        ownerUserId = HelperPref.getUserId(like.getContext());
+        ownerUserId = GlobalPreferences.getUserId(like.getContext());
 
     }
 

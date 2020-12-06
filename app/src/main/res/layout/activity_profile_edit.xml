@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Edit Profile"
+            android:text="@string/edit_profile"
             android:textColor="@color/black"
             android:textSize="15sp" />
 
@@ -94,7 +94,7 @@
                     android:layout_gravity="bottom|center"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="Change Photo"
+                    android:text="@string/change_photo"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
 
@@ -115,6 +115,7 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
                 android:textSize="14sp" />
@@ -135,6 +136,7 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
                 android:textSize="14sp" />
@@ -155,6 +157,7 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
                 android:textSize="14sp" />
@@ -198,6 +201,7 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
                 android:textSize="14sp" />
@@ -212,31 +216,33 @@
                 android:textSize="14sp" />
 
             <LinearLayout
-                android:id="@+id/register_phone_number_container"
+                android:id="@+id/edit_profile_phone_number_container"
                 android:layout_width="282dp"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="2dp">
 
-                <com.hbb20.CountryCodePicker
-                    android:id="@+id/ccp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    app:ccp_autoDetectCountry="true"
-                    app:ccp_showFlag="true"
-                    app:ccp_textSize="14sp" />
+                <!--                <com.hbb20.CountryCodePicker-->
+                <!--                    android:id="@+id/ccp"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="center_horizontal|center_vertical"-->
+                <!--                    app:ccp_autoDetectCountry="false"-->
+                <!--                    app:ccp_defaultPhoneCode="506"-->
+                <!--                    app:ccp_showFlag="true"-->
+                <!--                    app:ccp_textSize="14sp" />-->
 
-                <EditText
-                    android:id="@+id/edit_phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1.5"
-                    android:inputType="number|phone"
-                    android:padding="10dp"
-                    android:textSize="14sp" />
+                <!--                <EditText-->
+                <!--                    android:id="@+id/edit_phone_number"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_gravity="end"-->
+                <!--                    android:layout_marginEnd="4dp"-->
+                <!--                    android:layout_weight="1.5"-->
+                <!--                    android:inputType="number|phone"-->
+                <!--                    android:padding="10dp"-->
+                <!--                    android:textSize="14sp" />-->
 
             </LinearLayout>
 
@@ -246,7 +252,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="10dp"
-                android:text="Country/Region"
+                android:text="@string/country_head"
                 android:textSize="14sp" />
 
             <EditText
@@ -269,7 +275,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="10dp"
-                android:text="Bio"
+                android:text="@string/bio"
                 android:textSize="14sp" />
 
             <EditText
@@ -301,7 +307,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:buttonTint="@color/yellowTextView"
-                    android:text="Male" />
+                    android:text="@string/male" />
 
                 <RadioButton
                     android:id="@+id/edit_radio_female"
@@ -309,7 +315,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:buttonTint="@color/yellowTextView"
-                    android:text="Female" />
+                    android:text="@string/female" />
 
                 <RadioButton
                     android:id="@+id/edit_radio_other"
@@ -317,7 +323,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:buttonTint="@color/yellowTextView"
-                    android:text="Other" />
+                    android:text="@string/other" />
 
             </RadioGroup>
 
@@ -328,8 +334,9 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="25dp"
+                android:background="?attr/selectableItemBackground"
                 android:gravity="center"
-                android:text="Change password"
+                android:text="@string/change_password"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="normal" />
@@ -341,7 +348,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/bg_save_btn"
                 android:gravity="center"
-                android:text="SAVE"
+                android:text="@string/save"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="14sp"

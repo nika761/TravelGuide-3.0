@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostType;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostByHashtagRequest;
 import com.travel.guide.model.request.PostByLocationRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -42,10 +43,10 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
         switch (type) {
 
             case LOCATION:
-                searchPostPresenter.getPostsByLocation(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new PostByLocationRequest(postId));
+                searchPostPresenter.getPostsByLocation(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
                 break;
             case HASHTAG:
-                searchPostPresenter.getPostsByHashtag(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new PostByHashtagRequest(hashtag));
+                searchPostPresenter.getPostsByHashtag(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new PostByHashtagRequest(hashtag));
                 break;
 
         }
@@ -81,6 +82,9 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
 
         SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        int itemWidth = HelperMedia.getScreenWidth(this);
+        if (itemWidth != 0)
+            adapter.setItemWidth(itemWidth);
         RecyclerView recyclerView = findViewById(R.id.posts_by_location_recycler);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);

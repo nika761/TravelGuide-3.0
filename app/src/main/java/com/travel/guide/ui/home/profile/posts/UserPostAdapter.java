@@ -18,6 +18,7 @@ import java.util.List;
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;
     private UserPostListener userPostListener;
+    private int itemWidth;
 
     UserPostAdapter(UserPostListener userPostListener) {
         this.userPostListener = userPostListener;
@@ -31,6 +32,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
     @Override
     public void onBindViewHolder(@NonNull UserPostAdapter.UserPostHolder holder, int position) {
+        holder.postImage.getLayoutParams().width = itemWidth;
         HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
         holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
         holder.nickName.setText(String.valueOf(posts.get(position).getNickname()));
@@ -51,6 +53,10 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         }
     }
 
+    void setItemWidth(int itemWidth) {
+        this.itemWidth = itemWidth;
+    }
+
     class UserPostHolder extends RecyclerView.ViewHolder {
 
         ImageView postImage;
@@ -58,7 +64,6 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
         UserPostHolder(@NonNull View itemView) {
             super(itemView);
-
             reactions = itemView.findViewById(R.id.favorite_post_reactions);
             nickName = itemView.findViewById(R.id.item_customer_post_nick);
             postImage = itemView.findViewById(R.id.favorite_post_cover);

@@ -23,8 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperClients;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.helper.ClientManager;
+import com.travel.guide.helper.language.GlobalLanguages;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.LoginRequest;
 import com.travel.guide.model.request.VerifyEmailRequest;
 import com.travel.guide.model.response.AppSettingsResponse;
@@ -32,9 +33,9 @@ import com.travel.guide.model.response.AuthWithFirebaseResponse;
 import com.travel.guide.model.response.LoginResponse;
 import com.travel.guide.model.response.VerifyEmailResponse;
 import com.travel.guide.ui.home.HomePageActivity;
-import com.travel.guide.helper.customView.HelperUI;
+import com.travel.guide.helper.HelperUI;
 import com.travel.guide.ui.login.signUp.SignUpFireBaseActivity;
-import com.travel.guide.ui.login.password.FPasswordActivity;
+import com.travel.guide.ui.login.password.ForgotPasswordActivity;
 import com.travel.guide.ui.login.signUp.SignUpActivity;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -52,7 +53,7 @@ import java.util.List;
 
 import static com.travel.guide.enums.LoadWebViewType.POLICY;
 import static com.travel.guide.enums.LoadWebViewType.TERMS;
-import static com.travel.guide.helper.customView.HelperUI.loadAnimation;
+import static com.travel.guide.helper.HelperUI.loadAnimation;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SignInActivity extends AppCompatActivity implements SignInListener {
@@ -95,81 +96,100 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
             String signature = uri.getQueryParameter("signature");
 
             if (signature != null && id != null) {
-                signInPresenter.verify(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new VerifyEmailRequest(id, signature));
+                signInPresenter.verify(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
                 Log.e("email", signature + " " + id);
             }
         }
     }
 
     private void initUI() {
+        try {
 
-        animationView = findViewById(R.id.animation_view_sign);
-        frameLayout = findViewById(R.id.frame_sign_loader);
-        signBtnFacebook = findViewById(R.id.login_button_facebook);
-        callbackManager = CallbackManager.Factory.create();
-        enterMailHead = findViewById(R.id.enter_mail_head);
-        enterPasswordHead = findViewById(R.id.enter_password_head);
+            GlobalLanguages currentLanguage = GlobalPreferences.getCurrentLanguage(this);
 
-        enterEmail = findViewById(R.id.enter_email);
-        enterEmail.setOnFocusChangeListener(this::onFocusChange);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterEmail.setFocusedByDefault(false);
+            animationView = findViewById(R.id.animation_view_sign);
+            frameLayout = findViewById(R.id.frame_sign_loader);
+            signBtnFacebook = findViewById(R.id.login_button_facebook);
+            callbackManager = CallbackManager.Factory.create();
+
+            enterMailHead = findViewById(R.id.enter_mail_head);
+//            enterMailHead.setText(currentLanguage.getEmail_field_head());
+
+            enterPasswordHead = findViewById(R.id.enter_password_head);
+//            enterPasswordHead.setText(currentLanguage.getPassword_field_head());
+
+            enterEmail = findViewById(R.id.enter_email);
+            enterEmail.setOnFocusChangeListener(this::onFocusChange);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                enterEmail.setFocusedByDefault(false);
+            }
+
+            enterPassword = findViewById(R.id.enter_password);
+            enterPassword.setOnFocusChangeListener(this::onFocusChange);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                enterPassword.setFocusedByDefault(false);
+            }
+
+            TextView notHaveAccount = findViewById(R.id.not_have_account);
+            TextView connectWith = findViewById(R.id.connect_with);
+            ImageView lineLeft = findViewById(R.id.line_left);
+            ImageView lineRight = findViewById(R.id.line_right);
+            LinearLayout terms = findViewById(R.id.linear_terms);
+
+            TextView registerTxt = findViewById(R.id.register_now);
+//            registerTxt.setText(globalLanguages.getSign_up());
+            registerTxt.setOnClickListener(this::onViewClick);
+
+            TextView forgotPassword = findViewById(R.id.forgot_password_sign_in);
+//            forgotPassword.setText(globalLanguages.getForgot_password());
+            forgotPassword.setOnClickListener(this::onViewClick);
+
+            TextView termsOfServices = findViewById(R.id.terms_of_services);
+//            termsOfServices.setText(globalLanguages.getTerms_of_services());
+            termsOfServices.setOnClickListener(this::onViewClick);
+
+            TextView privacyPolicy = findViewById(R.id.privacy_policy);
+//            termsOfServices.setText(globalLanguages.getPrivacy_policy());
+            privacyPolicy.setOnClickListener(this::onViewClick);
+
+            SignInButton signBtnGoogle = findViewById(R.id.sign_in_button_google);
+            signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
+
+            Button googleBtn = findViewById(R.id.google);
+            googleBtn.setOnClickListener(this::onViewClick);
+
+            Button signInBtn = findViewById(R.id.sign_in_button_main);
+//            signInBtn.setText(globalLanguages.getSign_in());
+            signInBtn.setOnClickListener(this::onViewClick);
+
+            Button facebookBtn = findViewById(R.id.facebook);
+            facebookBtn.setOnClickListener(this::onViewClick);
+
+            passwordStateBtn = findViewById(R.id.password_visibility);
+            passwordStateBtn.setOnClickListener(this::onViewClick);
+
+            loadAnimation(enterMailHead, R.anim.anim_swipe_bottom, 0);
+            loadAnimation(enterEmail, R.anim.anim_swipe_bottom, 50);
+            loadAnimation(enterPasswordHead, R.anim.anim_swipe_bottom, 100);
+            loadAnimation(enterPassword, R.anim.anim_swipe_bottom, 150);
+            loadAnimation(passwordStateBtn, R.anim.anim_swipe_bottom, 150);
+            loadAnimation(forgotPassword, R.anim.anim_swipe_bottom, 200);
+            loadAnimation(notHaveAccount, R.anim.anim_swipe_bottom, 250);
+            loadAnimation(registerTxt, R.anim.anim_swipe_bottom, 250);
+            loadAnimation(signInBtn, R.anim.anim_swipe_bottom, 300);
+            loadAnimation(lineLeft, R.anim.anim_swipe_left, 400);
+            loadAnimation(lineRight, R.anim.anim_swipe_right, 400);
+            loadAnimation(connectWith, R.anim.anim_swipe_bottom, 350);
+            loadAnimation(facebookBtn, R.anim.anim_swipe_left, 450);
+            loadAnimation(googleBtn, R.anim.anim_swipe_right, 450);
+            loadAnimation(terms, R.anim.anim_swipe_bottom, 500);
+
+        } catch (Exception e) {
+            Intent signIntent = new Intent(this, SignInActivity.class);
+            startActivity(signIntent);
+            e.printStackTrace();
         }
 
-        enterPassword = findViewById(R.id.enter_password);
-        enterPassword.setOnFocusChangeListener(this::onFocusChange);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterPassword.setFocusedByDefault(false);
-        }
-
-        TextView notHaveAccount = findViewById(R.id.not_have_account);
-        TextView connectWith = findViewById(R.id.connect_with);
-        ImageView lineLeft = findViewById(R.id.line_left);
-        ImageView lineRight = findViewById(R.id.line_right);
-        LinearLayout terms = findViewById(R.id.linear_terms);
-
-        TextView registerTxt = findViewById(R.id.register_now);
-        registerTxt.setOnClickListener(this::onViewClick);
-
-        TextView forgotPassword = findViewById(R.id.forgot_password_sign_in);
-        forgotPassword.setOnClickListener(this::onViewClick);
-
-        TextView termsOfServices = findViewById(R.id.terms_of_services);
-        termsOfServices.setOnClickListener(this::onViewClick);
-
-        TextView privacyPolicy = findViewById(R.id.privacy_policy);
-        privacyPolicy.setOnClickListener(this::onViewClick);
-
-        SignInButton signBtnGoogle = findViewById(R.id.sign_in_button_google);
-        signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
-
-        Button googleBtn = findViewById(R.id.google);
-        googleBtn.setOnClickListener(this::onViewClick);
-
-        Button signInBtn = findViewById(R.id.sign_in_button_main);
-        signInBtn.setOnClickListener(this::onViewClick);
-
-        Button facebookBtn = findViewById(R.id.facebook);
-        facebookBtn.setOnClickListener(this::onViewClick);
-
-        passwordStateBtn = findViewById(R.id.password_visibility);
-        passwordStateBtn.setOnClickListener(this::onViewClick);
-
-        loadAnimation(enterMailHead, R.anim.anim_swipe_bottom, 0);
-        loadAnimation(enterEmail, R.anim.anim_swipe_bottom, 50);
-        loadAnimation(enterPasswordHead, R.anim.anim_swipe_bottom, 100);
-        loadAnimation(enterPassword, R.anim.anim_swipe_bottom, 150);
-        loadAnimation(passwordStateBtn, R.anim.anim_swipe_bottom, 150);
-        loadAnimation(forgotPassword, R.anim.anim_swipe_bottom, 200);
-        loadAnimation(notHaveAccount, R.anim.anim_swipe_bottom, 250);
-        loadAnimation(registerTxt, R.anim.anim_swipe_bottom, 250);
-        loadAnimation(signInBtn, R.anim.anim_swipe_bottom, 300);
-        loadAnimation(lineLeft, R.anim.anim_swipe_left, 400);
-        loadAnimation(lineRight, R.anim.anim_swipe_right, 400);
-        loadAnimation(connectWith, R.anim.anim_swipe_bottom, 350);
-        loadAnimation(facebookBtn, R.anim.anim_swipe_left, 450);
-        loadAnimation(googleBtn, R.anim.anim_swipe_right, 450);
-        loadAnimation(terms, R.anim.anim_swipe_bottom, 500);
 
     }
 
@@ -211,7 +231,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
             case R.id.forgot_password_sign_in:
                 onFocusChange(v, false);
-                Intent intent1 = new Intent(this, FPasswordActivity.class);
+                Intent intent1 = new Intent(this, ForgotPasswordActivity.class);
                 startActivity(intent1);
                 break;
 
@@ -231,14 +251,17 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     }
 
     private void signInWithAccount() {
+
+        int white = getResources().getColor(R.color.white, null);
+
         String email = HelperUI.checkEditTextData(enterEmail, enterMailHead, "Email or Phone Number", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
 
         String password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, "Password", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
 
         if (email != null) {
-            HelperUI.setBackgroundDefault(enterEmail, enterMailHead, "Email or Phone Number", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE);
+            HelperUI.setBackgroundDefault(enterEmail, enterMailHead, "Email or Phone Number", white, HelperUI.BACKGROUND_DEF_WHITE);
             if (password != null && HelperUI.checkPassword(password)) {
-                HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, "Password", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE);
+                HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, "Password", white, HelperUI.BACKGROUND_DEF_WHITE);
                 showLoading(true);
                 signInPresenter.singIn(new LoginRequest(email, password));
             } else {
@@ -251,15 +274,15 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
     private void signInWithGoogle() {
 
-        HelperPref.saveLoginType(this, HelperPref.GOOGLE);
+        GlobalPreferences.saveLoginType(this, GlobalPreferences.GOOGLE);
 
-        Intent signInIntent = HelperClients.googleSignInClient(this).getSignInIntent();
+        Intent signInIntent = ClientManager.googleSignInClient(this).getSignInIntent();
         startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
 
     }
 
     private void signInWithFacebook() {
-        HelperPref.saveLoginType(this, HelperPref.FACEBOOK);
+        GlobalPreferences.saveLoginType(this, GlobalPreferences.FACEBOOK);
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email", "user_friends"));
         signBtnFacebook.performClick();
         signBtnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -294,10 +317,10 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     @Override
     public void onVerify(VerifyEmailResponse verifyEmailResponse) {
 
-        HelperPref.saveAccessToken(this, verifyEmailResponse.getAccess_token());
-        HelperPref.saveUserId(this, verifyEmailResponse.getUser().getId());
-        HelperPref.saveUserRole(this, verifyEmailResponse.getUser().getRole());
-        HelperPref.saveLoginType(this, HelperPref.TRAVEL_GUIDE);
+        GlobalPreferences.saveAccessToken(this, verifyEmailResponse.getAccess_token());
+        GlobalPreferences.saveUserId(this, verifyEmailResponse.getUser().getId());
+        GlobalPreferences.saveUserRole(this, verifyEmailResponse.getUser().getRole());
+        GlobalPreferences.saveLoginType(this, GlobalPreferences.TRAVEL_GUIDE);
 
         Intent intent = new Intent(this, HomePageActivity.class);
         startActivity(intent);
@@ -315,9 +338,9 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
     @Override
     public void onFireBaseAuthSignIn(AuthWithFirebaseResponse authWithFirebaseResponse) {
-        HelperPref.saveAccessToken(this, authWithFirebaseResponse.getAccess_token());
-        HelperPref.saveUserId(this, authWithFirebaseResponse.getUser().getId());
-        HelperPref.saveUserRole(this, authWithFirebaseResponse.getUser().getRole());
+        GlobalPreferences.saveAccessToken(this, authWithFirebaseResponse.getAccess_token());
+        GlobalPreferences.saveUserId(this, authWithFirebaseResponse.getUser().getId());
+        GlobalPreferences.saveUserRole(this, authWithFirebaseResponse.getUser().getRole());
 
         showLoading(false);
 
@@ -352,11 +375,11 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
         switch (loginResponse.getStatus()) {
             case 0:
 
-                HelperPref.saveUser(this, loginResponse.getUser());
-                HelperPref.saveAccessToken(this, loginResponse.getAccess_token());
-                HelperPref.saveUserId(this, loginResponse.getUser().getId());
-                HelperPref.saveUserRole(this, loginResponse.getUser().getRole());
-                HelperPref.saveLoginType(this, HelperPref.TRAVEL_GUIDE);
+                GlobalPreferences.saveUser(this, loginResponse.getUser());
+                GlobalPreferences.saveAccessToken(this, loginResponse.getAccess_token());
+                GlobalPreferences.saveUserId(this, loginResponse.getUser().getId());
+                GlobalPreferences.saveUserRole(this, loginResponse.getUser().getRole());
+                GlobalPreferences.saveLoginType(this, GlobalPreferences.TRAVEL_GUIDE);
 
                 showLoading(false);
 

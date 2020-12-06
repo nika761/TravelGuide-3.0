@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.FavoriteMusicResponse;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     @Override
     public void onResume() {
         super.onResume();
-        favoriteMusicPresenter.getFavoriteMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(favoriteMusicRecycler.getContext()));
+        favoriteMusicPresenter.getFavoriteMusics(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()));
     }
 
     @Override

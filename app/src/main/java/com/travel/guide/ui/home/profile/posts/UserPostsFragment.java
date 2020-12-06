@@ -1,6 +1,7 @@
 package com.travel.guide.ui.home.profile.posts;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.helper.HelperUI;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.ui.home.profile.ProfileFragment;
@@ -28,6 +31,8 @@ import static com.travel.guide.enums.GetPostsFrom.MY_POSTS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class UserPostsFragment extends Fragment implements UserPostListener {
+
+    private static final int sColumnWidth = 120; // assume cell width of 120dp
 
     private RecyclerView postsRecycler;
 
@@ -49,8 +54,6 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_photo, container, false);
         postsRecycler = view.findViewById(R.id.customer_photo_recycler);
-
-
         userPostPresenter = new UserPostPresenter(this);
 
         try {
@@ -66,24 +69,27 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() == null) {
-            userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(HelperPref.getUserId(postsRecycler.getContext()), 0));
+            userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
         } else {
             this.getPostsFrom = (GetPostsFrom) getArguments().getSerializable("request_type");
 
             if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
                 this.customerUserId = getArguments().getInt("customer_user_id");
-                userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
+                userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
             }
         }
     }
 
-
     private void initRecycler(List<PostResponse.Posts> posts) {
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         postsRecycler.setLayoutManager(gridLayoutManager);
         postsRecycler.setHasFixedSize(true);
 
         postAdapter = new UserPostAdapter(this);
+        int itemWidth = HelperMedia.getScreenWidth(getActivity());
+        if (itemWidth != 0)
+            postAdapter.setItemWidth(itemWidth);
         postAdapter.setPosts(posts);
         postsRecycler.setAdapter(postAdapter);
 
@@ -151,10 +157,10 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     }
 
     @Override
-    public void onDestroy() {
+    public void onStop() {
         if (userPostPresenter != null) {
             userPostPresenter = null;
         }
-        super.onDestroy();
+        super.onStop();
     }
 }

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.AddFavoriteMusic;
 import com.travel.guide.model.request.ByMoodRequest;
 import com.travel.guide.model.request.SearchMusicRequest;
@@ -108,9 +108,9 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(searchMusicRecycler.getContext()));
+        searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
 
-        searchMusicPresenter.getMoods(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(searchMusicRecycler.getContext()));
+        searchMusicPresenter.getMoods(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
 
         RxTextView.textChanges(searchField)
                 .debounce(1200, TimeUnit.MILLISECONDS)
@@ -118,7 +118,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
                 .map(CharSequence::toString)
                 .subscribe((Consumer<CharSequence>) charSequence -> {
                     if (!charSequence.toString().isEmpty()) {
-                        searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
+                        searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
                     }
                 });
     }
@@ -163,7 +163,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     @Override
     public void onFavoriteChoose(int musicId) {
         AddFavoriteMusic addFavoriteMusic = new AddFavoriteMusic(musicId);
-        searchMusicPresenter.addFavorite("Bearer" + " " + HelperPref.getAccessToken(searchMusicRecycler.getContext()), addFavoriteMusic);
+        searchMusicPresenter.addFavorite("Bearer" + " " + GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()), addFavoriteMusic);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onChooseMood(int moodId) {
-        searchMusicPresenter.getMusicByMood(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(moodsRecycler.getContext()), new ByMoodRequest(moodId));
+        searchMusicPresenter.getMusicByMood(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new ByMoodRequest(moodId));
     }
 
     private void play(String music) {

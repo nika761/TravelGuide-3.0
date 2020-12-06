@@ -15,6 +15,7 @@ import com.travel.guide.enums.FollowType;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.response.FollowerResponse;
 import com.travel.guide.model.response.FollowingResponse;
+import com.travel.guide.utility.GlobalPreferences;
 
 import java.util.List;
 
@@ -73,10 +74,24 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         notifyDataSetChanged();
     }
 
-    void followActionDone(int position) {
-        if (requestType == FollowType.FOLLOWING) {
-            followings.remove(position);
-            notifyDataSetChanged();
+    void followed(int position) {
+        if (requestType == FollowType.FOLLOWER) {
+            followers.get(position).setIs_following(1);
+            notifyItemChanged(position);
+        }
+    }
+
+    void unFollowed(int position) {
+        switch (requestType) {
+            case FOLLOWING:
+                followings.remove(position);
+                notifyDataSetChanged();
+                break;
+
+            case FOLLOWER:
+                followers.get(position).setIs_following(0);
+                notifyItemChanged(position);
+                break;
         }
     }
 
@@ -93,26 +108,35 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             nickName = itemView.findViewById(R.id.followers_user_nick_name);
 
             followBtn = itemView.findViewById(R.id.followers_user_follow);
-            followBtn.setOnClickListener(v -> listener.onFollowChangeRequest(followers.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
+            followBtn.setOnClickListener(v -> listener.onFollowAction(followers.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
 
 //            animation = AnimationUtils.loadAnimation(nickName.getContext(), R.anim.anim_follow_item_up);
 
         }
 
         void bindView(int position) {
+            try {
 
 //            itemView.startAnimation(animation);
 
-            HelperMedia.loadCirclePhoto(followBtn.getContext(), followers.get(position).getProfile_pic(), userImage);
+                HelperMedia.loadCirclePhoto(followBtn.getContext(), followers.get(position).getProfile_pic(), userImage);
 
-            userName.setText(followers.get(position).getName());
-            nickName.setText(followers.get(position).getNickname());
+                userName.setText(followers.get(position).getName());
+                nickName.setText(followers.get(position).getNickname());
 
-            if (followers.get(position).getIs_following() == 1) {
-                followBtn.setVisibility(View.GONE);
-            } else {
-                followBtn.setVisibility(View.VISIBLE);
+
+                if (followers.get(position).getIs_following() == 1)
+                    followBtn.setText(followBtn.getContext().getResources().getString(R.string.following));
+                else
+                    followBtn.setText(followBtn.getContext().getResources().getString(R.string.follow));
+
+                if (followers.get(position).getUser_id() == GlobalPreferences.getUserId(userImage.getContext()))
+                    followBtn.setVisibility(View.GONE);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -129,18 +153,24 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             userNickName = itemView.findViewById(R.id.following_user_nick_name);
 
             unFollow = itemView.findViewById(R.id.following_user_unfollow);
-            unFollow.setOnClickListener(v -> listener.onFollowChangeRequest(followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
+            unFollow.setOnClickListener(v -> listener.onFollowAction(followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
 
 //            animation = AnimationUtils.loadAnimation(userName.getContext(), R.anim.anim_follow_item_up);
 
         }
 
         void bindView(int position) {
-//            itemView.startAnimation(animation);
+            try {
+//                itemView.startAnimation(animation);
+                if (followings.get(position).getUser_id() == GlobalPreferences.getUserId(userImage.getContext()))
+                    unFollow.setVisibility(View.GONE);
 
-            HelperMedia.loadCirclePhoto(userName.getContext(), followings.get(position).getProfile_pic(), userImage);
-            userName.setText(followings.get(position).getName());
-            userNickName.setText(followings.get(position).getNickname());
+                HelperMedia.loadCirclePhoto(userName.getContext(), followings.get(position).getProfile_pic(), userImage);
+                userName.setText(followings.get(position).getName());
+                userNickName.setText(followings.get(position).getNickname());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     }

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.ChangeLangRequest;
 import com.travel.guide.model.response.ChangeLangResponse;
 import com.travel.guide.model.response.LanguagesResponse;
@@ -84,7 +84,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     public void onLanguageChange(ChangeLangResponse changeLangResponse) {
 
         if (changeLangResponse.getStatus() == 0) {
-            HelperPref.saveLanguageId(context, languageId);
+            GlobalPreferences.saveLanguageId(context, languageId);
             Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
             if (getDialog() != null)
                 getDialog().dismiss();
@@ -105,7 +105,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     @Override
     public void onLanguageChoose(int langId) {
         this.languageId = langId;
-        ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(HelperPref.getLanguageId(context)));
-        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context));
+        ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(GlobalPreferences.getLanguageId(context)));
+        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context));
     }
 }

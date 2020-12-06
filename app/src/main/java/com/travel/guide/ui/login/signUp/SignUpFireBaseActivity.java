@@ -20,8 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.customView.HelperUI;
+import com.travel.guide.utility.GlobalPreferences;
+import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.CheckNickRequest;
 import com.travel.guide.model.request.SignUpWithFirebaseRequest;
 import com.travel.guide.model.response.CheckNickResponse;
@@ -99,7 +99,7 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
                 loader.setVisibility(View.VISIBLE);
 
-                int languageId = HelperPref.getLanguageId(SignUpFireBaseActivity.this);
+                int languageId = GlobalPreferences.getLanguageId(SignUpFireBaseActivity.this);
                 presenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(startTime), languageId, platformId, gender));
 
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -174,16 +174,16 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
     public void onSuccess(SignUpWithFirebaseResponse signUpWithFirebaseResponse) {
         switch (platformId) {
             case 1:
-                HelperPref.saveLoginType(this, HelperPref.FACEBOOK);
+                GlobalPreferences.saveLoginType(this, GlobalPreferences.FACEBOOK);
                 break;
             case 2:
-                HelperPref.saveLoginType(this, HelperPref.GOOGLE);
+                GlobalPreferences.saveLoginType(this, GlobalPreferences.GOOGLE);
                 break;
         }
 
-        HelperPref.saveUserId(this, signUpWithFirebaseResponse.getUser().getId());
-        HelperPref.saveUserRole(this, signUpWithFirebaseResponse.getUser().getRole());
-        HelperPref.saveAccessToken(this, signUpWithFirebaseResponse.getAccess_token());
+        GlobalPreferences.saveUserId(this, signUpWithFirebaseResponse.getUser().getId());
+        GlobalPreferences.saveUserRole(this, signUpWithFirebaseResponse.getUser().getRole());
+        GlobalPreferences.saveAccessToken(this, signUpWithFirebaseResponse.getAccess_token());
 
         loader.setVisibility(View.GONE);
 

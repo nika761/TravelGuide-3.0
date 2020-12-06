@@ -6,9 +6,9 @@ interface FollowFragmentListener {
 
     void onGetFollowData(Object object);
 
-    void onFollowChangeRequest(int userId, int position);
+    void onFollowAction(int userId, int position);
 
-    void onFollowChanged(FollowResponse followResponse);
+    void onFollowActionDone(FollowResponse followResponse);
 
     void onError(String message);
 

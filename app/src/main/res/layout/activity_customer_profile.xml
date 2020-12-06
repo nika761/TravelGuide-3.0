@@ -102,6 +102,7 @@
                         android:background="@drawable/bg_agree"
                         android:gravity="center"
                         android:textColor="@color/white"
+                        android:text="@string/follow"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@id/customer_profile_image"
@@ -112,7 +113,7 @@
                         android:id="@+id/customer_profile_report"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Report"
+                        android:text="@string/report"
                         android:textColor="@color/yellowTextView"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@id/customer_profile_image"
@@ -138,7 +139,7 @@
                             android:id="@+id/following"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Following"
+                            android:text="@string/following"
                             android:textSize="13sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -157,7 +158,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:text="Followers"
+                            android:text="@string/followers"
                             android:textSize="13sp"
                             app:layout_constraintStart_toEndOf="@id/following"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -176,7 +177,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:text="Reactions"
+                            android:text="@string/reactions"
                             android:textSize="13sp"
                             app:layout_constraintStart_toEndOf="@id/followers"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -226,7 +227,7 @@
                         android:background="@color/white"
                         android:elevation="1dp"
                         android:gravity="top"
-                        android:text="Bio"
+                        android:text="@string/bio"
                         android:textColor="@color/black"
                         android:visibility="gone"
                         app:layout_constraintBottom_toTopOf="@id/customer_profile_bio"
@@ -288,7 +289,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loader_customer_profile"

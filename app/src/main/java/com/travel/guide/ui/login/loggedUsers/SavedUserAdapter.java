@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.travel.guide.R;
+import com.travel.guide.helper.ClientManager;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.response.LoginResponse;
-import com.travel.guide.ui.login.password.FPasswordActivity;
+import com.travel.guide.ui.login.password.ForgotPasswordActivity;
 import com.travel.guide.ui.login.signIn.SignInActivity;
 import com.travel.guide.ui.home.HomePageActivity;
-import com.travel.guide.helper.HelperClients;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -36,8 +36,8 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.travel.guide.helper.HelperPref.FACEBOOK;
-import static com.travel.guide.helper.HelperPref.GOOGLE;
+import static com.travel.guide.utility.GlobalPreferences.FACEBOOK;
+import static com.travel.guide.utility.GlobalPreferences.GOOGLE;
 
 public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.SimpleViewHolder> {
 
@@ -150,10 +150,10 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
                 .setTitle("Delete User?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                    HelperPref.deleteUser(mContext, userList.get(selectedUserPosition));
+                    GlobalPreferences.deleteUser(mContext, userList.get(selectedUserPosition));
                     userList.remove(selectedUserPosition);
                     notifyItemRemoved(selectedUserPosition);
-                    userList = HelperPref.getSavedUsers(mContext);
+                    userList = GlobalPreferences.getSavedUsers(mContext);
 //                    notifyItemRangeChanged(selectedUserPosition, userList.size());
                     mItemManger.closeAllItems();
                     Toast.makeText(mContext, "User Deleted", Toast.LENGTH_SHORT).show();
@@ -185,7 +185,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
             mContext.startActivity(intent);
 
         } else {
-            googleSignInClient = HelperClients.googleSignInClient(mContext);
+            googleSignInClient = ClientManager.googleSignInClient(mContext);
         }
     }
 
@@ -295,7 +295,7 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
                     break;
 
                 case R.id.save_user_forgot_password:
-                    Intent intent = new Intent(mContext, FPasswordActivity.class);
+                    Intent intent = new Intent(mContext, ForgotPasswordActivity.class);
                     mContext.startActivity(intent);
                     break;
 

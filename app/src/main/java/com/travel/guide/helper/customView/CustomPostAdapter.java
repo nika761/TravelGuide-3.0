@@ -1,5 +1,6 @@
 package com.travel.guide.helper.customView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -32,6 +33,7 @@ public class CustomPostAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         ((CustomPostHolder) viewHolder).onBind(posts.get(position), requestManager, listener, position);
+        Log.e("posts", "position is " + posts.get(position).getPost_id());
         loadMoreCallback(position);
     }
 

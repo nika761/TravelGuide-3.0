@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.LanguagesResponse;
 
 import java.util.List;
@@ -62,14 +62,12 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.Langua
 
             langFull.setOnClickListener(v -> {
                 langFull.setTextColor(Color.parseColor("#F3BC1E"));
-                HelperPref.saveLanguageId(langFull.getContext(), languages.get(getLayoutPosition()).getId());
-                iLanguageActivity.onChooseLanguage();
+                iLanguageActivity.onChooseLanguage(languages.get(getLayoutPosition()).getId());
             });
 
             langFull.setOnLongClickListener(v -> {
                 langFull.setTextColor(Color.parseColor("#F3BC1E"));
-                HelperPref.saveLanguageId(langFull.getContext(), languages.get(getLayoutPosition()).getId());
-                iLanguageActivity.onChooseLanguage();
+                iLanguageActivity.onChooseLanguage(languages.get(getLayoutPosition()).getId());
                 return false;
             });
 

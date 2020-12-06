@@ -68,7 +68,7 @@ class SignInPresenter {
                                 break;
 
                             case -100:
-                                signInListener.onError(response.body().getStatus() + "not valid");
+                                signInListener.onError(response.body().getStatus() + " not valid");
                                 break;
 
                             default:
@@ -95,7 +95,6 @@ class SignInPresenter {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
                     firebaseUser.getUid();
-                    Log.e("tokenssdas", firebaseUser.getUid());
 
                     firebaseUser.getIdToken(true).addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
@@ -191,8 +190,11 @@ class SignInPresenter {
         apiService.signIn(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if (response.isSuccessful()) {
-                    signInListener.onSign(response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus() == -100)
+                        signInListener.onError(response.body().getMessage());
+                    else
+                        signInListener.onSign(response.body());
                 } else {
                     signInListener.onError(response.message());
                 }
@@ -224,13 +226,13 @@ class SignInPresenter {
                     }
 
                 } else {
-                    Log.e("respones", response.message());
+                    signInListener.onError("Error");
                 }
             }
 
             @Override
             public void onFailure(Call<AuthWithFirebaseResponse> call, Throwable t) {
-                Log.e("respones", t.getMessage());
+                signInListener.onError(t.getMessage());
             }
         });
     }

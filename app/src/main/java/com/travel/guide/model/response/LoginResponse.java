@@ -10,6 +10,11 @@ public class LoginResponse {
     @Expose
     @SerializedName("access_token")
     private String access_token;
+
+    @Expose
+    @SerializedName("message")
+    private String message;
+
     @Expose
     @SerializedName("user")
     private User user;
@@ -17,6 +22,14 @@ public class LoginResponse {
     @Expose
     @SerializedName("status")
     private int status;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getAccess_token() {
         return access_token;

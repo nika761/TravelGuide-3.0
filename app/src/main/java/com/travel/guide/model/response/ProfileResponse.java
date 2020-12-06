@@ -34,9 +34,11 @@ public class ProfileResponse {
         @Expose
         @SerializedName("reactions")
         private int reactions;
+
         @Expose
         @SerializedName("follower")
         private int follower;
+
         @Expose
         @SerializedName("following")
         private int following;
@@ -48,33 +50,43 @@ public class ProfileResponse {
         @Expose
         @SerializedName("share_profile")
         private String share_profile;
+
         @Expose
         @SerializedName("profile_pic")
         private String profile_pic;
+
         @Expose
         @SerializedName("biography")
         private String biography;
+
         @Expose
         @SerializedName("phone_number")
         private String phone_number;
+
         @Expose
         @SerializedName("city")
         private String city;
+
         @Expose
         @SerializedName("gender")
         private int gender;
+
         @Expose
         @SerializedName("date_of_birth")
         private String date_of_birth;
+
         @Expose
         @SerializedName("nickname")
         private String nickname;
+
         @Expose
         @SerializedName("email")
         private String email;
+
         @Expose
         @SerializedName("lastname")
         private String lastname;
+
         @Expose
         @SerializedName("name")
         private String name;

@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.AboutRequest;
 import com.travel.guide.model.response.AboutResponse;
 
@@ -55,7 +55,7 @@ public class AboutFragment extends Fragment implements AboutListener {
         super.onViewCreated(view, savedInstanceState);
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
-        aboutPresenter.sendAboutRequest(new AboutRequest(String.valueOf(HelperPref.getLanguageId(cancelBtn.getContext()))));
+        aboutPresenter.sendAboutRequest(new AboutRequest(String.valueOf(GlobalPreferences.getLanguageId(cancelBtn.getContext()))));
     }
 
     private void loadAnimation(View target, int animationId, int offset) {

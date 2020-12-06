@@ -1,4 +1,4 @@
-package com.travel.guide.helper.customView;
+package com.travel.guide.helper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -171,6 +171,7 @@ public class HelperUI {
                             inputDefault(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
                         }
                         break;
+
                     case EMAIL:
                         if (HelperUI.checkEmail(currentViewEntry.getValue().getText().toString())) {
                             vars.put(InputFieldPairs.EMAIL, currentViewEntry.getValue().getText().toString());
@@ -179,6 +180,7 @@ public class HelperUI {
                             inputWarning(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
                         }
                         break;
+
                     case PASSWORD:
                         if (HelperUI.checkPassword(currentViewEntry.getValue().getText().toString())) {
                             vars.put(InputFieldPairs.PASSWORD, currentViewEntry.getValue().getText().toString());
@@ -186,6 +188,14 @@ public class HelperUI {
                         } else {
                             inputWarning(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
                         }
+                        break;
+
+                    case COUNTRY:
+
+                    case BIO:
+                        if (!currentViewEntry.getValue().getText().toString().isEmpty())
+                            vars.put(currentEntry.getKey(), currentViewEntry.getValue().getText().toString());
+
                         break;
 
                 }

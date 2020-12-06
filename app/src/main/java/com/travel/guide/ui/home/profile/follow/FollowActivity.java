@@ -20,7 +20,7 @@ public class FollowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow);
         if (getIntent().getIntExtra("customer_user_id", 0) != 0) {
-            this.customerUserId = getIntent().getIntExtra("customer_user_id",0);
+            this.customerUserId = getIntent().getIntExtra("customer_user_id", 0);
         }
         initUI();
         initViewPager();
@@ -50,7 +50,6 @@ public class FollowActivity extends AppCompatActivity {
 
         viewPager.setAdapter(followPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
 }

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
 import com.travel.guide.enums.FollowType;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.FollowersRequest;
 import com.travel.guide.model.request.FollowingRequest;
@@ -35,17 +35,19 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     private FollowType requestType;
 
     private int customerUserId;
-    private int changeRequestPosition;
+    private int actionPosition;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_follow, container, false);
 
-        if (getArguments() != null) {
+        try {
             this.requestType = (FollowType) getArguments().getSerializable("request_type");
 
             this.customerUserId = getArguments().getInt("customer_user_id");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         followRecyclerAdapter = new FollowRecyclerAdapter(this);
@@ -91,15 +93,25 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
 
 
     @Override
-    public void onFollowChangeRequest(int userId, int position) {
-        this.changeRequestPosition = position;
-        presenter.changeFollowState(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowRequest(userId));
+    public void onFollowAction(int userId, int position) {
+        this.actionPosition = position;
+        presenter.startAction(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowRequest(userId));
     }
 
     @Override
-    public void onFollowChanged(FollowResponse followResponse) {
-        Toast.makeText(followRecycler.getContext(), followResponse.getMessage(), Toast.LENGTH_SHORT).show();
-        followRecyclerAdapter.followActionDone(changeRequestPosition);
+    public void onFollowActionDone(FollowResponse followResponse) {
+        try {
+            switch (followResponse.getStatus()) {
+                case 0:
+                    followRecyclerAdapter.followed(actionPosition);
+                    break;
+                case 1:
+                    followRecyclerAdapter.unFollowed(actionPosition);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -116,17 +128,16 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
             switch (requestType) {
                 case FOLLOWER:
                     if (customerUserId > 0)
-                        presenter.getFollowers(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
+                        presenter.getFollowers(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
                     else
-                        presenter.getFollowers(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowersRequest(HelperPref.getUserId(followRecycler.getContext())));
-
+                        presenter.getFollowers(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
                     break;
 
                 case FOLLOWING:
                     if (customerUserId > 0)
-                        presenter.getFollowing(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
+                        presenter.getFollowing(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
                     else
-                        presenter.getFollowing(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(followRecycler.getContext()), new FollowingRequest(HelperPref.getUserId(followRecycler.getContext())));
+                        presenter.getFollowing(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
                     break;
             }
         } else {

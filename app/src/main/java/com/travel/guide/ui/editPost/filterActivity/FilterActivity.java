@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperSystem;
+import com.travel.guide.helper.SystemManager;
 
 import java.io.File;
 
@@ -25,7 +25,7 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 
-import static com.travel.guide.helper.HelperSystem.WRITE_EXTERNAL_STORAGE;
+import static com.travel.guide.helper.SystemManager.WRITE_EXTERNAL_STORAGE;
 
 public class FilterActivity extends AppCompatActivity implements IFilterListener, View.OnClickListener {
 
@@ -79,10 +79,10 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
     public void onFilterSelected(PhotoFilter photoFilter) {
         photoEditor.setFilterEffect(photoFilter);
         try {
-            if (HelperSystem.isWriteStoragePermission(this))
+            if (SystemManager.isWriteStoragePermission(this))
                 saveFilterImage();
             else
-                HelperSystem.requestWriteStoragePermission(this);
+                SystemManager.requestWriteStoragePermission(this);
 
         } catch (Exception e) {
             Toast.makeText(this, "error while saving", Toast.LENGTH_SHORT).show();

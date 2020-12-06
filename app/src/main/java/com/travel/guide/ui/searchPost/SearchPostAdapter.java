@@ -17,6 +17,8 @@ import java.util.List;
 
 public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.PostLocationHolder> {
     private List<PostResponse.Posts> posts;
+    private int itemWidth;
+
 
     SearchPostAdapter(List<PostResponse.Posts> posts) {
         this.posts = posts;
@@ -25,11 +27,12 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Po
     @NonNull
     @Override
     public PostLocationHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PostLocationHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_list, parent, false));
+        return new PostLocationHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_customer_photo, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull PostLocationHolder holder, int position) {
+        holder.postImage.getLayoutParams().width = itemWidth;
         HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
         holder.nickName.setText(posts.get(position).getNickname());
         holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
@@ -40,15 +43,19 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Po
         return posts.size();
     }
 
+    void setItemWidth(int itemWidth) {
+        this.itemWidth = itemWidth;
+    }
+
     class PostLocationHolder extends RecyclerView.ViewHolder {
         ImageView postImage;
         TextView nickName, reactions;
 
         PostLocationHolder(@NonNull View itemView) {
             super(itemView);
-            postImage = itemView.findViewById(R.id.item_post_list_image);
-            reactions = itemView.findViewById(R.id.item_post_list_states);
-            nickName = itemView.findViewById(R.id.item_post_list_nickname);
+            postImage = itemView.findViewById(R.id.favorite_post_cover);
+            reactions = itemView.findViewById(R.id.favorite_post_reactions);
+            nickName = itemView.findViewById(R.id.item_customer_post_nick);
         }
     }
 }

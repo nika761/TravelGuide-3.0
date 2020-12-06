@@ -33,15 +33,19 @@ public class FollowerResponse {
         @Expose
         @SerializedName("is_following")
         private int is_following;
+
         @Expose
         @SerializedName("nickname")
         private String nickname;
+
         @Expose
         @SerializedName("profile_pic")
         private String profile_pic;
+
         @Expose
         @SerializedName("name")
         private String name;
+
         @Expose
         @SerializedName("user_id")
         private int user_id;

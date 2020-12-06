@@ -28,6 +28,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
     private boolean isImage;
     private GalleryFragment.ItemCountChangeListener listener;
 
+    private int itemWidth;
+
     GalleryAdapter(Context context, boolean isImage) {
         this.isImage = isImage;
         this.context = context;
@@ -42,8 +44,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
 
     @Override
     public void onBindViewHolder(@NonNull GalleryAdapter.ImageViewHolder holder, int position) {
+
         if (isImage) {
             holder.duration.setVisibility(View.GONE);
+            holder.imageView.getLayoutParams().width = itemWidth;
             HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
         } else {
             HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
@@ -69,6 +73,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
     void setItems(ArrayList<String> uris) {
         this.uris = uris;
         notifyDataSetChanged();
+    }
+
+    void setItemWidth(int itemWidth) {
+        this.itemWidth = itemWidth;
     }
 
     class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

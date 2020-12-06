@@ -3,11 +3,16 @@ package com.travel.guide.ui.home.profile.editProfile;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +23,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.hbb20.CountryCodePicker;
 import com.travel.guide.R;
 import com.travel.guide.enums.InputFieldPairs;
-import com.travel.guide.helper.HelperClients;
-import com.travel.guide.helper.HelperDialogs;
+import com.travel.guide.helper.ClientManager;
+import com.travel.guide.helper.DialogManager;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.customView.HelperUI;
+import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.ui.login.password.ForgotPasswordActivity;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.UpdateProfileResponse;
 
 import java.io.File;
@@ -40,7 +46,7 @@ import static com.travel.guide.enums.InputFieldPairs.EMAIL;
 import static com.travel.guide.enums.InputFieldPairs.NAME;
 import static com.travel.guide.enums.InputFieldPairs.NICKNAME;
 import static com.travel.guide.enums.InputFieldPairs.SURNAME;
-import static com.travel.guide.helper.HelperPref.getAccessToken;
+import static com.travel.guide.utility.GlobalPreferences.getAccessToken;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener {
@@ -54,7 +60,9 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     private EditText name, surName, nickName, email, phoneNumber, birthDate, country, password, bio;
     private TextView nameHead, surNameHead, nickNameHead, birthDateHead, emailHead, phoneNumberhead, countryHead, passwordHead, bioHead;
     private CircleImageView userImage;
+    private RadioGroup genderGroup;
     private String photoUrl;
+    private LinearLayout phoneCodeContainer;
 
     private final static int PICK_IMAGE = 28;
     private boolean genderChecked;
@@ -66,7 +74,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
         initUI();
-        presenter.getProfile(ACCESS_TOKEN_BEARER + getAccessToken(this), new ProfileRequest(HelperPref.getUserId(this)));
+        presenter.getProfile(ACCESS_TOKEN_BEARER + getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
     }
 
     private void initUI() {
@@ -93,14 +101,53 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         bioHead = findViewById(R.id.edit_bio_head);
 
         birthDate = findViewById(R.id.edit_birth_date);
-        birthDate.setOnClickListener(v -> HelperDialogs.datePickerDialog(this, mDateSetListener));
+        birthDate.setOnClickListener(v -> DialogManager.datePickerDialog(this, mDateSetListener));
 
         birthDateHead = findViewById(R.id.edit_birth_date_head);
 
-        phoneNumber = findViewById(R.id.edit_phone_number);
+//        phoneNumber = findViewById(R.id.edit_phone_number);
         phoneNumberhead = findViewById(R.id.edit_phone_number_head);
 
-        countryCodePicker = findViewById(R.id.number_picker);
+        TextView changePassword = findViewById(R.id.edit_change_password);
+        changePassword.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileEditActivity.this, ForgotPasswordActivity.class);
+            intent.putExtra("request_for", "change");
+            startActivity(intent);
+        });
+
+        phoneCodeContainer = findViewById(R.id.edit_profile_phone_number_container);
+        phoneCodeContainer.setWeightSum(1);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.weight = (float) 0.30;
+        lp.leftMargin = 2;
+        lp.rightMargin = 2;
+
+        countryCodePicker = new CountryCodePicker(this);
+        countryCodePicker.setLayoutParams(lp);
+        countryCodePicker.setTextSize(20);
+        countryCodePicker.setAutoDetectedCountry(false);
+        countryCodePicker.setDetectCountryWithAreaCode(false);
+//        countryCodePicker.setCountryForPhoneCode(87);
+//        countryCodePicker.setDefaultCountryUsingNameCode("AR");
+        countryCodePicker.setDefaultCountryUsingPhoneCode(54);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.weight = (float) 0.70;
+        lp.leftMargin = 2;
+        lp.rightMargin = 2;
+
+        EditText editText = new EditText(this);
+        editText.setLayoutParams(layoutParams);
+        editText.setTextSize(14);
+        editText.setPadding(2, 2, 2, 2);
+        phoneCodeContainer.addView(countryCodePicker);
+        phoneCodeContainer.addView(editText);
+
+
+//        countryCodePicker = findViewById(R.id.number_picker);
+//        countryCodePicker.setDefaultCountryUsingNameCode("BG");
+//        countryCodePicker.setCountryForPhoneCode(506);
+//        countryCodePicker.setDefaultCountryUsingPhoneCode(506);
 
         TextView saveBtn = findViewById(R.id.edit_save_btn);
         saveBtn.setOnClickListener(v -> checkInputData());
@@ -135,7 +182,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             }
         };
 
-        RadioGroup genderGroup = findViewById(R.id.edit_radio_group);
+        genderGroup = findViewById(R.id.edit_radio_group);
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.edit_radio_male:
@@ -174,20 +221,12 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         try {
             String picturePath = HelperMedia.getPathFromImageUri(this, uri);
             imageFile = new File(picturePath);
-            presenter.uploadToS3(HelperClients.transferObserver(this, imageFile));
+            presenter.uploadToS3(ClientManager.transferObserver(this, imageFile));
             HelperMedia.loadCirclePhoto(this, picturePath, userImage);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
-
-    @Override
-    public void onDestroy() {
-        if (presenter != null) {
-            presenter = null;
-        }
-        super.onDestroy();
     }
 
     void checkInputData() {
@@ -234,7 +273,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             Log.e("dasdasdas", "data null");
         } else {
 
-//            presenter.updateProfile(HelperPref.getAccessToken(this), updateProfileRequest);
+//            presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
 //            Log.e("dasdasdas", "სახელი" + " " + name);
 //            Log.e("dasdasdas", "გვარი" + " " + surname);
 //            Log.e("dasdasdas", "ნიკი" + " " + nickname);
@@ -248,15 +287,35 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
     @Override
     public void onGetProfile(ProfileResponse.Userinfo userInfo) {
-        HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), userImage);
-        name.setText(userInfo.getName());
-        surName.setText(userInfo.getLastname());
-        nickName.setText(userInfo.getNickname());
-        email.setText(userInfo.getEmail());
-        phoneNumber.setText(userInfo.getPhone_number());
-        country.setText(userInfo.getCity());
-        bio.setText(userInfo.getBiography());
-        birthDate.setText(userInfo.getDate_of_birth());
+        try {
+            HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), userImage);
+            name.setText(userInfo.getName());
+            surName.setText(userInfo.getLastname());
+            nickName.setText(userInfo.getNickname());
+            email.setText(userInfo.getEmail());
+            phoneNumber.setText(userInfo.getPhone_number());
+            country.setText(userInfo.getCity());
+            bio.setText(userInfo.getBiography());
+            birthDate.setText(userInfo.getDate_of_birth());
+            switch (userInfo.getGender()) {
+                case 0:
+                    genderGroup.check(R.id.edit_radio_male);
+                    genderChecked = true;
+                    break;
+                case 1:
+                    genderGroup.check(R.id.edit_radio_female);
+                    genderChecked = true;
+                    break;
+                case 2:
+                    genderGroup.check(R.id.edit_radio_other);
+                    genderChecked = true;
+                    break;
+                default:
+                    genderChecked = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -264,18 +323,27 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     public void onUpdateProfile(UpdateProfileResponse updateProfileResponse) {
         switch (updateProfileResponse.getStatus()) {
             case 0:
-                HelperDialogs.profileInfoUpdatedDialog(this);
+                DialogManager.profileInfoUpdatedDialog(this);
                 break;
         }
     }
 
     @Override
     public void onPhotoUploadedToS3() {
-        photoUrl = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, imageFile.getName());
+        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, imageFile.getName());
     }
 
     @Override
     public void onGetError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onDestroy() {
+        if (presenter != null) {
+            presenter = null;
+        }
+        super.onDestroy();
+    }
+
 }

@@ -19,7 +19,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.model.response.TermsPolicyResponse;
 import com.travel.guide.model.request.TermsPolicyRequest;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 
 import java.util.Objects;
 
@@ -56,7 +56,7 @@ public class PolicyFragment extends Fragment implements PolicyListener {
 
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
-        policyPresenter.sendPolicyResponse(new TermsPolicyRequest(HelperPref.getLanguageId(cancelBtn.getContext())));
+        policyPresenter.sendPolicyResponse(new TermsPolicyRequest(GlobalPreferences.getLanguageId(cancelBtn.getContext())));
 
     }
 

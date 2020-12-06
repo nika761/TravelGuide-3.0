@@ -58,29 +58,26 @@ class FollowFragmentPresenter {
                     } else {
                         listener.onError(response.message());
                     }
-                } else {
+                } else
                     listener.onError(response.message());
-                }
             }
 
             @Override
             public void onFailure(Call<FollowerResponse> call, Throwable t) {
                 listener.onError(t.getMessage());
-
             }
         });
 
     }
 
-    void changeFollowState(String accessToken, FollowRequest followRequest) {
+    void startAction(String accessToken, FollowRequest followRequest) {
         apiService.follow(accessToken, followRequest).enqueue(new Callback<FollowResponse>() {
             @Override
             public void onResponse(Call<FollowResponse> call, Response<FollowResponse> response) {
                 if (response.isSuccessful() && response.body() != null)
-                    listener.onFollowChanged(response.body());
+                    listener.onFollowActionDone(response.body());
                 else
                     listener.onError(response.message());
-
             }
 
             @Override

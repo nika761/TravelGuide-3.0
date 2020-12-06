@@ -62,7 +62,7 @@
         android:layout_marginStart="10dp"
         android:background="?attr/selectableItemBackground"
         android:maxLines="1"
-        android:text="Reply"
+        android:text="@string/reply"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/com_replies_date"
         app:layout_constraintStart_toEndOf="@id/com_replies_date"

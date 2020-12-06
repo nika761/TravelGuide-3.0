@@ -37,8 +37,8 @@ import com.travel.guide.ui.home.profile.posts.UserPostsFragment;
 import com.travel.guide.ui.home.profile.tours.UserToursFragment;
 import com.travel.guide.ui.home.profile.follow.FollowActivity;
 import com.travel.guide.ui.home.HomePageActivity;
-import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.customView.HelperUI;
+import com.travel.guide.utility.GlobalPreferences;
+import com.travel.guide.helper.HelperUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -136,7 +136,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 //        loader.setVisibility(View.VISIBLE);
-        presenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(HelperPref.getUserId(context)));
+        presenter.getProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
     }
 
     @Override
@@ -255,7 +255,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onStart() {
         super.onStart();
-        presenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new ProfileRequest(HelperPref.getUserId(context)));
+        presenter.getProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
     }
 
     private void showBiography(boolean show) {
@@ -291,6 +291,27 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             presenter = null;
         }
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        try {
+//            getView().requestFocus();
+//            getView().setOnKeyListener((v, keyCode, event) -> {
+//                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+//
+//                    //your code
+//
+//                    return true;
+//                }
+//                return false;
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     public interface OnPostChooseListener {

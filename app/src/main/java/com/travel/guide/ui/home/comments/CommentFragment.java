@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.AddCommentRequest;
 import com.travel.guide.model.request.CommentRequest;
 import com.travel.guide.model.request.DeleteCommentRequest;
@@ -109,7 +109,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId, 0));
+        presenter.getComments(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new CommentRequest(storyId, postId, 0));
 
     }
 
@@ -159,7 +159,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onLikeChoose(int commentId) {
-        presenter.likeComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new LikeCommentRequest(storyId, postId, commentId));
+        presenter.likeComment(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new LikeCommentRequest(storyId, postId, commentId));
     }
 
     @Override
@@ -201,7 +201,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
             loadMore.setOnClickListener(v -> {
                 pagingLoader.setVisibility(View.VISIBLE);
                 loadMore.setVisibility(View.GONE);
-                presenter.getComments(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new CommentRequest(storyId, postId, commentId));
+                presenter.getComments(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new CommentRequest(storyId, postId, commentId));
             });
         }
 
@@ -234,7 +234,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle("Delete comment ?")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.deleteComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new DeleteCommentRequest(postId, storyId, commentId)))
+                .setPositiveButton("Yes", (dialog, which) -> presenter.deleteComment(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new DeleteCommentRequest(postId, storyId, commentId)))
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create();
         alertDialog.show();
@@ -260,7 +260,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
             case R.id.comments_add_image_btn:
                 loader.setVisibility(View.VISIBLE);
-                presenter.addComment(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
+                presenter.addComment(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
                 break;
         }
     }

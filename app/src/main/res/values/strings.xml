@@ -53,5 +53,69 @@
     <string name="age_restriction_warning">აქ ტექსტი რომელიც 13 წელზე ნაკლების შემთხვევაში უნდა გამოჩნდეს</string>
     <string name="gender_restriction_warning">აქ ტექსტი რომელიც სქესის არ შეყვანის შემთხვევაში უნდა გამოჩნდეს</string>
 
+    ////Fire base Page
+    <string name="firebase_sign_up_intro">Enter your nickname and date of birth</string>
+    <string name="save">Save</string>
+    <string name="nickname_busy">This nickname is busy, you can choose free</string>
+
+    ///Forgot Password
+    <string name="forgot_password_intro">Do not worry. Resetting your password is easy, just tell us the email address you registered with Travel guide</string>
+    <string name="send">Send</string>
+    <string name="back_to_sign_in">Back to Sign in</string>
+
+    ///Reset Password
+    <string name="reset_password_intro">Enter your New password</string>
+    <string name="hint_for_passwords">min 8 symbols</string>
+
+    ///Comments
+    <string name="add_comment">Add Comment..</string>
+    <string name="view_more_comments">View more comments</string>
+    <string name="reply">Reply</string>
+    <string name="replies">Replies</string>
+
+    ///Profile
+    <string name="report">Report</string>
+    <string name="following">Following</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="followers">Followers</string>
+    <string name="reactions">Reactions</string>
+    <string name="bio">Bio</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="country_head">Country</string>
+    <string name="change_password">Change password</string>
+    <string name="choose_language">Choose Language</string>
+    <string name="sign_out">Sign out ?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+
+
+    ///Media
+    <string name="video">Video</string>
+    <string name="photos">Photos</string>
+    <string name="all">All</string>
+    <string name="upload_content_restriction_body">You can select only one video or one photo \n max item number is 1. </string>
+    <string name="next">Next</string>
+    <string name="crop">Crop</string>
+    <string name="filters">Filters</string>
+    <string name="sort">Sort</string>
+    <string name="delete">Delete</string>
+    <string name="done">Done</string>
+    <string name="trim">Trim</string>
+
+    ///Music page
+    <string name="sounds">Sounds</string>
+    <string name="music">MUSIC</string>
+    <string name="favorites">FAVORITES</string>
+    <string name="search">Search</string>
+    <string name="music_new">new</string>
+
+    ////Upload post
+    <string name="post">Post</string>
+    <string name="describe_post_intro">Trim</string>
+    <string name="hashtags">#Hashtags</string>
+    <string name="friends">#Friends</string>
+    <string name="location">Location</string>
 
 </resources>

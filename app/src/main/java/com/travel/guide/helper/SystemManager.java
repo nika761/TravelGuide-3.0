@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-public class HelperSystem {
+public class SystemManager {
 
     public static final int READ_EXTERNAL_STORAGE = 111;
     public static final int WRITE_EXTERNAL_STORAGE = 112;

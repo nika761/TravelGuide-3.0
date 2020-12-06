@@ -1,14 +1,18 @@
 package com.travel.guide.ui.home;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,14 +22,14 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperClients;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.helper.ClientManager;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.ui.home.comments.CommentFragment;
 import com.travel.guide.ui.home.comments.RepliesFragment;
 import com.travel.guide.ui.home.home.HomeFragment;
 import com.travel.guide.ui.home.profile.ProfileFragment;
-import com.travel.guide.helper.HelperSystem;
-import com.travel.guide.helper.customView.HelperUI;
+import com.travel.guide.helper.SystemManager;
+import com.travel.guide.helper.HelperUI;
 import com.travel.guide.ui.login.signIn.SignInActivity;
 import com.travel.guide.ui.search.SearchActivity;
 import com.travel.guide.ui.gallery.GalleryActivity;
@@ -34,10 +38,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import static com.travel.guide.enums.GetPostsFrom.FEED;
-import static com.travel.guide.helper.HelperPref.FACEBOOK;
-import static com.travel.guide.helper.HelperPref.GOOGLE;
-import static com.travel.guide.helper.HelperPref.TRAVEL_GUIDE;
-import static com.travel.guide.helper.HelperSystem.READ_EXTERNAL_STORAGE;
+import static com.travel.guide.utility.GlobalPreferences.FACEBOOK;
+import static com.travel.guide.utility.GlobalPreferences.GOOGLE;
+import static com.travel.guide.utility.GlobalPreferences.TRAVEL_GUIDE;
+import static com.travel.guide.helper.SystemManager.READ_EXTERNAL_STORAGE;
 
 /**
  * Created by n.butskhrikidze on 01/07/2020.
@@ -115,18 +119,18 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
                 case R.id.bot_nav_add:
 
-                    if (HelperSystem.isReadStoragePermission(HomePageActivity.this)) {
+                    if (SystemManager.isReadStoragePermission(HomePageActivity.this)) {
                         Intent galleryIntent = new Intent(HomePageActivity.this, GalleryActivity.class);
                         startActivity(galleryIntent);
                     } else
-                        HelperSystem.requestReadStoragePermission(HomePageActivity.this);
+                        SystemManager.requestReadStoragePermission(HomePageActivity.this);
 
                     break;
 
                 case R.id.bot_nav_ntf:
                     int reqCode = 1;
-                    showNotification(this, "Please Wait", "Your post is uploading.", new Intent(), reqCode);
-
+                    notification();
+//                    showNotification(this, "Please Wait", "Your post is uploading.", new Intent(), reqCode);
 //                    HelperUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, true, HomePageActivity.this);
                     break;
 
@@ -154,7 +158,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void logOutFromGoogle() {
-        HelperClients.googleSignInClient(this)
+        ClientManager.googleSignInClient(this)
                 .signOut()
                 .addOnCompleteListener(this, task -> onLogOutSuccess())
                 .addOnCanceledListener(this, () -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show())
@@ -162,7 +166,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void onLogOutChoose() {
-        String loginType = HelperPref.getLoginType(this);
+        String loginType = GlobalPreferences.getLoginType(this);
         if (loginType == null) {
             Toast.makeText(this, "Please try again ", Toast.LENGTH_SHORT).show();
         } else {
@@ -184,10 +188,10 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     public void onLogOutSuccess() {
 
-        HelperPref.removeAccessToken(this);
-        HelperPref.removeLoginType(this);
-        HelperPref.removeUserId(this);
-        HelperPref.removeUserRole(this);
+        GlobalPreferences.removeAccessToken(this);
+        GlobalPreferences.removeLoginType(this);
+        GlobalPreferences.removeUserId(this);
+        GlobalPreferences.removeUserRole(this);
 
         Intent intent = new Intent(HomePageActivity.this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -212,10 +216,18 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (bottomNavigationView.getSelectedItemId() == R.id.bot_nav_home) {
+            super.onBackPressed();
+        } else {
+            bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+            Bundle data = new Bundle();
+            data.putSerializable("PostShowType", FEED);
+            HelperUI.loadFragment(new HomeFragment(), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
+        }
     }
 
     public void loadCommentFragment(int storyId, int postId) {
+
         Bundle commentFragmentData = new Bundle();
         commentFragmentData.putInt("storyId", storyId);
         commentFragmentData.putInt("postId", postId);
@@ -260,6 +272,10 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void showNotification(Context context, String title, String message, Intent intent, int reqCode) {
+
+        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_uploading);
+        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_uploading);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, intent, PendingIntent.FLAG_ONE_SHOT);
 
         String CHANNEL_ID = "channel_name";// The id of the channel.
@@ -269,7 +285,9 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setCustomContentView(collapsedView)
+                .setCustomBigContentView(expandedView);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence name = "Channel Name";// The user-visible name of the channel.
@@ -277,15 +295,69 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             importance = NotificationManager.IMPORTANCE_HIGH;
         }
-        NotificationChannel mChannel;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+
             if (notificationManager != null) {
-                notificationManager.createNotificationChannel(mChannel);
+                notificationManager.createNotificationChannel(notificationChannel);
             }
+
         }
         if (notificationManager != null) {
             notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id
         }
     }
+
+    public void notification() {
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(), 0);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            mBuilder.setSmallIcon(R.drawable.main_icon_sun);
+            mBuilder.setContentTitle("ttiele")
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText("dasdasd"))
+                    .setAutoCancel(true).setDefaults(Notification.DEFAULT_SOUND)
+                    .setLights(Color.WHITE, 500, 500)
+                    .setContentText("sdasdasdassd");
+        } else {
+            RemoteViews customNotificationView = new RemoteViews(getPackageName(), R.layout.notification_uploading);
+            customNotificationView.setTextViewText(R.id.text_view_collapsed_1, "dasdasd");
+            customNotificationView.setTextViewText(R.id.text_view_collapsed_1, "dasdasd");
+            mBuilder.setContent(customNotificationView);
+            mBuilder.setSmallIcon(R.drawable.main_icon_sun);
+            mBuilder.setAutoCancel(true);
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+            mBuilder.setLights(Color.WHITE, 500, 500);
+        }
+// build notification
+        mBuilder.setContentIntent(pendingIntent);
+        if (mNotificationManager != null)
+            mNotificationManager.notify(1000, mBuilder.build());
+//        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_uploading);
+//        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_uploading);
+//
+//        Intent clickIntent = new Intent(this, NotificationReceiver.class);
+//        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this, 0, clickIntent, 0);
+//        collapsedView.setTextViewText(R.id.text_view_collapsed_1, "Hello World!");
+//        collapsedView.setOnClickPendingIntent(R.id.text_view_collapsed_1, clickPendingIntent);
+//
+//        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.main_icon_sun)
+//                .setContentTitle("dasd")
+//                .setContentText("asdasd")
+//                .setCustomContentView(collapsedView)
+//                .setCustomBigContentView(expandedView)
+//                .setAutoCancel(true)
+//                .setContentIntent(clickPendingIntent)
+//                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+////                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+//                .build();
+//        NotificationManager notificationManager = (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//        if (notificationManager != null)
+//            notificationManager.notify(1, notification);
+    }
+
 }

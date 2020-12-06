@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.LanguagesResponse;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
     public ChangeLangAdapter(Context context, ChangeLangListener iChangeLangFragment) {
         this.context = context;
         this.iChangeLangFragment = iChangeLangFragment;
-        this.currentLanguageId = HelperPref.getLanguageId(context);
+        this.currentLanguageId = GlobalPreferences.getLanguageId(context);
     }
 
     @NonNull

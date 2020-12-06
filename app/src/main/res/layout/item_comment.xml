@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:maxLines="1"
-        android:text="Reply"
+        android:text="@string/reply"
         android:textSize="13sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/comments_date"

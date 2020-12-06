@@ -35,7 +35,6 @@ public class CustomProgressBar extends LinearLayout {
     public CustomProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-
     }
 
     public CustomProgressBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -55,10 +54,10 @@ public class CustomProgressBar extends LinearLayout {
 
             ProgressBar progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
             progressBar.setLayoutParams(lp);
+
             Drawable stateListDrawable = progressBar.getContext().getResources().getDrawable(R.drawable.selector_progress_state_list, null);
             progressBar.setProgressDrawable(stateListDrawable);
             addView(progressBar);
-
         }
     }
 

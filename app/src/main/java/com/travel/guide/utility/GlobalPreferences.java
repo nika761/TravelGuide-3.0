@@ -1,9 +1,9 @@
-package com.travel.guide.helper;
+package com.travel.guide.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
+import com.travel.guide.helper.language.GlobalLanguages;
 import com.travel.guide.model.response.LoginResponse;
 import com.travel.guide.model.response.ProfileResponse;
 import com.google.gson.Gson;
@@ -13,28 +13,23 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelperPref {
+public class GlobalPreferences {
 
     public static final String FACEBOOK = "facebook";
     public static final String GOOGLE = "google";
     public static final String TRAVEL_GUIDE = "travel_guide";
 
+    private static final String LANGUAGE_PREFERENCES = "LANGUAGE_PREFERENCES";
+    private static final String GLOBAL_LANGUAGE_KEY = "GLOBAL_LANGUAGE_KEY";
+
     private static final String TRAVEL_GUIDE_PREFERENCES = "travel_guide_preference";
-
     private static final String LANGUAGE_KEY = "language_Id";
-
     private static final String USER_KEY = "users";
-
     private static final String LOGGED_USER_KEY = "logged_user";
-
     private static final String ACCESS_KEY = "access_token";
-
     private static final String PROFILE_KEY = "user_profile";
-
     private static final String USER_ID_KEY = "user_id";
-
     private static final String USER_ROLE_KEY = "user_role";
-
     private static final String PLATFORM_KEY = "platform_key";
 
 //    public enum LoginType {
@@ -46,6 +41,10 @@ public class HelperPref {
 
     private static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences(TRAVEL_GUIDE_PREFERENCES, Context.MODE_PRIVATE);
+    }
+
+    private static SharedPreferences getLanguagePref(Context context) {
+        return context.getSharedPreferences(LANGUAGE_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public static void saveUserRole(Context context, int userRole) {
@@ -132,6 +131,16 @@ public class HelperPref {
             accessToken = getPref(context).getString(ACCESS_KEY, null);
         }
         return accessToken;
+    }
+
+    public static void saveCurrentLanguage(Context context, GlobalLanguages globalLanguages) {
+        getLanguagePref(context).edit().putString(GLOBAL_LANGUAGE_KEY, new Gson().toJson(globalLanguages)).apply();
+    }
+
+    public static GlobalLanguages getCurrentLanguage(Context context) {
+        SharedPreferences sharedPreferences = getLanguagePref(context);
+        Gson gson = new Gson();
+        return gson.fromJson(sharedPreferences.getString(GLOBAL_LANGUAGE_KEY, null), GlobalLanguages.class);
     }
 
 

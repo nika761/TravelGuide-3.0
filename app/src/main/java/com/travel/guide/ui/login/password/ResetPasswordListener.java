@@ -2,7 +2,7 @@ package com.travel.guide.ui.login.password;
 
 import com.travel.guide.model.response.ResetPasswordResponse;
 
-public interface RPasswordListener {
+public interface ResetPasswordListener {
 
     void onPasswordReset(ResetPasswordResponse resetPasswordResponse);
 

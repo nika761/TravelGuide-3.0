@@ -13,7 +13,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperSystem;
+import com.travel.guide.helper.SystemManager;
+import com.travel.guide.model.response.LanguageStringsResponse;
 import com.travel.guide.ui.login.signIn.SignInActivity;
 import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.ui.language.LanguageActivity;
@@ -21,13 +22,13 @@ import com.travel.guide.ui.language.LanguageListener;
 import com.travel.guide.ui.login.loggedUsers.SavedUserActivity;
 import com.travel.guide.model.response.LanguagesResponse;
 import com.travel.guide.ui.language.LanguagePresenter;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplashScreenActivity extends AppCompatActivity implements LanguageListener {
+public class SplashScreenActivity extends AppCompatActivity implements LanguageListener.SplashListener {
 
     private final int SPLASH_DISPLAY_LENGTH = 1300;
     private ImageView mainIconSun;
@@ -46,9 +47,9 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     }
 
     private void checkNetwork() {
-        if (HelperSystem.checkNetworkConnection(this)) {
-            if (HelperPref.getLanguageId(this) != 0) {
-                if (HelperPref.getAccessToken(this) != null)
+        if (SystemManager.checkNetworkConnection(this)) {
+            if (GlobalPreferences.getLanguageId(this) != 0) {
+                if (GlobalPreferences.getAccessToken(this) != null)
                     openHome();
                 else
                     openSign();
@@ -128,7 +129,9 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     }
 
     @Override
-    public void onChooseLanguage() {
-
+    protected void onDestroy() {
+        if (languagePresenter != null)
+            languagePresenter = null;
+        super.onDestroy();
     }
 }

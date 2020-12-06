@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -340,6 +341,20 @@ public class HelperMedia {
             }
         }
         return picturePath;
+    }
+
+    public static int getScreenWidth(Activity activity) {
+        int itemWidth = 0;
+        try {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int width = displayMetrics.widthPixels;
+            itemWidth = width / 3;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return itemWidth;
     }
 
 }

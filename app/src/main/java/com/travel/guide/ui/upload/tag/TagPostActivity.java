@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.SearchFollowersRequest;
 import com.travel.guide.model.request.SearchHashtagRequest;
 import com.travel.guide.model.response.FollowerResponse;
@@ -81,7 +81,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.searchFollowers(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new SearchFollowersRequest(charSequence.toString()));
+                                    postPresenter.searchFollowers(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new SearchFollowersRequest(charSequence.toString()));
                                 }
                             });
                     break;
@@ -95,7 +95,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.getHashtags(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new SearchHashtagRequest(charSequence.toString()));
+                                    postPresenter.getHashtags(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(charSequence.toString()));
                                 }
                             });
                     break;
@@ -149,7 +149,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                 finish();
                 break;
             case R.id.tag_post_search_btn:
-                postPresenter.getHashtags(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new SearchHashtagRequest(searchEditTxt.getText().toString()));
+                postPresenter.getHashtags(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchEditTxt.getText().toString()));
                 break;
 
 //            case R.id.tag_post_done_btn:

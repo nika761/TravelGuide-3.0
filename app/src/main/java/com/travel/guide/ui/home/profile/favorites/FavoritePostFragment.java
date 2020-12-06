@@ -17,7 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.ui.home.profile.ProfileFragment;
@@ -75,7 +76,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        favoritePostPresenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(context), new FavoritePostRequest(0));
+        favoritePostPresenter.getFavoritePosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new FavoritePostRequest(0));
     }
 
     @Override
@@ -147,6 +148,9 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         recyclerView.setLayoutManager(gridLayoutManager);
 
         FavoritePostAdapter adapter = new FavoritePostAdapter(postResponse.getPosts(), this);
+        int itemWidth = HelperMedia.getScreenWidth(getActivity());
+        if (itemWidth != 0)
+            adapter.setItemWidth(itemWidth);
         recyclerView.setAdapter(adapter);
 
     }

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.HelperSystem;
+import com.travel.guide.helper.SystemManager;
 
 import java.util.ArrayList;
 
@@ -32,10 +32,13 @@ public class GalleryFragment extends Fragment {
         if (getArguments() != null) {
             adapter = new GalleryAdapter(context, getArguments().getBoolean("is_image"));
             GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3);
+            int itemWidth = HelperMedia.getScreenWidth(getActivity());
+            if (itemWidth != 0)
+                adapter.setItemWidth(itemWidth);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(adapter);
 
-            if (HelperSystem.isReadStoragePermission(getActivity())) {
+            if (SystemManager.isReadStoragePermission(getActivity())) {
                 adapter.setItems(fetchMedia(getArguments().getBoolean("is_image") ? 1 : 2));
             }
 

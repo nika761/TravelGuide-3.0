@@ -37,7 +37,7 @@ import com.travel.guide.model.request.SharePostRequest;
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
 import com.travel.guide.model.response.SetStoryLikeResponse;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostRequest;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.model.response.SharePostResponse;
@@ -134,7 +134,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
                     case FEED:
                         loaderContainer.setVisibility(View.VISIBLE);
-                        presenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostRequest(0));
+                        presenter.getPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
                         break;
                 }
             }
@@ -259,7 +259,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onFollowChoose(int userId) {
-        presenter.follow(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new FollowRequest(userId));
+        presenter.follow(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new FollowRequest(userId));
     }
 
     @Override
@@ -275,7 +275,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onFavoriteChoose(int post_id, int position) {
-        presenter.setPostFavorite(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new SetPostFavoriteRequest(post_id));
+        presenter.setPostFavorite(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetPostFavoriteRequest(post_id));
     }
 
     @Override
@@ -307,7 +307,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onStoryLikeChoose(int postId, int storyId, int position) {
-        presenter.setStoryLike(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new SetStoryLikeRequest(storyId, postId));
+        presenter.setStoryLike(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetStoryLikeRequest(storyId, postId));
     }
 
     @Override
@@ -328,7 +328,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onUserChoose(int userId) {
-        if (userId == HelperPref.getUserId(postRecycler.getContext())) {
+        if (userId == GlobalPreferences.getUserId(postRecycler.getContext())) {
             if (getContext() != null)
                 ((HomePageActivity) getContext()).onProfileChoose();
         } else {
@@ -345,19 +345,19 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (getPostsFrom) {
 
             case FAVORITES:
-                presenter.getFavoritePosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));
+                presenter.getFavoritePosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));
                 break;
 
             case MY_POSTS:
-                presenter.getUserPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostByUserRequest(HelperPref.getUserId(postRecycler.getContext()), fromPostId));
+                presenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
                 break;
 
             case CUSTOMER_POSTS:
-                presenter.getUserPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostByUserRequest(customerUserId, fromPostId));
+                presenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(customerUserId, fromPostId));
                 break;
 
             case FEED:
-                presenter.getPosts(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new PostRequest(fromPostId));
+                presenter.getPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(fromPostId));
                 break;
         }
 
@@ -371,7 +371,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARING_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                presenter.setPostShare(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(postRecycler.getContext()), new SharePostRequest(postId));
+                presenter.setPostShare(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(postId));
             }
         }
     }
@@ -385,6 +385,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
             presenter = null;
 
         super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.e("zxczxc","paused");
+        super.onPause();
     }
 
     @Override

@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.TermsPolicyResponse;
 import com.travel.guide.model.request.TermsPolicyRequest;
 
@@ -56,7 +56,7 @@ public class TermsFragment extends Fragment implements TermsContract.View {
 
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
-        termsPresenter.getTerms(new TermsPolicyRequest(HelperPref.getLanguageId(cancelBtn.getContext())));
+        termsPresenter.getTerms(new TermsPolicyRequest(GlobalPreferences.getLanguageId(cancelBtn.getContext())));
 
     }
 

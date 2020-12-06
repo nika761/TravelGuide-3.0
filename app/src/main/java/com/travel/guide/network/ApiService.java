@@ -1,5 +1,6 @@
 package com.travel.guide.network;
 
+import com.travel.guide.model.request.ChangePasswordRequest;
 import com.travel.guide.model.request.AboutRequest;
 import com.travel.guide.model.request.AddCommentReplyRequest;
 import com.travel.guide.model.request.AddCommentRequest;
@@ -10,6 +11,7 @@ import com.travel.guide.model.request.ChangeLangRequest;
 import com.travel.guide.model.request.CommentRequest;
 import com.travel.guide.model.request.DeleteCommentRequest;
 import com.travel.guide.model.request.DeleteReplyRequest;
+import com.travel.guide.model.request.LanguageStringsRequest;
 import com.travel.guide.model.request.LikeCommentReplyRequest;
 import com.travel.guide.model.request.LikeCommentRequest;
 import com.travel.guide.model.request.GetMoreCommentRequest;
@@ -45,6 +47,7 @@ import com.travel.guide.model.response.AddFavoriteMusicResponse;
 import com.travel.guide.model.response.AppSettingsResponse;
 import com.travel.guide.model.response.AuthWithFirebaseResponse;
 import com.travel.guide.model.response.ChangeLangResponse;
+import com.travel.guide.model.response.ChangePasswordResponse;
 import com.travel.guide.model.response.CommentResponse;
 import com.travel.guide.model.response.DeleteCommentResponse;
 import com.travel.guide.model.response.DeleteReplyResponse;
@@ -53,6 +56,7 @@ import com.travel.guide.model.response.FollowerResponse;
 import com.travel.guide.model.response.FollowingResponse;
 import com.travel.guide.model.response.ForgotPasswordResponse;
 import com.travel.guide.model.response.HashtagResponse;
+import com.travel.guide.model.response.LanguageStringsResponse;
 import com.travel.guide.model.response.LikeCommentReplyResponse;
 import com.travel.guide.model.response.LikeCommentResponse;
 import com.travel.guide.model.response.MoodResponse;
@@ -100,6 +104,9 @@ public interface ApiService {
     @GET("get_languages")
     Call<LanguagesResponse> getLanguages();
 
+    @POST("get/texts")
+    Call<LanguageStringsResponse> getLanguageStrings(@Body LanguageStringsRequest languageStringsRequest);
+
     @GET("get/app_settings")
     Call<AppSettingsResponse> getAppSettings();
 
@@ -109,7 +116,7 @@ public interface ApiService {
     @POST("login")
     Call<LoginResponse> signIn(@Body LoginRequest loginRequest);
 
-    @POST("get_about")
+    @POST("get/about")
     Call<AboutResponse> getAbout(@Body AboutRequest aboutRequest);
 
     @Headers({"Accept: application/json"})
@@ -130,7 +137,7 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("get/posts_by_user")
     Call<PostResponse> getPostsByUser(@Header("Authorization") String token,
-                                        @Body PostByUserRequest customerPostRequest);
+                                      @Body PostByUserRequest customerPostRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/profile")
@@ -150,6 +157,10 @@ public interface ApiService {
     @POST("set/favorite_music")
     Call<AddFavoriteMusicResponse> addFavoriteMusic(@Header("Authorization") String token,
                                                     @Body AddFavoriteMusic addFavoriteMusic);
+
+    @Headers({"Accept: application/json"})
+    @POST("change/password")
+    Call<ChangePasswordResponse> changePassword(@Header("Authorization") String token, @Body ChangePasswordRequest changePasswordRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/favorite_music")

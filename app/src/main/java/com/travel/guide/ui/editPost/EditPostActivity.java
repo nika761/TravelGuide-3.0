@@ -239,7 +239,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
 //
 ////        s3Client.putObject(putObjectRequest);
 //
-//        uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
+//        uploadPostPresenter.uploadToS3(ClientManager.transferObserver(this, fileForUpload));
 ////        uploadObserver.setTransferListener(new TransferListener() {
 ////
 ////            @Override
@@ -247,7 +247,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
 ////                if (TransferState.COMPLETED == state) {
 ////                    lottieAnimationView.setVisibility(View.GONE);
 ////                    Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-////                    String url = HelperClients.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
+////                    String url = ClientManager.initAmazonS3Client(getApplicationContext()).getResourceUrl("travel-guide-3", file.getName());
 ////                    Log.e("link", url);
 //////                    file.delete();
 ////                } else if (TransferState.FAILED == state) {
@@ -295,7 +295,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
 //
 //            }
 ////            uploadPostRequest = new UploadPostRequest(17, photos, videos);
-////            uploadPostPresenter.uploadStory("Bearer" + " " + HelperPref.getAccessToken(this), uploadPostRequest);
+////            uploadPostPresenter.uploadStory("Bearer" + " " + GlobalPreferences.getAccessToken(this), uploadPostRequest);
 //
 //        }
 //    }

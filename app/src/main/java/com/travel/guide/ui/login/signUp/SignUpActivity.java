@@ -21,15 +21,15 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperClients;
-import com.travel.guide.helper.HelperDialogs;
+import com.travel.guide.helper.ClientManager;
+import com.travel.guide.helper.DialogManager;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.CheckNickRequest;
 import com.travel.guide.model.request.SignUpRequest;
 import com.travel.guide.model.response.CheckNickResponse;
 import com.travel.guide.model.response.SignUpResponse;
-import com.travel.guide.helper.customView.HelperUI;
+import com.travel.guide.helper.HelperUI;
 import com.hbb20.CountryCodePicker;
 
 import java.io.File;
@@ -77,7 +77,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
         loader = findViewById(R.id.loader_sign_up);
         loaderBackground = findViewById(R.id.bg_loader_sign_up);
-        countryCodePicker = findViewById(R.id.ccp);
+        countryCodePicker = findViewById(R.id.number_picker);
         phoneNumberContainer = findViewById(R.id.register_phone_number_container);
         eName = findViewById(R.id.register_name);
         eNameHead = findViewById(R.id.register_name_head);
@@ -180,7 +180,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         String picturePath = HelperMedia.getPathFromImageUri(this, uri);
         if (picturePath != null) {
             profilePhotoFile = new File(picturePath);
-            signUpPresenter.uploadToS3(HelperClients.transferObserver(this, profilePhotoFile));
+            signUpPresenter.uploadToS3(ClientManager.transferObserver(this, profilePhotoFile));
             HelperMedia.loadCirclePhoto(this, picturePath, profileImage);
         }
 
@@ -204,7 +204,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
         switch (signUpResponse.getStatus()) {
             case 0:
-                HelperDialogs.signUpConfirmDialog(this, signUpResponse.getTitle(), signUpResponse.getMessage());
+                DialogManager.signUpConfirmDialog(this, signUpResponse.getTitle(), signUpResponse.getMessage());
 //                showConfirmDialog(signUpResponse.getTitle(), signUpResponse.getMessage());
                 break;
 
@@ -214,32 +214,32 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
                 break;
 
             case 3:
-                Toast.makeText(this, "nickname lenght must be less then 17!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
 
             case 4:
-                Toast.makeText(this, "Email already exists", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email", this);
                 break;
 
             case 5:
-                Toast.makeText(this, "birth date  is not a correct format!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
 
             case 6:
-                Toast.makeText(this, "password lenght must be 8 or more!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
 
             case 7:
-                Toast.makeText(this, "The password confirmation does not match.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
 
             case 8:
-                Toast.makeText(this, "phone lenght must be 9 or more!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
 
             case 9:
-                Toast.makeText(this, "phone index must lenght be 1 or more!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -252,7 +252,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
     @Override
     public void onPhotoUploadToS3() {
-        photoUrl = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, profilePhotoFile.getName());
+        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, profilePhotoFile.getName());
     }
 
     @Override
@@ -293,7 +293,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
                 break;
 
             case R.id.register_birth_date:
-                HelperDialogs.datePickerDialog(this, mDateSetListener);
+                DialogManager.datePickerDialog(this, mDateSetListener);
                 break;
 
             case R.id.nickName_offer_1:
@@ -366,7 +366,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
             phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
             ePhoneNumberHead.setText("* Phone Number ");
             ePhoneNumberHead.setTextColor(getResources().getColor(R.color.red));
-//            StyleableToast.makeText(getContext(), " Number is incorrect !", Toast.LENGTH_LONG, R.style.errorToast).show();
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(phoneNumberContainer);
@@ -380,6 +379,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
             String code = countryCodePicker.getSelectedCountryCodeWithPlus();
             phoneIndex = countryCodePicker.getSelectedCountryCode();
             String asds = countryCodePicker.getSelectedCountryEnglishName();
+
             //registerPhoneNumber.getText().clear();
         }
 
@@ -410,10 +410,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
             loadingVisibility(true);
             SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password,
                     confirmPassword, String.valueOf(timeStamp), phoneIndex, photoUrl,
-                    phoneNumber, String.valueOf(HelperPref.getLanguageId(this)), gender);
+                    phoneNumber, String.valueOf(GlobalPreferences.getLanguageId(this)), gender);
             signUpPresenter.signUp(signUpRequest);
-        } else {
-            Toast.makeText(this, " Error ", Toast.LENGTH_LONG).show();
         }
 
     }

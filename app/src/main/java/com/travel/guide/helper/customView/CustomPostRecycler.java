@@ -103,7 +103,9 @@ public class CustomPostRecycler extends RecyclerView {
         screenDefaultHeight = point.y;
 
         videoSurfaceView = new PlayerView(this.context);
-        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
+        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -289,6 +291,7 @@ public class CustomPostRecycler extends RecyclerView {
         }
 
         String mediaUrl = posts.get(targetPosition).getPost_stories().get(0).getUrl();
+        Log.e("posts", "recycler position is " + targetPosition);
         playingPosition = targetPosition;
         homeFragmentListener.stopLoader();
         if (mediaUrl != null) {

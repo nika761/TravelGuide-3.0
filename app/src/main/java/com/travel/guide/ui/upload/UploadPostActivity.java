@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.HelperClients;
+import com.travel.guide.helper.ClientManager;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.HelperPref;
-import com.travel.guide.helper.HelperSystem;
+import com.travel.guide.utility.GlobalPreferences;
+import com.travel.guide.helper.SystemManager;
 import com.travel.guide.model.ItemMedia;
 import com.travel.guide.model.request.UploadPostRequest;
 import com.travel.guide.ui.home.HomePageActivity;
@@ -43,7 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.travel.guide.helper.HelperMedia.convertImagesToPng;
-import static com.travel.guide.helper.HelperSystem.WRITE_EXTERNAL_STORAGE;
+import static com.travel.guide.helper.SystemManager.WRITE_EXTERNAL_STORAGE;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 import static com.travel.guide.network.ApiEndPoint.PLACES_API_KEY;
 import static com.travel.guide.ui.editPost.EditPostActivity.STORIES_PATHS;
@@ -153,10 +153,10 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 
 
                 if (itemMedia.get(0).getType() == 0) {
-                    if (HelperSystem.isWriteStoragePermission(this)) {
+                    if (SystemManager.isWriteStoragePermission(this)) {
                         startUpload();
                     } else {
-                        HelperSystem.requestWriteStoragePermission(this);
+                        SystemManager.requestWriteStoragePermission(this);
                     }
                 } else {
                     startUpload();
@@ -171,8 +171,8 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 //                uploadPostPresenter = new UploadPostPresenter(this);
 
 
-//                AmazonS3Client s3Client = HelperClients.amazonS3Client(this);
-//                HelperClients.uploadMultipleS3(s3Client, convertedImages);
+//                AmazonS3Client s3Client = ClientManager.amazonS3Client(this);
+//                ClientManager.uploadMultipleS3(s3Client, convertedImages);
 //                S3Helper s3Helper = new S3Helper();
 //                s3Helper.upload(files, this);
                 break;
@@ -193,7 +193,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
         if (itemMedia.get(0).getType() == 0) {
             List<ItemMedia> convertedImages = convertImagesToPng(itemMedia);
             fileForUpload = new File(convertedImages.get(0).getPath());
-            uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
+            uploadPostPresenter.uploadToS3(ClientManager.transferObserver(this, fileForUpload));
         } else {
             fileForUpload = new File(itemMedia.get(0).getPath());
 
@@ -210,7 +210,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-            uploadPostPresenter.uploadToS3(HelperClients.transferObserver(this, fileForUpload));
+            uploadPostPresenter.uploadToS3(ClientManager.transferObserver(this, fileForUpload));
         }
     }
 
@@ -309,7 +309,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
         List<UploadPostRequest.Post_stories> stories = new ArrayList<>();
 
         //Get uploaded content url from S3 server
-        String url = HelperClients.amazonS3Client(this).getResourceUrl(HelperClients.S3_BUCKET, fileForUpload.getName());
+        String url = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, fileForUpload.getName());
 
         if (url.endsWith(".mp4")) {
             String videoDuration = String.valueOf(HelperMedia.getVideoDurationInt(itemMedia.get(0).getPath()));
@@ -323,10 +323,10 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 
         UploadPostRequest uploadPostRequestModel = new UploadPostRequest(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
 
-        uploadPostPresenter.uploadStory(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), uploadPostRequestModel);
+        uploadPostPresenter.uploadStory(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), uploadPostRequestModel);
 //
 //        UploadPostService uploadPostService = new UploadPostService();
-//        uploadPostService.uploadPost(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), uploadPostRequestModel);
+//        uploadPostService.uploadPost(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), uploadPostRequestModel);
 //
     }
 

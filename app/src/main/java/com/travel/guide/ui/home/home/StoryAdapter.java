@@ -20,7 +20,7 @@ import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostType;
 import com.travel.guide.enums.StoryEmotionType;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.helper.customView.CustomFrameLayout;
 import com.travel.guide.helper.customView.CustomProgressBar;
 import com.travel.guide.ui.searchPost.SearchPostActivity;
@@ -190,7 +190,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             profileImage = itemView.findViewById(R.id.user_image_post);
             profileImage.setOnClickListener(this);
 
-            ownerUserId = HelperPref.getUserId(like.getContext());
+            ownerUserId = GlobalPreferences.getUserId(like.getContext());
 
             frameLayout = itemView.findViewById(R.id.pl_container);
 

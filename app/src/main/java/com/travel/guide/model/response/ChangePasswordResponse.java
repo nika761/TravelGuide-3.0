@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class ChangePasswordResponse {
 
-
     @Expose
     @SerializedName("message")
     private String message;
+
     @Expose
     @SerializedName("status")
     private int status;
@@ -28,4 +28,5 @@ public class ChangePasswordResponse {
     public void setStatus(int status) {
         this.status = status;
     }
+
 }

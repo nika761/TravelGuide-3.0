@@ -32,7 +32,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
             android:autoSizeTextType="uniform"
-            android:gravity="center_vertical|center_horizontal|start"
+            android:gravity="center_vertical|center_horizontal"
             android:text="In order to complete your registration, please click the confirmation link that we have sent to you in the email and SMS ."
             android:textSize="14sp" />
 

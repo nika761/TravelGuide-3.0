@@ -25,9 +25,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class HelperClients {
+public class ClientManager {
     private static final String S3_KEY = "AKIAVWUTGVROTZGHURQ4";
     private static final String S3_SECRET = "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";
     private static final String AMAZONS3_END_POINT = "https://travel-guide-3.s3.eu-central-1.amazonaws.com";
@@ -78,9 +77,9 @@ public class HelperClients {
     }
 
     public static TransferObserver transferObserver(Context context, File file) {
-        return HelperClients
+        return ClientManager
                 .transferUtility(context, amazonS3Client(context))
-                .upload(HelperClients.S3_BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
+                .upload(ClientManager.S3_BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
     }
 
     public static void uploadMultipleS3(AmazonS3Client s3Client, List<ItemMedia> paths) {

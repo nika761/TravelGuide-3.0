@@ -9,11 +9,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-class RPasswordPresenter {
-    private RPasswordListener iResetPassword;
+class ResetPasswordPresenter {
+    private ResetPasswordListener iResetPassword;
     private ApiService apiService;
 
-    RPasswordPresenter(RPasswordListener iResetPassword) {
+    ResetPasswordPresenter(ResetPasswordListener iResetPassword) {
         this.iResetPassword = iResetPassword;
         this.apiService = RetrofitManager.getApiService();
     }

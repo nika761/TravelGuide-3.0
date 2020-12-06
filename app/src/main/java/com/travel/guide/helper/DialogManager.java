@@ -14,7 +14,7 @@ import com.travel.guide.R;
 
 import java.util.Calendar;
 
-public class HelperDialogs {
+public class DialogManager {
 
     public static void signUpConfirmDialog(Activity activity, String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -36,7 +36,6 @@ public class HelperDialogs {
             dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.bg_transparent, null));
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
-
         dialog.show();
     }
 

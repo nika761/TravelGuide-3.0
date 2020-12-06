@@ -19,6 +19,8 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
     private List<PostResponse.Posts> posts;
     private FavoritePostListener favoritePostListener;
 
+    private int itemWidth;
+
     FavoritePostAdapter(List<PostResponse.Posts> posts, FavoritePostListener favoritePostListener) {
         this.posts = posts;
         this.favoritePostListener = favoritePostListener;
@@ -32,6 +34,7 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
 
     @Override
     public void onBindViewHolder(@NonNull FavoritePostAdapter.PostViewHolder holder, int position) {
+        holder.postImage.getLayoutParams().width = itemWidth;
         HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
         holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
         holder.nickName.setText(posts.get(position).getNickname());
@@ -40,6 +43,10 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
     @Override
     public int getItemCount() {
         return posts.size();
+    }
+
+    void setItemWidth(int itemWidth) {
+        this.itemWidth = itemWidth;
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder {

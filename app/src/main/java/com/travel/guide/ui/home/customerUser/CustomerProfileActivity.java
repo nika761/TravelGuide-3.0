@@ -19,7 +19,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.helper.HelperPref;
+import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.response.FollowResponse;
@@ -58,7 +58,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         initUI();
 
         if (customerUserId != 0) {
-            customerProfilePresenter.getProfile(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new ProfileRequest(customerUserId));
+            customerProfilePresenter.getProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
         }
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -120,36 +120,39 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onGetProfile(ProfileResponse profileResponse) {
+        try {
+            ProfileResponse.Userinfo userInfo = profileResponse.getUserinfo();
 
-        ProfileResponse.Userinfo userInfo = profileResponse.getUserinfo();
+            userName.setText(String.format("%s %s", userInfo.getName(), userInfo.getLastname()));
+            this.customerUserName = userInfo.getName() + " " + userInfo.getLastname();
 
-        userName.setText(String.format("%s %s", userInfo.getName(), userInfo.getLastname()));
-        this.customerUserName = userInfo.getName() + " " + userInfo.getLastname();
+            nickName.setText(String.format("@%s", userInfo.getNickname()));
+            following.setText(String.valueOf(userInfo.getFollowing()));
+            follower.setText(String.valueOf(userInfo.getFollower()));
+            reaction.setText(String.valueOf(userInfo.getReactions()));
 
-        nickName.setText(String.format("@%s", userInfo.getNickname()));
-        following.setText(String.valueOf(userInfo.getFollowing()));
-        follower.setText(String.valueOf(userInfo.getFollower()));
-        reaction.setText(String.valueOf(userInfo.getReactions()));
+            if (userInfo.getProfile_pic() != null)
+                HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), image);
 
-        if (userInfo.getProfile_pic() != null)
-            HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), image);
+            if (userInfo.getFollow() == 1)
+                followBtn.setText(getResources().getString(R.string.following));
+            else
+                followBtn.setText(getResources().getString(R.string.follow));
 
-        if (userInfo.getFollow() == 1)
-            followBtn.setText("Following");
-        else
-            followBtn.setText("Follow");
+            if (userInfo.getBiography() != null) {
+                bioContainer.setVisibility(View.VISIBLE);
+                bioBtn.setVisibility(View.VISIBLE);
+                bio.setText(userInfo.getBiography());
+            } else {
+                bioContainer.setVisibility(View.GONE);
+                bioBtn.setVisibility(View.GONE);
+            }
 
-        if (userInfo.getBiography() != null) {
-            bioContainer.setVisibility(View.VISIBLE);
-            bioBtn.setVisibility(View.VISIBLE);
-            bio.setText(userInfo.getBiography());
-        } else {
-            bioContainer.setVisibility(View.GONE);
-            bioBtn.setVisibility(View.GONE);
+            loaderContainer.setVisibility(View.GONE);
+            lottieLoader.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        loaderContainer.setVisibility(View.GONE);
-        lottieLoader.setVisibility(View.GONE);
     }
 
     @Override
@@ -164,13 +167,11 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     public void onFollowSuccess(FollowResponse followResponse) {
         switch (followResponse.getStatus()) {
             case 0:
-                followBtn.setText("Following");
-                Toast.makeText(this, followResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                followBtn.setText(getResources().getString(R.string.following));
                 break;
 
             case 1:
-                followBtn.setText("Follow");
-                Toast.makeText(this, followResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                followBtn.setText(getResources().getString(R.string.follow));
                 break;
         }
 
@@ -188,7 +189,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
                 break;
 
             case R.id.customer_profile_follow_btn:
-                customerProfilePresenter.follow(ACCESS_TOKEN_BEARER + HelperPref.getAccessToken(this), new FollowRequest(customerUserId));
+                customerProfilePresenter.follow(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new FollowRequest(customerUserId));
                 break;
 
             case R.id.customer_profile_follow_container:
