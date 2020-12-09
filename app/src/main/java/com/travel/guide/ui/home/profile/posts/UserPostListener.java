@@ -10,6 +10,8 @@ public interface UserPostListener {
 
     void onGetPostsError(String message);
 
+    void onLazyLoad(int postId);
+
     void onPostChoose(int postId);
 
 }

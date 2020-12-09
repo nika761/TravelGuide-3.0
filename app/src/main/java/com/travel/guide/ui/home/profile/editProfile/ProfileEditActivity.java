@@ -46,6 +46,7 @@ import static com.travel.guide.enums.InputFieldPairs.EMAIL;
 import static com.travel.guide.enums.InputFieldPairs.NAME;
 import static com.travel.guide.enums.InputFieldPairs.NICKNAME;
 import static com.travel.guide.enums.InputFieldPairs.SURNAME;
+import static com.travel.guide.utility.BaseApplication.AGE_RESTRICTION;
 import static com.travel.guide.utility.GlobalPreferences.getAccessToken;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
@@ -169,8 +170,9 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int age = currentYear - year;
+            int ageRestrict = AGE_RESTRICTION;
 
-            if (age < 13) {
+            if (age < ageRestrict) {
                 Toast.makeText(this, "Application age restriction 13+", Toast.LENGTH_SHORT).show();
             } else {
                 String date = year + "/" + monthString + "/" + dayString;

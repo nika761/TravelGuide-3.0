@@ -16,15 +16,26 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.travel.guide.R;
 import com.travel.guide.helper.broadcast.NotificationReceiver;
+import com.travel.guide.model.response.AppSettingsResponse;
+import com.travel.guide.network.ApiService;
+import com.travel.guide.network.RetrofitManager;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BaseApplication extends Application {
 
     public static final String CHANNEL_ID = "uploading";
     public static final String CHANNEL_NAME = "upload_post";
+
+    public static int CROP_OPTION_X;
+    public static int CROP_OPTION_Y;
+    public static int AGE_RESTRICTION;
 
     @Override
     public void onCreate() {
@@ -34,6 +45,7 @@ public class BaseApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        getAppSettings();
     }
 
     private void createNotificationChannel() {
@@ -81,6 +93,25 @@ public class BaseApplication extends Application {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getAppSettings() {
+        ApiService apiService = RetrofitManager.getApiService();
+        apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
+            @Override
+            public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    CROP_OPTION_X = response.body().getApp_settings().getStory_photo_crop_width();
+                    CROP_OPTION_Y = response.body().getApp_settings().getStory_photo_crop_height();
+                    AGE_RESTRICTION = response.body().getApp_settings().getAge_restriction();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppSettingsResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
 }

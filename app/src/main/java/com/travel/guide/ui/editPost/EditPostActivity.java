@@ -29,6 +29,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.travel.guide.utility.BaseApplication.CROP_OPTION_X;
+import static com.travel.guide.utility.BaseApplication.CROP_OPTION_Y;
+
 
 public class EditPostActivity extends AppCompatActivity implements EditPostCallback {
 
@@ -119,11 +122,24 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
     @Override
     public void onCropChoose(String path, int position) {
         this.adapterPosition = position;
-        CropImage.activity(Uri.fromFile(new File(path)))
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(9, 16)
-                .setMultiTouchEnabled(true)
-                .start(this);
+
+        if (CROP_OPTION_X != 0 && CROP_OPTION_Y != 0) {
+            try {
+                CropImage.activity(Uri.fromFile(new File(path)))
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setAspectRatio(CROP_OPTION_X, CROP_OPTION_Y)
+                        .setMultiTouchEnabled(true)
+                        .start(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            CropImage.activity(Uri.fromFile(new File(path)))
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setMultiTouchEnabled(true)
+                    .start(this);
+        }
     }
 
     @Override

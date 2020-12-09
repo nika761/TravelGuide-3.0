@@ -119,28 +119,25 @@ public class HelperMedia {
                     MediaStore.Images.Media.DISPLAY_NAME,
                     MediaStore.Images.Media.DURATION,
                     MediaStore.Images.Media.DATA,
-                    MediaStore.Images.Media.SIZE
-            };
-            String selection = MediaStore.Images.Media.DURATION +
-                    " >= ?";
-            String[] selectionArgs = new String[]{
-                    String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
+                    MediaStore.Images.Media.SIZE};
+
+            String selection = MediaStore.Images.Media.DURATION + " >= ?";
+            String[] selectionArgs = new String[]{String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
 
             String sortOrder = MediaStore.Images.Media.DISPLAY_NAME + " DESC";
+            String sorting = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
             try (Cursor cursor = context.getContentResolver().query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     projection,
                     null,
                     null,
-                    sortOrder
+                    sorting
             )) {
                 // Cache column indices.
                 int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                int nameColumn =
-                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-                int durationColumn =
-                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
+                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
                 int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
 
                 while (cursor.moveToNext()) {
@@ -151,7 +148,6 @@ public class HelperMedia {
                     int size = cursor.getInt(sizeColumn);
 
                     String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-
 
                     listOfAllPaths.add(path);
                 }
@@ -198,26 +194,24 @@ public class HelperMedia {
                     MediaStore.Video.Media.DURATION,
                     MediaStore.Video.Media.SIZE
             };
-            String selection = MediaStore.Video.Media.DURATION +
-                    " >= ?";
-            String[] selectionArgs = new String[]{
-                    String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
+            String selection = MediaStore.Video.Media.DURATION + " >= ?";
+
+            String[] selectionArgs = new String[]{String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
 
             String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " DESC";
+            String sorting = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
             try (Cursor cursor = context.getContentResolver().query(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                     projection,
                     null,
                     null,
-                    sortOrder)) {
+                    sorting)) {
                 // Cache column indices.
                 if (cursor != null) {
                     int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-                    int nameColumn =
-                            cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-                    int durationColumn =
-                            cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+                    int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
+                    int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
                     int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
 
                     while (cursor.moveToNext()) {

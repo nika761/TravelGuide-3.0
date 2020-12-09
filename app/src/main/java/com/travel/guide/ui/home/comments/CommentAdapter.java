@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.response.CommentResponse;
@@ -176,12 +178,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             if (comments.get(position).getComment_liked_by_me()) {
 
                 if (countPlus > comments.get(position).getComment_likes()) {
-                    likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
+                    YoYo.with(Techniques.RubberBand)
+                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null)))
+                            .duration(250)
+                            .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
                     comments.get(position).setComment_liked_by_me(false);
                 } else {
+                    YoYo.with(Techniques.RubberBand)
+                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null)))
+                            .duration(250)
+                            .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes() - 1));
-                    likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
                     countMinus = comments.get(position).getComment_likes() - 1;
                     comments.get(position).setComment_liked_by_me(false);
                 }
@@ -189,11 +197,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             } else {
 
                 if (countMinus < comments.get(position).getComment_likes()) {
-                    likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
+                    YoYo.with(Techniques.RubberBand)
+                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null)))
+                            .duration(250)
+                            .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
                     comments.get(position).setComment_liked_by_me(true);
                 } else {
-                    likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
+                    YoYo.with(Techniques.RubberBand)
+                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null)))
+                            .duration(250)
+                            .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes() + 1));
                     countPlus = comments.get(position).getComment_likes() + 1;
                     comments.get(position).setComment_liked_by_me(true);

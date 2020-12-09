@@ -34,11 +34,9 @@ public class GalleryAdapterMin extends RecyclerView.Adapter<GalleryAdapterMin.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (selectedItemsPath.get(position).endsWith(".mp4")) {
-
             HelperMedia.loadPhoto(holder.imageView.getContext(), selectedItemsPath.get(position), holder.imageView);
             holder.duration.setVisibility(View.VISIBLE);
             holder.duration.setText(HelperMedia.getVideoDuration(selectedItemsPath.get(position)));
-
         } else {
             holder.duration.setVisibility(View.GONE);
             HelperMedia.loadPhoto(holder.imageView.getContext(), selectedItemsPath.get(position), holder.imageView);
@@ -79,8 +77,8 @@ public class GalleryAdapterMin extends RecyclerView.Adapter<GalleryAdapterMin.Vi
                     break;
                 case R.id.cut_media_photo_min:
                     selectedItemsPath.remove(getLayoutPosition());
-                    notifyDataSetChanged();
                     listener.onItemRemoved(selectedItemsPath);
+                    notifyDataSetChanged();
                     break;
             }
         }

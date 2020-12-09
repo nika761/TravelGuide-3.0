@@ -237,27 +237,7 @@ class SignInPresenter {
         });
     }
 
-    private void getAppSettings() {
-        apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
-            @Override
-            public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0) {
-                        signInListener.onGetSettings(response.body().getApp_settings());
-                    } else {
-                        signInListener.onError(response.message());
-                    }
-                } else {
-                    signInListener.onError(response.message());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<AppSettingsResponse> call, Throwable t) {
-                signInListener.onError(t.getMessage());
-            }
-        });
-    }
 
     private String generateKey() {
         String keyToken = null;

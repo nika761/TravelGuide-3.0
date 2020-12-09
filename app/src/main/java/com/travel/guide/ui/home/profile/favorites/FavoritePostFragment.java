@@ -2,12 +2,10 @@ package com.travel.guide.ui.home.profile.favorites;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.utility.GlobalPreferences;
@@ -31,20 +30,28 @@ import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class FavoritePostFragment extends Fragment implements FavoritePostListener {
 
-    private TextView tabMain, tabVideos, tabPhotos, tabAll;
-    private View contentList;
     private Context context;
     private RecyclerView recyclerView;
 
-    private boolean visible = true;
+    private FavoritePostAdapter favoritePostAdapter;
+
     private List<PostResponse.Posts> posts;
     private FavoritePostPresenter favoritePostPresenter;
     private ProfileFragment.OnPostChooseListener listener;
 
+    private LottieAnimationView loader;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_p_liked, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorites, container, false);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        recyclerView = view.findViewById(R.id.favorite_post_recycler);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setHasFixedSize(true);
+
+        loader = view.findViewById(R.id.favorite_paging_loader);
 
         favoritePostPresenter = new FavoritePostPresenter(this);
 
@@ -53,22 +60,6 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-
-        contentList = view.findViewById(R.id.tab_liked_main_cont);
-
-        recyclerView = view.findViewById(R.id.favorite_post_recycler);
-
-        tabVideos = view.findViewById(R.id.tab_liked_video);
-        tabVideos.setOnClickListener(this::onTabItemClick);
-
-        tabPhotos = view.findViewById(R.id.tab_liked_photo);
-        tabPhotos.setOnClickListener(this::onTabItemClick);
-
-        tabMain = view.findViewById(R.id.tab_liked_main);
-        tabMain.setOnClickListener(this::onTabItemClick);
-
-        tabAll = view.findViewById(R.id.tab_liked_all);
-        tabAll.setOnClickListener(this::onTabItemClick);
 
         return view;
     }
@@ -85,75 +76,52 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         this.context = context;
     }
 
-    private void loadAnimation(View target, int animationId, int offset) {
-        Animation animation = AnimationUtils.loadAnimation(context, animationId);
-        animation.setStartOffset(offset);
-        target.startAnimation(animation);
-    }
+    private void initRecycler(List<PostResponse.Posts> posts) {
 
-    private void setTabTextColor(TextView textView, int color) {
-        textView.setTextColor(getResources().getColor(color));
-    }
+        favoritePostAdapter = new FavoritePostAdapter(this);
 
-    private void onTabItemClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.tab_liked_main:
-                if (visible) {
-                    contentList.setVisibility(View.VISIBLE);
-                    visible = false;
-                } else {
-                    contentList.setVisibility(View.GONE);
-                    visible = true;
-                }
-                break;
-
-            case R.id.tab_liked_video:
-                tabMain.setText("Videos");
-                setTabTextColor(tabVideos, R.color.yellowTextView);
-                setTabTextColor(tabPhotos, R.color.black);
-                setTabTextColor(tabAll, R.color.black);
-                contentList.setVisibility(View.GONE);
-                visible = true;
-
-                break;
-
-            case R.id.tab_liked_photo:
-                tabMain.setText("Photos");
-                setTabTextColor(tabPhotos, R.color.yellowTextView);
-                setTabTextColor(tabVideos, R.color.black);
-                setTabTextColor(tabAll, R.color.black);
-                contentList.setVisibility(View.GONE);
-                visible = true;
-
-                break;
-
-            case R.id.tab_liked_all:
-                tabMain.setText("All");
-                setTabTextColor(tabAll, R.color.yellowTextView);
-                setTabTextColor(tabPhotos, R.color.black);
-                setTabTextColor(tabVideos, R.color.black);
-                contentList.setVisibility(View.GONE);
-                visible = true;
-
-                break;
-        }
-    }
-
-    @Override
-    public void onGetPosts(PostResponse postResponse) {
-        this.posts = postResponse.getPosts();
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        FavoritePostAdapter adapter = new FavoritePostAdapter(postResponse.getPosts(), this);
         int itemWidth = HelperMedia.getScreenWidth(getActivity());
         if (itemWidth != 0)
-            adapter.setItemWidth(itemWidth);
-        recyclerView.setAdapter(adapter);
+            favoritePostAdapter.setItemWidth(itemWidth);
+
+        favoritePostAdapter.setPosts(posts);
+        recyclerView.setAdapter(favoritePostAdapter);
+    }
+
+
+    @Override
+    public void onGetPosts(List<PostResponse.Posts> posts) {
+        try {
+            if (favoritePostAdapter == null) {
+                initRecycler(posts);
+                this.posts = posts;
+            } else {
+                this.posts.addAll(posts);
+                favoritePostAdapter.setPosts(this.posts);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//
+//        try {
+//            if (this.posts == null) {
+//                this.posts = posts;
+//            } else {
+//                this.posts.addAll(posts);
+//            }
+//
+//            if (favoritePostAdapter == null)
+//                initRecycler(posts);
+//            else
+//                favoritePostAdapter.setPosts(this.posts);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
+
 
     @Override
     public void onGetPostsError(String message) {
@@ -161,22 +129,31 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     }
 
     @Override
-    public void onPostChoose(int postId) {
-        int position = 0;
+    public void onLazyLoad(int postId) {
+        favoritePostPresenter.getFavoritePosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new FavoritePostRequest(postId));
+    }
 
-        for (int i = 0; i < posts.size(); i++) {
-            if (posts.get(i).getPost_id() == postId) {
-                position = i;
-            }
-        }
+    @Override
+    public void onPostChoose(int postId) {
+        int position = getPositionById(postId);
 
         Bundle data = new Bundle();
         data.putInt("postPosition", position);
         data.putSerializable("PostShowType", FAVORITES);
         data.putSerializable("favoritePosts", (Serializable) posts);
-
         listener.onPostChoose(data);
+
     }
+
+    private int getPositionById(int postId) {
+        for (int i = 0; i < posts.size(); i++) {
+            if (posts.get(i).getPost_id() == postId) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 
     @Override
     public void onDestroy() {

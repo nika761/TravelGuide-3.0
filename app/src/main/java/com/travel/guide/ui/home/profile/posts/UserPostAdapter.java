@@ -32,6 +32,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
     @Override
     public void onBindViewHolder(@NonNull UserPostAdapter.UserPostHolder holder, int position) {
+        holder.loadMoreCallback(position);
         holder.postImage.getLayoutParams().width = itemWidth;
         HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
         holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
@@ -44,13 +45,15 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     }
 
     public void setPosts(List<PostResponse.Posts> posts) {
-        if (this.posts != null && this.posts.size() != 0)
-            this.posts.addAll(posts);
-
-        else {
-            this.posts = posts;
-            notifyDataSetChanged();
-        }
+//        if (this.posts != null && this.posts.size() != 0) {
+//            this.posts.addAll(posts);
+//            notifyDataSetChanged();
+//        } else {
+//            this.posts = posts;
+//            notifyDataSetChanged();
+//        }
+        this.posts = posts;
+        notifyDataSetChanged();
     }
 
     void setItemWidth(int itemWidth) {
@@ -68,6 +71,12 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             nickName = itemView.findViewById(R.id.item_customer_post_nick);
             postImage = itemView.findViewById(R.id.favorite_post_cover);
             postImage.setOnClickListener(v -> userPostListener.onPostChoose(posts.get(getLayoutPosition()).getPost_id()));
+        }
+
+        void loadMoreCallback(int position) {
+            if (position == posts.size() - 1) {
+                userPostListener.onLazyLoad(posts.get(position).getPost_id());
+            }
         }
     }
 }

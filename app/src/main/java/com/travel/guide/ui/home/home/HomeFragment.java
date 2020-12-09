@@ -1,5 +1,6 @@
 package com.travel.guide.ui.home.home;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,18 +27,22 @@ import com.bumptech.glide.RequestManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
+import com.travel.guide.helper.DialogManager;
 import com.travel.guide.helper.customView.CustomPostAdapter;
 import com.travel.guide.helper.customView.CustomPostRecycler;
 import com.travel.guide.helper.customView.CustomProgressBar;
+import com.travel.guide.model.request.DeleteStoryRequest;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.request.SetPostFavoriteRequest;
 import com.travel.guide.model.request.SetStoryLikeRequest;
 import com.travel.guide.model.request.SharePostRequest;
+import com.travel.guide.model.response.DeleteStoryResponse;
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
 import com.travel.guide.model.response.SetStoryLikeResponse;
+import com.travel.guide.ui.upload.UploadPostActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -65,10 +71,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     private int postId;
     private int customerUserId;
+    private int deletedStoryPosition;
 
     private GetPostsFrom getPostsFrom;
     private CustomPostRecycler customPostRecycler;
     private CustomPostAdapter customPostAdapter;
+
+    private List<PostResponse.Posts> posts;
 
     @Nullable
     @Override
@@ -97,13 +106,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         customPostRecycler.setCustomProgressBar(customProgressBar);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(customPostRecycler);
-
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(postRecycler.getContext());
-
-        Bundle params = new Bundle();
-        params.putString("post_name", "pirveli posti");
-        params.putString("full_text", "pirveli posti testi");
-        firebaseAnalytics.logEvent("share_image", params);
 
         return view;
     }
@@ -143,19 +145,22 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     private void initRecyclerView(List<PostResponse.Posts> posts, boolean scrollToPosition, int scrollPosition) {
         customPostRecycler.setPosts(posts);
-        customPostAdapter = new CustomPostAdapter(this, initGlide());
+        customPostAdapter = new CustomPostAdapter(this);
         customPostAdapter.setPosts(posts);
         customPostRecycler.setAdapter(customPostAdapter);
         try {
             if (scrollToPosition) {
                 if (scrollPosition == 0)
                     customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
-                else
+                else {
                     customPostRecycler.post(() -> customPostRecycler.smoothScrollToPosition(scrollPosition));
+                    Log.e("qqwqwqwqw", "scrolled to " + scrollPosition);
+                }
             } else {
                 customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
             }
         } catch (Exception e) {
+            Log.e("qqwqwqwqw", "fucked upp in home fragment");
             e.printStackTrace();
         }
 
@@ -232,14 +237,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     }
 
-    private RequestManager initGlide() {
-//        RequestOptions options = new RequestOptions()
-//                .placeholder(R.drawable.bg_confirmation)
-//                .error(R.drawable.bg_confirmation);
-
-        return Glide.with(customPostRecycler.getContext());
-    }
-
     @Override
     public void onGetPosts(List<PostResponse.Posts> posts) {
 //
@@ -249,12 +246,26 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 //            postAdapter.setPosts(posts);
 //        }
 
-        if (customPostAdapter == null) {
-            initRecyclerView(posts, false, 0);
-        } else {
-            customPostAdapter.setPosts(posts);
-            customPostRecycler.setPosts(posts);
+//        if (customPostAdapter == null) {
+//            initRecyclerView(posts, false, 0);
+//        } else {
+//            customPostAdapter.setPosts(posts);
+//            customPostRecycler.setPosts(posts);
+//        }
+
+        try {
+            if (customPostAdapter == null) {
+                initRecyclerView(posts, false, 0);
+                this.posts = posts;
+            } else {
+                this.posts.addAll(posts);
+                customPostAdapter.setPosts(this.posts);
+                customPostRecycler.setPosts(this.posts);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -336,7 +347,32 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
             intent.putExtra("id", userId);
             postRecycler.getContext().startActivity(intent);
         }
+    }
 
+    @Override
+    public void onChooseDeleteStory(int storyId, int postId, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(postRecycler.getContext());
+        builder.setTitle("Delete Story ?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    deletedStoryPosition = position;
+                    presenter.deleteStory(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new DeleteStoryRequest(postId));
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .create();
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(postRecycler.getContext().getResources().getDrawable(R.drawable.bg_sign_out_dialog, null));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+        }
+        dialog.show();
+    }
+
+    @Override
+    public void onStoryDeleted(DeleteStoryResponse deleteStoryResponse) {
+        Intent intent = new Intent(getContext(), HomePageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override
@@ -372,6 +408,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         if (requestCode == SHARING_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 presenter.setPostShare(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(postId));
+            } else {
+                Intent intent = new Intent(getContext(), HomePageActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         }
     }
@@ -385,12 +425,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
             presenter = null;
 
         super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        Log.e("zxczxc","paused");
-        super.onPause();
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.travel.guide.model.request.ChangeLangRequest;
 import com.travel.guide.model.request.CommentRequest;
 import com.travel.guide.model.request.DeleteCommentRequest;
 import com.travel.guide.model.request.DeleteReplyRequest;
+import com.travel.guide.model.request.DeleteStoryRequest;
 import com.travel.guide.model.request.LanguageStringsRequest;
 import com.travel.guide.model.request.LikeCommentReplyRequest;
 import com.travel.guide.model.request.LikeCommentRequest;
@@ -51,6 +52,7 @@ import com.travel.guide.model.response.ChangePasswordResponse;
 import com.travel.guide.model.response.CommentResponse;
 import com.travel.guide.model.response.DeleteCommentResponse;
 import com.travel.guide.model.response.DeleteReplyResponse;
+import com.travel.guide.model.response.DeleteStoryResponse;
 import com.travel.guide.model.response.FavoriteMusicResponse;
 import com.travel.guide.model.response.FollowerResponse;
 import com.travel.guide.model.response.FollowingResponse;
@@ -233,6 +235,11 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("password/reset")
     Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("delete/post")
+    Call<DeleteStoryResponse> deleteStory(@Header("Authorization") String token,
+                                          @Body DeleteStoryRequest deleteStoryRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/my_favourite_posts")

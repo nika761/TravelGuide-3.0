@@ -1,11 +1,13 @@
 package com.travel.guide.ui.home.home;
 
+import com.travel.guide.model.request.DeleteStoryRequest;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.request.SetPostFavoriteRequest;
 import com.travel.guide.model.request.SetStoryLikeRequest;
 import com.travel.guide.model.request.SharePostRequest;
+import com.travel.guide.model.response.DeleteStoryResponse;
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
 import com.travel.guide.model.response.SetStoryLikeResponse;
@@ -183,6 +185,27 @@ public class HomeFragmentPresenter {
 
             @Override
             public void onFailure(Call<FollowResponse> call, Throwable t) {
+                homeFragmentListener.onError(t.getMessage());
+            }
+        });
+
+    }
+
+    void deleteStory(String accessToken, DeleteStoryRequest deleteStoryRequest) {
+        apiService.deleteStory(accessToken, deleteStoryRequest).enqueue(new Callback<DeleteStoryResponse>() {
+            @Override
+            public void onResponse(Call<DeleteStoryResponse> call, Response<DeleteStoryResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus() == 0) {
+                        homeFragmentListener.onStoryDeleted(response.body());
+                    }
+                } else {
+                    homeFragmentListener.onError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteStoryResponse> call, Throwable t) {
                 homeFragmentListener.onError(t.getMessage());
             }
         });

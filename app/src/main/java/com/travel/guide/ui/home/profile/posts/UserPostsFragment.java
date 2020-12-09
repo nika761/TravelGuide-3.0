@@ -49,11 +49,18 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     private int visibleItemCount;
     private int totalItemCount;
 
+    private boolean isCustomer = false;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_photo, container, false);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         postsRecycler = view.findViewById(R.id.customer_photo_recycler);
+        postsRecycler.setLayoutManager(gridLayoutManager);
+        postsRecycler.setHasFixedSize(true);
+
         userPostPresenter = new UserPostPresenter(this);
 
         try {
@@ -69,11 +76,12 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() == null) {
+            isCustomer = false;
             userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
         } else {
             this.getPostsFrom = (GetPostsFrom) getArguments().getSerializable("request_type");
-
             if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
+                isCustomer = true;
                 this.customerUserId = getArguments().getInt("customer_user_id");
                 userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
             }
@@ -82,45 +90,52 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     private void initRecycler(List<PostResponse.Posts> posts) {
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
-        postsRecycler.setLayoutManager(gridLayoutManager);
-        postsRecycler.setHasFixedSize(true);
 
         postAdapter = new UserPostAdapter(this);
+
         int itemWidth = HelperMedia.getScreenWidth(getActivity());
         if (itemWidth != 0)
             postAdapter.setItemWidth(itemWidth);
+
         postAdapter.setPosts(posts);
         postsRecycler.setAdapter(postAdapter);
 
-        postsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    visibleItemCount = gridLayoutManager.getChildCount();
-                    totalItemCount = gridLayoutManager.getItemCount();
-                    pastVisibleItems = gridLayoutManager.findFirstVisibleItemPosition();
-
-                    Log.e("dasdasdaczxczxczxczx", visibleItemCount + " " + totalItemCount + " " + pastVisibleItems);
-
-                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                    }
-
-                }
-            }
-        });
+//        postsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                if (dy > 0) {
+//                    visibleItemCount = gridLayoutManager.getChildCount();
+//                    totalItemCount = gridLayoutManager.getItemCount();
+//                    pastVisibleItems = gridLayoutManager.findFirstVisibleItemPosition();
+//
+//                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+//                        if (isCustomer) {
+//
+//                        }
+//                        Log.e("dasdasdaczxczxczxczx", "now");
+//                    }
+//
+//                }
+//            }
+//        });
 
     }
 
     @Override
     public void onGetPosts(List<PostResponse.Posts> posts) {
-        this.posts = posts;
+        try {
+            if (postAdapter == null) {
+                initRecycler(posts);
+                this.posts = posts;
+            } else {
+                this.posts.addAll(posts);
+                postAdapter.setPosts(this.posts);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        if (postAdapter == null)
-            initRecycler(posts);
-        else
-            postAdapter.setPosts(posts);
     }
 
     @Override
@@ -129,22 +144,34 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     }
 
     @Override
-    public void onPostChoose(int postId) {
-
-        int position = getPositionById(postId);
-
-        Bundle data = new Bundle();
-        data.putInt("postPosition", position);
-        if (getPostsFrom == CUSTOMER_POSTS) {
-            data.putSerializable("PostShowType", CUSTOMER_POSTS);
-            data.putInt("customer_user_id", customerUserId);
-            data.putSerializable("customer_posts", (Serializable) posts);
+    public void onLazyLoad(int postId) {
+        if (isCustomer) {
+            userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, postId));
         } else {
-            data.putSerializable("PostShowType", MY_POSTS);
-            data.putSerializable("my_posts", (Serializable) posts);
+            userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId));
         }
+    }
 
-        listener.onPostChoose(data);
+    @Override
+    public void onPostChoose(int postId) {
+        try {
+            int position = getPositionById(postId);
+
+            Bundle data = new Bundle();
+            data.putInt("postPosition", position);
+            if (getPostsFrom == CUSTOMER_POSTS) {
+                data.putSerializable("PostShowType", CUSTOMER_POSTS);
+                data.putInt("customer_user_id", customerUserId);
+                data.putSerializable("customer_posts", (Serializable) posts);
+            } else {
+                data.putSerializable("PostShowType", MY_POSTS);
+                data.putSerializable("my_posts", (Serializable) posts);
+            }
+
+            listener.onPostChoose(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private int getPositionById(int postId) {

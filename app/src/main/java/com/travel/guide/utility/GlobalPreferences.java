@@ -13,6 +13,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
+
 public class GlobalPreferences {
 
     public static final String FACEBOOK = "facebook";
@@ -117,6 +119,7 @@ public class GlobalPreferences {
     ///AccessToken
 
     public static void saveAccessToken(Context context, String accessToken) {
+        String access = ACCESS_TOKEN_BEARER + accessToken;
         getPref(context).edit().putString(ACCESS_KEY, accessToken).apply();
     }
 
@@ -130,6 +133,7 @@ public class GlobalPreferences {
         if (getPref(context).getString(ACCESS_KEY, null) != null) {
             accessToken = getPref(context).getString(ACCESS_KEY, null);
         }
+
         return accessToken;
     }
 

@@ -39,6 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.travel.guide.enums.LoadWebViewType.POLICY;
 import static com.travel.guide.enums.LoadWebViewType.TERMS;
+import static com.travel.guide.utility.BaseApplication.AGE_RESTRICTION;
 
 public class SignUpActivity extends AppCompatActivity implements SignUpListener, View.OnClickListener {
 
@@ -128,8 +129,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int age = currentYear - year;
+            int ageRestrict = AGE_RESTRICTION;
 
-            if (age < 13) {
+            if (age < ageRestrict) {
                 Toast.makeText(this, "Application age restriction 13+", Toast.LENGTH_SHORT).show();
             } else {
                 String date = year + "/" + monthString + "/" + dayString;

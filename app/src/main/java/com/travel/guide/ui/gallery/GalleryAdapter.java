@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityOptionsCompat;
@@ -50,6 +51,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
             holder.imageView.getLayoutParams().width = itemWidth;
             HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
         } else {
+            holder.imageView.getLayoutParams().width = itemWidth;
             HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
             holder.duration.setVisibility(View.VISIBLE);
             holder.duration.setText(HelperMedia.getVideoDuration(uris.get(position)));
@@ -103,17 +105,27 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.selected_image_item_count_view:
-                    if (selectedItemPositions.containsKey(getLayoutPosition())) {
-                        for (Map.Entry<Integer, Integer> integerIntegerEntry : selectedItemPositions.entrySet()) {
-                            if (selectedItemPositions.get(getLayoutPosition()) < (int) ((Map.Entry) integerIntegerEntry).getValue())
-                                selectedItemPositions.put((Integer) ((Map.Entry) integerIntegerEntry).getKey(), ((Integer) ((Map.Entry) integerIntegerEntry).getValue()) - 1);
+                    if (selectedItemPositions.size() > 0) {
+                        if (selectedItemPositions.containsKey(getLayoutPosition())) {
+                            selectedItemPositions.remove(getLayoutPosition());
+                            listener.onItemSelected(uris.get(getLayoutPosition()));
+                        } else {
+                            Toast.makeText(imageView.getContext(), "You can choose only one item", Toast.LENGTH_SHORT).show();
                         }
-                        selectedItemPositions.remove(getLayoutPosition());
                     } else {
                         selectedItemPositions.put(getLayoutPosition(), selectedItemPositions.size() + 1);
+                        listener.onItemSelected(uris.get(getLayoutPosition()));
                     }
+//                    if (selectedItemPositions.containsKey(getLayoutPosition())) {
+//                        for (Map.Entry<Integer, Integer> integerIntegerEntry : selectedItemPositions.entrySet()) {
+//                            if (selectedItemPositions.get(getLayoutPosition()) < (int) ((Map.Entry) integerIntegerEntry).getValue())
+//                                selectedItemPositions.put((Integer) ((Map.Entry) integerIntegerEntry).getKey(), ((Integer) ((Map.Entry) integerIntegerEntry).getValue()) - 1);
+//                        }
+//                        selectedItemPositions.remove(getLayoutPosition());
+//                    } else {
+//                        selectedItemPositions.put(getLayoutPosition(), selectedItemPositions.size() + 1);
+//                    }
                     notifyDataSetChanged();
-                    listener.onItemSelected(uris.get(getLayoutPosition()));
 //                    listener.selectedPaths(getSelectedPaths(), isImage);
 //                    if (isImage) {
 //                        listener.imageSelectedPaths(uris.get(getLayoutPosition()));

@@ -45,7 +45,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
         Bitmap fromAsset = getBitmapFromAsset(holder.itemView.getContext(), filterPair.first);
         holder.mImageFilterView.setImageBitmap(fromAsset);
         holder.mTxtFilterName.setText(filterPair.second.name().replace("_", " "));
-
     }
 
     @Override

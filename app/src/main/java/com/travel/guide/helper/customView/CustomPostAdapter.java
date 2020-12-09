@@ -16,12 +16,10 @@ import java.util.List;
 
 public class CustomPostAdapter extends RecyclerView.Adapter {
     private List<PostResponse.Posts> posts;
-    private RequestManager requestManager;
     private HomeFragmentListener listener;
 
-    public CustomPostAdapter(HomeFragmentListener listener, RequestManager requestManager) {
+    public CustomPostAdapter(HomeFragmentListener listener) {
         this.listener = listener;
-        this.requestManager = requestManager;
     }
 
     @NonNull
@@ -32,8 +30,7 @@ public class CustomPostAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
-        ((CustomPostHolder) viewHolder).onBind(posts.get(position), requestManager, listener, position);
-        Log.e("posts", "position is " + posts.get(position).getPost_id());
+        ((CustomPostHolder) viewHolder).onBind(posts.get(position), listener, position);
         loadMoreCallback(position);
     }
 
@@ -43,12 +40,18 @@ public class CustomPostAdapter extends RecyclerView.Adapter {
     }
 
     public void setPosts(List<PostResponse.Posts> posts) {
-        if (this.posts != null && this.posts.size() != 0)
-            this.posts.addAll(posts);
-        else {
+        if (this.posts == null) {
             this.posts = posts;
             notifyDataSetChanged();
+        } else {
+            this.posts = posts;
         }
+//        if (this.posts != null && this.posts.size() != 0)
+//            this.posts.addAll(posts);
+//        else {
+//            this.posts = posts;
+//            notifyDataSetChanged();
+//        }
     }
 
     private void loadMoreCallback(int position) {

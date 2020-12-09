@@ -2,6 +2,7 @@ package com.travel.guide.ui.home.home;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.travel.guide.model.response.DeleteStoryResponse;
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
@@ -39,6 +40,11 @@ public interface HomeFragmentListener {
     void onCommentChoose(int storyId, int postId);
 
     void onUserChoose(int userId);
+
+
+    void onChooseDeleteStory(int storyId, int postId, int position);
+
+    void onStoryDeleted(DeleteStoryResponse deleteStoryResponse);
 
 
     void onLazyLoad(int fromPostId);
