@@ -37,8 +37,8 @@ import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.travel.guide.enums.LoadWebViewType.POLICY;
-import static com.travel.guide.enums.LoadWebViewType.TERMS;
+import static com.travel.guide.enums.LoadWebViewBy.POLICY;
+import static com.travel.guide.enums.LoadWebViewBy.TERMS;
 import static com.travel.guide.utility.BaseApplication.AGE_RESTRICTION;
 
 public class SignUpActivity extends AppCompatActivity implements SignUpListener, View.OnClickListener {

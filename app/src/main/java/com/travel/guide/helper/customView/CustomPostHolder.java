@@ -1,12 +1,5 @@
 package com.travel.guide.helper.customView;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
-import android.provider.MediaStore;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -18,25 +11,18 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.travel.guide.R;
-import com.travel.guide.enums.SearchPostType;
 import com.travel.guide.enums.StoryEmotionType;
-import com.travel.guide.helper.HelperMedia;
-import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.PostResponse;
-import com.travel.guide.ui.home.home.HashtagAdapter;
 import com.travel.guide.ui.home.home.HomeFragmentListener;
-import com.travel.guide.ui.searchPost.SearchPostActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CustomPostHolder extends RecyclerView.ViewHolder {
 
-    public ImageView storyCover, volumeControl;
+    public ImageView storyCover, music, videoPlayIcon;
     public View parent;
     public HomeFragmentListener listener;
 
@@ -71,6 +57,8 @@ public class CustomPostHolder extends RecyclerView.ViewHolder {
         storyShares = itemView.findViewById(R.id.story_share_count);
         storyFavorites = itemView.findViewById(R.id.story_favorites_count);
         hashtagRecycler = itemView.findViewById(R.id.hashtag_recycler);
+        music = itemView.findViewById(R.id.music_icon);
+        videoPlayIcon = itemView.findViewById(R.id.video_playback);
 
         favorite = itemView.findViewById(R.id.story_favorites);
 //        favorite.setOnClickListener(v -> {
@@ -102,7 +90,7 @@ public class CustomPostHolder extends RecyclerView.ViewHolder {
         location = itemView.findViewById(R.id.post_location);
 //        location.setOnClickListener(v -> {
 //            Intent postHashtagIntent = new Intent(videoItem.getContext(), SearchPostActivity.class);
-//            postHashtagIntent.putExtra("search_type", SearchPostType.LOCATION);
+//            postHashtagIntent.putExtra("search_type", SearchPostBy.LOCATION);
 //            postHashtagIntent.putExtra("search_post_id", post.getPost_id());
 //            like.getContext().startActivity(postHashtagIntent);
 //        });

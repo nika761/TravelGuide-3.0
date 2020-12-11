@@ -1,6 +1,5 @@
 package com.travel.guide.helper.customView;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,16 +15,12 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -48,12 +44,13 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
 import com.travel.guide.R;
-import com.travel.guide.enums.SearchPostType;
-import com.travel.guide.enums.StoryEmotionType;
+import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.ui.home.home.HashtagAdapter;
@@ -63,6 +60,7 @@ import com.travel.guide.utility.GlobalPreferences;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +71,10 @@ public class CustomPostRecycler extends RecyclerView {
     private static final String TAG = "VideoPlayerRecyclerView";
 
     private enum VolumeState {ON, OFF}
+
+    private enum EmotionState {DEFAULT, CUSTOM}
+
+    private enum EmotionType {LIKE, FAVORITE, FOLLOW}
 
     // ui
     private ImageView thumbnail;
@@ -95,13 +97,14 @@ public class CustomPostRecycler extends RecyclerView {
     private int currentPlayingPosition;
 
     // controlling playback state
-    private VolumeState volumeState;
+    private boolean soundOn = true;
+    private boolean videoPlaying = true;
 
     private HomeFragmentListener homeFragmentListener;
     private CustomProgressBar customProgressBar;
 
     /// holder ui
-    public ImageView storyCover, volumeControl;
+    public ImageView storyCover, music, videoPlayIcon;
     public View parent;
     public RequestManager requestManager;
 //    public HomeFragmentListener listener;
@@ -114,13 +117,14 @@ public class CustomPostRecycler extends RecyclerView {
     public FrameLayout media_container;
 //    public PostResponse.Posts post;
 
-    public int ownerUserId;
+    public static int ownerUserId;
     public int position;
     public int countLikeUp = -1;
     public int countLikeDown = Integer.MAX_VALUE;
 
     public int countFavoriteUp = -1;
     public int countFavoriteDown = Integer.MAX_VALUE;
+
 
     public CustomPostRecycler(@NonNull Context context) {
         super(context);
@@ -135,29 +139,34 @@ public class CustomPostRecycler extends RecyclerView {
 
     private void init(Context context) {
         this.context = context.getApplicationContext();
-        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        videoSurfaceDefaultHeight = point.x;
-        screenDefaultHeight = point.y;
+        ownerUserId = GlobalPreferences.getUserId(context);
+        try {
+            Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            Point point = new Point();
+            display.getSize(point);
+            videoSurfaceDefaultHeight = point.x;
+            screenDefaultHeight = point.y;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         videoSurfaceView = new PlayerView(this.context);
 //        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
-//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
-//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
-        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
+        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
+//        videoSurfaceView.setKeepScreenOn(true);
 
+//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
 
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 
         // 2. Create the player
-        videoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
+        videoPlayer = ExoPlayerFactory.newSimpleInstance(context, getTrackSelector());
         // Bind the player to the view.
         videoSurfaceView.setUseController(false);
+        videoSurfaceView.setKeepContentOnPlayerReset(true);
         videoSurfaceView.setPlayer(videoPlayer);
-        setVolumeControl(VolumeState.ON);
+        setVolume(VolumeState.ON);
 
         addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -168,18 +177,17 @@ public class CustomPostRecycler extends RecyclerView {
                     case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
 
                     case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-                        customProgressBar.stop(true);
+//                        customProgressBar.stop(true);
                         break;
 
                     case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-                        customProgressBar.stop(false);
-
+//                        customProgressBar.stop(false);
 //                        Log.d(TAG, "onScrollStateChanged: called.");
-                        if (thumbnail != null) {
+//                        if (thumbnail != null) {
 //                        thumbnail.setVisibility(VISIBLE);
-                        }
-                        customProgressBar.removeAllViews();
-                        customProgressBar.setStorySize(1);
+//                        }
+//                        customProgressBar.removeAllViews();
+//                        customProgressBar.setStorySize(1);
                         if (!recyclerView.canScrollVertically(1)) {
                             playVideo(true);
                         } else {
@@ -209,33 +217,48 @@ public class CustomPostRecycler extends RecyclerView {
             }
         });
 
+
         videoPlayer.addListener(new Player.EventListener() {
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+                homeFragmentListener.stopLoader();
+//                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+//
+//                }
+            }
+
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 switch (playbackState) {
                     case Player.STATE_BUFFERING:
-//                        Log.e(TAG, "onPlayerStateChanged: Buffering video.");
-                        if (progressBar != null) {
-                            progressBar.setVisibility(VISIBLE);
-                        }
+                        Log.d(TAG, "onPlayerStateChanged: Video ended.");
+//                        if (progressBar != null) {
+//                            progressBar.setVisibility(VISIBLE);
+//                        }
                         break;
 
                     case Player.STATE_ENDED:
-//                        Log.d(TAG, "onPlayerStateChanged: Video ended.");
+                        Log.d(TAG, "onPlayerStateChanged: Video ended.");
                         videoPlayer.seekTo(0);
-                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
+//                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         break;
 
                     case Player.STATE_IDLE:
-//                        Log.d(TAG, "onPlayerStateChanged: Idle here");
+                        Log.d(TAG, "onPlayerStateChanged: Idle here");
                         break;
 
                     case Player.STATE_READY:
-//                        Log.e(TAG, "onPlayerStateChanged: Ready to play.");
+                        homeFragmentListener.stopLoader();
+//                        if (playWhenReady) {
+//                            customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
+//                        } else {
+//                            customProgressBar.setPause(false);
+//                        }
+                        Log.d(TAG, "onPlayerStateChanged: Ready to play.");
                         if (progressBar != null) {
                             progressBar.setVisibility(GONE);
                         }
-                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         break;
 
                     default:
@@ -307,16 +330,11 @@ public class CustomPostRecycler extends RecyclerView {
             return;
         }
 
-        thumbnail = holder.storyCover;
-//        progressBar = holder.progressBar;
-        volumeControl = holder.volumeControl;
         viewHolderParent = holder.itemView;
         frameLayout = holder.itemView.findViewById(R.id.pl_container);
+        videoPlayIcon = holder.videoPlayIcon;
 
         videoSurfaceView.setPlayer(videoPlayer);
-
-//            viewHolderParent.setOnClickListener(v -> toggleVolume());
-
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "TravelGuide"));
 
         try {
@@ -334,7 +352,6 @@ public class CustomPostRecycler extends RecyclerView {
         bindItem(holder, posts.get(targetPosition));
 
         playingPosition = targetPosition;
-        homeFragmentListener.stopLoader();
         if (mediaUrl != null) {
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(mediaUrl));
             videoPlayer.prepare(videoSource);
@@ -345,7 +362,6 @@ public class CustomPostRecycler extends RecyclerView {
 
     private int getVisibleVideoSurfaceHeight(int playPosition) {
         int at = playPosition - ((LinearLayoutManager) getLayoutManager()).findFirstVisibleItemPosition();
-        Log.d(TAG, "getVisibleVideoSurfaceHeight: at: " + at);
 
         View child = getChildAt(at);
         if (child == null) {
@@ -365,7 +381,11 @@ public class CustomPostRecycler extends RecyclerView {
     // Remove the old player
     private void removeVideoView(PlayerView videoView) {
         try {
+            if (viewHolderParent != null)
+                viewHolderParent.setOnClickListener(null);
+
             ViewGroup parent = (ViewGroup) videoView.getParent();
+
             if (parent == null) {
                 return;
             }
@@ -374,7 +394,6 @@ public class CustomPostRecycler extends RecyclerView {
             if (index >= 0) {
                 parent.removeViewAt(index);
                 isVideoViewAdded = false;
-                viewHolderParent.setOnClickListener(null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -382,165 +401,159 @@ public class CustomPostRecycler extends RecyclerView {
     }
 
     private void bindItem(CustomPostHolder holder, PostResponse.Posts post) {
+
+        PostResponse.Post_stories story = post.getPost_stories().get(0);
+
         try {
-            storyCover = holder.storyCover;
-            nickName = holder.nickName;
-            description = holder.description;
-            musicName = holder.musicName;
-            storyLikes = holder.storyLikes;
-            storyComments = holder.storyComments;
-            storyShares = holder.storyShares;
-            storyFavorites = holder.storyFavorites;
-            hashtagRecycler = holder.hashtagRecycler;
+            HelperMedia.loadCirclePhotoProfile(context, post.getProfile_pic(), holder.profileImage);
 
-            favorite = holder.favorite;
-            favorite.setOnClickListener(v -> {
-                homeFragmentListener.onFavoriteChoose(post.getPost_id(), position);
-                setStoryEmotion(StoryEmotionType.FAVORITE, post);
+            if (post.getUser_id() == ownerUserId) {
+                holder.follow.setVisibility(GONE);
+            } else {
+                if (post.getI_follow_post_owner()) {
+                    holder.follow.setVisibility(View.GONE);
+                } else {
+                    holder.follow.setVisibility(View.VISIBLE);
+                }
+            }
 
-            });
-
-            menu = holder.menu;
-            menu.setOnClickListener(v -> holder.showMenu(menu));
-
-            share = holder.share;
-            share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
-
-            like = holder.like;
-            like.setOnClickListener(v -> {
-                homeFragmentListener.onStoryLikeChoose(post.getPost_id(), post.getPost_stories().get(0).getStory_id(), position);
-                setStoryEmotion(StoryEmotionType.LIKE, post);
-            });
-
-            follow = holder.follow;
-            follow.setOnClickListener(v -> {
-                homeFragmentListener.onFollowChoose(post.getUser_id());
-                setStoryEmotion(StoryEmotionType.FOLLOW, post);
-            });
-
-            comment = holder.comment;
-            comment.setOnClickListener(v -> homeFragmentListener.onCommentChoose(post.getPost_stories().get(0).getStory_id(), post.getPost_id()));
-
-            location = holder.location;
-            location.setOnClickListener(v -> {
-                Intent postHashtagIntent = new Intent(context, SearchPostActivity.class);
-                postHashtagIntent.putExtra("search_type", SearchPostType.LOCATION);
-                postHashtagIntent.putExtra("search_post_id", post.getPost_id());
-                like.getContext().startActivity(postHashtagIntent);
-            });
-
-            profileImage = holder.profileImage;
-            profileImage.setOnClickListener(v -> homeFragmentListener.onUserChoose(post.getUser_id()));
-
-            ownerUserId = GlobalPreferences.getUserId(like.getContext());
-
-            ///Bind view
-            if (post.getPost_stories().get(0).getStory_like_by_me())
-                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+            if (story.getStory_like_by_me())
+                holder.like.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart_red, null));
             else
-                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
+                holder.like.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart, null));
 
+            holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+            holder.storyComments.setText(String.valueOf(story.getStory_comments()));
+            holder.storyShares.setText(String.valueOf(post.getPost_shares()));
 
-            if (post.getI_follow_post_owner())
-                follow.setVisibility(View.GONE);
-            else
-                follow.setVisibility(View.VISIBLE);
-
-            if (post.getUser_id() == ownerUserId)
-                follow.setVisibility(View.GONE);
-            else
-                follow.setVisibility(VISIBLE);
-
-
+            holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
             if (post.getI_favor_post())
-                favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+                holder.favorite.setBackground(context.getResources().getDrawable(R.drawable.emoji_link_yellow, null));
             else
-                favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
+                holder.favorite.setBackground(context.getResources().getDrawable(R.drawable.emoji_link, null));
 
 
-            if (post.getDescription().isEmpty()) {
-                description.setVisibility(View.GONE);
+            holder.nickName.setText(post.getNickname());
+
+            if (post.getDescription() == null) {
+                holder.description.setVisibility(View.GONE);
             } else {
-                description.setVisibility(View.VISIBLE);
-                description.setText(post.getDescription());
+                if (post.getDescription().isEmpty() || post.getDescription().equals("")) {
+                    holder.description.setVisibility(View.GONE);
+                } else {
+                    holder.description.setVisibility(View.VISIBLE);
+                    holder.description.setText(post.getDescription());
+                }
             }
 
-            if (post.getHashtags().size() > 0) {
-                hashtagRecycler.setLayoutManager(new LinearLayoutManager(share.getContext(), RecyclerView.HORIZONTAL, false));
-                hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags()));
-                hashtagRecycler.setVisibility(View.VISIBLE);
+            if (post.getHashtags() == null) {
+                holder.hashtagRecycler.setVisibility(View.GONE);
             } else {
-                hashtagRecycler.setVisibility(View.GONE);
+                if (post.getHashtags().size() > 0) {
+                    holder.hashtagRecycler.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+                    holder.hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags()));
+                    holder.hashtagRecycler.setVisibility(View.VISIBLE);
+                } else {
+                    holder.hashtagRecycler.setVisibility(View.GONE);
+                }
             }
 
-            if (post.getPost_locations().size() != 0) {
-                location.setVisibility(VISIBLE);
-                location.setText(post.getPost_locations().get(0).getAddress());
+            if (post.getPost_locations() == null) {
+                holder.location.setVisibility(GONE);
             } else {
-                location.setText("");
-                location.setVisibility(GONE);
+                if (post.getPost_locations().size() != 0) {
+                    holder.location.setVisibility(VISIBLE);
+                    holder.location.setText(post.getPost_locations().get(0).getAddress());
+                } else {
+                    holder.location.setVisibility(GONE);
+                }
             }
 
+            holder.musicName.setText(post.getMusic_text());
+            holder.musicName.setSelected(true);
 
-            if (GlobalPreferences.getUserId(like.getContext()) == post.getUser_id())
-                menu.setVisibility(View.VISIBLE);
-            else
-                menu.setVisibility(View.GONE);
+            if (ownerUserId == post.getUser_id()) {
+                holder.menu.setVisibility(View.VISIBLE);
+            } else {
+                holder.menu.setVisibility(View.GONE);
+            }
 
-            nickName.setText(post.getNickname());
-            storyShares.setText(String.valueOf(post.getPost_shares()));
-            storyFavorites.setText(String.valueOf(post.getPost_favorites()));
-            storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes()));
-            storyComments.setText(String.valueOf(post.getPost_stories().get(0).getStory_comments()));
+            ////Listeners
+            holder.menu.setOnClickListener(v -> holder.showMenu(holder.menu));
 
-            musicName.setText(post.getMusic_text());
-            musicName.setSelected(true);
+            holder.profileImage.setOnClickListener(v -> homeFragmentListener.onUserChoose(post.getUser_id()));
 
-            HelperMedia.loadCirclePhoto(profileImage.getContext(), post.getProfile_pic(), profileImage);
+            holder.comment.setOnClickListener(v -> homeFragmentListener.onCommentChoose(story.getStory_id(), post.getPost_id()));
+
+            holder.follow.setOnClickListener(v -> {
+                homeFragmentListener.onFollowChoose(post.getUser_id());
+                setStoryEmotion(EmotionType.FOLLOW, post, holder);
+            });
+
+            holder.like.setOnClickListener(v -> {
+                homeFragmentListener.onStoryLikeChoose(post.getPost_id(), story.getStory_id(), position);
+                setStoryEmotion(EmotionType.LIKE, post, holder);
+            });
+
+            holder.share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
+            holder.favorite.setOnClickListener(v -> {
+                homeFragmentListener.onFavoriteChoose(post.getPost_id(), position);
+                setStoryEmotion(EmotionType.FAVORITE, post, holder);
+            });
+
+            holder.music.setOnClickListener(v -> {
+                if (soundOn) {
+                    holder.music.setBackground(context.getResources().getDrawable(R.drawable.icon_music_off, null));
+                    setVolume(VolumeState.OFF);
+                } else {
+                    holder.music.setBackground(context.getResources().getDrawable(R.drawable.icon_music, null));
+                    setVolume(VolumeState.ON);
+                }
+            });
+
+            holder.location.setOnClickListener(v -> {
+                Intent postHashtagIntent = new Intent(context, SearchPostActivity.class);
+                postHashtagIntent.putExtra("search_type", SearchPostBy.LOCATION);
+                postHashtagIntent.putExtra("search_post_id", post.getPost_id());
+                context.startActivity(postHashtagIntent);
+            });
+
 
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d(TAG, e.getMessage());
         }
     }
 
-    private void setStoryEmotion(StoryEmotionType storyEmotionType, PostResponse.Posts post) {
-        switch (storyEmotionType) {
+    private void setStoryEmotion(EmotionType emotionType, PostResponse.Posts post, CustomPostHolder holder) {
+
+        PostResponse.Post_stories story = post.getPost_stories().get(0);
+
+        switch (emotionType) {
             case LIKE:
-                if (post.getPost_stories().get(0).getStory_like_by_me()) {
-                    if (countLikeUp > post.getPost_stories().get(0).getStory_likes()) {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null)))
-                                .duration(250)
-                                .playOn(like);
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes()));
-                        post.getPost_stories().get(0).setStory_like_by_me(false);
+                if (story.getStory_like_by_me()) {
+                    if (countLikeUp > story.getStory_likes()) {
+                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
+                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+                        story.setStory_like_by_me(false);
+
                     } else {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null)))
-                                .duration(250)
-                                .playOn(like);
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes() - 1));
-                        countLikeDown = post.getPost_stories().get(0).getStory_likes() - 1;
-                        post.getPost_stories().get(0).setStory_like_by_me(false);
+                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
+                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() - 1));
+                        countLikeDown = story.getStory_likes() - 1;
+                        story.setStory_like_by_me(false);
                     }
 
                 } else {
-
-                    if (countLikeDown < post.getPost_stories().get(0).getStory_likes()) {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null)))
-                                .duration(250)
-                                .playOn(like);
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes()));
-                        post.getPost_stories().get(0).setStory_like_by_me(true);
+                    if (countLikeDown < story.getStory_likes()) {
+                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
+                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+                        story.setStory_like_by_me(true);
                     } else {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null)))
-                                .duration(250)
-                                .playOn(like);
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes() + 1));
-                        countLikeUp = post.getPost_stories().get(0).getStory_likes() + 1;
-                        post.getPost_stories().get(0).setStory_like_by_me(true);
+                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
+                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() + 1));
+                        countLikeUp = story.getStory_likes() + 1;
+                        story.setStory_like_by_me(true);
                     }
                 }
 
@@ -549,36 +562,24 @@ public class CustomPostRecycler extends RecyclerView {
             case FAVORITE:
                 if (post.getI_favor_post()) {
                     if (countFavoriteUp > post.getPost_favorites()) {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null)))
-                                .duration(250)
-                                .playOn(favorite);
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
+                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
                         post.setI_favor_post(false);
                     } else {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null)))
-                                .duration(250)
-                                .playOn(favorite);
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites() - 1));
+                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
+                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() - 1));
                         countFavoriteDown = post.getPost_favorites() - 1;
                         post.setI_favor_post(false);
                     }
 
                 } else {
                     if (countFavoriteDown < post.getPost_favorites()) {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null)))
-                                .duration(250)
-                                .playOn(favorite);
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
+                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
                         post.setI_favor_post(true);
                     } else {
-                        YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null)))
-                                .duration(250)
-                                .playOn(favorite);
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites() + 1));
+                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
+                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() + 1));
                         countFavoriteUp = post.getPost_favorites() + 1;
                         post.setI_favor_post(true);
                     }
@@ -588,49 +589,62 @@ public class CustomPostRecycler extends RecyclerView {
 
             case FOLLOW:
                 if (!post.getI_follow_post_owner()) {
-                    YoYo.with(Techniques.FadeOut)
-                            .onEnd(animator -> follow.setVisibility(GONE))
-                            .duration(250)
-                            .playOn(follow);
+                    animateBtn(holder.follow, EmotionType.FOLLOW, EmotionState.DEFAULT);
                     post.setI_follow_post_owner(true);
                 }
                 break;
         }
 
-
     }
 
-    private void animateBtn(View target, StoryEmotionType storyEmotionType) {
-        switch (storyEmotionType) {
-            case FAVORITE:
-                YoYo.with(Techniques.RubberBand)
-                        .onEnd(new YoYo.AnimatorCallback() {
-                            @Override
-                            public void call(Animator animator) {
 
-                            }
-                        })
-                        .duration(250)
-                        .playOn(target);
-                break;
-            case FOLLOW:
-                break;
+    private void animateBtn(View view, EmotionType emotionType, EmotionState emotionState) {
+        switch (emotionType) {
             case LIKE:
+                switch (emotionState) {
+                    case DEFAULT:
+                        YoYo.with(Techniques.RubberBand)
+                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart, null)))
+                                .duration(250)
+                                .playOn(view);
+                        break;
+                    case CUSTOM:
+                        YoYo.with(Techniques.RubberBand)
+                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart_red, null)))
+                                .duration(250)
+                                .playOn(view);
+                        break;
+                }
+                break;
+
+            case FAVORITE:
+                switch (emotionState) {
+                    case CUSTOM:
+                        YoYo.with(Techniques.RubberBand)
+                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_link_yellow, null)))
+                                .duration(250)
+                                .playOn(view);
+                        break;
+
+                    case DEFAULT:
+                        YoYo.with(Techniques.RubberBand)
+                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_link, null)))
+                                .duration(250)
+                                .playOn(view);
+                        break;
+                }
+
+                break;
+
+            case FOLLOW:
+                YoYo.with(Techniques.FadeOut)
+                        .onEnd(animator -> view.setVisibility(GONE))
+                        .duration(250)
+                        .playOn(view);
                 break;
         }
 
-
-//        Animation anim = new ScaleAnimation(
-//                0f, 1f, // Start and end values for the X axis scaling
-//                0f, 1f, // Start and end values for the Y axis scaling
-//                Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
-//                Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
-//        anim.setFillAfter(true); // Needed to keep the result of the animation
-//        anim.setDuration(250);
-//        button.startAnimation(anim);
-//        text.startAnimation(anim);
     }
-
 
     private void addVideoView() {
         frameLayout.addView(videoSurfaceView);
@@ -643,7 +657,24 @@ public class CustomPostRecycler extends RecyclerView {
         videoSurfaceView.requestFocus();
         videoSurfaceView.setVisibility(VISIBLE);
         videoSurfaceView.setAlpha(1);
-//        thumbnail.setVisibility(GONE);
+
+        try {
+            viewHolderParent.setOnClickListener(v -> {
+                if (videoPlaying) {
+                    pausePlayer();
+                } else {
+                    startPlayer();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private TrackSelector getTrackSelector() {
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        return new DefaultTrackSelector(videoTrackSelectionFactory);
     }
 
     private void resetVideoView() {
@@ -651,66 +682,67 @@ public class CustomPostRecycler extends RecyclerView {
             removeVideoView(videoSurfaceView);
             playPosition = -1;
             videoSurfaceView.setVisibility(INVISIBLE);
-//            thumbnail.setVisibility(VISIBLE);
         }
     }
 
-    public void releasePlayer() {
+    private void pausePlayer() {
+        videoPlaying = false;
+        animateVideoPlyIcon(false);
+        videoPlayer.setPlayWhenReady(false);
+        videoPlayer.getPlaybackState();
+    }
 
+    private void startPlayer() {
+        videoPlaying = true;
+        animateVideoPlyIcon(true);
+        videoPlayer.setPlayWhenReady(true);
+        videoPlayer.getPlaybackState();
+    }
+
+    public void releasePlayer() {
         if (videoPlayer != null) {
             videoPlayer.release();
             videoPlayer = null;
         }
-
         viewHolderParent = null;
     }
 
-    private void toggleVolume() {
+
+    private void setVolume(VolumeState state) {
         if (videoPlayer != null) {
-            if (volumeState == VolumeState.OFF) {
-                Log.d(TAG, "togglePlaybackState: enabling volume.");
-                setVolumeControl(VolumeState.ON);
-
-            } else if (volumeState == VolumeState.ON) {
-                Log.d(TAG, "togglePlaybackState: disabling volume.");
-                setVolumeControl(VolumeState.OFF);
+            switch (state) {
+                case OFF:
+                    videoPlayer.setVolume(0f);
+                    soundOn = false;
+                    break;
+                case ON:
+                    videoPlayer.setVolume(1f);
+                    soundOn = true;
+                    break;
             }
         }
     }
 
-    private void setVolumeControl(VolumeState state) {
-        volumeState = state;
-        if (state == VolumeState.OFF) {
-            videoPlayer.setVolume(0f);
-            animateVolumeControl();
-        } else if (state == VolumeState.ON) {
-            videoPlayer.setVolume(1f);
-            animateVolumeControl();
-        }
-    }
 
-    private void animateVolumeControl() {
-        if (volumeControl != null) {
-            volumeControl.bringToFront();
-            if (volumeState == VolumeState.OFF) {
-//                requestManager.load(R.drawable.ic_volume_off_grey_24dp).into(volumeControl);
-            } else if (volumeState == VolumeState.ON) {
-//                requestManager.load(R.drawable.ic_volume_up_grey_24dp).into(volumeControl);
-            }
-            volumeControl.animate().cancel();
+    private void animateVideoPlyIcon(boolean videoPlaying) {
+        if (videoPlayIcon != null) {
 
-            volumeControl.setAlpha(1f);
+            videoPlayIcon.bringToFront();
 
-            volumeControl.animate().alpha(0f).setDuration(600).setStartDelay(1000);
+            if (videoPlaying)
+                videoPlayIcon.setBackground(videoPlayIcon.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+            else
+                videoPlayIcon.setBackground(videoPlayIcon.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+
+            videoPlayIcon.animate().cancel();
+
+            videoPlayIcon.setAlpha(1f);
+
+            videoPlayIcon.animate().alpha(0f).setDuration(600).setStartDelay(1000);
         }
     }
 
     public void setPosts(List<PostResponse.Posts> posts) {
-//        if (this.posts != null && this.posts.size() != 0)
-//            this.posts.addAll(posts);
-//        else {
-//            this.posts = posts;
-//        }
         this.posts = posts;
     }
 

@@ -51,8 +51,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.travel.guide.enums.LoadWebViewType.POLICY;
-import static com.travel.guide.enums.LoadWebViewType.TERMS;
+import static com.travel.guide.enums.LoadWebViewBy.POLICY;
+import static com.travel.guide.enums.LoadWebViewBy.TERMS;
 import static com.travel.guide.helper.HelperUI.loadAnimation;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 

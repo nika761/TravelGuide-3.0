@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.enums.SearchPostType;
+import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostByHashtagRequest;
@@ -25,7 +25,7 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     private SearchPostPresenter searchPostPresenter;
     private TextView head;
 
-    private SearchPostType type;
+    private SearchPostBy type;
     private String hashtag;
     private int postId;
 
@@ -63,7 +63,7 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
     private void getExtras() {
         this.postId = getIntent().getIntExtra("search_post_id", 0);
         this.hashtag = getIntent().getStringExtra("search_hashtag");
-        this.type = (SearchPostType) getIntent().getSerializableExtra("search_type");
+        this.type = (SearchPostBy) getIntent().getSerializableExtra("search_type");
     }
 
     @Override

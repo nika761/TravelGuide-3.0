@@ -20,6 +20,7 @@ import com.travel.guide.R;
 import com.travel.guide.helper.SystemManager;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
@@ -32,30 +33,42 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
     private PhotoEditorView photoEditorView;
     private PhotoEditor photoEditor;
 
-    private String newPath;
     private String path;
+    private String originalFileParentPath;
     private int position;
+
+    private TextView undo;
+
+    private ArrayList<String> imagePathes = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
-        this.position = getIntent().getIntExtra("position_for_image", 0);
-        this.path = getIntent().getStringExtra("image_for_filter");
+        if (!SystemManager.isWriteStoragePermission(this)) {
+            SystemManager.requestWriteStoragePermission(this);
+        }
 
-        initPhotoEditor(path);
-        initFiltersAdapter();
+        try {
+            this.position = getIntent().getIntExtra("position_for_image", 0);
+            this.path = getIntent().getStringExtra("image_for_filter");
+            setOriginalFilePath(path);
+            initPhotoEditor(path);
+            initFiltersAdapter();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void initFiltersAdapter() {
-
         RecyclerView recyclerView = findViewById(R.id.recycler_filter);
         FilterAdapter filterAdapter = new FilterAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(filterAdapter);
-
     }
 
     private void initPhotoEditor(String path) {
@@ -66,7 +79,7 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
         ImageButton close = findViewById(R.id.filter_close);
         close.setOnClickListener(this);
 
-        TextView undo = findViewById(R.id.filter_undo);
+        undo = findViewById(R.id.filter_undo);
         undo.setOnClickListener(this);
 
         photoEditorView = findViewById(R.id.filter_photo);
@@ -77,47 +90,55 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
 
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
-        photoEditor.setFilterEffect(photoFilter);
         try {
-            if (SystemManager.isWriteStoragePermission(this))
-                saveFilterImage();
-            else
-                SystemManager.requestWriteStoragePermission(this);
-
+            photoEditor.setFilterEffect(photoFilter);
+            saveFilterImage();
         } catch (Exception e) {
-            Toast.makeText(this, "error while saving", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 
-    public void saveFilterImage() {
-        File newFile = new File(path);
-        String parent = newFile.getParent();
 
-        File file = new File(parent + "/" + System.currentTimeMillis() + ".jgp");
-        String pathForFiltered = file.getAbsolutePath();
+    private void saveFilterImage() {
+        try {
 
-        photoEditor.saveAsFile(pathForFiltered, new PhotoEditor.OnSaveListener() {
-            @Override
-            public void onSuccess(@NonNull String imagePath) {
-                newPath = imagePath;
-            }
+            File file = new File(getOriginalFileParentPath() + "/" + System.currentTimeMillis() + ".jgp");
+            String pathForFiltered = file.getAbsolutePath();
 
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(FilterActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+            photoEditor.saveAsFile(pathForFiltered, new PhotoEditor.OnSaveListener() {
+                @Override
+                public void onSuccess(@NonNull String imagePath) {
+                    imagePathes.add(imagePath);
+                }
+
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(FilterActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.filter_done:
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("filtered_path", newPath);
-                resultIntent.putExtra("filtered_position", position);
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
+                try {
+                    Intent resultIntent = new Intent();
+                    if (imagePathes.size() > 0) {
+                        resultIntent.putExtra("filtered_path", imagePathes.get(imagePathes.size() - 1));
+                    } else {
+                        resultIntent.putExtra("filtered_path", path);
+                    }
+                    resultIntent.putExtra("filtered_position", position);
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.filter_close:
@@ -125,17 +146,39 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
                 break;
 
             case R.id.filter_undo:
-                photoEditor.clearAllViews();
+                try {
+                    if (imagePathes.size() > 0) {
+                        if (imagePathes.size() == 1) {
+                            photoEditorView.getSource().setImageURI(Uri.fromFile(new File(path)));
+                            imagePathes.remove(0);
+                        } else {
+                            photoEditorView.getSource().setImageURI(Uri.fromFile(new File(imagePathes.get(imagePathes.size() - 2))));
+                            imagePathes.remove(imagePathes.size() - 1);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
+
+    private void setOriginalFilePath(String path) {
+        File originalFile = new File(path);
+        originalFileParentPath = originalFile.getParent();
+    }
+
+    private String getOriginalFileParentPath() {
+        return originalFileParentPath;
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    saveFilterImage();
+                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "No permission", Toast.LENGTH_SHORT).show();
                 }

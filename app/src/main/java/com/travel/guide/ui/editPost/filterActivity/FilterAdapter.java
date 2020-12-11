@@ -8,6 +8,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,8 +27,9 @@ import ja.burhanrashid52.photoeditor.PhotoFilter;
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
     private IFilterListener mIFilterListener;
     private List<Pair<String, PhotoFilter>> mPairList = new ArrayList<>();
+    private int currentPosition = -1;
 
-    public FilterAdapter(IFilterListener IFilterListener) {
+    FilterAdapter(IFilterListener IFilterListener) {
         mIFilterListener = IFilterListener;
         setupFilters();
     }
@@ -41,10 +43,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pair<String, PhotoFilter> filterPair = mPairList.get(position);
-        Bitmap fromAsset = getBitmapFromAsset(holder.itemView.getContext(), filterPair.first);
-        holder.mImageFilterView.setImageBitmap(fromAsset);
-        holder.mTxtFilterName.setText(filterPair.second.name().replace("_", " "));
+        holder.bindView(position);
     }
 
     @Override
@@ -55,11 +54,14 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView mImageFilterView;
         TextView mTxtFilterName;
+        FrameLayout choosedFilter;
 
         ViewHolder(View itemView) {
             super(itemView);
             mImageFilterView = itemView.findViewById(R.id.imgFilterView);
             mImageFilterView.setOnClickListener(this);
+
+            choosedFilter = itemView.findViewById(R.id.current_filter);
 
             mTxtFilterName = itemView.findViewById(R.id.txtFilterName);
         }
@@ -69,8 +71,25 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
             switch (v.getId()) {
                 case R.id.imgFilterView:
                     mIFilterListener.onFilterSelected(mPairList.get(getLayoutPosition()).second);
+                    currentPosition = getLayoutPosition();
+                    notifyDataSetChanged();
                     break;
+            }
+        }
 
+        private void bindView(int position) {
+            try {
+                Pair<String, PhotoFilter> filterPair = mPairList.get(position);
+                Bitmap fromAsset = getBitmapFromAsset(itemView.getContext(), filterPair.first);
+                if (currentPosition == position) {
+                    choosedFilter.setVisibility(View.VISIBLE);
+                } else {
+                    choosedFilter.setVisibility(View.GONE);
+                }
+                mImageFilterView.setImageBitmap(fromAsset);
+                mTxtFilterName.setText(filterPair.second.name().replace("_", " "));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -88,8 +107,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     }
 
     private void setupFilters() {
-        mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
-        mPairList.add(new Pair<>("filters/auto_fix.png", PhotoFilter.AUTO_FIX));
+//        mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
+//        mPairList.add(new Pair<>("filters/auto_fix.png", PhotoFilter.AUTO_FIX));
         mPairList.add(new Pair<>("filters/brightness.png", PhotoFilter.BRIGHTNESS));
         mPairList.add(new Pair<>("filters/contrast.png", PhotoFilter.CONTRAST));
         mPairList.add(new Pair<>("filters/documentary.png", PhotoFilter.DOCUMENTARY));

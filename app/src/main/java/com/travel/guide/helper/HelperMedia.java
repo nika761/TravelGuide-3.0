@@ -127,6 +127,7 @@ public class HelperMedia {
             String sortOrder = MediaStore.Images.Media.DISPLAY_NAME + " DESC";
             String sorting = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
+
             try (Cursor cursor = context.getContentResolver().query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     projection,
@@ -199,7 +200,8 @@ public class HelperMedia {
             String[] selectionArgs = new String[]{String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
 
             String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " DESC";
-            String sorting = MediaStore.Images.Media.DATE_ADDED + " DESC";
+            String sorting = MediaStore.Video.Media.DATE_ADDED + " DESC";
+            String dasd = MediaStore.Video.Media.DURATION;
 
             try (Cursor cursor = context.getContentResolver().query(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -223,6 +225,8 @@ public class HelperMedia {
 
                         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
 
+                        String videoDuration = String.valueOf(duration);
+                        Log.e("asdasdasd", videoDuration);
                         // Stores column values and the contentUri in a local object
                         // that represents the media file.
                         listOfAllPaths.add(path);
@@ -285,6 +289,13 @@ public class HelperMedia {
     public static void loadCirclePhoto(Context context, String url, CircleImageView circleImageView) {
         Glide.with(context)
                 .applyDefaultRequestOptions(new RequestOptions().centerCrop())
+                .load(url)
+                .into(circleImageView);
+    }
+
+    public static void loadCirclePhotoProfile(Context context, String url, CircleImageView circleImageView) {
+        Glide.with(context)
+                .applyDefaultRequestOptions(new RequestOptions().centerInside())
                 .load(url)
                 .into(circleImageView);
     }

@@ -205,7 +205,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
                 Toast.makeText(this, "Image Filter Successful", Toast.LENGTH_LONG).show();
                 break;
             case RESULT_CANCELED:
-                Toast.makeText(this, "Image Filter Error", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Image Filter Error", Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -219,7 +219,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
                 break;
 
             case RESULT_CANCELED:
-                Toast.makeText(this, "Item Sort Error", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Item Sort Error", Toast.LENGTH_LONG).show();
                 break;
 
         }

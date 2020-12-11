@@ -31,6 +31,9 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:typeface">serif</item>
 
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
+<!--        <item name="android:windowTranslucentNavigation">true</item>-->
+
     </style>
 
     <style name="GalleryTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">

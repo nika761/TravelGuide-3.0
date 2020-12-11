@@ -89,8 +89,6 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     }
 
     private void initRecycler(List<PostResponse.Posts> posts) {
-
-
         postAdapter = new UserPostAdapter(this);
 
         int itemWidth = HelperMedia.getScreenWidth(getActivity());
@@ -167,7 +165,6 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
                 data.putSerializable("PostShowType", MY_POSTS);
                 data.putSerializable("my_posts", (Serializable) posts);
             }
-
             listener.onPostChoose(data);
         } catch (Exception e) {
             e.printStackTrace();

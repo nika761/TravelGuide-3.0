@@ -20,7 +20,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
 import com.travel.guide.enums.InputFieldPairs;
-import com.travel.guide.enums.LoadWebViewType;
+import com.travel.guide.enums.LoadWebViewBy;
 import com.travel.guide.ui.home.comments.CommentFragment;
 import com.travel.guide.ui.webView.WebActivity;
 
@@ -39,7 +39,7 @@ public class HelperUI {
 
     public static final String TYPE = "type";
 
-    public static void startWebActivity(Context context, LoadWebViewType requestFor) {
+    public static void startWebActivity(Context context, LoadWebViewBy requestFor) {
         Intent termsIntent = new Intent(context, WebActivity.class);
         termsIntent.putExtra(TYPE, requestFor);
         context.startActivity(termsIntent);

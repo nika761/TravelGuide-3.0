@@ -274,7 +274,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         if (checkedInputData.size() != inputFields.size()) {
             Log.e("dasdasdas", "data null");
         } else {
-
 //            presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
 //            Log.e("dasdasdas", "სახელი" + " " + name);
 //            Log.e("dasdasdas", "გვარი" + " " + surname);
@@ -338,6 +337,12 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     @Override
     public void onGetError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
     }
 
     @Override

@@ -57,9 +57,8 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
         initUI();
 
-        if (customerUserId != 0) {
+        if (customerUserId != 0)
             customerProfilePresenter.getProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
-        }
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -181,6 +180,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.customer_profile_back_btn:
+                onBackPressed();
                 finish();
                 break;
 
@@ -217,5 +217,10 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 //        startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
+    }
 }
 

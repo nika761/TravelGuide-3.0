@@ -47,14 +47,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
     public void onBindViewHolder(@NonNull GalleryAdapter.ImageViewHolder holder, int position) {
 
         if (isImage) {
-            holder.duration.setVisibility(View.GONE);
+//            holder.duration.setVisibility(View.GONE);
             holder.imageView.getLayoutParams().width = itemWidth;
             HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
         } else {
             holder.imageView.getLayoutParams().width = itemWidth;
             HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
-            holder.duration.setVisibility(View.VISIBLE);
-            holder.duration.setText(HelperMedia.getVideoDuration(uris.get(position)));
+//            holder.duration.setVisibility(View.VISIBLE);
+//            holder.duration.setText(HelperMedia.getVideoDuration(uris.get(position)));
         }
 
         if (selectedItemPositions.containsKey(position)) {

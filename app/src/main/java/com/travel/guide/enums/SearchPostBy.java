@@ -6,6 +6,6 @@ package com.travel.guide.enums;
  * Location - Search posts by location.
  */
 
-public enum SearchPostType {
+public enum SearchPostBy {
     HASHTAG, LOCATION
 }

@@ -1,9 +1,13 @@
 package com.travel.guide.ui.home.home;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +90,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
         if (getActivity() != null) {
             Window window = getActivity().getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            window.setStatusBarColor(getResources().getColor(R.color.black, null));
+            setSystemBarTheme(getActivity(), true);
+//            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
         presenter = new HomeFragmentPresenter(this);
@@ -108,6 +115,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         pagerSnapHelper.attachToRecyclerView(customPostRecycler);
 
         return view;
+    }
+
+    private void setSystemBarTheme(final Activity activity, final boolean pIsDark) {
+
+        final int lFlags = activity.getWindow().getDecorView().getSystemUiVisibility();
+
+        activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
     @Override
@@ -346,6 +360,11 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
             Intent intent = new Intent(postRecycler.getContext(), CustomerProfileActivity.class);
             intent.putExtra("id", userId);
             postRecycler.getContext().startActivity(intent);
+            try {
+                getActivity().overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -355,7 +374,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         builder.setTitle("Delete Story ?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     deletedStoryPosition = position;
-                    presenter.deleteStory(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new DeleteStoryRequest(postId));
+                    presenter.deleteStory(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new DeleteStoryRequest(postId, storyId));
                 })
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create();

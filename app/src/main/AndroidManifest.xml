@@ -48,7 +48,7 @@
             android:name="com.travel.guide.ui.home.HomePageActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/SecondAppTheme"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <service

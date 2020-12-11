@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.travel.guide.R;
-import com.travel.guide.enums.SearchPostType;
+import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.enums.StoryEmotionType;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.utility.GlobalPreferences;
@@ -272,7 +272,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
                 case R.id.post_location:
                     Intent postHashtagIntent = new Intent(videoItem.getContext(), SearchPostActivity.class);
-                    postHashtagIntent.putExtra("search_type", SearchPostType.LOCATION);
+                    postHashtagIntent.putExtra("search_type", SearchPostBy.LOCATION);
                     postHashtagIntent.putExtra("search_post_id", currentPost.getPost_id());
                     like.getContext().startActivity(postHashtagIntent);
                     break;

@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
-import com.travel.guide.enums.SearchPostType;
+import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.ui.searchPost.SearchPostActivity;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
             hashtag = itemView.findViewById(R.id.hashtag_hashtag);
             hashtag.setOnClickListener(v -> {
                 Intent postHashtagIntent = new Intent(hashtag.getContext(), SearchPostActivity.class);
-                postHashtagIntent.putExtra("search_type", SearchPostType.HASHTAG);
+                postHashtagIntent.putExtra("search_type", SearchPostBy.HASHTAG);
                 postHashtagIntent.putExtra("search_hashtag", hashtags.get(getLayoutPosition()));
                 hashtag.getContext().startActivity(postHashtagIntent);
             });

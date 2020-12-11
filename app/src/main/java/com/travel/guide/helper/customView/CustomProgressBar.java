@@ -1,9 +1,12 @@
 package com.travel.guide.helper.customView;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -16,10 +19,13 @@ public class CustomProgressBar extends LinearLayout {
 
     private Context context;
     private StoryListener storyListener;
-    boolean stop;
+    public boolean stop;
+    public boolean pause;
     public int currentPosition = -1;
     public int size;
+    private int pausedProgress;
 
+    private ValueAnimator valueAnimator;
 
     public CustomProgressBar(Context context) {
         super(context);
@@ -73,12 +79,17 @@ public class CustomProgressBar extends LinearLayout {
     public void start(final int position, int duration) {
         clearPrevious(position);
         ProgressBar progressBar = (ProgressBar) getChildAt(position);
-        final ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 100);
+        valueAnimator = ValueAnimator.ofInt(0, 100);
         valueAnimator.setDuration(duration);
         currentPosition = position;
         valueAnimator.addUpdateListener(animation -> {
             if (position == currentPosition && progressBar != null) {
                 if (!stop) {
+                    if (pause) {
+                        valueAnimator.pause();
+                    } else {
+                        valueAnimator.resume();
+                    }
                     progressBar.setProgress((int) animation.getAnimatedValue());
                     if (progressBar.getProgress() == 100) {
 //                        storyListener.storyFinished(position);
@@ -91,6 +102,12 @@ public class CustomProgressBar extends LinearLayout {
         });
         valueAnimator.start();
     }
+
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
 
     private void clearPrevious(int pos) {
         for (int i = 0; i < getChildCount(); i++) {

@@ -1,5 +1,6 @@
 package com.travel.guide.ui.home.profile;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,9 +45,9 @@ import com.google.android.material.tabs.TabLayout;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.travel.guide.enums.LoadWebViewType.ABOUT;
-import static com.travel.guide.enums.LoadWebViewType.POLICY;
-import static com.travel.guide.enums.LoadWebViewType.TERMS;
+import static com.travel.guide.enums.LoadWebViewBy.ABOUT;
+import static com.travel.guide.enums.LoadWebViewBy.POLICY;
+import static com.travel.guide.enums.LoadWebViewBy.TERMS;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
@@ -68,8 +69,15 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
         if (getActivity() != null) {
-            Window window = getActivity().getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            try {
+                Window window = getActivity().getWindow();
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                window.setStatusBarColor(getResources().getColor(R.color.white, null));
+                setSystemBarTheme(getActivity(), false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             Toolbar toolbar = view.findViewById(R.id.toolbar);
             toolbar.setTitle("");
@@ -130,6 +138,13 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         bioHead = mIncludedLayout.findViewById(R.id.profile_bio_head);
 
         return view;
+    }
+
+    private void setSystemBarTheme(final Activity activity, final boolean pIsDark) {
+
+        final int lFlags = activity.getWindow().getDecorView().getSystemUiVisibility();
+
+        activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
     @Override
@@ -218,6 +233,11 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             case R.id.profile_edit_profile_btn:
                 Intent editProfile = new Intent(context, ProfileEditActivity.class);
                 startActivity(editProfile);
+                try {
+                    getActivity().overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }

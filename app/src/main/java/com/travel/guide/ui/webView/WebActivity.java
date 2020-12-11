@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.travel.guide.R;
-import com.travel.guide.enums.LoadWebViewType;
+import com.travel.guide.enums.LoadWebViewBy;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.ui.webView.about.AboutFragment;
 import com.travel.guide.ui.webView.policy.PolicyFragment;
@@ -28,7 +28,7 @@ public class WebActivity extends AppCompatActivity {
     }
 
     private void checkRequestType() {
-        LoadWebViewType loadWebViewType = (LoadWebViewType) getIntent().getSerializableExtra(TYPE);
+        LoadWebViewBy loadWebViewType = (LoadWebViewBy) getIntent().getSerializableExtra(TYPE);
         if (loadWebViewType != null) {
             switch (loadWebViewType) {
                 case TERMS:

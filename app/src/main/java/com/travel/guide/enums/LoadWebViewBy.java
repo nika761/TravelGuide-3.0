@@ -8,6 +8,6 @@ package com.travel.guide.enums;
  * About - Load about fragment in WebView.
  */
 
-public enum LoadWebViewType {
+public enum LoadWebViewBy {
     TERMS, POLICY, ABOUT
 }
