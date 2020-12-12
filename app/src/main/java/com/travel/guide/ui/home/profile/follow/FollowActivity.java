@@ -35,7 +35,7 @@ public class FollowActivity extends AppCompatActivity {
         }
 
         ImageButton backBtn = findViewById(R.id.follower_page_back_btn);
-        backBtn.setOnClickListener(v -> finish());
+        backBtn.setOnClickListener(v -> onBackPressed());
 
     }
 
@@ -52,4 +52,9 @@ public class FollowActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
+    }
 }

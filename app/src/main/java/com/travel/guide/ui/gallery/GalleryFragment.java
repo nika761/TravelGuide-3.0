@@ -36,6 +36,7 @@ public class GalleryFragment extends Fragment {
             if (itemWidth != 0)
                 adapter.setItemWidth(itemWidth);
             recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(adapter);
 
             if (SystemManager.isReadStoragePermission(getActivity())) {

@@ -22,7 +22,7 @@ import com.hbb20.CountryCodePicker;
 import com.travel.guide.R;
 import com.travel.guide.helper.ClientManager;
 import com.travel.guide.helper.DialogManager;
-import com.travel.guide.helper.ToastManager;
+import com.travel.guide.helper.BaseToaster;
 import com.travel.guide.helper.HelperDate;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
@@ -158,9 +158,9 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             if (data.getData() != null)
                 profileImageFile = getPickedImage(data.getData());
             else
-                ToastManager.getUnknownErrorToast(this);
+                BaseToaster.getUnknownErrorToast(this);
         } else
-            ToastManager.getUnknownErrorToast(this);
+            BaseToaster.getUnknownErrorToast(this);
     }
 
     private File getPickedImage(Uri uri) {
@@ -202,7 +202,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
                 birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
             } else
-                ToastManager.getErrorToaster(ProfileEditActivity.this, "Application age restriction 13+");
+                BaseToaster.getErrorToaster(ProfileEditActivity.this, "Application age restriction 13+");
         };
     }
 
@@ -215,7 +215,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                     onPickImageFinish(data);
                     break;
                 case Activity.RESULT_CANCELED:
-                    ToastManager.getUnknownErrorToast(this);
+                    BaseToaster.getUnknownErrorToast(this);
                     break;
             }
         }
@@ -299,7 +299,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         }
 
         if (!genderChecked)
-            ToastManager.getErrorToaster(this, "Please enter gender");
+            BaseToaster.getErrorToaster(this, "Please enter gender");
         else
             modelGender = String.valueOf(gender);
 
@@ -404,13 +404,13 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 new Handler().postDelayed(this::onBackPressed, 2000);
                 break;
             case 1:
-                ToastManager.getErrorToaster(this, updateProfileResponse.getMessage());
+                BaseToaster.getErrorToaster(this, updateProfileResponse.getMessage());
                 break;
             case 2:
                 onNickNameBusy(updateProfileResponse.getNicknames_to_offer(), updateProfileResponse.getMessage());
                 break;
             default:
-                ToastManager.getErrorToaster(this, updateProfileResponse.getMessage());
+                BaseToaster.getErrorToaster(this, updateProfileResponse.getMessage());
 
         }
     }
@@ -448,7 +448,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     @Override
     public void onError(String message) {
         getLoader(false);
-        ToastManager.getErrorToaster(this, message);
+        BaseToaster.getErrorToaster(this, message);
     }
 
     @Override

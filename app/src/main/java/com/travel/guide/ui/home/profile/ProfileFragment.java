@@ -52,6 +52,12 @@ import static com.travel.guide.enums.LoadWebViewBy.TERMS;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
 
+    public static ProfileFragment getInstance(ProfileFragmentCallBacks callBack) {
+        ProfileFragment profileFragment = new ProfileFragment();
+        profileFragment.callBack = callBack;
+        return profileFragment;
+    }
+
     private TextView nickName, name, bioBody, following, follower, reaction, bioHead;
     private ImageButton seeBio, hideBio;
     private CircleImageView userPrfImage;
@@ -66,6 +72,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     private Context context;
 
     private ProfileResponse.Userinfo userInfo;
+    private ProfileFragmentCallBacks callBack;
 
 
     @Nullable
@@ -118,21 +125,25 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         viewPager.setAdapter(profilePagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
-        tabLayout.getTabAt(1).setIcon(R.drawable.profile_liked);
-        tabLayout.getTabAt(2).setIcon(R.drawable.profile_tour);
+        try {
+            tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
+            tabLayout.getTabAt(1).setIcon(R.drawable.profile_liked);
+            tabLayout.getTabAt(2).setIcon(R.drawable.profile_tour);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         View followStates = mIncludedLayout.findViewById(R.id.profile_follow_states);
-        followStates.setOnClickListener(this::onViewClick);
+        followStates.setOnClickListener(v -> callBack.onChooseFollowers(userName));
 
         TextView editProfile = mIncludedLayout.findViewById(R.id.profile_edit_profile_btn);
-        editProfile.setOnClickListener(this::onViewClick);
+        editProfile.setOnClickListener(v -> callBack.onChooseEditProfile(userInfo));
 
         seeBio = mIncludedLayout.findViewById(R.id.profile_see_bio_btn);
-        seeBio.setOnClickListener(this::onViewClick);
+        seeBio.setOnClickListener(v -> showBiography(true));
 
         hideBio = mIncludedLayout.findViewById(R.id.profile_hide_bio_btn);
-        hideBio.setOnClickListener(this::onViewClick);
+        hideBio.setOnClickListener(v -> showBiography(false));
 
         userPrfImage = mIncludedLayout.findViewById(R.id.profile_image);
         nickName = mIncludedLayout.findViewById(R.id.user_prf_nickName);
@@ -142,22 +153,18 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         bioBody = mIncludedLayout.findViewById(R.id.bio_text);
         bioContainer = mIncludedLayout.findViewById(R.id.profile_bio);
         bioHead = mIncludedLayout.findViewById(R.id.profile_bio_head);
-
-
         return view;
     }
 
     private void setSystemBarTheme(final Activity activity, final boolean pIsDark) {
-
         final int lFlags = activity.getWindow().getDecorView().getSystemUiVisibility();
-
         activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getLoader(true);
+        showLoader(true);
         presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
     }
 
@@ -206,8 +213,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Sign out ?")
-                .setPositiveButton("Yes", (dialog, which) -> ((HomePageActivity) context).onLogOutChoose())
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(getString(R.string.yes), (dialog, which) -> callBack.onChooseLogOut())
+                .setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss())
                 .create();
 
         AlertDialog dialog = builder.create();
@@ -218,37 +225,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
         dialog.show();
 
-    }
-
-    private void onViewClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.profile_see_bio_btn:
-                showBiography(true);
-                break;
-
-            case R.id.profile_hide_bio_btn:
-                showBiography(false);
-                break;
-
-            case R.id.profile_follow_states:
-                Intent intent = new Intent(context, FollowActivity.class);
-                intent.putExtra("user_name", userName);
-                startActivity(intent);
-                break;
-
-            case R.id.profile_edit_profile_btn:
-                Intent editProfileIntent = new Intent(context, ProfileEditActivity.class);
-                if (userInfo != null)
-                    editProfileIntent.putExtra("user_info", userInfo);
-                startActivity(editProfileIntent);
-                try {
-                    getActivity().overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
     }
 
     @Override
@@ -272,17 +248,16 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 //        params.putString("user_profile_page", "this user is" + " " + userInfo.getName() + userInfo.getLastname());
 //        firebaseAnalytics.logEvent("profile_page_event", params);
 
-        getLoader(false);
+        showLoader(false);
     }
 
     @Override
     public void onGetError(String message) {
-        getLoader(false);
+        showLoader(false);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void getLoader(boolean show) {
-
+    private void showLoader(boolean show) {
         if (show) {
             loaderContainer.setVisibility(View.VISIBLE);
             loader.setVisibility(View.VISIBLE);
@@ -295,7 +270,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onStart() {
         super.onStart();
-        presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+        if (presenter != null)
+            presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
     }
 
     private void showBiography(boolean show) {
@@ -336,6 +312,16 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
     public interface OnPostChooseListener {
         void onPostChoose(Bundle fragmentData);
+    }
+
+    public interface ProfileFragmentCallBacks {
+
+        void onChooseFollowers(String userName);
+
+        void onChooseEditProfile(ProfileResponse.Userinfo userInfo);
+
+        void onChooseLogOut();
+
     }
 
 

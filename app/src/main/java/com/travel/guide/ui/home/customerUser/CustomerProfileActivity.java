@@ -59,17 +59,17 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         if (customerUserId != 0)
             customerProfilePresenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
 
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(customerUserId));
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "first");
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-        bundle.putString(FirebaseAnalytics.Event.PURCHASE, "TESTING");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_UP, bundle);
-        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
-        mFirebaseAnalytics.setSessionTimeoutDuration(500);
-        mFirebaseAnalytics.setUserId(String.valueOf(customerUserId));
+//        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(customerUserId));
+//        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "first");
+//        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+//        bundle.putString(FirebaseAnalytics.Event.PURCHASE, "TESTING");
+//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_UP, bundle);
+//        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+//        mFirebaseAnalytics.setSessionTimeoutDuration(500);
+//        mFirebaseAnalytics.setUserId(String.valueOf(customerUserId));
     }
 
     private void initUI() {

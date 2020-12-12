@@ -23,6 +23,10 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.helper.ClientManager;
+import com.travel.guide.helper.BaseToaster;
+import com.travel.guide.model.response.ProfileResponse;
+import com.travel.guide.ui.home.profile.editProfile.ProfileEditActivity;
+import com.travel.guide.ui.home.profile.follow.FollowActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.ui.home.comments.CommentFragment;
 import com.travel.guide.ui.home.comments.RepliesFragment;
@@ -51,7 +55,7 @@ import static com.travel.guide.helper.SystemManager.READ_EXTERNAL_STORAGE;
  * <p>
  */
 
-public class HomePageActivity extends AppCompatActivity implements ProfileFragment.OnPostChooseListener {
+public class HomePageActivity extends AppCompatActivity implements ProfileFragment.OnPostChooseListener, ProfileFragment.ProfileFragmentCallBacks {
 
     private GoogleSignInClient mGoogleSignInClient;
     private BottomNavigationView bottomNavigationView;
@@ -72,13 +76,13 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         String changed = getIntent().getStringExtra("password_changed");
         if (changed != null)
             if (changed.equals("password_changed")) {
-                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
+                HelperUI.loadFragment(ProfileFragment.getInstance(this), null, R.id.user_page_frg_container, false, true, this);
             }
 
         String option = getIntent().getStringExtra("option");
         if (option != null)
             if (option.equals("uploaded")) {
-                HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, this);
+                HelperUI.loadFragment(ProfileFragment.getInstance(this), null, R.id.user_page_frg_container, false, true, this);
             }
 
         String requestFrom = getIntent().getStringExtra("request_from");
@@ -118,13 +122,11 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                     break;
 
                 case R.id.bot_nav_add:
-
                     if (SystemManager.isReadStoragePermission(HomePageActivity.this)) {
                         Intent galleryIntent = new Intent(HomePageActivity.this, GalleryActivity.class);
                         startActivity(galleryIntent);
                     } else
                         SystemManager.requestReadStoragePermission(HomePageActivity.this);
-
                     break;
 
                 case R.id.bot_nav_ntf:
@@ -135,7 +137,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                     break;
 
                 case R.id.bot_nav_profile:
-                    HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, false, true, HomePageActivity.this);
+                    HelperUI.loadFragment(ProfileFragment.getInstance(this), null, R.id.user_page_frg_container, false, true, HomePageActivity.this);
                     break;
             }
 
@@ -166,24 +168,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void onLogOutChoose() {
-        String loginType = GlobalPreferences.getLoginType(this);
-        if (loginType == null) {
-            Toast.makeText(this, "Please try again ", Toast.LENGTH_SHORT).show();
-        } else {
-            switch (loginType) {
-                case FACEBOOK:
-                    logOutFromFacebook();
-                    break;
 
-                case GOOGLE:
-                    logOutFromGoogle();
-                    break;
-
-                case TRAVEL_GUIDE:
-                    onLogOutSuccess();
-                    break;
-            }
-        }
     }
 
     public void onLogOutSuccess() {
@@ -360,4 +345,41 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 //            notificationManager.notify(1, notification);
     }
 
+    @Override
+    public void onChooseFollowers(String userName) {
+        Intent followIntent = new Intent(this, FollowActivity.class);
+        followIntent.putExtra("user_name", userName);
+        startActivity(followIntent);
+        overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+    }
+
+    @Override
+    public void onChooseEditProfile(ProfileResponse.Userinfo userInfo) {
+        Intent profileIntent = new Intent(this, ProfileEditActivity.class);
+        profileIntent.putExtra("user_info", userInfo);
+        startActivity(profileIntent);
+        overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+    }
+
+    @Override
+    public void onChooseLogOut() {
+        String loginType = GlobalPreferences.getLoginType(this);
+        if (loginType == null) {
+            BaseToaster.getUnknownErrorToast(this);
+        } else {
+            switch (loginType) {
+                case FACEBOOK:
+                    logOutFromFacebook();
+                    break;
+
+                case GOOGLE:
+                    logOutFromGoogle();
+                    break;
+
+                case TRAVEL_GUIDE:
+                    onLogOutSuccess();
+                    break;
+            }
+        }
+    }
 }

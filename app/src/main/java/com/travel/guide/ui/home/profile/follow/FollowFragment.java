@@ -68,7 +68,8 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onResume() {
         super.onResume();
-        getFollowData();
+        if (presenter != null)
+            getFollowData();
     }
 
     @Override
@@ -145,10 +146,11 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         if (presenter != null) {
             presenter = null;
         }
-        super.onStop();
+        super.onDestroy();
     }
+
 }

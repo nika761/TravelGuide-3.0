@@ -9,6 +9,7 @@
         android:id="@+id/favorite_post_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/posts_place_holder"
         android:transitionName="image_transition" />
 
     <!--    <TextView-->

@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
@@ -15,6 +16,7 @@ import com.travel.guide.enums.FollowType;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.response.FollowerResponse;
 import com.travel.guide.model.response.FollowingResponse;
+import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.utility.GlobalPreferences;
 
 import java.util.List;
@@ -108,6 +110,14 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             nickName = itemView.findViewById(R.id.followers_user_nick_name);
 
             followBtn = itemView.findViewById(R.id.followers_user_follow);
+            followBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (followers.get(getLayoutPosition()).getIs_following() == 1) {
+
+                    }
+                }
+            });
             followBtn.setOnClickListener(v -> listener.onFollowAction(followers.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
 
 //            animation = AnimationUtils.loadAnimation(nickName.getContext(), R.anim.anim_follow_item_up);
