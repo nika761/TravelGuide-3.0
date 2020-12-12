@@ -1,12 +1,9 @@
-package com.travel.guide.helper.customView;
+package com.travel.guide.helper.custom;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -85,14 +82,14 @@ public class CustomProgressBar extends LinearLayout {
         valueAnimator.addUpdateListener(animation -> {
             if (position == currentPosition && progressBar != null) {
                 if (!stop) {
-                    if (pause) {
-                        valueAnimator.pause();
-                    } else {
-                        valueAnimator.resume();
-                    }
                     progressBar.setProgress((int) animation.getAnimatedValue());
                     if (progressBar.getProgress() == 100) {
 //                        storyListener.storyFinished(position);
+                    }
+                    if (pause) {
+                        animation.pause();
+                    } else {
+                        animation.resume();
                     }
                 }
             } else {
@@ -108,7 +105,6 @@ public class CustomProgressBar extends LinearLayout {
         this.pause = pause;
     }
 
-
     private void clearPrevious(int pos) {
         for (int i = 0; i < getChildCount(); i++) {
             ProgressBar progressBar = (ProgressBar) getChildAt(i);
@@ -122,6 +118,9 @@ public class CustomProgressBar extends LinearLayout {
         }
     }
 
+    public boolean isPause() {
+        return pause;
+    }
 
     public interface StoryListener {
         void storyFinished(int finishedPosition);

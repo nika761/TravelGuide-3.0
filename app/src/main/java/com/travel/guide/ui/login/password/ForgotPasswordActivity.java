@@ -24,7 +24,6 @@ import com.travel.guide.model.response.ChangePasswordResponse;
 import com.travel.guide.model.response.ForgotPasswordResponse;
 import com.travel.guide.utility.GlobalPreferences;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ForgotPasswordActivity extends AppCompatActivity implements ForgotPasswordListener, ChangePasswordFragment.ChangePasswordListener {
     private EditText eEmail;
@@ -132,6 +131,6 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
     @Override
     public void onPasswordChoose(ChangePasswordRequest changePasswordRequest) {
         loadingVisibility(true);
-        presenter.changePassword(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), changePasswordRequest);
+        presenter.changePassword(GlobalPreferences.getAccessToken(this), changePasswordRequest);
     }
 }

@@ -1,4 +1,4 @@
-package com.travel.guide.helper.customView;
+package com.travel.guide.helper.custom.customPost;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +27,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.RequestManager;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -44,14 +46,13 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
 import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.helper.custom.CustomProgressBar;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.ui.home.home.HashtagAdapter;
 import com.travel.guide.ui.home.home.HomeFragmentListener;
@@ -60,7 +61,6 @@ import com.travel.guide.utility.GlobalPreferences;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,54 +77,34 @@ public class CustomPostRecycler extends RecyclerView {
     private enum EmotionType {LIKE, FAVORITE, FOLLOW}
 
     // ui
-    private ImageView thumbnail;
-    private ProgressBar progressBar;
     private View viewHolderParent;
-    private FrameLayout frameLayout, postCoverContainer;
+    private FrameLayout frameLayout;
     private PlayerView videoSurfaceView;
     private SimpleExoPlayer videoPlayer;
     private Bitmap thumb;
     private Drawable drawable;
-
     // vars
+    private Context context;
+
     private List<PostResponse.Posts> posts = new ArrayList<>();
     private int videoSurfaceDefaultHeight = 0;
     private int screenDefaultHeight = 0;
-    private Context context;
     private int playPosition = -1;
-    private int playingPosition;
-    private boolean isVideoViewAdded;
-    private int currentPlayingPosition;
 
     // controlling playback state
     private boolean soundOn = true;
     private boolean videoPlaying = true;
+    private boolean isVideoViewAdded;
 
     private HomeFragmentListener homeFragmentListener;
     private CustomProgressBar customProgressBar;
 
     /// holder ui
-    public ImageView storyCover, music, videoPlayIcon;
+    public ImageView music, videoPlayIcon;
     public View parent;
-    public RequestManager requestManager;
-//    public HomeFragmentListener listener;
-
-    public TextView nickName, description, musicName, location, storyLikes, storyComments, storyShares, storyFavorites;
-    public CircleImageView profileImage;
-    public ImageButton like, follow, share, favorite, comment, menu;
-    public RecyclerView hashtagRecycler;
-
-    public FrameLayout media_container;
-//    public PostResponse.Posts post;
 
     public static int ownerUserId;
     public int position;
-    public int countLikeUp = -1;
-    public int countLikeDown = Integer.MAX_VALUE;
-
-    public int countFavoriteUp = -1;
-    public int countFavoriteDown = Integer.MAX_VALUE;
-
 
     public CustomPostRecycler(@NonNull Context context) {
         super(context);
@@ -151,13 +131,12 @@ public class CustomPostRecycler extends RecyclerView {
         }
 
         videoSurfaceView = new PlayerView(this.context);
+//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 //        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
 //        videoSurfaceView.setKeepScreenOn(true);
-
 //        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-
 //        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 
         // 2. Create the player
@@ -233,9 +212,6 @@ public class CustomPostRecycler extends RecyclerView {
                 switch (playbackState) {
                     case Player.STATE_BUFFERING:
                         Log.d(TAG, "onPlayerStateChanged: Video ended.");
-//                        if (progressBar != null) {
-//                            progressBar.setVisibility(VISIBLE);
-//                        }
                         break;
 
                     case Player.STATE_ENDED:
@@ -250,15 +226,8 @@ public class CustomPostRecycler extends RecyclerView {
 
                     case Player.STATE_READY:
                         homeFragmentListener.stopLoader();
-//                        if (playWhenReady) {
-//                            customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
-//                        } else {
-//                            customProgressBar.setPause(false);
-//                        }
+//                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         Log.d(TAG, "onPlayerStateChanged: Ready to play.");
-                        if (progressBar != null) {
-                            progressBar.setVisibility(GONE);
-                        }
                         break;
 
                     default:
@@ -351,7 +320,6 @@ public class CustomPostRecycler extends RecyclerView {
         String mediaUrl = posts.get(targetPosition).getPost_stories().get(0).getUrl();
         bindItem(holder, posts.get(targetPosition));
 
-        playingPosition = targetPosition;
         if (mediaUrl != null) {
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(mediaUrl));
             videoPlayer.prepare(videoSource);
@@ -474,8 +442,14 @@ public class CustomPostRecycler extends RecyclerView {
 
             if (ownerUserId == post.getUser_id()) {
                 holder.menu.setVisibility(View.VISIBLE);
+                holder.go.setVisibility(GONE);
             } else {
                 holder.menu.setVisibility(View.GONE);
+                if (post.getGo() != null && !post.getGo().equals("")) {
+                    holder.go.setVisibility(VISIBLE);
+                } else {
+                    holder.go.setVisibility(GONE);
+                }
             }
 
             ////Listeners
@@ -485,19 +459,22 @@ public class CustomPostRecycler extends RecyclerView {
 
             holder.comment.setOnClickListener(v -> homeFragmentListener.onCommentChoose(story.getStory_id(), post.getPost_id()));
 
+            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), SearchPostBy.LOCATION));
+
+            holder.share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
+
             holder.follow.setOnClickListener(v -> {
                 homeFragmentListener.onFollowChoose(post.getUser_id());
                 setStoryEmotion(EmotionType.FOLLOW, post, holder);
             });
 
             holder.like.setOnClickListener(v -> {
-                homeFragmentListener.onStoryLikeChoose(post.getPost_id(), story.getStory_id(), position);
+                homeFragmentListener.onStoryLikeChoose(post.getPost_id(), story.getStory_id());
                 setStoryEmotion(EmotionType.LIKE, post, holder);
             });
 
-            holder.share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
             holder.favorite.setOnClickListener(v -> {
-                homeFragmentListener.onFavoriteChoose(post.getPost_id(), position);
+                homeFragmentListener.onFavoriteChoose(post.getPost_id());
                 setStoryEmotion(EmotionType.FAVORITE, post, holder);
             });
 
@@ -511,13 +488,8 @@ public class CustomPostRecycler extends RecyclerView {
                 }
             });
 
-            holder.location.setOnClickListener(v -> {
-                Intent postHashtagIntent = new Intent(context, SearchPostActivity.class);
-                postHashtagIntent.putExtra("search_type", SearchPostBy.LOCATION);
-                postHashtagIntent.putExtra("search_post_id", post.getPost_id());
-                context.startActivity(postHashtagIntent);
-            });
 
+            holder.go.setOnClickListener(v -> homeFragmentListener.onGoChoose(post.getGo()));
 
         } catch (Exception e) {
             e.printStackTrace();

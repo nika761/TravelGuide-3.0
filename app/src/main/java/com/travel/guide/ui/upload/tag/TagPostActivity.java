@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 import static com.travel.guide.ui.upload.UploadPostActivity.TAG_HASHTAGS;
 import static com.travel.guide.ui.upload.UploadPostActivity.TAG_USERS;
 
@@ -81,7 +80,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.searchFollowers(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new SearchFollowersRequest(charSequence.toString()));
+                                    postPresenter.searchFollowers(GlobalPreferences.getAccessToken(this), new SearchFollowersRequest(charSequence.toString()));
                                 }
                             });
                     break;
@@ -95,7 +94,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.getHashtags(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(charSequence.toString()));
+                                    postPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(charSequence.toString()));
                                 }
                             });
                     break;
@@ -149,7 +148,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                 finish();
                 break;
             case R.id.tag_post_search_btn:
-                postPresenter.getHashtags(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchEditTxt.getText().toString()));
+                postPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchEditTxt.getText().toString()));
                 break;
 
 //            case R.id.tag_post_done_btn:

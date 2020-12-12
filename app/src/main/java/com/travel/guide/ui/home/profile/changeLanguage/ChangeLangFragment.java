@@ -26,7 +26,6 @@ import com.travel.guide.model.response.LanguagesResponse;
 import java.util.List;
 import java.util.Objects;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ChangeLangFragment extends DialogFragment implements ChangeLangListener {
     private Context context;
@@ -106,6 +105,6 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     public void onLanguageChoose(int langId) {
         this.languageId = langId;
         ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(GlobalPreferences.getLanguageId(context)));
-        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context));
+        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, GlobalPreferences.getAccessToken(context));
     }
 }

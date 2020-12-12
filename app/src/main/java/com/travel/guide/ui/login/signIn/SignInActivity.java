@@ -54,7 +54,6 @@ import java.util.List;
 import static com.travel.guide.enums.LoadWebViewBy.POLICY;
 import static com.travel.guide.enums.LoadWebViewBy.TERMS;
 import static com.travel.guide.helper.HelperUI.loadAnimation;
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SignInActivity extends AppCompatActivity implements SignInListener {
 
@@ -96,7 +95,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
             String signature = uri.getQueryParameter("signature");
 
             if (signature != null && id != null) {
-                signInPresenter.verify(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
+                signInPresenter.verify(GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
                 Log.e("email", signature + " " + id);
             }
         }
@@ -222,11 +221,11 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
                 break;
 
             case R.id.terms_of_services:
-                HelperUI.startWebActivity(this, TERMS);
+                HelperUI.startWebActivity(this, TERMS, "");
                 break;
 
             case R.id.privacy_policy:
-                HelperUI.startWebActivity(this, POLICY);
+                HelperUI.startWebActivity(this, POLICY, "");
                 break;
 
             case R.id.forgot_password_sign_in:
@@ -365,10 +364,6 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
         startActivity(intent);
     }
 
-    @Override
-    public void onGetSettings(AppSettingsResponse.App_settings appSettings) {
-
-    }
 
     @Override
     public void onSign(LoginResponse loginResponse) {

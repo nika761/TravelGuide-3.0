@@ -1,13 +1,9 @@
 package com.travel.guide.ui.home.home;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
-import com.travel.guide.helper.DialogManager;
-import com.travel.guide.helper.customView.CustomPostAdapter;
-import com.travel.guide.helper.customView.CustomPostRecycler;
-import com.travel.guide.helper.customView.CustomProgressBar;
+import com.travel.guide.enums.LoadWebViewBy;
+import com.travel.guide.enums.SearchPostBy;
+import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.custom.customPost.CustomPostAdapter;
+import com.travel.guide.helper.custom.customPost.CustomPostRecycler;
+import com.travel.guide.helper.custom.CustomProgressBar;
 import com.travel.guide.model.request.DeleteStoryRequest;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
@@ -46,7 +41,7 @@ import com.travel.guide.model.response.DeleteStoryResponse;
 import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
 import com.travel.guide.model.response.SetStoryLikeResponse;
-import com.travel.guide.ui.upload.UploadPostActivity;
+import com.travel.guide.ui.searchPost.SearchPostActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -59,7 +54,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener {
 
@@ -110,7 +104,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         customPostRecycler = view.findViewById(R.id.testing_recycler);
         customPostRecycler.setLayoutManager(new LinearLayoutManager(customPostRecycler.getContext()));
         customPostRecycler.setHomeFragmentListener(this);
-        customPostRecycler.setCustomProgressBar(customProgressBar);
+//        customPostRecycler.setCustomProgressBar(customProgressBar);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(customPostRecycler);
 
@@ -150,7 +144,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
                     case FEED:
                         loaderContainer.setVisibility(View.VISIBLE);
-                        presenter.getPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
+                        presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
                         break;
                 }
             }
@@ -283,8 +277,16 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     }
 
     @Override
+    public void onLocationChoose(int postId, SearchPostBy searchPostBy) {
+        Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
+        postHashtagIntent.putExtra("search_type", searchPostBy);
+        postHashtagIntent.putExtra("search_post_id", postId);
+        customPostRecycler.getContext().startActivity(postHashtagIntent);
+    }
+
+    @Override
     public void onFollowChoose(int userId) {
-        presenter.follow(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new FollowRequest(userId));
+        presenter.follow(GlobalPreferences.getAccessToken(postRecycler.getContext()), new FollowRequest(userId));
     }
 
     @Override
@@ -299,8 +301,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
 
     @Override
-    public void onFavoriteChoose(int post_id, int position) {
-        presenter.setPostFavorite(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetPostFavoriteRequest(post_id));
+    public void onFavoriteChoose(int post_id) {
+        presenter.setPostFavorite(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetPostFavoriteRequest(post_id));
     }
 
     @Override
@@ -313,6 +315,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         }
     }
 
+    @Override
+    public void onGoChoose(String url) {
+        HelperUI.startWebActivity(postRecycler.getContext(), LoadWebViewBy.GO, url);
+    }
 
     @Override
     public void onShareChoose(String postLink, int post_id) {
@@ -331,8 +337,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
 
     @Override
-    public void onStoryLikeChoose(int postId, int storyId, int position) {
-        presenter.setStoryLike(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetStoryLikeRequest(storyId, postId));
+    public void onStoryLikeChoose(int postId, int storyId) {
+        presenter.setStoryLike(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetStoryLikeRequest(storyId, postId));
     }
 
     @Override
@@ -374,7 +380,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         builder.setTitle("Delete Story ?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     deletedStoryPosition = position;
-                    presenter.deleteStory(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new DeleteStoryRequest(postId, storyId));
+                    presenter.deleteStory(GlobalPreferences.getAccessToken(postRecycler.getContext()), new DeleteStoryRequest(postId, storyId));
                 })
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create();
@@ -400,19 +406,19 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (getPostsFrom) {
 
             case FAVORITES:
-                presenter.getFavoritePosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));
+                presenter.getFavoritePosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));
                 break;
 
             case MY_POSTS:
-                presenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
+                presenter.getUserPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
                 break;
 
             case CUSTOMER_POSTS:
-                presenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(customerUserId, fromPostId));
+                presenter.getUserPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(customerUserId, fromPostId));
                 break;
 
             case FEED:
-                presenter.getPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(fromPostId));
+                presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(fromPostId));
                 break;
         }
 
@@ -426,7 +432,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARING_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                presenter.setPostShare(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(postId));
+                presenter.setPostShare(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(postId));
             } else {
                 Intent intent = new Intent(getContext(), HomePageActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

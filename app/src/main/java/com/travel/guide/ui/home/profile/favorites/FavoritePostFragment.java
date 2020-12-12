@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import static com.travel.guide.enums.GetPostsFrom.FAVORITES;
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class FavoritePostFragment extends Fragment implements FavoritePostListener {
 
@@ -67,7 +66,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        favoritePostPresenter.getFavoritePosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new FavoritePostRequest(0));
+        favoritePostPresenter.getFavoritePosts(GlobalPreferences.getAccessToken(context), new FavoritePostRequest(0));
     }
 
     @Override
@@ -130,7 +129,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     @Override
     public void onLazyLoad(int postId) {
-        favoritePostPresenter.getFavoritePosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new FavoritePostRequest(postId));
+        favoritePostPresenter.getFavoritePosts(GlobalPreferences.getAccessToken(context), new FavoritePostRequest(postId));
     }
 
     @Override

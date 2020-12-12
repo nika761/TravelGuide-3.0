@@ -1,4 +1,4 @@
-package com.travel.guide.helper.customView;
+package com.travel.guide.helper.custom.customPost;
 
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,6 +13,7 @@ import android.widget.VideoView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.enums.StoryEmotionType;
 import com.travel.guide.model.response.PostResponse;
@@ -29,9 +30,8 @@ public class CustomPostHolder extends RecyclerView.ViewHolder {
     public VideoView videoItem;
     public TextView nickName, description, musicName, location, storyLikes, storyComments, storyShares, storyFavorites;
     public CircleImageView profileImage;
-    public ImageButton like, follow, share, favorite, comment, menu;
+    public ImageButton like, follow, share, favorite, comment, menu, go;
     public RecyclerView hashtagRecycler;
-
     public FrameLayout media_container;
     public PostResponse.Posts post;
 
@@ -59,7 +59,7 @@ public class CustomPostHolder extends RecyclerView.ViewHolder {
         hashtagRecycler = itemView.findViewById(R.id.hashtag_recycler);
         music = itemView.findViewById(R.id.music_icon);
         videoPlayIcon = itemView.findViewById(R.id.video_playback);
-
+        go = itemView.findViewById(R.id.go);
         favorite = itemView.findViewById(R.id.story_favorites);
 //        favorite.setOnClickListener(v -> {
 //            listener.onFavoriteChoose(post.getPost_id(), position);

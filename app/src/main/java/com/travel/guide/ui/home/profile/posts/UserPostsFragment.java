@@ -28,7 +28,6 @@ import java.util.List;
 
 import static com.travel.guide.enums.GetPostsFrom.CUSTOMER_POSTS;
 import static com.travel.guide.enums.GetPostsFrom.MY_POSTS;
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class UserPostsFragment extends Fragment implements UserPostListener {
 
@@ -77,13 +76,13 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() == null) {
             isCustomer = false;
-            userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
+            userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
         } else {
             this.getPostsFrom = (GetPostsFrom) getArguments().getSerializable("request_type");
             if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
                 isCustomer = true;
                 this.customerUserId = getArguments().getInt("customer_user_id");
-                userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
+                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
             }
         }
     }
@@ -144,9 +143,9 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     @Override
     public void onLazyLoad(int postId) {
         if (isCustomer) {
-            userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, postId));
+            userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, postId));
         } else {
-            userPostPresenter.getUserPosts(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId));
+            userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId));
         }
     }
 

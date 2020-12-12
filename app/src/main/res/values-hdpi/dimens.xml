@@ -11,4 +11,8 @@
 
     <dimen name="user_info_field_width">250dp</dimen>
 
+    <dimen name="user_profile_pic_width">85dp</dimen>
+    <dimen name="user_profile_pic_height">85dp</dimen>
+
+
 </resources>

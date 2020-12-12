@@ -9,5 +9,5 @@ package com.travel.guide.enums;
  */
 
 public enum LoadWebViewBy {
-    TERMS, POLICY, ABOUT
+    TERMS, POLICY, ABOUT, GO
 }

@@ -41,7 +41,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class RepliesFragment extends Fragment implements RepliesListener, View.OnClickListener {
 
@@ -177,7 +176,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     @Override
     public void onChooseLike(int commentId, int commentReplyId) {
         this.commentId = commentId;
-        presenter.addCommentReplyLike(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(userName.getContext()), new LikeCommentReplyRequest(storyId, postId, commentId, commentReplyId));
+        presenter.addCommentReplyLike( GlobalPreferences.getAccessToken(userName.getContext()), new LikeCommentReplyRequest(storyId, postId, commentId, commentReplyId));
     }
 
     @Override
@@ -190,7 +189,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
         AlertDialog alertDialog = new AlertDialog.Builder(likeBtn.getContext())
                 .setTitle("Delete comment ?")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.deleteCommentReply(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(commentBody.getContext()), new DeleteReplyRequest(replyId)))
+                .setPositiveButton("Yes", (dialog, which) -> presenter.deleteCommentReply(GlobalPreferences.getAccessToken(commentBody.getContext()), new DeleteReplyRequest(replyId)))
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create();
         alertDialog.show();
@@ -217,7 +216,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
             viewMore.setVisibility(View.VISIBLE);
             viewMore.setOnClickListener(v -> {
                 loader.setVisibility(View.VISIBLE);
-                presenter.getReplies(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(userName.getContext()), new GetMoreCommentRequest(replyCommentId));
+                presenter.getReplies(GlobalPreferences.getAccessToken(userName.getContext()), new GetMoreCommentRequest(replyCommentId));
             });
         }
 
@@ -252,7 +251,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
             case R.id.replies_add_btn:
                 loader.setVisibility(View.VISIBLE);
-                presenter.addCommentReply(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(likeBtn.getContext()), new AddCommentReplyRequest(storyId, postId, commentId, addField.getText().toString()));
+                presenter.addCommentReply(GlobalPreferences.getAccessToken(likeBtn.getContext()), new AddCommentReplyRequest(storyId, postId, commentId, addField.getText().toString()));
                 break;
 
             case R.id.replies_back_btn:

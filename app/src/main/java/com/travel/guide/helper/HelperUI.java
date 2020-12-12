@@ -38,9 +38,11 @@ public class HelperUI {
     public static final int WHITE = R.color.white;
 
     public static final String TYPE = "type";
+    public static final String GO_URL = "URL";
 
-    public static void startWebActivity(Context context, LoadWebViewBy requestFor) {
+    public static void startWebActivity(Context context, LoadWebViewBy requestFor, String url) {
         Intent termsIntent = new Intent(context, WebActivity.class);
+        termsIntent.putExtra(GO_URL, url);
         termsIntent.putExtra(TYPE, requestFor);
         context.startActivity(termsIntent);
     }

@@ -44,7 +44,6 @@ import java.util.List;
 
 import static com.travel.guide.helper.HelperMedia.convertImagesToPng;
 import static com.travel.guide.helper.SystemManager.WRITE_EXTERNAL_STORAGE;
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 import static com.travel.guide.network.ApiEndPoint.PLACES_API_KEY;
 import static com.travel.guide.ui.editPost.EditPostActivity.STORIES_PATHS;
 import static com.travel.guide.ui.music.ChooseMusicActivity.MUSIC_ID;
@@ -323,7 +322,7 @@ public class UploadPostActivity extends AppCompatActivity implements View.OnClic
 
         UploadPostRequest uploadPostRequestModel = new UploadPostRequest(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
 
-        uploadPostPresenter.uploadStory(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), uploadPostRequestModel);
+        uploadPostPresenter.uploadStory( GlobalPreferences.getAccessToken(this), uploadPostRequestModel);
 //
 //        UploadPostService uploadPostService = new UploadPostService();
 //        uploadPostService.uploadPost(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), uploadPostRequestModel);

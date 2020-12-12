@@ -19,6 +19,4 @@ public interface SignInListener {
 
     void onFireBaseAuthSignUp();
 
-    void onGetSettings(AppSettingsResponse.App_settings appSettings);
-
 }

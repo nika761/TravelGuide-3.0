@@ -1,8 +1,7 @@
-package com.travel.guide.helper.customView;
+package com.travel.guide.helper.custom;
 
 import android.content.Context;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;

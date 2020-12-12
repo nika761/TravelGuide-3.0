@@ -8,24 +8,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.state.HelperReference;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.hbb20.CountryCodePicker;
 import com.travel.guide.R;
-import com.travel.guide.enums.UserInfoFields;
 import com.travel.guide.helper.ClientManager;
 import com.travel.guide.helper.DialogManager;
 import com.travel.guide.helper.ToastManager;
@@ -36,21 +30,15 @@ import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
 import com.travel.guide.ui.login.password.ForgotPasswordActivity;
-import com.travel.guide.ui.login.signIn.SignInActivity;
-import com.travel.guide.ui.splashScreen.SplashScreenActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.UpdateProfileResponse;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.icu.lang.UProperty.NAME;
 import static com.travel.guide.utility.GlobalPreferences.getAccessToken;
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener {
 
@@ -92,7 +80,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
     private void getProfileInfo() {
         if (userInfo == null)
-            presenter.getProfile(ACCESS_TOKEN_BEARER + getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
+            presenter.getProfile(getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
         else
             setProfileInfo(userInfo);
     }
@@ -330,7 +318,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             updateProfileRequest.setGender(modelGender);
             updateProfileRequest.setProfile_pic(photoUrl);
             Log.e("mlklk", photoUrl + " " + updateProfileRequest.getProfile_pic());
-            presenter.updateProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), updateProfileRequest);
+            presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
         } else {
             getLoader(false);
         }

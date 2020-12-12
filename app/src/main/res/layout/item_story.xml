@@ -158,7 +158,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/go"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/story_react_container">
 
@@ -221,7 +221,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toStartOf="@id/story_menu"
+                app:layout_constraintEnd_toStartOf="@id/go"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hashtag_recycler">
 
@@ -264,116 +264,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/story_music_container" />
 
+            <ImageButton
+                android:id="@+id/go"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/go_icon"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/story_music_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/story_music_container" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 
-    <ImageButton
-        android:id="@+id/go"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/go_icon"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/post_desc"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!--    <FrameLayout-->
-    <!--        android:id="@+id/post_desc"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toStartOf="@id/go"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/story_react_container">-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="10dp"-->
-    <!--            android:layout_marginEnd="10dp"-->
-    <!--            android:layout_marginBottom="80dp"-->
-    <!--            android:orientation="vertical">-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/nickname_post"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:textColor="@color/white"-->
-    <!--                android:textSize="15sp"-->
-    <!--                android:textStyle="bold"-->
-    <!--                app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                app:layout_constraintStart_toStartOf="parent"-->
-    <!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/post_description"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_marginTop="2dp"-->
-    <!--                android:maxLines="2"-->
-    <!--                android:textColor="@color/white"-->
-    <!--                android:textSize="14sp"-->
-    <!--                app:layout_constraintBottom_toTopOf="@id/post_location"-->
-    <!--                app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                app:layout_constraintStart_toStartOf="parent"-->
-    <!--                app:layout_constraintTop_toBottomOf="@+id/nickname_post" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/post_location"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_marginTop="2dp"-->
-    <!--                android:maxLines="1"-->
-    <!--                android:textColor="@color/white"-->
-    <!--                android:textSize="14sp"-->
-    <!--                app:layout_constraintBottom_toTopOf="@id/hashtag_recycler"-->
-    <!--                app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                app:layout_constraintStart_toStartOf="parent"-->
-    <!--                app:layout_constraintTop_toBottomOf="@+id/post_description" />-->
-
-    <!--            <androidx.recyclerview.widget.RecyclerView-->
-    <!--                android:id="@+id/hashtag_recycler"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:visibility="gone" />-->
-
-    <!--            <LinearLayout-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_marginTop="10dp"-->
-    <!--                android:orientation="horizontal">-->
-
-    <!--                <ImageView-->
-    <!--                    android:id="@+id/music_icon"-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:src="@drawable/icon_music"-->
-    <!--                    app:layout_constraintStart_toStartOf="parent"-->
-    <!--                    app:layout_constraintTop_toBottomOf="@id/hashtag_recycler" />-->
-
-    <!--                <TextView-->
-    <!--                    android:id="@+id/music_name_post"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:layout_gravity="center"-->
-    <!--                    android:layout_marginStart="5dp"-->
-    <!--                    android:layout_marginEnd="200dp"-->
-    <!--                    android:ellipsize="marquee"-->
-    <!--                    android:marqueeRepeatLimit="marquee_forever"-->
-    <!--                    android:scrollHorizontally="true"-->
-    <!--                    android:singleLine="true"-->
-    <!--                    android:textColor="@color/white"-->
-    <!--                    android:textSize="12sp"-->
-    <!--                    app:layout_constraintBottom_toBottomOf="@id/music_icon"-->
-    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                    app:layout_constraintStart_toEndOf="@id/music_icon"-->
-    <!--                    app:layout_constraintTop_toTopOf="@id/music_icon" />-->
-
-    <!--            </LinearLayout>-->
-
-    <!--        </LinearLayout>-->
-
-    <!--    </FrameLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

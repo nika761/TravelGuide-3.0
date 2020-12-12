@@ -18,7 +18,6 @@ import com.travel.guide.model.response.FavoriteMusicResponse;
 
 import java.util.List;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class FavoriteMusicFragment extends Fragment implements FavoriteMusicListener {
     private RecyclerView favoriteMusicRecycler;
@@ -46,7 +45,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     @Override
     public void onResume() {
         super.onResume();
-        favoriteMusicPresenter.getFavoriteMusics(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()));
+        favoriteMusicPresenter.getFavoriteMusics(GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()));
     }
 
     @Override

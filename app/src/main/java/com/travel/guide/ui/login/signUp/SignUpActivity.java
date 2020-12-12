@@ -308,11 +308,11 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
                 break;
 
             case R.id.terms_register:
-                HelperUI.startWebActivity(this, TERMS);
+                HelperUI.startWebActivity(this, TERMS, "");
                 break;
 
             case R.id.policy_register:
-                HelperUI.startWebActivity(this, POLICY);
+                HelperUI.startWebActivity(this, POLICY, "");
                 break;
 
         }

@@ -18,7 +18,6 @@ import com.travel.guide.model.request.PostByHashtagRequest;
 import com.travel.guide.model.request.PostByLocationRequest;
 import com.travel.guide.model.response.PostResponse;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SearchPostActivity extends AppCompatActivity implements SearchPostListener {
 
@@ -43,10 +42,10 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
         switch (type) {
 
             case LOCATION:
-                searchPostPresenter.getPostsByLocation(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
+                searchPostPresenter.getPostsByLocation(GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
                 break;
             case HASHTAG:
-                searchPostPresenter.getPostsByHashtag(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new PostByHashtagRequest(hashtag));
+                searchPostPresenter.getPostsByHashtag(GlobalPreferences.getAccessToken(this), new PostByHashtagRequest(hashtag));
                 break;
 
         }

@@ -21,8 +21,8 @@ import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.enums.StoryEmotionType;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.utility.GlobalPreferences;
-import com.travel.guide.helper.customView.CustomFrameLayout;
-import com.travel.guide.helper.customView.CustomProgressBar;
+import com.travel.guide.helper.custom.CustomFrameLayout;
+import com.travel.guide.helper.custom.CustomProgressBar;
 import com.travel.guide.ui.searchPost.SearchPostActivity;
 import com.travel.guide.model.response.PostResponse;
 
@@ -278,7 +278,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
                     break;
 
                 case R.id.story_like:
-                    homeFragmentListener.onStoryLikeChoose(currentPost.getPost_id(), currentPost.getPost_stories().get(getLayoutPosition()).getStory_id(), getLayoutPosition());
+                    homeFragmentListener.onStoryLikeChoose(currentPost.getPost_id(), currentPost.getPost_stories().get(getLayoutPosition()).getStory_id());
                     setStoryEmotion(getLayoutPosition(), StoryEmotionType.LIKE);
                     break;
 
@@ -292,7 +292,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
                     break;
 
                 case R.id.story_favorites:
-                    homeFragmentListener.onFavoriteChoose(currentPost.getPost_id(), getLayoutPosition());
+                    homeFragmentListener.onFavoriteChoose(currentPost.getPost_id());
                     setStoryEmotion(getLayoutPosition(), StoryEmotionType.FAVORITE);
                     break;
 

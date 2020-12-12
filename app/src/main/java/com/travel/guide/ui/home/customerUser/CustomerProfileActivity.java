@@ -33,7 +33,6 @@ import com.travel.guide.ui.home.profile.tours.UserToursFragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class CustomerProfileActivity extends AppCompatActivity implements CustomerProfileListener, ProfileFragment.OnPostChooseListener, View.OnClickListener {
 
@@ -58,7 +57,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         initUI();
 
         if (customerUserId != 0)
-            customerProfilePresenter.getProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
+            customerProfilePresenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -189,7 +188,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
                 break;
 
             case R.id.customer_profile_follow_btn:
-                customerProfilePresenter.follow(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), new FollowRequest(customerUserId));
+                customerProfilePresenter.follow(GlobalPreferences.getAccessToken(this), new FollowRequest(customerUserId));
                 break;
 
             case R.id.customer_profile_follow_container:

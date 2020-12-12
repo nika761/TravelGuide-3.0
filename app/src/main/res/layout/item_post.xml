@@ -14,7 +14,7 @@
             android:layout_height="match_parent"
             android:visibility="visible" />
 
-        <com.travel.guide.helper.customView.CustomProgressBar
+        <com.travel.guide.helper.custom.CustomProgressBar
             android:id="@+id/story_container_new_new"
             android:layout_width="match_parent"
             android:layout_height="10dp"

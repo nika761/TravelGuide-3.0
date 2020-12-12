@@ -75,8 +75,8 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/customer_profile_image"
-                        android:layout_width="110dp"
-                        android:layout_height="110dp"
+                        android:layout_width="@dimen/user_profile_pic_width"
+                        android:layout_height="@dimen/user_profile_pic_height"
                         android:background="@drawable/image_account"
                         app:layout_constraintBottom_toTopOf="@id/customer_profile_follow_container"
                         app:layout_constraintStart_toStartOf="parent"

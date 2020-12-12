@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.travel.guide.R;
-import com.travel.guide.helper.customView.CustomProgressBar;
+import com.travel.guide.helper.custom.CustomProgressBar;
 import com.travel.guide.model.response.PostResponse;
 
 import java.util.List;

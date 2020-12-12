@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -48,23 +49,24 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.travel.guide.enums.LoadWebViewBy.ABOUT;
 import static com.travel.guide.enums.LoadWebViewBy.POLICY;
 import static com.travel.guide.enums.LoadWebViewBy.TERMS;
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileFragment extends Fragment implements ProfileFragmentListener {
 
     private TextView nickName, name, bioBody, following, follower, reaction, bioHead;
     private ImageButton seeBio, hideBio;
-    private LottieAnimationView loader;
     private CircleImageView userPrfImage;
     private ActionBarDrawerToggle toggle;
-    private Context context;
     private View mIncludedLayout;
+    private FrameLayout loaderContainer;
+    private LottieAnimationView loader;
     private LinearLayout bioContainer;
 
     private ProfileFragmentPresenter presenter;
     private String userName;
+    private Context context;
 
     private ProfileResponse.Userinfo userInfo;
+
 
     @Nullable
     @Override
@@ -100,8 +102,10 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
         presenter = new ProfileFragmentPresenter(this);
 
-        loader = view.findViewById(R.id.loader_profile);
         name = view.findViewById(R.id.user_prf_name_toolbar);
+
+        loaderContainer = view.findViewById(R.id.profile_loader_container);
+        loader = view.findViewById(R.id.profile_loader);
 
         mIncludedLayout = view.findViewById(R.id.profile_included_layout);
         ViewPager viewPager = mIncludedLayout.findViewById(R.id.profile_view_pager);
@@ -139,6 +143,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         bioContainer = mIncludedLayout.findViewById(R.id.profile_bio);
         bioHead = mIncludedLayout.findViewById(R.id.profile_bio_head);
 
+
         return view;
     }
 
@@ -152,8 +157,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        loader.setVisibility(View.VISIBLE);
-        presenter.getProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+        getLoader(true);
+        presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
     }
 
     @Override
@@ -179,15 +184,15 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.settings_about:
-                HelperUI.startWebActivity(context, ABOUT);
+                HelperUI.startWebActivity(context, ABOUT, "");
                 break;
 
             case R.id.settings_privacy:
-                HelperUI.startWebActivity(context, POLICY);
+                HelperUI.startWebActivity(context, POLICY, "");
                 break;
 
             case R.id.settings_terms:
-                HelperUI.startWebActivity(context, TERMS);
+                HelperUI.startWebActivity(context, TERMS, "");
                 break;
 
             case R.id.settings_sing_out:
@@ -252,7 +257,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
         HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
 
-        loader.setVisibility(View.GONE);
         mIncludedLayout.setVisibility(View.VISIBLE);
 
         userName = userInfo.getName() + " " + userInfo.getLastname();
@@ -263,24 +267,35 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         reaction.setText(String.valueOf(userInfo.getReactions()));
         setBiography(userInfo.getBiography());
 
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(bioHead.getContext());
-        Bundle params = new Bundle();
-        params.putString("user_profile_page", "this user is" + " " + userInfo.getName() + userInfo.getLastname());
-        firebaseAnalytics.logEvent("profile_page_event", params);
+//        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(bioHead.getContext());
+//        Bundle params = new Bundle();
+//        params.putString("user_profile_page", "this user is" + " " + userInfo.getName() + userInfo.getLastname());
+//        firebaseAnalytics.logEvent("profile_page_event", params);
 
+        getLoader(false);
     }
 
     @Override
     public void onGetError(String message) {
-        loader.setVisibility(View.GONE);
-
+        getLoader(false);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void getLoader(boolean show) {
+
+        if (show) {
+            loaderContainer.setVisibility(View.VISIBLE);
+            loader.setVisibility(View.VISIBLE);
+        } else {
+            loaderContainer.setVisibility(View.GONE);
+            loader.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        presenter.getProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+        presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
     }
 
     private void showBiography(boolean show) {
@@ -318,26 +333,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         super.onDestroy();
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        try {
-//            getView().requestFocus();
-//            getView().setOnKeyListener((v, keyCode, event) -> {
-//                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-//
-//                    //your code
-//
-//                    return true;
-//                }
-//                return false;
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-    }
 
     public interface OnPostChooseListener {
         void onPostChoose(Bundle fragmentData);

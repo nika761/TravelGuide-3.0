@@ -10,9 +10,11 @@ import com.travel.guide.R;
 import com.travel.guide.enums.LoadWebViewBy;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.ui.webView.about.AboutFragment;
+import com.travel.guide.ui.webView.go.GoFragment;
 import com.travel.guide.ui.webView.policy.PolicyFragment;
 import com.travel.guide.ui.webView.terms.TermsFragment;
 
+import static com.travel.guide.helper.HelperUI.GO_URL;
 import static com.travel.guide.helper.HelperUI.TYPE;
 
 public class WebActivity extends AppCompatActivity {
@@ -41,6 +43,11 @@ public class WebActivity extends AppCompatActivity {
 
                 case ABOUT:
                     HelperUI.loadFragment(new AboutFragment(), null, WEB_FRAGMENT_CONTAINER, false, true, this);
+                    break;
+
+                case GO:
+                    String url = getIntent().getStringExtra(GO_URL);
+                    HelperUI.loadFragment(GoFragment.getInstance(url), null, WEB_FRAGMENT_CONTAINER, false, true, this);
                     break;
             }
         } else {

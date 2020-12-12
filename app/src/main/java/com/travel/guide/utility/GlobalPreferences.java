@@ -120,7 +120,7 @@ public class GlobalPreferences {
 
     public static void saveAccessToken(Context context, String accessToken) {
         String access = ACCESS_TOKEN_BEARER + accessToken;
-        getPref(context).edit().putString(ACCESS_KEY, accessToken).apply();
+        getPref(context).edit().putString(ACCESS_KEY, access).apply();
     }
 
     public static void removeAccessToken(Context context) {

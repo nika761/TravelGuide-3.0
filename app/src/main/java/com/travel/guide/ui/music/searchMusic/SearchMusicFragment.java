@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class SearchMusicFragment extends Fragment implements SearchMusicListener {
     private RecyclerView searchMusicRecycler, moodsRecycler;
@@ -108,9 +107,9 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        searchMusicPresenter.getMusics(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
+        searchMusicPresenter.getMusics(GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
 
-        searchMusicPresenter.getMoods(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
+        searchMusicPresenter.getMoods(GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
 
         RxTextView.textChanges(searchField)
                 .debounce(1200, TimeUnit.MILLISECONDS)
@@ -118,7 +117,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
                 .map(CharSequence::toString)
                 .subscribe((Consumer<CharSequence>) charSequence -> {
                     if (!charSequence.toString().isEmpty()) {
-                        searchMusicPresenter.searchMusic(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
+                        searchMusicPresenter.searchMusic(GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
                     }
                 });
     }
@@ -163,7 +162,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     @Override
     public void onFavoriteChoose(int musicId) {
         AddFavoriteMusic addFavoriteMusic = new AddFavoriteMusic(musicId);
-        searchMusicPresenter.addFavorite("Bearer" + " " + GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()), addFavoriteMusic);
+        searchMusicPresenter.addFavorite(GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()), addFavoriteMusic);
     }
 
     @Override
@@ -191,7 +190,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onChooseMood(int moodId) {
-        searchMusicPresenter.getMusicByMood(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new ByMoodRequest(moodId));
+        searchMusicPresenter.getMusicByMood(GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new ByMoodRequest(moodId));
     }
 
     private void play(String music) {

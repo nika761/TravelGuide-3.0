@@ -1,13 +1,11 @@
-package com.travel.guide.helper.customView;
+package com.travel.guide.helper.custom.customPost;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.travel.guide.R;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.ui.home.home.HomeFragmentListener;

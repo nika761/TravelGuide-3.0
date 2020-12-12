@@ -57,7 +57,6 @@ public class TermsFragment extends Fragment implements TermsContract.View {
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
         termsPresenter.getTerms(new TermsPolicyRequest(GlobalPreferences.getLanguageId(cancelBtn.getContext())));
-
     }
 
     private void loadAnimation(View target, int animationId, int offset) {

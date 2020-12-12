@@ -24,7 +24,6 @@ import com.travel.guide.model.response.FollowingResponse;
 
 import java.util.List;
 
-import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class FollowFragment extends Fragment implements FollowFragmentListener {
 
@@ -95,7 +94,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onFollowAction(int userId, int position) {
         this.actionPosition = position;
-        presenter.startAction(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowRequest(userId));
+        presenter.startAction(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowRequest(userId));
     }
 
     @Override
@@ -128,16 +127,16 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
             switch (requestType) {
                 case FOLLOWER:
                     if (customerUserId > 0)
-                        presenter.getFollowers(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
+                        presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
                     else
-                        presenter.getFollowers(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                        presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
                     break;
 
                 case FOLLOWING:
                     if (customerUserId > 0)
-                        presenter.getFollowing(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
+                        presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
                     else
-                        presenter.getFollowing(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                        presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
                     break;
             }
         } else {
