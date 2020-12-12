@@ -8,5 +8,6 @@
 
     <dimen name="user_post_item_size_width">135dp</dimen>
     <dimen name="user_post_item_size_height">145dp</dimen>
+    <dimen name="user_info_field_width">282dp</dimen>
 
 </resources>

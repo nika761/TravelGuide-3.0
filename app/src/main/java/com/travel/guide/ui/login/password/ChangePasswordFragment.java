@@ -14,16 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
-import com.travel.guide.enums.InputFieldPairs;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.ChangePasswordRequest;
 
 import java.util.HashMap;
 
-import static com.travel.guide.enums.InputFieldPairs.NAME;
-import static com.travel.guide.enums.InputFieldPairs.PASSWORD;
 
 public class ChangePasswordFragment extends Fragment {
 

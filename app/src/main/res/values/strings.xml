@@ -84,6 +84,7 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="change_photo">Change Photo</string>
     <string name="country_head">Country</string>
+    <string name="city_head">City</string>
     <string name="change_password">Change password</string>
     <string name="choose_language">Choose Language</string>
     <string name="sign_out">Sign out ?</string>

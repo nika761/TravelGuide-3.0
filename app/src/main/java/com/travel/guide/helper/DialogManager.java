@@ -61,6 +61,7 @@ public class DialogManager {
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
 
+        dialog.setCancelable(false);
         dialog.show();
     }
 

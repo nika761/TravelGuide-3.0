@@ -1,8 +1,13 @@
 package com.travel.guide.ui.home.profile.editProfile;
 
+import android.widget.EditText;
+
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.hbb20.CountryCodePicker;
+import com.travel.guide.enums.UserInfoFields;
+import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
@@ -10,16 +15,20 @@ import com.travel.guide.model.response.UpdateProfileResponse;
 import com.travel.guide.network.ApiService;
 import com.travel.guide.network.RetrofitManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 class ProfileEditPresenter {
-    private ProfileEditListener listener;
+    private ProfileEditListener callback;
     private ApiService apiService;
 
     ProfileEditPresenter(ProfileEditListener profileEditListener) {
-        this.listener = profileEditListener;
+        this.callback = profileEditListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
@@ -28,21 +37,18 @@ class ProfileEditPresenter {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
                     if (response.body().getStatus() == 0)
-                        listener.onGetProfile(response.body().getUserinfo());
-
+                        callback.onGetProfileInfo(response.body().getUserinfo());
                     else
-                        listener.onGetError(String.valueOf(response.body().getStatus()));
-
+                        callback.onError(String.valueOf(response.body().getStatus()));
                 } else {
-                    listener.onGetError(response.message());
+                    callback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
-                listener.onGetError(t.getMessage());
+                callback.onError(t.getMessage());
             }
         });
     }
@@ -52,15 +58,15 @@ class ProfileEditPresenter {
             @Override
             public void onResponse(Call<UpdateProfileResponse> call, Response<UpdateProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    listener.onUpdateProfile(response.body());
+                    callback.onUpdateSuccess(response.body());
                 } else {
-                    listener.onGetError(response.message());
+                    callback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<UpdateProfileResponse> call, Throwable t) {
-                listener.onGetError(t.getMessage());
+                callback.onError(t.getMessage());
             }
         });
     }
@@ -70,9 +76,9 @@ class ProfileEditPresenter {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
-                    listener.onPhotoUploadedToS3();
+                    callback.onPhotoUploadedToS3();
                 } else if (TransferState.FAILED == state) {
-                    listener.onGetError("error");
+                    callback.onError("error");
                 }
             }
 
@@ -83,9 +89,56 @@ class ProfileEditPresenter {
 
             @Override
             public void onError(int id, Exception ex) {
-                listener.onGetError(ex.getMessage());
+                callback.onError(ex.getMessage());
             }
         });
+    }
 
+
+    HashMap<UserInfoFields, Boolean> checkFields(UpdateProfileRequest body) {
+        HashMap<UserInfoFields, Boolean> fields = new HashMap<>();
+
+        if (checkForNullOrEmpty(body.getName()))
+            fields.put(UserInfoFields.NAME, false);
+        else
+            fields.put(UserInfoFields.NAME, true);
+
+        if (checkForNullOrEmpty(body.getLastname()))
+            fields.put(UserInfoFields.SURNAME, false);
+        else
+            fields.put(UserInfoFields.SURNAME, true);
+
+        if (checkForNullOrEmpty(body.getNickname()))
+            fields.put(UserInfoFields.NICKNAME, false);
+        else
+            fields.put(UserInfoFields.NICKNAME, true);
+
+        if (checkForNullOrEmpty(body.getDate_of_birth()))
+            fields.put(UserInfoFields.BIRTH_DATE, false);
+        else
+            fields.put(UserInfoFields.BIRTH_DATE, true);
+
+        if (checkForNullOrEmpty(body.getEmail()))
+            fields.put(UserInfoFields.EMAIL, false);
+        else if (!HelperUI.checkEmail(body.getEmail()))
+            fields.put(UserInfoFields.EMAIL, false);
+        else
+            fields.put(UserInfoFields.EMAIL, true);
+
+        if (checkForNullOrEmpty(body.getPhone_num()))
+            fields.put(UserInfoFields.PHONE_NUMBER, false);
+        else
+            fields.put(UserInfoFields.PHONE_NUMBER, true);
+
+        if (checkForNullOrEmpty(body.getGender()))
+            fields.put(UserInfoFields.GENDER, false);
+        else
+            fields.put(UserInfoFields.GENDER, true);
+
+        return fields;
+    }
+
+    private boolean checkForNullOrEmpty(String val) {
+        return val == null || val.isEmpty();
     }
 }

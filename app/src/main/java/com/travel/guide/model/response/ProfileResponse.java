@@ -6,13 +6,31 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProfileResponse {
+public class ProfileResponse implements Parcelable{
+
     @Expose
     @SerializedName("userinfo")
     private Userinfo userinfo;
     @Expose
     @SerializedName("status")
     private int status;
+
+    protected ProfileResponse(Parcel in) {
+        userinfo = in.readParcelable(Userinfo.class.getClassLoader());
+        status = in.readInt();
+    }
+
+    public static final Creator<ProfileResponse> CREATOR = new Creator<ProfileResponse>() {
+        @Override
+        public ProfileResponse createFromParcel(Parcel in) {
+            return new ProfileResponse(in);
+        }
+
+        @Override
+        public ProfileResponse[] newArray(int size) {
+            return new ProfileResponse[size];
+        }
+    };
 
     public Userinfo getUserinfo() {
         return userinfo;
@@ -28,6 +46,17 @@ public class ProfileResponse {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(userinfo, flags);
+        dest.writeInt(status);
     }
 
     public static class Userinfo implements Parcelable {
@@ -95,7 +124,7 @@ public class ProfileResponse {
         @SerializedName("id")
         private int id;
 
-        protected Userinfo(Parcel in) {
+        Userinfo(Parcel in) {
             reactions = in.readInt();
             follower = in.readInt();
             following = in.readInt();

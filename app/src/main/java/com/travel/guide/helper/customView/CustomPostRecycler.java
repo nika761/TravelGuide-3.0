@@ -521,7 +521,6 @@ public class CustomPostRecycler extends RecyclerView {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d(TAG, e.getMessage());
         }
     }
 
@@ -532,58 +531,74 @@ public class CustomPostRecycler extends RecyclerView {
         switch (emotionType) {
             case LIKE:
                 if (story.getStory_like_by_me()) {
-                    if (countLikeUp > story.getStory_likes()) {
-                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
-                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
-                        story.setStory_like_by_me(false);
+                    story.setStory_likes(story.getStory_likes() - 1);
+                    story.setStory_like_by_me(false);
+                    holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+                    animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
 
-                    } else {
-                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
-                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() - 1));
-                        countLikeDown = story.getStory_likes() - 1;
-                        story.setStory_like_by_me(false);
-                    }
+//                    if (countLikeUp > story.getStory_likes()) {
+//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
+//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+//                        story.setStory_like_by_me(false);
+//                    } else {
+//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
+//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() - 1));
+//                        countLikeDown = story.getStory_likes() - 1;
+//                        story.setStory_like_by_me(false);
+//                    }
 
                 } else {
-                    if (countLikeDown < story.getStory_likes()) {
-                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
-                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
-                        story.setStory_like_by_me(true);
-                    } else {
-                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
-                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() + 1));
-                        countLikeUp = story.getStory_likes() + 1;
-                        story.setStory_like_by_me(true);
-                    }
+                    story.setStory_likes(story.getStory_likes() + 1);
+                    story.setStory_like_by_me(true);
+                    holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+                    animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
+
+//                    if (countLikeDown < story.getStory_likes()) {
+//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
+//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+//                        story.setStory_like_by_me(true);
+//                    } else {
+//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
+//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() + 1));
+//                        countLikeUp = story.getStory_likes() + 1;
+//                        story.setStory_like_by_me(true);
+//                    }
                 }
 
                 break;
 
             case FAVORITE:
                 if (post.getI_favor_post()) {
-                    if (countFavoriteUp > post.getPost_favorites()) {
-                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
-                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
-                        post.setI_favor_post(false);
-                    } else {
-                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
-                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() - 1));
-                        countFavoriteDown = post.getPost_favorites() - 1;
-                        post.setI_favor_post(false);
-                    }
+                    post.setPost_favorites(post.getPost_favorites() - 1);
+                    post.setI_favor_post(false);
+                    holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+                    animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
+//                    if (countFavoriteUp > post.getPost_favorites()) {
+//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
+//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+//                        post.setI_favor_post(false);
+//                    } else {
+//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
+//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() - 1));
+//                        countFavoriteDown = post.getPost_favorites() - 1;
+//                        post.setI_favor_post(false);
+//                    }
 
                 } else {
-                    if (countFavoriteDown < post.getPost_favorites()) {
-                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
-                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
-                        post.setI_favor_post(true);
-                    } else {
-                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
-                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() + 1));
-                        countFavoriteUp = post.getPost_favorites() + 1;
-                        post.setI_favor_post(true);
-                    }
-
+                    post.setPost_favorites(post.getPost_favorites() + 1);
+                    post.setI_favor_post(true);
+                    holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+                    animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
+//                    if (countFavoriteDown < post.getPost_favorites()) {
+//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
+//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+//                        post.setI_favor_post(true);
+//                    } else {
+//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
+//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() + 1));
+//                        countFavoriteUp = post.getPost_favorites() + 1;
+//                        post.setI_favor_post(true);
+//                    }
                 }
                 break;
 
@@ -669,6 +684,7 @@ public class CustomPostRecycler extends RecyclerView {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private TrackSelector getTrackSelector() {

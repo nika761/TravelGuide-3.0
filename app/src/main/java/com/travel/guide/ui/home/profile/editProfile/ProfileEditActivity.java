@@ -3,340 +3,464 @@ package com.travel.guide.ui.home.profile.editProfile;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.solver.state.HelperReference;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.hbb20.CountryCodePicker;
 import com.travel.guide.R;
-import com.travel.guide.enums.InputFieldPairs;
+import com.travel.guide.enums.UserInfoFields;
 import com.travel.guide.helper.ClientManager;
 import com.travel.guide.helper.DialogManager;
+import com.travel.guide.helper.ToastManager;
+import com.travel.guide.helper.HelperDate;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.ProfileRequest;
+import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
 import com.travel.guide.ui.login.password.ForgotPasswordActivity;
+import com.travel.guide.ui.login.signIn.SignInActivity;
+import com.travel.guide.ui.splashScreen.SplashScreenActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.UpdateProfileResponse;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.travel.guide.enums.InputFieldPairs.BIO;
-import static com.travel.guide.enums.InputFieldPairs.BIRTHDATE;
-import static com.travel.guide.enums.InputFieldPairs.COUNTRY;
-import static com.travel.guide.enums.InputFieldPairs.EMAIL;
-import static com.travel.guide.enums.InputFieldPairs.NAME;
-import static com.travel.guide.enums.InputFieldPairs.NICKNAME;
-import static com.travel.guide.enums.InputFieldPairs.SURNAME;
-import static com.travel.guide.utility.BaseApplication.AGE_RESTRICTION;
+import static android.icu.lang.UProperty.NAME;
 import static com.travel.guide.utility.GlobalPreferences.getAccessToken;
 import static com.travel.guide.network.ApiEndPoint.ACCESS_TOKEN_BEARER;
 
 public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener {
 
-    private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
     private ProfileEditPresenter presenter;
 
-    private File imageFile;
+    private File profileImageFile;
 
-    private EditText name, surName, nickName, email, phoneNumber, birthDate, country, password, bio;
-    private TextView nameHead, surNameHead, nickNameHead, birthDateHead, emailHead, phoneNumberhead, countryHead, passwordHead, bioHead;
+    private EditText name, surName, nickName, email, phoneNumber, country, city, password, bio;
+    private TextView nameHead, surNameHead, nickNameHead, birthDate, birthDateHead, emailHead, phoneNumberHead, nickNameBusy, nickNameFirst, nickNameTwo, countryHead, cityHead, passwordHead, bioHead;
     private CircleImageView userImage;
     private RadioGroup genderGroup;
-    private String photoUrl;
-    private LinearLayout phoneCodeContainer;
+    private String photoUrl, nickFirst, nickSecond;
+    private ConstraintLayout phoneCodeContainer;
 
-    private final static int PICK_IMAGE = 28;
     private boolean genderChecked;
     private long timeStamp;
     private int gender;
+    private long birthDateTimeStamp;
+
+    private ProfileResponse.Userinfo userInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
+        getInfoFromExtra();
         initUI();
-        presenter.getProfile(ACCESS_TOKEN_BEARER + getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
+        getProfileInfo();
+    }
+
+    private void getInfoFromExtra() {
+        try {
+            userInfo = getIntent().getParcelableExtra("user_info");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getProfileInfo() {
+        if (userInfo == null)
+            presenter.getProfile(ACCESS_TOKEN_BEARER + getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
+        else
+            setProfileInfo(userInfo);
     }
 
     private void initUI() {
 
         presenter = new ProfileEditPresenter(this);
-        userImage = findViewById(R.id.edit_profile_image);
 
+        userImage = findViewById(R.id.edit_profile_image);
         name = findViewById(R.id.edit_name);
         nameHead = findViewById(R.id.edit_name_head);
-
         surName = findViewById(R.id.edit_surname);
         surNameHead = findViewById(R.id.edit_surname_head);
-
         nickName = findViewById(R.id.edit_nick_name);
         nickNameHead = findViewById(R.id.edit_nick_name_head);
-
         email = findViewById(R.id.edit_email);
         emailHead = findViewById(R.id.edit_mail_head);
-
         country = findViewById(R.id.edit_country);
         countryHead = findViewById(R.id.edit_country_head);
-
+        city = findViewById(R.id.edit_city);
+        cityHead = findViewById(R.id.edit_city_head);
         bio = findViewById(R.id.edit_bio);
         bioHead = findViewById(R.id.edit_bio_head);
+        birthDateHead = findViewById(R.id.edit_birth_date_head);
+        genderGroup = findViewById(R.id.edit_radio_group);
+        phoneNumber = findViewById(R.id.edit_phone_number);
+        phoneNumberHead = findViewById(R.id.edit_phone_number_head);
+        nickNameBusy = findViewById(R.id.edit_nickName_offer);
+        nickNameFirst = findViewById(R.id.edit_nickName_offer_1);
+        nickNameFirst.setOnClickListener(v -> onChooseNick(1));
+
+        nickNameTwo = findViewById(R.id.edit_nickName_offer_2);
+        nickNameTwo.setOnClickListener(v -> onChooseNick(2));
+
+        countryCodePicker = findViewById(R.id.ccp);
+        phoneCodeContainer = findViewById(R.id.edit_profile_phone_number_container);
+        phoneCodeContainer.setOnClickListener(v -> countryCodePicker.setVisibility(View.VISIBLE));
+        phoneNumber.setOnClickListener(v -> countryCodePicker.setVisibility(View.VISIBLE));
+        phoneNumber.setOnFocusChangeListener((v, hasFocus) -> {
+            if (v.hasFocus() && hasFocus) {
+                countryCodePicker.setVisibility(View.VISIBLE);
+            }
+        });
 
         birthDate = findViewById(R.id.edit_birth_date);
-        birthDate.setOnClickListener(v -> DialogManager.datePickerDialog(this, mDateSetListener));
-
-        birthDateHead = findViewById(R.id.edit_birth_date_head);
-
-//        phoneNumber = findViewById(R.id.edit_phone_number);
-        phoneNumberhead = findViewById(R.id.edit_phone_number_head);
+        birthDate.setOnClickListener(v -> DialogManager.datePickerDialog(this, getOnDateSetListener()));
 
         TextView changePassword = findViewById(R.id.edit_change_password);
-        changePassword.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileEditActivity.this, ForgotPasswordActivity.class);
-            intent.putExtra("request_for", "change");
-            startActivity(intent);
-        });
-
-        phoneCodeContainer = findViewById(R.id.edit_profile_phone_number_container);
-        phoneCodeContainer.setWeightSum(1);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.weight = (float) 0.30;
-        lp.leftMargin = 2;
-        lp.rightMargin = 2;
-
-        countryCodePicker = new CountryCodePicker(this);
-        countryCodePicker.setLayoutParams(lp);
-        countryCodePicker.setTextSize(20);
-        countryCodePicker.setAutoDetectedCountry(false);
-        countryCodePicker.setDetectCountryWithAreaCode(false);
-//        countryCodePicker.setCountryForPhoneCode(87);
-//        countryCodePicker.setDefaultCountryUsingNameCode("AR");
-        countryCodePicker.setDefaultCountryUsingPhoneCode(54);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.weight = (float) 0.70;
-        lp.leftMargin = 2;
-        lp.rightMargin = 2;
-
-        EditText editText = new EditText(this);
-        editText.setLayoutParams(layoutParams);
-        editText.setTextSize(14);
-        editText.setPadding(2, 2, 2, 2);
-        phoneCodeContainer.addView(countryCodePicker);
-        phoneCodeContainer.addView(editText);
-
-
-//        countryCodePicker = findViewById(R.id.number_picker);
-//        countryCodePicker.setDefaultCountryUsingNameCode("BG");
-//        countryCodePicker.setCountryForPhoneCode(506);
-//        countryCodePicker.setDefaultCountryUsingPhoneCode(506);
+        changePassword.setOnClickListener(v -> startChangePassword());
 
         TextView saveBtn = findViewById(R.id.edit_save_btn);
-        saveBtn.setOnClickListener(v -> checkInputData());
+        saveBtn.setOnClickListener(v -> onSaveAction());
 
         TextView toolbarBackBtn = findViewById(R.id.user_prf_back_btn);
-        toolbarBackBtn.setOnClickListener(v -> finish());
+        toolbarBackBtn.setOnClickListener(v -> onBackPressed());
 
         View changePhotoBtn = findViewById(R.id.change_photo_btn);
-        changePhotoBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, PICK_IMAGE);
-        });
-
-
-        mDateSetListener = (datePicker, year, month, day) -> {
-            month = month + 1;
-            String dayString = day < 10 ? "0" + day : String.valueOf(day);
-            String monthString = month < 10 ? "0" + month : String.valueOf(month);
-
-            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-            int age = currentYear - year;
-            int ageRestrict = AGE_RESTRICTION;
-
-            if (age < ageRestrict) {
-                Toast.makeText(this, "Application age restriction 13+", Toast.LENGTH_SHORT).show();
-            } else {
-                String date = year + "/" + monthString + "/" + dayString;
-                birthDate.setText(date);
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day);
-                timeStamp = calendar.getTimeInMillis();
-                Log.e("datetime", String.valueOf(timeStamp));
-            }
-        };
-
-        genderGroup = findViewById(R.id.edit_radio_group);
-        genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.edit_radio_male:
-                    gender = 0;
-                    break;
-
-                case R.id.edit_radio_female:
-                    gender = 1;
-                    break;
-
-                case R.id.edit_radio_other:
-                    gender = 2;
-                    break;
-            }
-            genderChecked = true;
-        });
+        changePhotoBtn.setOnClickListener(v -> HelperMedia.startImagePicker(this));
 
     }
 
+    private boolean checkNumber(EditText enteredNumber) {
+        boolean numberValidate = false;
+
+        countryCodePicker.registerCarrierNumberEditText(enteredNumber);
+
+        if (countryCodePicker.isValidFullNumber()) {
+            numberValidate = true;
+        }
+        return numberValidate;
+    }
+
+    private void onPickImageFinish(Intent data) {
+        if (data != null) {
+            if (data.getData() != null)
+                profileImageFile = getPickedImage(data.getData());
+            else
+                ToastManager.getUnknownErrorToast(this);
+        } else
+            ToastManager.getUnknownErrorToast(this);
+    }
+
+    private File getPickedImage(Uri uri) {
+
+        String picturePath = HelperMedia.getPathFromImageUri(this, uri);
+
+        HelperMedia.loadCirclePhoto(this, picturePath, userImage);
+
+        photoUrl = null;
+
+        return new File(picturePath);
+    }
+
+    private void onChooseNick(int wich) {
+        switch (wich) {
+            case 1:
+                nickName.setText(nickFirst);
+                nickNameBusy.setVisibility(View.GONE);
+                HelperUI.inputDefault(this, nickName, nickNameHead);
+                break;
+            case 2:
+                nickName.setText(nickSecond);
+                nickNameBusy.setVisibility(View.GONE);
+                HelperUI.inputDefault(this, nickName, nickNameHead);
+                break;
+        }
+
+    }
+
+    private void startChangePassword() {
+        Intent intent = new Intent(ProfileEditActivity.this, ForgotPasswordActivity.class);
+        intent.putExtra("request_for", "change");
+        startActivity(intent);
+    }
+
+    private DatePickerDialog.OnDateSetListener getOnDateSetListener() {
+        return (view, year, month, dayOfMonth) -> {
+            if (HelperDate.checkAgeOfUser(year, month, dayOfMonth)) {
+                birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
+                birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
+            } else
+                ToastManager.getErrorToaster(ProfileEditActivity.this, "Application age restriction 13+");
+        };
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    Uri uri = data.getData();
-                    if (uri != null)
-                        pickProfileImage(uri);
-                }
+        if (requestCode == HelperMedia.REQUEST_PICK_IMAGE) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    onPickImageFinish(data);
+                    break;
+                case Activity.RESULT_CANCELED:
+                    ToastManager.getUnknownErrorToast(this);
+                    break;
             }
         }
     }
 
-    public void pickProfileImage(Uri uri) {
-        try {
-            String picturePath = HelperMedia.getPathFromImageUri(this, uri);
-            imageFile = new File(picturePath);
-            presenter.uploadToS3(ClientManager.transferObserver(this, imageFile));
-            HelperMedia.loadCirclePhoto(this, picturePath, userImage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    void checkInputData() {
-
-        if (!genderChecked) {
-            Toast.makeText(this, "Please enter gender", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        HashMap<TextView, EditText> namePair = new HashMap<>();
-        namePair.put(nameHead, name);
-
-        HashMap<TextView, EditText> surnamePair = new HashMap<>();
-        surnamePair.put(surNameHead, surName);
-
-        HashMap<TextView, EditText> nickNamePair = new HashMap<>();
-        nickNamePair.put(nickNameHead, nickName);
-
-        HashMap<TextView, EditText> emailPair = new HashMap<>();
-        emailPair.put(emailHead, email);
-
-        HashMap<TextView, EditText> birthDatePair = new HashMap<>();
-        birthDatePair.put(birthDateHead, birthDate);
-
-        HashMap<TextView, EditText> countryPair = new HashMap<>();
-        countryPair.put(countryHead, country);
-
-        HashMap<TextView, EditText> bioPair = new HashMap<>();
-        bioPair.put(bioHead, bio);
-
-        HashMap<InputFieldPairs, HashMap<TextView, EditText>> inputFields = new HashMap<>();
-
-        inputFields.put(NAME, namePair);
-        inputFields.put(SURNAME, surnamePair);
-        inputFields.put(NICKNAME, nickNamePair);
-        inputFields.put(EMAIL, emailPair);
-        inputFields.put(BIRTHDATE, birthDatePair);
-        inputFields.put(COUNTRY, countryPair);
-        inputFields.put(BIO, bioPair);
-
-        HashMap<InputFieldPairs, String> checkedInputData = HelperUI.checkInputData(this, inputFields);
-
-        if (checkedInputData.size() != inputFields.size()) {
-            Log.e("dasdasdas", "data null");
+    private void onSaveAction() {
+        getLoader(true);
+        if (profileImageFile != null) {
+            if (photoUrl == null)
+                presenter.uploadToS3(ClientManager.transferObserver(this, profileImageFile));
         } else {
-//            presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
-//            Log.e("dasdasdas", "სახელი" + " " + name);
-//            Log.e("dasdasdas", "გვარი" + " " + surname);
-//            Log.e("dasdasdas", "ნიკი" + " " + nickname);
-//            Log.e("dasdasdas", "ემაილი" + " " + email);
-//            Log.e("dasdasdas", "ქვეყანა" + " " + country);
-//            Log.e("dasdasdas", "პაროლი" + " " + password);
-//            Log.e("dasdasdas", "ბიო" + " " + bio);
+            startUpdateInfo();
         }
     }
 
+    private void startUpdateInfo() {
 
-    @Override
-    public void onGetProfile(ProfileResponse.Userinfo userInfo) {
-        try {
-            HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), userImage);
-            name.setText(userInfo.getName());
-            surName.setText(userInfo.getLastname());
-            nickName.setText(userInfo.getNickname());
-            email.setText(userInfo.getEmail());
-            phoneNumber.setText(userInfo.getPhone_number());
-            country.setText(userInfo.getCity());
-            bio.setText(userInfo.getBiography());
-            birthDate.setText(userInfo.getDate_of_birth());
-            switch (userInfo.getGender()) {
-                case 0:
-                    genderGroup.check(R.id.edit_radio_male);
-                    genderChecked = true;
-                    break;
-                case 1:
-                    genderGroup.check(R.id.edit_radio_female);
-                    genderChecked = true;
-                    break;
-                case 2:
-                    genderGroup.check(R.id.edit_radio_other);
-                    genderChecked = true;
-                    break;
-                default:
-                    genderChecked = false;
+        getLoader(true);
+
+        nickNameBusy.setVisibility(View.GONE);
+        nickNameFirst.setVisibility(View.GONE);
+        nickNameTwo.setVisibility(View.GONE);
+
+        String modelName = null;
+        String modelSurname = null;
+        String modelNick = null;
+        String modelEmail = null;
+        String modelNumber = null;
+        String modelPhoneIndex = null;
+        String modelBirthDate = null;
+        String modelGender = null;
+
+        if (checkForNullOrEmpty(name.getText().toString()))
+            HelperUI.inputWarning(this, name, nameHead);
+        else {
+            HelperUI.inputDefault(this, name, nameHead);
+            modelName = name.getText().toString();
+        }
+
+        if (checkForNullOrEmpty(surName.getText().toString()))
+            HelperUI.inputWarning(this, surName, surNameHead);
+        else {
+            HelperUI.inputDefault(this, surName, surNameHead);
+            modelSurname = surName.getText().toString();
+        }
+
+        if (checkForNullOrEmpty(nickName.getText().toString()))
+            HelperUI.inputWarning(this, nickName, nickNameHead);
+        else {
+            HelperUI.inputDefault(this, nickName, nickNameHead);
+            modelNick = nickName.getText().toString();
+        }
+
+        if (checkForNullOrEmpty(birthDate.getText().toString()))
+            HelperUI.inputWarning(this, birthDate, birthDateHead);
+        else {
+            HelperUI.inputDefault(this, birthDate, birthDateHead);
+            modelBirthDate = birthDate.getText().toString();
+        }
+
+        if (checkForNullOrEmpty(email.getText().toString()))
+            HelperUI.inputWarning(this, email, emailHead);
+        else {
+            if (HelperUI.checkEmail(email.getText().toString())) {
+                HelperUI.inputDefault(this, email, emailHead);
+                modelEmail = email.getText().toString();
+            } else
+                HelperUI.inputWarning(this, email, emailHead);
+        }
+
+        if (checkForNullOrEmpty(phoneNumber.getText().toString()))
+            HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
+        else {
+            if (checkNumber(phoneNumber)) {
+                HelperUI.inputDefault(this, phoneCodeContainer, phoneNumberHead);
+                modelNumber = phoneNumber.getText().toString();
+                modelPhoneIndex = countryCodePicker.getSelectedCountryCode();
+            } else {
+                HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+
+        if (!genderChecked)
+            ToastManager.getErrorToaster(this, "Please enter gender");
+        else
+            modelGender = String.valueOf(gender);
+
+        if (modelName != null && modelSurname != null && modelNick != null && modelEmail != null && modelBirthDate != null && modelNumber != null && modelGender != null) {
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
+            updateProfileRequest.setName(modelName);
+            updateProfileRequest.setLastname(modelSurname);
+            updateProfileRequest.setNickname(modelNick);
+            updateProfileRequest.setDate_of_birth(String.valueOf(birthDateTimeStamp));
+            updateProfileRequest.setEmail(modelEmail);
+            updateProfileRequest.setPhone_index(modelPhoneIndex);
+            updateProfileRequest.setPhone_num(modelNumber);
+            updateProfileRequest.setCountry(country.getText().toString());
+            updateProfileRequest.setCity(city.getText().toString());
+            updateProfileRequest.setBiography(bio.getText().toString());
+            updateProfileRequest.setGender(modelGender);
+            updateProfileRequest.setProfile_pic(photoUrl);
+            Log.e("mlklk", photoUrl + " " + updateProfileRequest.getProfile_pic());
+            presenter.updateProfile(ACCESS_TOKEN_BEARER + GlobalPreferences.getAccessToken(this), updateProfileRequest);
+        } else {
+            getLoader(false);
         }
 
     }
 
+    private boolean checkForNullOrEmpty(String val) {
+        return val == null || val.isEmpty();
+    }
+
     @Override
-    public void onUpdateProfile(UpdateProfileResponse updateProfileResponse) {
+    public void onGetProfileInfo(ProfileResponse.Userinfo userInfo) {
+        if (userInfo != null)
+            setProfileInfo(userInfo);
+    }
+
+    private void setProfileInfo(ProfileResponse.Userinfo userInfo) {
+        HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), userImage);
+        name.setText(userInfo.getName());
+        surName.setText(userInfo.getLastname());
+        nickName.setText(userInfo.getNickname());
+        email.setText(userInfo.getEmail());
+        setPhoneNumber(userInfo.getPhone_number());
+//        country.setText(userInfo.getCity());
+        city.setText(userInfo.getCity());
+        bio.setText(userInfo.getBiography());
+        birthDate.setText(userInfo.getDate_of_birth());
+        birthDateTimeStamp = HelperDate.getTimeInMillisFromServerDateString(userInfo.getDate_of_birth());
+        setGender(userInfo.getGender());
+    }
+
+    public void setPhoneNumber(String number) {
+        phoneNumber.setText(number);
+    }
+
+    private void setGender(int gender) {
+        switch (gender) {
+            case 0:
+                genderGroup.check(R.id.edit_radio_male);
+                this.gender = 0;
+                genderChecked = true;
+                break;
+            case 1:
+                this.gender = 1;
+                genderChecked = true;
+                genderGroup.check(R.id.edit_radio_female);
+                break;
+            case 2:
+                genderGroup.check(R.id.edit_radio_other);
+                this.gender = 2;
+                genderChecked = true;
+                break;
+        }
+
+        genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.edit_radio_male:
+                    this.gender = 0;
+                    genderChecked = true;
+                    break;
+
+                case R.id.edit_radio_female:
+                    this.gender = 1;
+                    genderChecked = true;
+                    break;
+
+                case R.id.edit_radio_other:
+                    this.gender = 2;
+                    genderChecked = true;
+                    break;
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onUpdateSuccess(UpdateProfileResponse updateProfileResponse) {
+        getLoader(false);
         switch (updateProfileResponse.getStatus()) {
             case 0:
                 DialogManager.profileInfoUpdatedDialog(this);
+                new Handler().postDelayed(this::onBackPressed, 2000);
                 break;
+            case 1:
+                ToastManager.getErrorToaster(this, updateProfileResponse.getMessage());
+                break;
+            case 2:
+                onNickNameBusy(updateProfileResponse.getNicknames_to_offer(), updateProfileResponse.getMessage());
+                break;
+            default:
+                ToastManager.getErrorToaster(this, updateProfileResponse.getMessage());
+
         }
+    }
+
+    public void onNickNameBusy(List<String> nicks, String message) {
+        HelperUI.inputWarning(this, nickName, nickNameHead);
+        nickNameBusy.setVisibility(View.VISIBLE);
+        nickNameFirst.setVisibility(View.VISIBLE);
+        nickNameTwo.setVisibility(View.VISIBLE);
+        nickNameBusy.setText(message);
+        nickFirst = nicks.get(0);
+        nickSecond = nicks.get(1);
+        nickNameFirst.setText(nickFirst);
+        nickNameTwo.setText(nickSecond);
     }
 
     @Override
     public void onPhotoUploadedToS3() {
-        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, imageFile.getName());
+        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, profileImageFile.getName());
+        startUpdateInfo();
+    }
+
+    private void getLoader(boolean show) {
+        FrameLayout frameLayout = findViewById(R.id.edit_loader_container);
+        LottieAnimationView lottieAnimationView = findViewById(R.id.edit_loader);
+        if (show) {
+            frameLayout.setVisibility(View.VISIBLE);
+            lottieAnimationView.setVisibility(View.VISIBLE);
+        } else {
+            frameLayout.setVisibility(View.GONE);
+            lottieAnimationView.setVisibility(View.GONE);
+        }
     }
 
     @Override
-    public void onGetError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    public void onError(String message) {
+        getLoader(false);
+        ToastManager.getErrorToaster(this, message);
     }
 
     @Override
@@ -352,5 +476,4 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         }
         super.onDestroy();
     }
-
 }

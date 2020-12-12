@@ -64,6 +64,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     private ProfileFragmentPresenter presenter;
     private String userName;
 
+    private ProfileResponse.Userinfo userInfo;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -231,8 +233,10 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.profile_edit_profile_btn:
-                Intent editProfile = new Intent(context, ProfileEditActivity.class);
-                startActivity(editProfile);
+                Intent editProfileIntent = new Intent(context, ProfileEditActivity.class);
+                if (userInfo != null)
+                    editProfileIntent.putExtra("user_info", userInfo);
+                startActivity(editProfileIntent);
                 try {
                     getActivity().overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
                 } catch (Exception e) {
@@ -244,6 +248,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
     @Override
     public void onGetProfile(ProfileResponse.Userinfo userInfo) {
+        this.userInfo = userInfo;
 
         HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
 

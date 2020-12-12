@@ -86,7 +86,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/icon_change_photo" />
+                    android:src="@drawable/icon_change_photo_black" />
 
                 <TextView
                     android:layout_width="70dp"
@@ -95,7 +95,7 @@
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
                     android:text="@string/change_photo"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="10sp" />
 
             </FrameLayout>
@@ -110,7 +110,7 @@
 
             <EditText
                 android:id="@+id/edit_name"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
@@ -131,7 +131,7 @@
 
             <EditText
                 android:id="@+id/edit_surname"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
@@ -152,7 +152,7 @@
 
             <EditText
                 android:id="@+id/edit_nick_name"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
@@ -163,6 +163,31 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/edit_nickName_offer"
+                android:layout_width="282dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/nickname_busy"
+                android:textColor="@color/red"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/edit_nickName_offer_1"
+                android:layout_width="282dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/edit_nickName_offer_2"
+                android:layout_width="282dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/edit_birth_date_head"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -171,12 +196,11 @@
                 android:text="@string/birth_date"
                 android:textSize="14sp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/edit_birth_date"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
-                android:cursorVisible="false"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
                 android:gravity="center_horizontal"
@@ -196,7 +220,7 @@
 
             <EditText
                 android:id="@+id/edit_email"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
@@ -215,36 +239,40 @@
                 android:text="@string/phone_number"
                 android:textSize="14sp" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/edit_profile_phone_number_container"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
-                android:orientation="horizontal"
                 android:padding="2dp">
 
-                <!--                <com.hbb20.CountryCodePicker-->
-                <!--                    android:id="@+id/ccp"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_gravity="center_horizontal|center_vertical"-->
-                <!--                    app:ccp_autoDetectCountry="false"-->
-                <!--                    app:ccp_defaultPhoneCode="506"-->
-                <!--                    app:ccp_showFlag="true"-->
-                <!--                    app:ccp_textSize="14sp" />-->
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:ccp_autoDetectCountry="true"
+                    app:ccp_defaultPhoneCode="506"
+                    app:ccp_showFlag="true"
+                    app:ccp_textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/edit_phone_number"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <!--                <EditText-->
-                <!--                    android:id="@+id/edit_phone_number"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="match_parent"-->
-                <!--                    android:layout_gravity="end"-->
-                <!--                    android:layout_marginEnd="4dp"-->
-                <!--                    android:layout_weight="1.5"-->
-                <!--                    android:inputType="number|phone"-->
-                <!--                    android:padding="10dp"-->
-                <!--                    android:textSize="14sp" />-->
+                <EditText
+                    android:id="@+id/edit_phone_number"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:inputType="number|phone"
+                    android:padding="3dp"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ccp"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/edit_country_head"
@@ -257,7 +285,30 @@
 
             <EditText
                 android:id="@+id/edit_country"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
+                android:layout_height="38dp"
+                android:background="@drawable/selector_input_field"
+                android:drawableEnd="@drawable/selector_input_field_icon"
+                android:drawablePadding="10dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:padding="10dp"
+                android:textCursorDrawable="@drawable/custom_cursor_yellow"
+                android:textSize="14sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/edit_city_head"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/city_head"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edit_city"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
@@ -280,12 +331,13 @@
 
             <EditText
                 android:id="@+id/edit_bio"
-                android:layout_width="282dp"
+                android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
                 android:gravity="start|top"
+                android:maxLength="300"
                 android:minLines="3"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
@@ -357,5 +409,27 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/edit_loader"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading_yellow" />
+
+    <FrameLayout
+        android:id="@+id/edit_loader_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainColorTransparent"
+        android:contextClickable="true"
+        android:visibility="gone" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

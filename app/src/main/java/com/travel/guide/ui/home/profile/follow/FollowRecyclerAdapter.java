@@ -116,6 +116,9 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         void bindView(int position) {
             try {
+                if (position == followers.size() - 1) {
+
+                }
 
 //            itemView.startAnimation(animation);
 
@@ -123,7 +126,6 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 userName.setText(followers.get(position).getName());
                 nickName.setText(followers.get(position).getNickname());
-
 
                 if (followers.get(position).getIs_following() == 1)
                     followBtn.setText(followBtn.getContext().getResources().getString(R.string.following));
@@ -154,9 +156,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             unFollow = itemView.findViewById(R.id.following_user_unfollow);
             unFollow.setOnClickListener(v -> listener.onFollowAction(followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
-
 //            animation = AnimationUtils.loadAnimation(userName.getContext(), R.anim.anim_follow_item_up);
-
         }
 
         void bindView(int position) {

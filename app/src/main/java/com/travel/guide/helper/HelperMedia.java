@@ -2,6 +2,7 @@ package com.travel.guide.helper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,6 +34,8 @@ import java.util.concurrent.TimeUnit;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMedia {
+
+    public final static int REQUEST_PICK_IMAGE = 28;
 
     public static String encodeImage(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -360,6 +363,11 @@ public class HelperMedia {
         }
 
         return itemWidth;
+    }
+
+    public static void startImagePicker(Activity activity) {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        activity.startActivityForResult(intent, REQUEST_PICK_IMAGE);
     }
 
 }
