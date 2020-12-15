@@ -22,7 +22,7 @@ import com.hbb20.CountryCodePicker;
 import com.travel.guide.R;
 import com.travel.guide.helper.ClientManager;
 import com.travel.guide.helper.DialogManager;
-import com.travel.guide.helper.BaseToaster;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.helper.HelperDate;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
@@ -122,6 +122,8 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         phoneNumber.setOnFocusChangeListener((v, hasFocus) -> {
             if (v.hasFocus() && hasFocus) {
                 countryCodePicker.setVisibility(View.VISIBLE);
+            } else {
+                countryCodePicker.setVisibility(View.GONE);
             }
         });
 
@@ -158,9 +160,9 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             if (data.getData() != null)
                 profileImageFile = getPickedImage(data.getData());
             else
-                BaseToaster.getUnknownErrorToast(this);
+                MyToaster.getUnknownErrorToast(this);
         } else
-            BaseToaster.getUnknownErrorToast(this);
+            MyToaster.getUnknownErrorToast(this);
     }
 
     private File getPickedImage(Uri uri) {
@@ -198,11 +200,15 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
     private DatePickerDialog.OnDateSetListener getOnDateSetListener() {
         return (view, year, month, dayOfMonth) -> {
-            if (HelperDate.checkAgeOfUser(year, month, dayOfMonth)) {
-                birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
-                birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
-            } else
-                BaseToaster.getErrorToaster(ProfileEditActivity.this, "Application age restriction 13+");
+            try {
+                if (HelperDate.checkAgeOfUser(year, month + 1, dayOfMonth)) {
+                    birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
+                    birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
+                } else
+                    MyToaster.getErrorToaster(ProfileEditActivity.this, "Application age restriction 13+");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         };
     }
 
@@ -215,7 +221,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                     onPickImageFinish(data);
                     break;
                 case Activity.RESULT_CANCELED:
-                    BaseToaster.getUnknownErrorToast(this);
+                    MyToaster.getUnknownErrorToast(this);
                     break;
             }
         }
@@ -299,7 +305,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         }
 
         if (!genderChecked)
-            BaseToaster.getErrorToaster(this, "Please enter gender");
+            MyToaster.getErrorToaster(this, "Please enter gender");
         else
             modelGender = String.valueOf(gender);
 
@@ -317,7 +323,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             updateProfileRequest.setBiography(bio.getText().toString());
             updateProfileRequest.setGender(modelGender);
             updateProfileRequest.setProfile_pic(photoUrl);
-            Log.e("mlklk", photoUrl + " " + updateProfileRequest.getProfile_pic());
             presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
         } else {
             getLoader(false);
@@ -403,14 +408,17 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 DialogManager.profileInfoUpdatedDialog(this);
                 new Handler().postDelayed(this::onBackPressed, 2000);
                 break;
+
             case 1:
-                BaseToaster.getErrorToaster(this, updateProfileResponse.getMessage());
+                MyToaster.getErrorToaster(this, updateProfileResponse.getMessage());
                 break;
+
             case 2:
                 onNickNameBusy(updateProfileResponse.getNicknames_to_offer(), updateProfileResponse.getMessage());
                 break;
+
             default:
-                BaseToaster.getErrorToaster(this, updateProfileResponse.getMessage());
+                MyToaster.getErrorToaster(this, updateProfileResponse.getMessage());
 
         }
     }
@@ -448,7 +456,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     @Override
     public void onError(String message) {
         getLoader(false);
-        BaseToaster.getErrorToaster(this, message);
+        MyToaster.getErrorToaster(this, message);
     }
 
     @Override

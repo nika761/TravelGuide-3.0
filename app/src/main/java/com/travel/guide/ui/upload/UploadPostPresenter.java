@@ -56,10 +56,10 @@ public class UploadPostPresenter {
                         uploadPostListener.onPostUploadedToS3();
                         break;
                     case FAILED:
-                        uploadPostListener.onPostUploadErrorS3("Failed");
+                        uploadPostListener.onPostUploadError("Failed");
                         break;
                     case CANCELED:
-                        uploadPostListener.onPostUploadErrorS3("Canceled");
+                        uploadPostListener.onPostUploadError("Canceled");
                         break;
                 }
             }
@@ -71,7 +71,7 @@ public class UploadPostPresenter {
 
             @Override
             public void onError(int id, Exception ex) {
-                uploadPostListener.onPostUploadErrorS3(ex.getMessage());
+                uploadPostListener.onPostUploadError(ex.getMessage());
             }
         });
 

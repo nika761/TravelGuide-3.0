@@ -21,20 +21,33 @@ import java.util.List;
 
 public class FavoriteMusicFragment extends Fragment implements FavoriteMusicListener {
     private RecyclerView favoriteMusicRecycler;
+
+    private FavoriteMusicAdapter favoriteMusicAdapter;
     private FavoriteMusicPresenter favoriteMusicPresenter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_music, container, false);
         favoriteMusicRecycler = view.findViewById(R.id.favorite_music_recycler);
+        favoriteMusicRecycler.setLayoutManager(new LinearLayoutManager(favoriteMusicRecycler.getContext()));
+        favoriteMusicRecycler.setHasFixedSize(true);
+
         favoriteMusicPresenter = new FavoriteMusicPresenter(this);
         return view;
     }
 
     @Override
     public void onGetFavoriteMusics(List<FavoriteMusicResponse.Favotite_musics> favoriteMusics) {
-        favoriteMusicRecycler.setLayoutManager(new LinearLayoutManager(favoriteMusicRecycler.getContext()));
-        favoriteMusicRecycler.setAdapter(new FavoriteMusicAdapter(favoriteMusics));
-        favoriteMusicRecycler.setHasFixedSize(true);
+        try {
+            if (favoriteMusicAdapter == null) {
+                favoriteMusicAdapter = new FavoriteMusicAdapter();
+                favoriteMusicAdapter.setFavoriteMusics(favoriteMusics);
+                favoriteMusicRecycler.setAdapter(favoriteMusicAdapter);
+            } else {
+                favoriteMusicAdapter.setFavoriteMusics(favoriteMusics);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -43,10 +56,11 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         favoriteMusicPresenter.getFavoriteMusics(GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()));
     }
+
 
     @Override
     public void onDestroy() {

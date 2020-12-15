@@ -49,8 +49,6 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
     public void onChooseLanguage(int languageId) {
         GlobalPreferences.saveLanguageId(this, languageId);
         languagePresenter.getLanguageStrings(new LanguageStringsRequest(languageId));
-
-
     }
 
     @Override

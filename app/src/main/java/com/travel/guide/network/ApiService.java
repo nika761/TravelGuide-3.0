@@ -162,7 +162,8 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("change/password")
-    Call<ChangePasswordResponse> changePassword(@Header("Authorization") String token, @Body ChangePasswordRequest changePasswordRequest);
+    Call<ChangePasswordResponse> changePassword(@Header("Authorization") String token,
+                                                @Body ChangePasswordRequest changePasswordRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/favorite_music")

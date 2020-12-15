@@ -20,9 +20,6 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
     private List<FavoriteMusicResponse.Favotite_musics> favoriteMusics;
     private int playingPosition = -1;
 
-    public FavoriteMusicAdapter(List<FavoriteMusicResponse.Favotite_musics> favoriteMusics) {
-        this.favoriteMusics = favoriteMusics;
-    }
 
     @NonNull
     @Override
@@ -52,6 +49,11 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
     @Override
     public int getItemCount() {
         return favoriteMusics.size();
+    }
+
+    public void setFavoriteMusics(List<FavoriteMusicResponse.Favotite_musics> favoriteMusics) {
+        this.favoriteMusics = favoriteMusics;
+        notifyDataSetChanged();
     }
 
     class FavoriteMusicHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

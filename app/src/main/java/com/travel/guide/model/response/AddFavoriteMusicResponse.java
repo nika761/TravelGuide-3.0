@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class AddFavoriteMusicResponse {
 
-
     @Expose
     @SerializedName("status")
     private int status;
@@ -17,4 +16,5 @@ public class AddFavoriteMusicResponse {
     public void setStatus(int status) {
         this.status = status;
     }
+
 }

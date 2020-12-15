@@ -80,13 +80,13 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
         private void bindView(int position) {
             try {
                 Pair<String, PhotoFilter> filterPair = mPairList.get(position);
-                Bitmap fromAsset = getBitmapFromAsset(itemView.getContext(), filterPair.first);
+                Bitmap bitmap = getBitmapFromAsset(itemView.getContext(), filterPair.first);
                 if (currentPosition == position) {
                     choosedFilter.setVisibility(View.VISIBLE);
                 } else {
                     choosedFilter.setVisibility(View.GONE);
                 }
-                mImageFilterView.setImageBitmap(fromAsset);
+                mImageFilterView.setImageBitmap(bitmap);
                 mTxtFilterName.setText(filterPair.second.name().replace("_", " "));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -107,7 +107,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     }
 
     private void setupFilters() {
-//        mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
+        mPairList.add(new Pair<>("filters/original.jpg", PhotoFilter.NONE));
 //        mPairList.add(new Pair<>("filters/auto_fix.png", PhotoFilter.AUTO_FIX));
         mPairList.add(new Pair<>("filters/brightness.png", PhotoFilter.BRIGHTNESS));
         mPairList.add(new Pair<>("filters/contrast.png", PhotoFilter.CONTRAST));

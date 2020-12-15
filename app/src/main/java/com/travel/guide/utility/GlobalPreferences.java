@@ -38,7 +38,6 @@ public class GlobalPreferences {
 //        GOOGLE, FACEBOOK, TRAVEL_GUIDE
 //    }
 
-
     /// User Role
 
     private static SharedPreferences getPref(Context context) {
@@ -115,7 +114,6 @@ public class GlobalPreferences {
         return languageId;
     }
 
-
     ///AccessToken
 
     public static void saveAccessToken(Context context, String accessToken) {
@@ -146,7 +144,6 @@ public class GlobalPreferences {
         Gson gson = new Gson();
         return gson.fromJson(sharedPreferences.getString(GLOBAL_LANGUAGE_KEY, null), GlobalLanguages.class);
     }
-
 
     ///
 

@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.helper.ClientManager;
-import com.travel.guide.helper.BaseToaster;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.model.response.ProfileResponse;
 import com.travel.guide.ui.home.profile.editProfile.ProfileEditActivity;
 import com.travel.guide.ui.home.profile.follow.FollowActivity;
@@ -365,7 +365,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     public void onChooseLogOut() {
         String loginType = GlobalPreferences.getLoginType(this);
         if (loginType == null) {
-            BaseToaster.getUnknownErrorToast(this);
+            MyToaster.getUnknownErrorToast(this);
         } else {
             switch (loginType) {
                 case FACEBOOK:

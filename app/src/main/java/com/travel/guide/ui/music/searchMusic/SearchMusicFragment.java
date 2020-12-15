@@ -118,6 +118,8 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
                 .subscribe((Consumer<CharSequence>) charSequence -> {
                     if (!charSequence.toString().isEmpty()) {
                         searchMusicPresenter.searchMusic(GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
+                    } else {
+                        searchMusicPresenter.getMusics(GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
                     }
                 });
     }
@@ -125,14 +127,6 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     @Override
     public void onGetMusic(MusicResponse musicResponse) {
         searchMusicRecycler.setAdapter(new SearchMusicAdapter(musicResponse.getAlbum(), this, searchField.getContext()));
-    }
-
-    private void hide() {
-//        constraintLayout.animate().translationY(-searchField.getHeight()).setInterpolator(new AccelerateInterpolator(2));
-    }
-
-    private void show() {
-//        constraintLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
     }
 
     @Override

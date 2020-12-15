@@ -91,11 +91,20 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
     @Override
     public void onFilterSelected(PhotoFilter photoFilter) {
         try {
-            photoEditor.setFilterEffect(photoFilter);
-            saveFilterImage();
+            if (photoFilter == PhotoFilter.NONE) {
+                photoEditorView.getSource().setImageURI(Uri.fromFile(new File(path)));
+            } else {
+                try {
+                    photoEditor.setFilterEffect(photoFilter);
+                    saveFilterImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
 

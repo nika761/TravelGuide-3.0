@@ -3,7 +3,7 @@ package com.travel.guide.helper;
 import android.content.Context;
 import android.widget.Toast;
 
-public class BaseToaster {
+public class MyToaster {
 
     public static void getUnknownErrorToast(Context context) {
         Toast.makeText(context, "Try Again", Toast.LENGTH_SHORT).show();

@@ -303,6 +303,7 @@ public class CustomPostRecycler extends RecyclerView {
         frameLayout = holder.itemView.findViewById(R.id.pl_container);
         videoPlayIcon = holder.videoPlayIcon;
 
+
         videoSurfaceView.setPlayer(videoPlayer);
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "TravelGuide"));
 
@@ -321,9 +322,11 @@ public class CustomPostRecycler extends RecyclerView {
         bindItem(holder, posts.get(targetPosition));
 
         if (mediaUrl != null) {
-            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(mediaUrl));
-            videoPlayer.prepare(videoSource);
-            videoPlayer.setPlayWhenReady(true);
+            if (videoPlayer != null) {
+                MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(mediaUrl));
+                videoPlayer.prepare(videoSource);
+                videoPlayer.setPlayWhenReady(true);
+            }
         }
     }
 
@@ -453,7 +456,10 @@ public class CustomPostRecycler extends RecyclerView {
             }
 
             ////Listeners
+
             holder.menu.setOnClickListener(v -> holder.showMenu(holder.menu));
+
+            holder.go.setOnClickListener(v -> homeFragmentListener.onGoChoose(post.getGo()));
 
             holder.profileImage.setOnClickListener(v -> homeFragmentListener.onUserChoose(post.getUser_id()));
 
@@ -488,8 +494,13 @@ public class CustomPostRecycler extends RecyclerView {
                 }
             });
 
-
-            holder.go.setOnClickListener(v -> homeFragmentListener.onGoChoose(post.getGo()));
+            holder.videoPlayIcon.setOnClickListener(v -> {
+                if (videoPlaying) {
+                    pausePlayer();
+                } else {
+                    startPlayer();
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -644,19 +655,6 @@ public class CustomPostRecycler extends RecyclerView {
         videoSurfaceView.requestFocus();
         videoSurfaceView.setVisibility(VISIBLE);
         videoSurfaceView.setAlpha(1);
-
-        try {
-            viewHolderParent.setOnClickListener(v -> {
-                if (videoPlaying) {
-                    pausePlayer();
-                } else {
-                    startPlayer();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     private TrackSelector getTrackSelector() {

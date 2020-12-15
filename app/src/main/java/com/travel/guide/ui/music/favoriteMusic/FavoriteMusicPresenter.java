@@ -1,5 +1,7 @@
 package com.travel.guide.ui.music.favoriteMusic;
 
+import com.travel.guide.model.request.AddFavoriteMusic;
+import com.travel.guide.model.response.AddFavoriteMusicResponse;
 import com.travel.guide.model.response.FavoriteMusicResponse;
 import com.travel.guide.network.ApiService;
 import com.travel.guide.network.RetrofitManager;
@@ -39,4 +41,23 @@ class FavoriteMusicPresenter {
             }
         });
     }
+
+//    void addFavorite(String accessToken, AddFavoriteMusic addFavoriteMusic) {
+//        apiService.addFavoriteMusic(accessToken, addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
+//            @Override
+//            public void onResponse(Call<AddFavoriteMusicResponse> call, Response<AddFavoriteMusicResponse> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    searchMusicListener.onFavoriteAdded(response.body());
+//                } else {
+//                    searchMusicListener.onGetError(response.message());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<AddFavoriteMusicResponse> call, Throwable t) {
+//                searchMusicListener.onGetError(t.getMessage());
+//            }
+//        });
+//
+//    }
 }

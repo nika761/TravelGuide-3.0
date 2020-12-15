@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
-import static com.travel.guide.ui.upload.UploadPostActivity.TAG_HASHTAGS;
-import static com.travel.guide.ui.upload.UploadPostActivity.TAG_USERS;
+import static com.travel.guide.ui.upload.UploadPostActivity.TAG_TYPE_HASHTAGS;
+import static com.travel.guide.ui.upload.UploadPostActivity.TAG_TYPE_USERS;
 
 public class TagPostActivity extends AppCompatActivity implements TagPostListener, View.OnClickListener {
 
@@ -71,7 +71,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
         String type = getIntent().getStringExtra("tag_type");
         if (type != null)
             switch (type) {
-                case TAG_USERS:
+                case TAG_TYPE_USERS:
                     title.setText("Tag Friends");
                     RxTextView.textChanges(searchEditTxt)
                             .debounce(1200, TimeUnit.MILLISECONDS)
@@ -85,7 +85,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                             });
                     break;
 
-                case TAG_HASHTAGS:
+                case TAG_TYPE_HASHTAGS:
                     title.setText("Hashtags");
                     RxTextView.textChanges(searchEditTxt)
                             .debounce(1200, TimeUnit.MILLISECONDS)

@@ -3,6 +3,7 @@ package com.travel.guide.ui.editPost;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,15 +62,20 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
         ArrayList<String> storiesPath = getIntent().getStringArrayListExtra(STORIES_PATHS);
 
         if (storiesPath != null) {
-            for (String currentPath : storiesPath) {
-                if (currentPath.endsWith(".mp4")) {
-                    itemMedias.add(new ItemMedia(1, currentPath));
-                } else {
-                    itemMedias.add(new ItemMedia(0, currentPath));
+            try {
+                for (String currentPath : storiesPath) {
+                    if (currentPath.endsWith(".mp4")) {
+                        itemMedias.add(new ItemMedia(1, currentPath));
+                    } else {
+                        itemMedias.add(new ItemMedia(0, currentPath));
+                    }
                 }
+                if (itemMedias.size() > 0)
+                    initRecycler(itemMedias);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (itemMedias.size() > 0)
-                initRecycler(itemMedias);
+
         }
     }
 
@@ -202,7 +208,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
                 String path = data.getStringExtra("filtered_path");
                 int position = data.getIntExtra("filtered_position", 0);
                 editPostAdapter.onFilterFinish(path, position);
-                Toast.makeText(this, "Image Filter Successful", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Image Filter Successful", Toast.LENGTH_LONG).show();
                 break;
             case RESULT_CANCELED:
 //                Toast.makeText(this, "Image Filter Error", Toast.LENGTH_LONG).show();
@@ -215,7 +221,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
             case RESULT_OK:
                 this.itemMedias = (List<ItemMedia>) data.getSerializableExtra(STORIES_PATHS);
                 editPostAdapter.setItemMedias((itemMedias));
-                Toast.makeText(this, "Item Sort Successful", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Item Sort Successful", Toast.LENGTH_LONG).show();
                 break;
 
             case RESULT_CANCELED:
