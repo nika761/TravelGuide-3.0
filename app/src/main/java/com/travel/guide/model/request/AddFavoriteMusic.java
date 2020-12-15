@@ -14,4 +14,5 @@ public class AddFavoriteMusic {
     public void setMusic_id(int music_id) {
         this.music_id = music_id;
     }
+
 }

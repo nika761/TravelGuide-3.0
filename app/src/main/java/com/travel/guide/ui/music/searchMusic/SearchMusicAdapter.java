@@ -17,20 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.model.response.MusicResponse;
+import com.travel.guide.ui.music.PlayMusicListener;
 
 import java.util.List;
 
 public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.SearchMusicHolder> {
     private List<MusicResponse.Album> musics;
-    private SearchMusicListener searchMusicListener;
-    private SearchMusicFragment.OnChooseMusic listener;
-    private int playingPosition = -1;
-    private int checkedPosition = -1;
 
-    SearchMusicAdapter(List<MusicResponse.Album> musics, SearchMusicListener searchMusicListener, Context context) {
-        this.musics = musics;
+    private SearchMusicListener searchMusicListener;
+    //    private SearchMusicFragment.OnChooseMusic listener;
+    private PlayMusicListener playMusicListener;
+
+    private int playingPosition = -1;
+
+    SearchMusicAdapter(SearchMusicListener searchMusicListener, PlayMusicListener playMusicListener) {
         this.searchMusicListener = searchMusicListener;
-        listener = (SearchMusicFragment.OnChooseMusic) context;
+        this.playMusicListener = playMusicListener;
+//        listener = (SearchMusicFragment.OnChooseMusic) context;
     }
 
     @NonNull
@@ -47,6 +50,11 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
     @Override
     public int getItemCount() {
         return musics.size();
+    }
+
+    void setMusics(List<MusicResponse.Album> musics) {
+        this.musics = musics;
+        notifyDataSetChanged();
     }
 
     public class SearchMusicHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -107,6 +115,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             if (musics.get(position).getCategories().size() != 0) {
                 musicCategory.setText(musics.get(position).getCategories().get(0).getCategory());
             }
+
             HelperMedia.loadPhoto(musicImage.getContext(), musics.get(position).getImage(), musicImage);
 
 
@@ -136,22 +145,18 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                     if (playingPosition == getLayoutPosition()) {
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
-
-                        searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                        listener.onMusicChoose(0);
+                        playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        playMusicListener.onChooseMusicForPost(0);
                         playingPosition = -1;
                         notifyDataSetChanged();
                     } else {
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-
-                        searchMusicListener.onPressMusic(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-
-                        listener.onMusicChoose(musics.get(getLayoutPosition()).getMusic_id());
+                        playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        playMusicListener.onChooseMusicForPost(musics.get(getLayoutPosition()).getMusic_id());
                         playingPosition = getLayoutPosition();
                         notifyDataSetChanged();
                     }
-
                     break;
             }
         }

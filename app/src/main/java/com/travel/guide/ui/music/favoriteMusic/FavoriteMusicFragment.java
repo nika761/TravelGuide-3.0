@@ -1,6 +1,7 @@
 package com.travel.guide.ui.music.favoriteMusic;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
+import com.travel.guide.helper.MyToaster;
+import com.travel.guide.model.request.AddFavoriteMusic;
+import com.travel.guide.model.response.AddFavoriteMusicResponse;
+import com.travel.guide.ui.music.PlayMusicListener;
+import com.travel.guide.ui.music.searchMusic.SearchMusicFragment;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.FavoriteMusicResponse;
 
@@ -20,8 +26,16 @@ import java.util.List;
 
 
 public class FavoriteMusicFragment extends Fragment implements FavoriteMusicListener {
-    private RecyclerView favoriteMusicRecycler;
 
+    public static FavoriteMusicFragment getInstance(PlayMusicListener playMusicListener) {
+        FavoriteMusicFragment favoriteMusicFragment = new FavoriteMusicFragment();
+        favoriteMusicFragment.playMusicListener = playMusicListener;
+        return favoriteMusicFragment;
+    }
+
+    private PlayMusicListener playMusicListener;
+
+    private RecyclerView favoriteMusicRecycler;
     private FavoriteMusicAdapter favoriteMusicAdapter;
     private FavoriteMusicPresenter favoriteMusicPresenter;
 
@@ -32,6 +46,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
         favoriteMusicRecycler.setHasFixedSize(true);
 
         favoriteMusicPresenter = new FavoriteMusicPresenter(this);
+
         return view;
     }
 
@@ -39,7 +54,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     public void onGetFavoriteMusics(List<FavoriteMusicResponse.Favotite_musics> favoriteMusics) {
         try {
             if (favoriteMusicAdapter == null) {
-                favoriteMusicAdapter = new FavoriteMusicAdapter();
+                favoriteMusicAdapter = new FavoriteMusicAdapter(playMusicListener, this);
                 favoriteMusicAdapter.setFavoriteMusics(favoriteMusics);
                 favoriteMusicRecycler.setAdapter(favoriteMusicAdapter);
             } else {
@@ -51,8 +66,23 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     }
 
     @Override
-    public void onGetFavoriteFailed(String message) {
-        Toast.makeText(favoriteMusicRecycler.getContext(), message, Toast.LENGTH_LONG).show();
+    public void onFavoriteRemoved(AddFavoriteMusicResponse addFavoriteMusicResponse) {
+        if (addFavoriteMusicResponse != null)
+            try {
+                Log.e("favoriteRemoved", String.valueOf(addFavoriteMusicResponse.getStatus()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
+
+    @Override
+    public void onChooseRemoveFavorite(int musicId) {
+        favoriteMusicPresenter.removeFavorite(GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()), new AddFavoriteMusic(musicId));
+    }
+
+    @Override
+    public void onError(String message) {
+        MyToaster.getErrorToaster(favoriteMusicRecycler.getContext(), message);
     }
 
     @Override

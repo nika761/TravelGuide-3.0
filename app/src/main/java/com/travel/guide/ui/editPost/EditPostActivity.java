@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
+import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.model.ItemMedia;
 import com.travel.guide.ui.gallery.GalleryActivity;
 import com.travel.guide.ui.music.ChooseMusicActivity;
@@ -56,6 +59,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
         setContentView(R.layout.activity_edit_post);
         initUI();
         sortData();
+        checkVideoDuration();
     }
 
     private void sortData() {
@@ -75,7 +79,22 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
 
+    private void checkVideoDuration() {
+        try {
+            if (itemMedias.size() > 0 && itemMedias.get(0).getType() == 1) {
+                long duration = HelperMedia.getVideoDurationInt(itemMedias.get(0).getPath());
+                if (duration > 60000) {
+                    MyToaster.getErrorToaster(this, "ვიდეოს მაქსიმალური ზომა არის 60 წამი");
+                } else {
+                    Log.e("dasdasd", "naklebia");
+                    Log.e("dasdasd", String.valueOf(duration));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -94,9 +113,10 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
         editPostRecycler = findViewById(R.id.recycler_post);
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(editPostRecycler);
+
         editPostRecycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         editPostRecycler.setHasFixedSize(true);
-        editPostAdapter = new EditPostAdapter(this, this);
+        editPostAdapter = new EditPostAdapter(this);
 
     }
 

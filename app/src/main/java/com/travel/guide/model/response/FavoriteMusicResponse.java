@@ -60,7 +60,7 @@ public class FavoriteMusicResponse {
         private String title;
         @Expose
         @SerializedName("music_id")
-        private String music_id;
+        private int music_id;
 
         public List<Categories> getCategories() {
             return categories;
@@ -134,11 +134,11 @@ public class FavoriteMusicResponse {
             this.title = title;
         }
 
-        public String getMusic_id() {
+        public int getMusic_id() {
             return music_id;
         }
 
-        public void setMusic_id(String music_id) {
+        public void setMusic_id(int music_id) {
             this.music_id = music_id;
         }
     }

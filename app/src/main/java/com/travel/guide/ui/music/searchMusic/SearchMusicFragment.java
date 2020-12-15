@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.travel.guide.R;
+import com.travel.guide.helper.MyToaster;
+import com.travel.guide.ui.music.PlayMusicListener;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.AddFavoriteMusic;
 import com.travel.guide.model.request.ByMoodRequest;
@@ -34,6 +36,15 @@ import io.reactivex.rxjava3.functions.Consumer;
 
 
 public class SearchMusicFragment extends Fragment implements SearchMusicListener {
+
+    public static SearchMusicFragment getInstance(PlayMusicListener playMusicListener) {
+        SearchMusicFragment searchMusicFragment = new SearchMusicFragment();
+        searchMusicFragment.playMusicListener = playMusicListener;
+        return searchMusicFragment;
+    }
+
+    private PlayMusicListener playMusicListener;
+
     private RecyclerView searchMusicRecycler, moodsRecycler;
     private EditText searchField;
 
@@ -126,7 +137,9 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onGetMusic(MusicResponse musicResponse) {
-        searchMusicRecycler.setAdapter(new SearchMusicAdapter(musicResponse.getAlbum(), this, searchField.getContext()));
+        SearchMusicAdapter searchMusicAdapter = new SearchMusicAdapter(this, playMusicListener);
+        searchMusicAdapter.setMusics(musicResponse.getAlbum());
+        searchMusicRecycler.setAdapter(searchMusicAdapter);
     }
 
     @Override
@@ -179,7 +192,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onGetError(String message) {
-        Toast.makeText(moodsRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(moodsRecycler.getContext(), message);
     }
 
     @Override
@@ -196,11 +209,6 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
         musicPlayer.start();
     }
 
-    public void pause() {
-        if (musicPlayer != null) {
-            musicPlayer.pause();
-        }
-    }
 
     private void stopPlayer() {
         if (musicPlayer != null) {
@@ -225,9 +233,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     }
 
     public interface OnChooseMusic {
-
         void onMusicChoose(int musicId);
-
     }
 
 }

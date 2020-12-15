@@ -21,12 +21,10 @@ import com.travel.guide.ui.gallery.GalleryActivity;
 import java.util.List;
 
 public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context context;
     private List<ItemMedia> itemMedias;
     private EditPostCallback editPostCallback;
 
-    EditPostAdapter(Context context, EditPostCallback editPostCallback) {
-        this.context = context;
+    EditPostAdapter(EditPostCallback editPostCallback) {
         this.editPostCallback = editPostCallback;
     }
 

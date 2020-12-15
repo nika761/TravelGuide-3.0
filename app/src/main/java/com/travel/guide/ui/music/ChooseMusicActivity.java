@@ -1,7 +1,10 @@
 package com.travel.guide.ui.music;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,11 +26,15 @@ import java.util.List;
 
 import static com.travel.guide.ui.editPost.EditPostActivity.STORIES_PATHS;
 
-public class ChooseMusicActivity extends AppCompatActivity implements View.OnClickListener, SearchMusicFragment.OnChooseMusic {
+public class ChooseMusicActivity extends AppCompatActivity implements View.OnClickListener, SearchMusicFragment.OnChooseMusic, PlayMusicListener {
+
     public static final String MUSIC_ID = "music_id";
 
     private List<ItemMedia> itemMediaList = new ArrayList<>();
-    private int musicId;
+    private int playingPosition, musicId;
+
+    private MediaPlayer musicPlayer;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,8 +55,8 @@ public class ChooseMusicActivity extends AppCompatActivity implements View.OnCli
         ViewPager viewPager = findViewById(R.id.music_view_pager);
 
         MusicPagerAdapter musicPagerAdapter = new MusicPagerAdapter(getSupportFragmentManager());
-        musicPagerAdapter.addFragment(new SearchMusicFragment(), "Music");
-        musicPagerAdapter.addFragment(new FavoriteMusicFragment(), "Favorites");
+        musicPagerAdapter.addFragment(SearchMusicFragment.getInstance(this), "Music");
+        musicPagerAdapter.addFragment(FavoriteMusicFragment.getInstance(this), "Favorites");
         viewPager.setAdapter(musicPagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.music_tab_layout);
@@ -75,5 +82,53 @@ public class ChooseMusicActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onMusicChoose(int musicId) {
         this.musicId = musicId;
+    }
+
+    private void play(String music) {
+        Uri uri = Uri.parse(music);
+        if (musicPlayer == null) {
+            musicPlayer = MediaPlayer.create(this, uri);
+            musicPlayer.setOnCompletionListener(mp -> stopPlayer());
+        }
+        musicPlayer.start();
+    }
+
+    private void stopPlayer() {
+        if (musicPlayer != null) {
+            musicPlayer.release();
+            musicPlayer = null;
+        }
+    }
+
+    @Override
+    public void onChooseMusicToPlay(String music, int position) {
+        if (musicPlayer != null && musicPlayer.isPlaying()) {
+            if (playingPosition == position) {
+                stopPlayer();
+            } else {
+                stopPlayer();
+                play(music);
+            }
+        } else {
+            play(music);
+        }
+        playingPosition = position;
+    }
+
+    @Override
+    public void onChooseMusicForPost(int musicId) {
+        this.musicId = musicId;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopPlayer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopPlayer();
+        super.onDestroy();
     }
 }

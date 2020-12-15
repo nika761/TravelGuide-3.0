@@ -28,36 +28,36 @@ class FavoriteMusicPresenter {
                         if (response.body().getFavotite_musics().size() > 0)
                             favoriteMusicListener.onGetFavoriteMusics(response.body().getFavotite_musics());
                     } else {
-                        favoriteMusicListener.onGetFavoriteFailed(response.message());
+                        favoriteMusicListener.onError(response.message());
                     }
                 } else {
-                    favoriteMusicListener.onGetFavoriteFailed(response.message());
+                    favoriteMusicListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<FavoriteMusicResponse> call, Throwable t) {
-                favoriteMusicListener.onGetFavoriteFailed(t.getMessage());
+                favoriteMusicListener.onError(t.getMessage());
             }
         });
     }
 
-//    void addFavorite(String accessToken, AddFavoriteMusic addFavoriteMusic) {
-//        apiService.addFavoriteMusic(accessToken, addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
-//            @Override
-//            public void onResponse(Call<AddFavoriteMusicResponse> call, Response<AddFavoriteMusicResponse> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    searchMusicListener.onFavoriteAdded(response.body());
-//                } else {
-//                    searchMusicListener.onGetError(response.message());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<AddFavoriteMusicResponse> call, Throwable t) {
-//                searchMusicListener.onGetError(t.getMessage());
-//            }
-//        });
-//
-//    }
+    void removeFavorite(String accessToken, AddFavoriteMusic addFavoriteMusic) {
+        apiService.addFavoriteMusic(accessToken, addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
+            @Override
+            public void onResponse(Call<AddFavoriteMusicResponse> call, Response<AddFavoriteMusicResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    favoriteMusicListener.onFavoriteRemoved(response.body());
+                } else {
+                    favoriteMusicListener.onError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddFavoriteMusicResponse> call, Throwable t) {
+                favoriteMusicListener.onError(t.getMessage());
+            }
+        });
+
+    }
 }
