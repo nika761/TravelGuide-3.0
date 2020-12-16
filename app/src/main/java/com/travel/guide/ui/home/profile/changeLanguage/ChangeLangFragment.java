@@ -40,8 +40,11 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_change_lang, container, false);
-        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+        try {
+            getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         chooseLang = view.findViewById(R.id.choose_language_head);
         recyclerView = view.findViewById(R.id.language_chooser_recycler);
         lottieAnimationView = view.findViewById(R.id.loading_languages);

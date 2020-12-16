@@ -283,16 +283,18 @@
                 android:text="@string/country_head"
                 android:textSize="14sp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/edit_country"
                 android:layout_width="@dimen/user_info_field_width"
                 android:layout_height="38dp"
+                android:autoSizeTextType="uniform"
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
                 android:lines="1"
                 android:maxLines="1"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
                 android:textSize="14sp"
                 android:textStyle="normal" />

@@ -2,7 +2,10 @@ package com.travel.guide.ui.home.profile.editProfile;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,9 +29,13 @@ import com.travel.guide.helper.MyToaster;
 import com.travel.guide.helper.HelperDate;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
+import com.travel.guide.model.Country;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.request.UpdateProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
+import com.travel.guide.ui.home.profile.changeCountry.ChooseCountryFragment;
+import com.travel.guide.ui.home.profile.changeCountry.ChooseCountryListener;
+import com.travel.guide.ui.home.profile.changeLanguage.ChangeLangFragment;
 import com.travel.guide.ui.login.password.ForgotPasswordActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.response.UpdateProfileResponse;
@@ -40,15 +47,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.travel.guide.utility.GlobalPreferences.getAccessToken;
 
-public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener {
+public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener, ChooseCountryListener {
 
     private CountryCodePicker countryCodePicker;
     private ProfileEditPresenter presenter;
 
     private File profileImageFile;
 
-    private EditText name, surName, nickName, email, phoneNumber, country, city, password, bio;
-    private TextView nameHead, surNameHead, nickNameHead, birthDate, birthDateHead, emailHead, phoneNumberHead, nickNameBusy, nickNameFirst, nickNameTwo, countryHead, cityHead, passwordHead, bioHead;
+    private EditText name, surName, nickName, email, phoneNumber, city, password, bio;
+    private TextView nameHead, surNameHead, nickNameHead, birthDate, country, birthDateHead, emailHead, phoneNumberHead, nickNameBusy, nickNameFirst, nickNameTwo, countryHead, cityHead, passwordHead, bioHead;
     private CircleImageView userImage;
     private RadioGroup genderGroup;
     private String photoUrl, nickFirst, nickSecond;
@@ -72,7 +79,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
     private void getInfoFromExtra() {
         try {
-            userInfo = getIntent().getParcelableExtra("user_info");
+            this.userInfo = getIntent().getParcelableExtra("user_info");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,7 +105,10 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         nickNameHead = findViewById(R.id.edit_nick_name_head);
         email = findViewById(R.id.edit_email);
         emailHead = findViewById(R.id.edit_mail_head);
+
         country = findViewById(R.id.edit_country);
+        country.setOnClickListener(v -> getCountryChooserDialog());
+
         countryHead = findViewById(R.id.edit_country_head);
         city = findViewById(R.id.edit_city);
         cityHead = findViewById(R.id.edit_city_head);
@@ -188,6 +198,25 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 nickNameBusy.setVisibility(View.GONE);
                 HelperUI.inputDefault(this, nickName, nickNameHead);
                 break;
+        }
+
+    }
+
+    private void getCountryChooserDialog() {
+        try {
+            ChooseCountryFragment countryFragment = ChooseCountryFragment.getInstance(userInfo.getCountries(), this);
+            if (countryFragment.getDialog() != null) {
+                Dialog dialog = countryFragment.getDialog();
+                if (dialog.getWindow() != null) {
+                    if (dialog.getWindow().getAttributes() != null) {
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+                    }
+                }
+            }
+            countryFragment.show(getSupportFragmentManager(), "countryChooserDialog");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -341,6 +370,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     }
 
     private void setProfileInfo(ProfileResponse.Userinfo userInfo) {
+        this.userInfo = userInfo;
         HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), userImage);
         name.setText(userInfo.getName());
         surName.setText(userInfo.getLastname());
@@ -472,4 +502,10 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         }
         super.onDestroy();
     }
+
+    @Override
+    public void onChooseCountry(Country country) {
+        this.country.setText(country.getName());
+    }
+
 }

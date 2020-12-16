@@ -84,16 +84,16 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
             if (option.equals("uploaded")) {
                 HelperUI.loadFragment(ProfileFragment.getInstance(this), null, R.id.user_page_frg_container, false, true, this);
             }
-
-        String requestFrom = getIntent().getStringExtra("request_from");
-        if (requestFrom != null) {
-            if (requestFrom.equals("customer_profile")) {
-                if (getIntent().getBundleExtra("fragment_data") != null) {
-                    Bundle fragmentData = getIntent().getBundleExtra("fragment_data");
-                    HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.user_page_frg_container, false, true, this);
-                }
-            }
-        }
+//
+//        String requestFrom = getIntent().getStringExtra("request_from");
+//        if (requestFrom != null) {
+//            if (requestFrom.equals("customer_profile")) {
+//                if (getIntent().getBundleExtra("fragment_data") != null) {
+//                    Bundle fragmentData = getIntent().getBundleExtra("fragment_data");
+//                    HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.user_page_frg_container, false, true, this);
+//                }
+//            }
+//        }
     }
 
     public void hideBottomNavigation(Boolean visible) {
@@ -145,13 +145,11 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         });
 
 
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.METHOD, "with_testing");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
-//        navViewPager = findViewById(R.id.user_page_view_pager);
-//        navViewPagerAdapter = new BottomNavigationPageAdapter(getSupportFragmentManager());
+//        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putString(FirebaseAnalytics.Param.METHOD, "with_testing");
+//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
     }
 
     public void logOutFromFacebook() {
@@ -167,12 +165,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                 .addOnFailureListener(this, e -> Toast.makeText(this, e.getMessage() + "Google Failed", Toast.LENGTH_SHORT).show());
     }
 
-    public void onLogOutChoose() {
-
-    }
-
     public void onLogOutSuccess() {
-
         GlobalPreferences.removeAccessToken(this);
         GlobalPreferences.removeLoginType(this);
         GlobalPreferences.removeUserId(this);

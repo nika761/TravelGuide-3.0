@@ -23,7 +23,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
     private int currentLanguageId;
     private int currentLanguagePosition;
 
-    public ChangeLangAdapter(Context context, ChangeLangListener iChangeLangFragment) {
+    ChangeLangAdapter(Context context, ChangeLangListener iChangeLangFragment) {
         this.context = context;
         this.iChangeLangFragment = iChangeLangFragment;
         this.currentLanguageId = GlobalPreferences.getLanguageId(context);
@@ -54,7 +54,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
         return languages.size();
     }
 
-    public void setLanguageList(List<LanguagesResponse.Language> languages) {
+    void setLanguageList(List<LanguagesResponse.Language> languages) {
         this.languages = languages;
         notifyDataSetChanged();
     }
@@ -68,7 +68,7 @@ public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.Ch
             language.setOnClickListener(this);
         }
 
-        public void setLanguageColor() {
+        void setLanguageColor() {
             language.setTextColor(context.getColor(R.color.grey));
         }
 

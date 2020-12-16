@@ -19,6 +19,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.ProfileRequest;
@@ -214,6 +215,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 //        intent.putExtra("request_from", "customer_profile");
 //        intent.putExtra("fragment_data", fragmentData);
 //        startActivity(intent);
+//        finish();
     }
 
     @Override

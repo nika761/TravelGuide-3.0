@@ -18,6 +18,7 @@ import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -74,28 +75,37 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getArguments() == null) {
-            isCustomer = false;
-            userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
-        } else {
-            this.getPostsFrom = (GetPostsFrom) getArguments().getSerializable("request_type");
-            if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
-                isCustomer = true;
-                this.customerUserId = getArguments().getInt("customer_user_id");
-                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
+        try {
+            if (getArguments() == null) {
+                isCustomer = false;
+                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
+            } else {
+                this.getPostsFrom = (GetPostsFrom) getArguments().getSerializable("request_type");
+                if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
+                    isCustomer = true;
+                    this.customerUserId = getArguments().getInt("customer_user_id");
+                    userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void initRecycler(List<PostResponse.Posts> posts) {
-        postAdapter = new UserPostAdapter(this);
+        try {
+            postAdapter = new UserPostAdapter(this);
 
-        int itemWidth = HelperMedia.getScreenWidth(getActivity());
-        if (itemWidth != 0)
-            postAdapter.setItemWidth(itemWidth);
+            int itemWidth = HelperMedia.getScreenWidth(getActivity());
+            if (itemWidth != 0)
+                postAdapter.setItemWidth(itemWidth);
 
-        postAdapter.setPosts(posts);
-        postsRecycler.setAdapter(postAdapter);
+            postAdapter.setPosts(posts);
+            postsRecycler.setAdapter(postAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 //        postsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            @Override
@@ -137,7 +147,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     @Override
     public void onGetPostsError(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(getContext(), message);
     }
 
     @Override

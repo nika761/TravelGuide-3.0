@@ -53,6 +53,7 @@ import com.travel.guide.ui.login.signIn.SignInActivity;
 import java.util.List;
 import java.util.Objects;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener {
@@ -67,7 +68,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     private RecyclerView postRecycler;
     private CustomProgressBar customProgressBar;
 
-    private int postId;
     private int customerUserId;
     private int deletedStoryPosition;
 
@@ -322,17 +322,28 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onShareChoose(String postLink, int post_id) {
-        this.postId = post_id;
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
+        try {
+            presenter.setPostShare(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(post_id));
+            Log.e("lazyLoad", "shared");
+
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
 //        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, postLink);
-        startActivityForResult(sharingIntent, SHARING_REQUEST_CODE);
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, postLink);
+            startActivityForResult(sharingIntent, SHARING_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onShareSuccess(SharePostResponse sharePostResponse) {
-        Log.e("PostEmotion", " " + sharePostResponse.getStatus());
+        switch (sharePostResponse.getStatus()) {
+            case 0:
+            case 1:
+                Log.e("PostEmotion", " " + sharePostResponse.getStatus());
+                break;
+        }
     }
 
 
@@ -431,13 +442,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARING_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                presenter.setPostShare(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(postId));
-            } else {
-                Intent intent = new Intent(getContext(), HomePageActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
+            /*****/
         }
     }
 

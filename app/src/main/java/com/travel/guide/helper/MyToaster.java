@@ -10,6 +10,7 @@ public class MyToaster {
     }
 
     public static void getErrorToaster(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        if (context != null && message != null)
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }
