@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
+import com.travel.guide.helper.HelperDate;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.model.request.CheckNickRequest;
@@ -51,9 +53,15 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_firebase);
 
-        this.platformId = getIntent().getIntExtra("platform", 0);
-        this.key = getIntent().getStringExtra("key");
-        this.name = getIntent().getStringExtra("name");
+        try {
+            this.platformId = getIntent().getIntExtra("platform", 0);
+            this.key = getIntent().getStringExtra("key");
+            this.name = getIntent().getStringExtra("name");
+        } catch (Exception e) {
+            finish();
+            e.printStackTrace();
+        }
+
 
         initUI();
     }
@@ -109,31 +117,44 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
         });
 
         mDateSetListener = (datePicker, year, month, day) -> {
-            month = month + 1;
-            Log.d("dates", "onDateSet: mm/dd/yyy: " + month + "/" + day + "/" + year);
-
-            String dayString = day < 10 ? "0" + day : String.valueOf(day);
-            String monthString = month < 10 ? "0" + month : String.valueOf(month);
-
-            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
-//            Date currentDate = new Date();
-//            int age = currentDate.getYear() - year;
-
-            int age = currentYear - year;
-
-            if (age < 13) {
-                Toast.makeText(save.getContext(), "Application age restriction 13+", Toast.LENGTH_SHORT).show();
-            } else {
-
-                String date = year + "/" + monthString + "/" + dayString;
-                dateOfBirth.setText(date);
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day);
-                startTime = calendar.getTimeInMillis();
-                Log.e("datetime", String.valueOf(startTime));
+            try {
+                if (HelperDate.checkAgeOfUser(year, month + 1, day)) {
+                    dateOfBirth.setText(HelperDate.getDateStringFormat(year, month, day));
+                    startTime = HelperDate.getDateInMilliFromDate(year, month, day);
+                } else
+                    MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
+            } catch (Exception e) {
+                MyToaster.getErrorToaster(this, "Try Again");
+                e.printStackTrace();
             }
+//
+//            month = month + 1;
+//
+////            Log.d("dates", "onDateSet: mm/dd/yyy: " + month + "/" + day + "/" + year);
+//
+//            String dayString = day < 10 ? "0" + day : String.valueOf(day);
+//            String monthString = month < 10 ? "0" + month : String.valueOf(month);
+//
+//            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+//
+////            Date currentDate = new Date();
+////            int age = currentDate.getYear() - year;
+//
+//            int age = currentYear - year;
+//
+//            if (age < 13) {
+//                MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
+//            } else {
+//
+//                String date = year + "/" + monthString + "/" + dayString;
+//                dateOfBirth.setText(date);
+//
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.set(year, month, day);
+//                startTime = calendar.getTimeInMillis();
+////                Log.e("datetime", String.valueOf(startTime));
+//            }
+//
         };
 
         RadioGroup genderGroup = findViewById(R.id.fire_radio_group);
@@ -151,6 +172,7 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
                 case R.id.fire_radio_other:
                     gender = 2;
                     break;
+
             }
         });
 
@@ -166,7 +188,10 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
                 android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                 mDateSetListener,
                 year, month, day);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dialog.show();
     }
 
@@ -196,28 +221,34 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
     @Override
     public void onError(String message) {
         loader.setVisibility(View.GONE);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(this, message);
     }
 
     @Override
     public void onGetNickCheckResult(CheckNickResponse checkNickResponse) {
-        nickError.setVisibility(View.VISIBLE);
-        nickOffer1.setVisibility(View.VISIBLE);
-        nickOffer2.setVisibility(View.VISIBLE);
+        try {
+            nickError.setVisibility(View.VISIBLE);
+            nickOffer1.setVisibility(View.VISIBLE);
+            nickOffer2.setVisibility(View.VISIBLE);
 
-        nick1 = checkNickResponse.getNicknames_to_offer().get(0);
-        nickOffer1.setText(nick1);
+            nick1 = checkNickResponse.getNicknames_to_offer().get(0);
+            nickOffer1.setText(nick1);
 
-        nick2 = checkNickResponse.getNicknames_to_offer().get(1);
-        nickOffer2.setText(nick2);
+            nick2 = checkNickResponse.getNicknames_to_offer().get(1);
+            nickOffer2.setText(nick2);
 
-        loader.setVisibility(View.GONE);
+            loader.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void checkNickName() {
         presenter.checkNick(new CheckNickRequest(nickName, name, null));
     }
+
 
     @Override
     protected void onDestroy() {

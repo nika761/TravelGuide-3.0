@@ -30,7 +30,7 @@ class ChangeLangPresenter {
 
             @Override
             public void onFailure(Call<LanguagesResponse> call, Throwable t) {
-
+                iChangeLangFragment.onError();
             }
         });
     }
@@ -40,12 +40,14 @@ class ChangeLangPresenter {
             @Override
             public void onResponse(Call<ChangeLangResponse> call, Response<ChangeLangResponse> response) {
                 if (response.isSuccessful())
-                    iChangeLangFragment.onLanguageChange(response.body());
+                    if (response.body() != null)
+                        if (response.body().getStatus() == 0)
+                            iChangeLangFragment.onLanguageChange(response.body());
             }
 
             @Override
             public void onFailure(Call<ChangeLangResponse> call, Throwable t) {
-
+                iChangeLangFragment.onError();
             }
         });
     }

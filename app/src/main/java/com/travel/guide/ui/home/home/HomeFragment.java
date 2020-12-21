@@ -3,6 +3,7 @@ package com.travel.guide.ui.home.home;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +28,18 @@ import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.enums.LoadWebViewBy;
 import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.MyToaster;
+import com.travel.guide.helper.custom.CustomTimer;
 import com.travel.guide.helper.custom.customPost.CustomPostAdapter;
 import com.travel.guide.helper.custom.customPost.CustomPostRecycler;
 import com.travel.guide.helper.custom.CustomProgressBar;
+import com.travel.guide.model.PostView;
 import com.travel.guide.model.request.DeleteStoryRequest;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.request.SetPostFavoriteRequest;
+import com.travel.guide.model.request.SetPostViewRequest;
 import com.travel.guide.model.request.SetStoryLikeRequest;
 import com.travel.guide.model.request.SharePostRequest;
 import com.travel.guide.model.response.DeleteStoryResponse;
@@ -42,6 +47,7 @@ import com.travel.guide.model.response.FollowResponse;
 import com.travel.guide.model.response.SetPostFavoriteResponse;
 import com.travel.guide.model.response.SetStoryLikeResponse;
 import com.travel.guide.ui.searchPost.SearchPostActivity;
+import com.travel.guide.ui.upload.UploadPostActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -122,32 +128,37 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
-            getPostsFrom = (GetPostsFrom) getArguments().getSerializable("PostShowType");
-            int scrollPosition = getArguments().getInt("postPosition");
-            if (getPostsFrom != null) {
-                switch (getPostsFrom) {
-                    case FAVORITES:
-                        List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
-                        initRecyclerView(favoritePosts, true, scrollPosition);
-                        break;
+            try {
+                getPostsFrom = (GetPostsFrom) getArguments().getSerializable("PostShowType");
+                int scrollPosition = getArguments().getInt("postPosition");
+                if (getPostsFrom != null) {
+                    switch (getPostsFrom) {
+                        case FAVORITES:
+                            List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
+                            initRecyclerView(favoritePosts, true, scrollPosition);
+                            break;
 
-                    case MY_POSTS:
-                        List<PostResponse.Posts> myPosts = (List<PostResponse.Posts>) getArguments().getSerializable("my_posts");
-                        initRecyclerView(myPosts, true, scrollPosition);
-                        break;
+                        case MY_POSTS:
+                            List<PostResponse.Posts> myPosts = (List<PostResponse.Posts>) getArguments().getSerializable("my_posts");
+                            initRecyclerView(myPosts, true, scrollPosition);
+                            break;
 
-                    case CUSTOMER_POSTS:
-                        this.customerUserId = getArguments().getInt("customer_user_id");
-                        List<PostResponse.Posts> customerPosts = (List<PostResponse.Posts>) getArguments().getSerializable("customer_posts");
-                        initRecyclerView(customerPosts, true, scrollPosition);
-                        break;
+                        case CUSTOMER_POSTS:
+                            this.customerUserId = getArguments().getInt("customer_user_id");
+                            List<PostResponse.Posts> customerPosts = (List<PostResponse.Posts>) getArguments().getSerializable("customer_posts");
+                            initRecyclerView(customerPosts, true, scrollPosition);
+                            break;
 
-                    case FEED:
-                        loaderContainer.setVisibility(View.VISIBLE);
-                        presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
-                        break;
+                        case FEED:
+                            loaderContainer.setVisibility(View.VISIBLE);
+                            presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
+                            break;
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -162,13 +173,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                     customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
                 else {
                     customPostRecycler.post(() -> customPostRecycler.smoothScrollToPosition(scrollPosition));
-                    Log.e("qqwqwqwqw", "scrolled to " + scrollPosition);
+//                    Log.e("qqwqwqwqw", "scrolled to " + scrollPosition);
                 }
             } else {
                 customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
             }
         } catch (Exception e) {
-            Log.e("qqwqwqwqw", "fucked upp in home fragment");
+//            Log.e("qqwqwqwqw", "fucked upp in home fragment");
             e.printStackTrace();
         }
 
@@ -294,7 +305,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (followResponse.getStatus()) {
             case 0:
             case 1:
-                Log.e("PostEmotion", followResponse.getMessage() + followResponse.getStatus());
+//                Log.e("PostEmotion", followResponse.getMessage() + followResponse.getStatus());
                 break;
         }
     }
@@ -310,7 +321,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (setPostFavoriteResponse.getStatus()) {
             case 0:
             case 1:
-                Log.e("PostEmotion", setPostFavoriteResponse.getMessage() + setPostFavoriteResponse.getStatus());
+//                Log.e("PostEmotion", setPostFavoriteResponse.getMessage() + setPostFavoriteResponse.getStatus());
                 break;
         }
     }
@@ -324,7 +335,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onShareChoose(String postLink, int post_id) {
         try {
             presenter.setPostShare(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(post_id));
-            Log.e("lazyLoad", "shared");
+//            Log.e("lazyLoad", "shared");
 
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
@@ -341,7 +352,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (sharePostResponse.getStatus()) {
             case 0:
             case 1:
-                Log.e("PostEmotion", " " + sharePostResponse.getStatus());
+//                Log.e("PostEmotion", " " + sharePostResponse.getStatus());
                 break;
         }
     }
@@ -357,7 +368,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         switch (setStoryLikeResponse.getStatus()) {
             case 0:
             case 1:
-                Log.e("PostEmotion", setStoryLikeResponse.getMessage() + setStoryLikeResponse.getStatus());
+//                Log.e("PostEmotion", setStoryLikeResponse.getMessage() + setStoryLikeResponse.getStatus());
                 break;
         }
     }
@@ -388,12 +399,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onChooseDeleteStory(int storyId, int postId, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(postRecycler.getContext());
-        builder.setTitle("Delete Story ?")
-                .setPositiveButton("Yes", (dialog, which) -> {
+        builder.setTitle(getString(R.string.delete_story))
+                .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
                     deletedStoryPosition = position;
                     presenter.deleteStory(GlobalPreferences.getAccessToken(postRecycler.getContext()), new DeleteStoryRequest(postId, storyId));
                 })
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss())
                 .create();
 
         AlertDialog dialog = builder.create();
@@ -406,9 +417,14 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
     @Override
     public void onStoryDeleted(DeleteStoryResponse deleteStoryResponse) {
-        Intent intent = new Intent(getContext(), HomePageActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(getContext(), HomePageActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -433,7 +449,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                 break;
         }
 
-        Log.e("lazyLoad", "from post id " + fromPostId);
+//        Log.e("lazyLoad", "from post id " + fromPostId);
 
     }
 
@@ -442,12 +458,20 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARING_REQUEST_CODE) {
-            /*****/
+//            /*****/
         }
     }
 
     @Override
     public void onStop() {
+        try {
+            List<PostView> views = CustomTimer.getPostViews();
+            if (views.size() != 0)
+                presenter.setPostViews(GlobalPreferences.getAccessToken(getContext()), new SetPostViewRequest(views));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (customPostRecycler != null)
             customPostRecycler.releasePlayer();
 
@@ -464,15 +488,26 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     }
 
     @Override
-    public void onAuthError() {
-        Intent intent = new Intent(postRecycler.getContext(), SignInActivity.class);
-        startActivity(intent);
-        Objects.requireNonNull(getActivity()).finish();
+    public void onAuthError(String message) {
+        try {
+            MyToaster.getErrorToaster(getContext(), message);
+            Intent intent = new Intent(getContext(), SignInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void onError(String message) {
-        stopLoader();
-        Toast.makeText(postRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
+        try {
+            stopLoader();
+            MyToaster.getErrorToaster(postRecycler.getContext(), message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

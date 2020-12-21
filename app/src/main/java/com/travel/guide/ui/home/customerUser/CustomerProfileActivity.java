@@ -2,6 +2,8 @@ package com.travel.guide.ui.home.customerUser;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -19,7 +21,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.helper.HelperUI;
 import com.travel.guide.ui.home.HomePageActivity;
+import com.travel.guide.ui.home.home.HomeFragment;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.FollowRequest;
 import com.travel.guide.model.request.ProfileRequest;
@@ -40,7 +44,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     private CustomerProfilePresenter customerProfilePresenter;
 
     private TextView userName, nickName, following, follower, reaction, bio, bioBtn, followBtn;
-    private FrameLayout loaderContainer;
+    private FrameLayout loaderContainer, fragmentContainer;
     private LinearLayout bioContainer;
     private LottieAnimationView lottieLoader;
     private CircleImageView image;
@@ -52,14 +56,18 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_profile);
-
-        this.customerUserId = getIntent().getIntExtra("id", 0);
+        try {
+            this.customerUserId = getIntent().getIntExtra("id", 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         initUI();
 
         if (customerUserId != 0)
             customerProfilePresenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
-
+        else
+            onBackPressed();
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 //
 //        Bundle bundle = new Bundle();
@@ -79,6 +87,8 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
         ViewPager viewPager = findViewById(R.id.customer_view_pager);
         TabLayout tabLayout = findViewById(R.id.customer_profile_tab);
+
+        fragmentContainer = findViewById(R.id.customer_profile_post_container);
 
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
         profilePagerAdapter.setCustomerUserId(customerUserId);
@@ -211,17 +221,41 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onPostChoose(Bundle fragmentData) {
-//        Intent intent = new Intent(this, HomePageActivity.class);
-//        intent.putExtra("request_from", "customer_profile");
-//        intent.putExtra("fragment_data", fragmentData);
-//        startActivity(intent);
-//        finish();
+        fragmentContainer.setVisibility(View.VISIBLE);
+        HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.customer_profile_post_container, true, true, this);
+    }
+
+    @Override
+    protected void onResume() {
+        Log.e("lifes", "resumed");
+        super.onResume();
+        try {
+            fragmentContainer.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            try {
+                if (fragmentContainer.getVisibility() == View.VISIBLE) {
+                    fragmentContainer.setVisibility(View.GONE);
+                } else {
+                    onBackPressed();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
 

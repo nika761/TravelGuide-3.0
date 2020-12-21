@@ -39,7 +39,11 @@ class SignUpFireBasePresenter {
                             break;
                     }
                 } else {
-                    signUpFireBaseListener.onError(response.errorBody().toString());
+                    try {
+                        signUpFireBaseListener.onError(response.errorBody().toString());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
 

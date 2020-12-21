@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.AddCommentReplyRequest;
 import com.travel.guide.model.request.DeleteReplyRequest;
@@ -35,6 +36,7 @@ import com.travel.guide.ui.home.HomePageActivity;
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -83,6 +85,9 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
         ImageButton backBtn = view.findViewById(R.id.replies_back_btn);
         backBtn.setOnClickListener(this);
+
+        ImageButton closeBtn = view.findViewById(R.id.replies_close_btn);
+        closeBtn.setOnClickListener(this);
 
         addField = view.findViewById(R.id.replies_add_field);
         RxTextView.textChanges(addField)
@@ -149,9 +154,14 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onGetReplies(List<CommentResponse.Comment_reply> replies) {
-        loader.setVisibility(View.GONE);
-        viewMore.setVisibility(View.GONE);
-        repliesAdapter.setCommentReplies(replies);
+        try {
+            loader.setVisibility(View.GONE);
+            viewMore.setVisibility(View.GONE);
+            repliesAdapter.setCommentReplies(replies);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -162,35 +172,38 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onReplyAdded(AddCommentReplyResponse addCommentReplyResponse) {
+        try {
+            loader.setVisibility(View.GONE);
+            repliesRecycler.setVisibility(View.VISIBLE);
+            commentFieldFocus(false);
+            repliesAdapter.onRepliesChanged(addCommentReplyResponse.getComment_replies());
 
-        loader.setVisibility(View.GONE);
-        repliesRecycler.setVisibility(View.VISIBLE);
-        commentFieldFocus(false);
-        repliesAdapter.onRepliesChanged(addCommentReplyResponse.getComment_replies());
-
-        this.replies = addCommentReplyResponse.getComment_replies();
-        this.repliesCount = addCommentReplyResponse.getCommen_replies_count();
+            this.replies = addCommentReplyResponse.getComment_replies();
+            this.repliesCount = addCommentReplyResponse.getCommen_replies_count();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void onChooseLike(int commentId, int commentReplyId) {
         this.commentId = commentId;
-        presenter.addCommentReplyLike( GlobalPreferences.getAccessToken(userName.getContext()), new LikeCommentReplyRequest(storyId, postId, commentId, commentReplyId));
+        presenter.addCommentReplyLike(GlobalPreferences.getAccessToken(userName.getContext()), new LikeCommentReplyRequest(storyId, postId, commentId, commentReplyId));
     }
 
     @Override
     public void onLiked(LikeCommentReplyResponse likeCommentReplyResponse) {
-        Log.e("commentLikeResponse", likeCommentReplyResponse.getMessage());
+//        Log.e("commentLikeResponse", likeCommentReplyResponse.getMessage());
     }
 
     @Override
     public void onChooseDelete(int replyId) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(likeBtn.getContext())
-                .setTitle("Delete comment ?")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.deleteCommentReply(GlobalPreferences.getAccessToken(commentBody.getContext()), new DeleteReplyRequest(replyId)))
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setTitle(getString(R.string.delete_comment))
+                .setPositiveButton(getString(R.string.yes), (dialog, which) -> presenter.deleteCommentReply(GlobalPreferences.getAccessToken(commentBody.getContext()), new DeleteReplyRequest(replyId)))
+                .setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss())
                 .create();
         alertDialog.show();
 
@@ -198,13 +211,18 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onDeleted(DeleteReplyResponse deleteReplyResponse) {
-        if (deleteReplyResponse.getComment_reply().size() > 0)
-            repliesAdapter.onRepliesChanged(deleteReplyResponse.getComment_reply());
-        else
-            repliesRecycler.setVisibility(View.INVISIBLE);
+        try {
+            if (deleteReplyResponse.getComment_reply().size() > 0)
+                repliesAdapter.onRepliesChanged(deleteReplyResponse.getComment_reply());
+            else
+                repliesRecycler.setVisibility(View.INVISIBLE);
 
-        this.replies = deleteReplyResponse.getComment_reply();
-        this.repliesCount = deleteReplyResponse.getCount();
+            this.replies = deleteReplyResponse.getComment_reply();
+            this.repliesCount = deleteReplyResponse.getCount();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -225,7 +243,6 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     @Override
     public void onError(String message) {
         loader.setVisibility(View.GONE);
-        Toast.makeText(userName.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void commentFieldFocus(boolean requestFocus) {
@@ -243,6 +260,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                 }
             }
         }
+
     }
 
     @Override
@@ -255,7 +273,19 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                 break;
 
             case R.id.replies_back_btn:
-                ((HomePageActivity) likeBtn.getContext()).onBackPressed();
+                try {
+                    ((HomePageActivity) likeBtn.getContext()).onBackPressed();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case R.id.replies_close_btn:
+                try {
+                    getActivity().onBackPressed();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
 
         }

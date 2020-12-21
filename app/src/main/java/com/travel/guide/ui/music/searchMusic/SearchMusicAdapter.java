@@ -139,6 +139,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                         musics.get(getLayoutPosition()).setIs_favorite(0);
                     }
                     searchMusicListener.onFavoriteChoose(musics.get(getLayoutPosition()).getMusic_id());
+                    notifyDataSetChanged();
                     break;
 
                 case R.id.item_play_music:

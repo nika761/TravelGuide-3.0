@@ -132,6 +132,11 @@ public interface ApiService {
 //                                        @Body UploadPostRequest uploadPostRequest);
 
     @Headers({"Accept: application/json"})
+    @POST("set/post_story_view")
+    Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
+                                @Body SetPostViewRequest setPostViewRequest);
+
+    @Headers({"Accept: application/json"})
     @POST("get/get_posts")
     Call<PostResponse> getPosts(@Header("Authorization") String token,
                                 @Body PostRequest postRequest);
@@ -199,10 +204,10 @@ public interface ApiService {
     Call<MusicResponse> searchMusic(@Header("Authorization") String token,
                                     @Body SearchMusicRequest searchMusicRequest);
 
-    @Headers({"Accept: application/json"})
-    @POST("set/post/view")
-    Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
-                                          @Body SetPostViewRequest setPostViewRequest);
+//    @Headers({"Accept: application/json"})
+//    @POST("set/post/view")
+//    Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
+//                                          @Body SetPostViewRequest setPostViewRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/posts_by_location")

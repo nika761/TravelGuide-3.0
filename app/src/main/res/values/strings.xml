@@ -50,8 +50,8 @@
     <string name="female">Female</string>
     <string name="other">Other</string>
     <string name="cancel">Cancel</string>
-    <string name="age_restriction_warning">აქ ტექსტი რომელიც 13 წელზე ნაკლების შემთხვევაში უნდა გამოჩნდეს</string>
-    <string name="gender_restriction_warning">აქ ტექსტი რომელიც სქესის არ შეყვანის შემთხვევაში უნდა გამოჩნდეს</string>
+    <string name="age_restriction_warning">ასაკი შეზღუდულია 13+</string>
+    <string name="gender_restriction_warning">გთხოვთ აირჩიოთ სქესი</string>
 
     ////Fire base Page
     <string name="firebase_sign_up_intro">Enter your nickname and date of birth</string>
@@ -62,6 +62,9 @@
     <string name="forgot_password_intro">Do not worry. Resetting your password is easy, just tell us the email address you registered with Travel guide</string>
     <string name="send">Send</string>
     <string name="back_to_sign_in">Back to Sign in</string>
+    <string name="current_password">Current Password</string>
+    <string name="not_match_password">Password not match</string>
+
 
     ///Reset Password
     <string name="reset_password_intro">Enter your New password</string>
@@ -69,7 +72,10 @@
 
     ///Comments
     <string name="add_comment">Add Comment..</string>
+    <string name="comments">Comments</string>
+    <string name="delete_comment">Delete comment ?</string>
     <string name="view_more_comments">View more comments</string>
+    <string name="view_replies">View replies</string>
     <string name="reply">Reply</string>
     <string name="replies">Replies</string>
 
@@ -107,6 +113,7 @@
     <string name="trim">Trim</string>
 
     ///Music page
+    <string name="delete_story">Delete Story ?</string>
     <string name="sounds">Sounds</string>
     <string name="music">MUSIC</string>
     <string name="favorites">FAVORITES</string>

@@ -6,6 +6,8 @@ public interface ProfileFragmentListener {
 
     void onGetProfile(ProfileResponse.Userinfo userInfo);
 
+    void onAuthError(String message);
+
     void onGetError(String message);
 
 }

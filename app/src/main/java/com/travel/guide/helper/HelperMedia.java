@@ -118,16 +118,16 @@ public class HelperMedia {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
             String[] projection = new String[]{
-                    MediaStore.Images.Media._ID,
-                    MediaStore.Images.Media.DISPLAY_NAME,
-                    MediaStore.Images.Media.DURATION,
+//                    MediaStore.Images.Media._ID,
+//                    MediaStore.Images.Media.DISPLAY_NAME,
+//                    MediaStore.Images.Media.DURATION,
                     MediaStore.Images.Media.DATA,
                     MediaStore.Images.Media.SIZE};
 
-            String selection = MediaStore.Images.Media.DURATION + " >= ?";
-            String[] selectionArgs = new String[]{String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
+//            String selection = MediaStore.Images.Media.DURATION + " >= ?";
+//            String[] selectionArgs = new String[]{String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
 
-            String sortOrder = MediaStore.Images.Media.DISPLAY_NAME + " DESC";
+//            String sortOrder = MediaStore.Images.Media.DISPLAY_NAME + " DESC";
             String sorting = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
 
@@ -139,25 +139,24 @@ public class HelperMedia {
                     sorting
             )) {
                 // Cache column indices.
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
-                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+//                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+//                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+//                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DURATION);
+//                int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
 
-                while (cursor.moveToNext()) {
-                    // Get values of columns for a given video.
-                    long id = cursor.getLong(idColumn);
-                    String name = cursor.getString(nameColumn);
-                    int duration = cursor.getInt(durationColumn);
-                    int size = cursor.getInt(sizeColumn);
+                if (cursor != null)
+                    while (cursor.moveToNext()) {
+                        // Get values of columns for a given video.
+//                    long id = cursor.getLong(idColumn);
+//                    String name = cursor.getString(nameColumn);
+//                    int duration = cursor.getInt(durationColumn);
+//                    int size = cursor.getInt(sizeColumn);
 
-                    String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
 
-                    listOfAllPaths.add(path);
-                }
+                        listOfAllPaths.add(path);
+                    }
             }
-
-            // Do something for lollipop and above versions
         } else {
 
             String[] projection = new String[]{
@@ -181,7 +180,6 @@ public class HelperMedia {
                 }
                 cursor.close();
             }
-            // do something for phones running an SDK before lollipop
         }
 
         return listOfAllPaths;
@@ -192,19 +190,18 @@ public class HelperMedia {
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             String[] projection = new String[]{
-                    MediaStore.Video.Media._ID,
-                    MediaStore.Video.Media.DISPLAY_NAME,
+//                    MediaStore.Video.Media._ID,
+//                    MediaStore.Video.Media.DISPLAY_NAME,
                     MediaStore.Video.Media.DATA,
-                    MediaStore.Video.Media.DURATION,
-                    MediaStore.Video.Media.SIZE
+//                    MediaStore.Video.Media.DURATION,
+//                    MediaStore.Video.Media.SIZE
             };
-            String selection = MediaStore.Video.Media.DURATION + " >= ?";
+//            String selection = MediaStore.Video.Media.DURATION + " >= ?";
 
-            String[] selectionArgs = new String[]{String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
+//            String[] selectionArgs = new String[]{String.valueOf(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES))};
 
-            String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " DESC";
+//            String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " DESC";
             String sorting = MediaStore.Video.Media.DATE_ADDED + " DESC";
-            String dasd = MediaStore.Video.Media.DURATION;
 
             try (Cursor cursor = context.getContentResolver().query(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -214,28 +211,31 @@ public class HelperMedia {
                     sorting)) {
                 // Cache column indices.
                 if (cursor != null) {
-                    int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-                    int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-                    int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-                    int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
+//                    int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+//                    int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
+//                    int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+//                    int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
 
                     while (cursor.moveToNext()) {
                         // Get values of columns for a given video.
-                        long id = cursor.getLong(idColumn);
-                        String name = cursor.getString(nameColumn);
-                        int duration = cursor.getInt(durationColumn);
-                        int size = cursor.getInt(sizeColumn);
+//                        long id = cursor.getLong(idColumn);
+//                        String name = cursor.getString(nameColumn);
+//                        int duration = cursor.getInt(durationColumn);
+//                        int size = cursor.getInt(sizeColumn);
 
                         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
 
-                        String videoDuration = String.valueOf(duration);
-                        Log.e("asdasdasd", videoDuration);
+//                        String videoDuration = String.valueOf(duration);
+//                        Log.e("asdasdasd", videoDuration);
+
                         // Stores column values and the contentUri in a local object
                         // that represents the media file.
                         listOfAllPaths.add(path);
                     }
                 }
             }
+
+
         } else {
             String[] projection = new String[]{"COUNT(*) as count", MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME,
                     MediaStore.Video.VideoColumns.DATA,
@@ -361,7 +361,6 @@ public class HelperMedia {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return itemWidth;
     }
 

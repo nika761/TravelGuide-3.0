@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class SetPostViewResponse {
 
-
     @Expose
     @SerializedName("status")
     private int status;
@@ -17,4 +16,5 @@ public class SetPostViewResponse {
     public void setStatus(int status) {
         this.status = status;
     }
+
 }

@@ -25,7 +25,7 @@
     <!--        android:textSize="10sp"-->
     <!--        android:visibility="visible" />-->
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/mainColorTransparent"
@@ -39,29 +39,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginEnd="3dp"
+            android:layout_marginStart="4dp"
             android:padding="1dp"
             android:text="999k"
             android:textColor="@color/white"
             android:textSize="10sp"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/favorite_post_cover"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_customer_post_ses"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/item_customer_post_nick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|bottom"
-            android:layout_marginEnd="3dp"
-            android:padding="1dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
             android:textColor="@color/white"
             android:textSize="10sp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/item_customer_post_ses"
+            android:layout_width="14dp"
+            android:layout_height="12dp"
+            android:layout_gravity="start|bottom"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/icon_post_view"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/favorite_post_reactions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

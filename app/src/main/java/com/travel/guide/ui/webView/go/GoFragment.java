@@ -1,10 +1,14 @@
 package com.travel.guide.ui.webView.go;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,13 +33,22 @@ public class GoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_go, container, false);
         webView = view.findViewById(R.id.go_web_view);
         webView.getSettings();
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true); // enable javascript
         webView.setBackgroundColor(getResources().getColor(R.color.whiteNone, null));
+        webView.loadUrl(url);
+        webView.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == MotionEvent.ACTION_UP && webView.canGoBack()) {
+                webView.goBack();
+                return true;
+            }
+            return false;
+        });
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        webView.loadUrl(url);
     }
 }

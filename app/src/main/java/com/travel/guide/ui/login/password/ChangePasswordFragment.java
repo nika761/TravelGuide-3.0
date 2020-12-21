@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.model.request.ChangePasswordRequest;
 
 import java.util.HashMap;
@@ -66,35 +67,34 @@ public class ChangePasswordFragment extends Fragment {
     private void clickAction() {
         save.setOnClickListener(v -> {
 
-            currentPassword = HelperUI.checkEditTextData(currentField, currentHead, "Current Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            currentPassword = HelperUI.checkEditTextData(currentField, currentHead, getString(R.string.current_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
             if (currentPassword != null && HelperUI.checkPassword(currentPassword))
-                HelperUI.setBackgroundDefault(currentField, currentHead, "Current Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(currentField, currentHead, getString(R.string.current_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             else
-                HelperUI.setBackgroundWarning(currentField, currentHead, "Current Password", currentField.getContext());
+                HelperUI.setBackgroundWarning(currentField, currentHead, getString(R.string.current_password), currentField.getContext());
 
 
-            password = HelperUI.checkEditTextData(passwordField, passwordHead, "Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            password = HelperUI.checkEditTextData(passwordField, passwordHead, getString(R.string.password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
             if (password != null && HelperUI.checkPassword(password))
-                HelperUI.setBackgroundDefault(passwordField, passwordHead, "Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(passwordField, passwordHead, getString(R.string.password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             else
-                HelperUI.setBackgroundWarning(passwordField, passwordHead, "Password", currentField.getContext());
+                HelperUI.setBackgroundWarning(passwordField, passwordHead, getString(R.string.password), currentField.getContext());
 
 
-            passwordConfirm = HelperUI.checkEditTextData(confirmField, confirmHead, "Confirm Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            passwordConfirm = HelperUI.checkEditTextData(confirmField, confirmHead, getString(R.string.confirm_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
             if (passwordConfirm != null && HelperUI.checkConfirmPassword(password, passwordConfirm))
-                HelperUI.setBackgroundDefault(confirmField, confirmHead, "Confirm Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(confirmField, confirmHead, getString(R.string.confirm_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             else
-                HelperUI.setBackgroundWarning(confirmField, confirmHead, "Confirm Password", currentField.getContext());
+                HelperUI.setBackgroundWarning(confirmField, confirmHead, getString(R.string.confirm_password), currentField.getContext());
 
 
             if (currentPassword != null && password != null && passwordConfirm != null)
                 if (HelperUI.checkPassword(currentPassword) && HelperUI.checkPassword(password) && HelperUI.checkConfirmPassword(password, passwordConfirm)) {
                     callback.onPasswordChoose(new ChangePasswordRequest(currentPassword, password, passwordConfirm));
                 } else
-                    Toast.makeText(currentField.getContext(), "Password not match", Toast.LENGTH_SHORT).show();
+                    MyToaster.getErrorToaster(currentField.getContext(), getString(R.string.not_match_password));
         });
     }
-
 
 
     interface ChangePasswordListener {

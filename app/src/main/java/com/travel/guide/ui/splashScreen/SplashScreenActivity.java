@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.travel.guide.R;
+import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.SystemManager;
 import com.travel.guide.model.response.LanguageStringsResponse;
 import com.travel.guide.ui.login.signIn.SignInActivity;
@@ -22,6 +23,7 @@ import com.travel.guide.ui.language.LanguageListener;
 import com.travel.guide.ui.login.loggedUsers.SavedUserActivity;
 import com.travel.guide.model.response.LanguagesResponse;
 import com.travel.guide.ui.language.LanguagePresenter;
+import com.travel.guide.utility.BaseApplication;
 import com.travel.guide.utility.GlobalPreferences;
 
 import java.io.Serializable;
@@ -41,9 +43,18 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        calculateScreenWidth();
         initUI();
         setAnimation();
         checkNetwork();
+    }
+
+    private void calculateScreenWidth() {
+        try {
+            BaseApplication.ITEM_WIDTH_FOR_POSTS = HelperMedia.getScreenWidth(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void checkNetwork() {
@@ -67,8 +78,11 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
         mainLogoTxt = findViewById(R.id.main_logo_text);
         justGoTxt = findViewById(R.id.just_go);
         languagePresenter = new LanguagePresenter(this);
+
         new Thread(() -> Glide.get(this).clearDiskCache()).start();
+
         Glide.get(this).clearMemory();
+
     }
 
     private void setAnimation() {

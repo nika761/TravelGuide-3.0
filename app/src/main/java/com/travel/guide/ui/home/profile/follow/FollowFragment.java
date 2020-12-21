@@ -124,24 +124,26 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     }
 
     private void getFollowData() {
-        if (checkRequestType()) {
-            switch (requestType) {
-                case FOLLOWER:
-                    if (customerUserId > 0)
-                        presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
-                    else
-                        presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
-                    break;
+        try {
+            if (checkRequestType()) {
+                switch (requestType) {
+                    case FOLLOWER:
+                        if (customerUserId > 0)
+                            presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
+                        else
+                            presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                        break;
 
-                case FOLLOWING:
-                    if (customerUserId > 0)
-                        presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
-                    else
-                        presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
-                    break;
+                    case FOLLOWING:
+                        if (customerUserId > 0)
+                            presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
+                        else
+                            presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                        break;
+                }
             }
-        } else {
-            Toast.makeText(followRecycler.getContext(), "Error", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -44,7 +44,7 @@ public class ChooseCountryAdapter extends RecyclerView.Adapter<ChooseCountryAdap
         return countries.size();
     }
 
-    public void setCountries(List<Country> countries) {
+    void setCountries(List<Country> countries) {
         this.countries = countries;
         notifyDataSetChanged();
     }

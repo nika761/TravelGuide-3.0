@@ -1,12 +1,15 @@
 package com.travel.guide.ui.gallery;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.travel.guide.R;
+import com.travel.guide.helper.SystemManager;
+import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.ui.editPost.EditPostActivity;
@@ -23,6 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
+import static com.travel.guide.helper.SystemManager.READ_EXTERNAL_STORAGE;
 import static com.travel.guide.ui.editPost.EditPostActivity.STORIES_PATHS;
 
 public class GalleryActivity extends AppCompatActivity implements GalleryFragment.ItemCountChangeListener {
@@ -47,13 +53,21 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
 
         iniUI();
 
+        if (SystemManager.isReadStoragePermission((this))) {
+            getMediaFilesByRole();
+        } else {
+            SystemManager.requestReadStoragePermission(this);
+        }
+
+        initRecycler();
+
+    }
+
+    private void getMediaFilesByRole() {
         if (GlobalPreferences.getUserRole(this) == 0)
             loadGalleryFragment();
         else
             iniViewPager(viewPager);
-
-        initRecycler();
-
     }
 
     private void iniUI() {
@@ -176,6 +190,19 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         } else {
             nextBtn.setText(MessageFormat.format("Next ({0})", list.size()));
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == READ_EXTERNAL_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getMediaFilesByRole();
+            } else {
+                Toast.makeText(this, "No permission granted", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
 }

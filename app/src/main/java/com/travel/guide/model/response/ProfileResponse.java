@@ -86,18 +86,23 @@ public class ProfileResponse implements Parcelable {
         @Expose
         @SerializedName("phone_number")
         private String phone_number;
+
         @Expose
         @SerializedName("phone_index")
         private String phone_index;
+
         @Expose
         @SerializedName("city")
         private String city;
+
         @Expose
         @SerializedName("country")
         private String country;
+
         @Expose
         @SerializedName("gender")
         private int gender;
+
         @Expose
         @SerializedName("date_of_birth")
         private String date_of_birth;

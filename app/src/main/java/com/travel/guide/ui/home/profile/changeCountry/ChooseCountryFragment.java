@@ -56,7 +56,11 @@ public class ChooseCountryFragment extends DialogFragment implements ChooseCount
 
         try {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        try {
             RecyclerView countryRecycler = view.findViewById(R.id.country_chooser_recycler);
             countryRecycler.setLayoutManager(new LinearLayoutManager(countryRecycler.getContext()));
             countryRecycler.setHasFixedSize(true);
@@ -90,12 +94,6 @@ public class ChooseCountryFragment extends DialogFragment implements ChooseCount
                                         searchedCountries.add(current);
                                     }
                                 }
-//                                char currentChar = current.getName().charAt(0);
-//                                if (charSequence.charAt(0) == currentChar) {
-//                                    if (!searchedCountries.contains(current)) {
-//                                        searchedCountries.add(current);
-//                                    }
-//                                }
                             }
                             if (searchedCountries.size() > 0) {
                                 chooseCountryAdapter.setCountries(searchedCountries);

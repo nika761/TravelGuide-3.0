@@ -126,22 +126,28 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onGetComments(CommentResponse commentResponse) {
-        loader.setVisibility(View.GONE);
-        pagingContainer.setVisibility(View.GONE);
-        pagingLoader.setVisibility(View.GONE);
-        if (commentAdapter == null) {
+        try {
+            loader.setVisibility(View.GONE);
+            pagingContainer.setVisibility(View.GONE);
+            pagingLoader.setVisibility(View.GONE);
+            if (commentAdapter == null) {
 
-            commentsHead.setText(MessageFormat.format("Comments  {0}", commentResponse.getCount()));
+                commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), commentResponse.getCount()));
+//                commentsHead.setText(MessageFormat.format("Comments  {0}", commentResponse.getCount()));
 
-            commentAdapter = new CommentAdapter(this);
-            commentAdapter.setComments(commentResponse.getPost_story_comments());
-            commentRecycler.setLayoutManager(new LinearLayoutManager(context));
-            commentRecycler.setAdapter(commentAdapter);
+                commentAdapter = new CommentAdapter(this);
+                commentAdapter.setComments(commentResponse.getPost_story_comments());
+                commentRecycler.setLayoutManager(new LinearLayoutManager(context));
+                commentRecycler.setAdapter(commentAdapter);
 
 
-        } else {
-            loadMore.setVisibility(View.GONE);
-            commentAdapter.setComments(commentResponse.getPost_story_comments());
+            } else {
+                loadMore.setVisibility(View.GONE);
+                commentAdapter.setComments(commentResponse.getPost_story_comments());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -151,30 +157,35 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
         loader.setVisibility(View.GONE);
 
         commentFieldFocus(false);
-        commentsHead.setText(MessageFormat.format("Comments  {0}", addCommentResponse.getCount()));
+        commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), addCommentResponse.getCount()));
         commentAdapter.onCommentsChanged(addCommentResponse.getPost_story_comments());
 
     }
 
     @Override
     public void onLikeChoose(int commentId) {
-        presenter.likeComment( GlobalPreferences.getAccessToken(context), new LikeCommentRequest(storyId, postId, commentId));
+        presenter.likeComment(GlobalPreferences.getAccessToken(context), new LikeCommentRequest(storyId, postId, commentId));
     }
 
     @Override
     public void onReplyChoose(CommentResponse.Post_story_comments currentComment, boolean requestReply, int position) {
 
-        this.commentPosition = position;
+        try {
+            this.commentPosition = position;
 
-        Bundle repliesFragmentData = new Bundle();
-        repliesFragmentData.putSerializable("currentComment", currentComment);
-        repliesFragmentData.putBoolean("requestReply", requestReply);
-        repliesFragmentData.putInt("storyId", storyId);
-        repliesFragmentData.putInt("postId", postId);
+            Bundle repliesFragmentData = new Bundle();
+            repliesFragmentData.putSerializable("currentComment", currentComment);
+            repliesFragmentData.putBoolean("requestReply", requestReply);
+            repliesFragmentData.putInt("storyId", storyId);
+            repliesFragmentData.putInt("postId", postId);
 
-        ((HomePageActivity) context).loadRepliesFragment(repliesFragmentData);
+            ((HomePageActivity) context).loadRepliesFragment(repliesFragmentData);
 
-        commentAdapter = null;
+            commentAdapter = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 //
 //        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(commentRecycler.getContext());
 //        View view = View.inflate(getContext(), R.layout.dialog_comment, null);
@@ -225,16 +236,16 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onLikeSuccess(LikeCommentResponse likeCommentResponse) {
-        Log.e("commentLikeResponse", likeCommentResponse.getMessage());
+//        Log.e("commentLikeResponse", likeCommentResponse.getMessage());
     }
 
     @Override
     public void onDeleteChoose(int commentId) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setTitle("Delete comment ?")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.deleteComment(GlobalPreferences.getAccessToken(context), new DeleteCommentRequest(postId, storyId, commentId)))
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setTitle(getString(R.string.delete_comment))
+                .setPositiveButton(getString(R.string.yes), (dialog, which) -> presenter.deleteComment(GlobalPreferences.getAccessToken(context), new DeleteCommentRequest(postId, storyId, commentId)))
+                .setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss())
                 .create();
         alertDialog.show();
 
@@ -242,7 +253,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onDeleted(DeleteCommentResponse deleteCommentResponse) {
-        commentsHead.setText(MessageFormat.format("Comments  {0}", deleteCommentResponse.getCount()));
+        commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), deleteCommentResponse.getCount()));
         commentAdapter.onCommentsChanged(deleteCommentResponse.getPost_story_comments());
     }
 
@@ -256,7 +267,6 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.comments_add_image_btn:
                 loader.setVisibility(View.VISIBLE);
                 presenter.addComment(GlobalPreferences.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));

@@ -23,7 +23,10 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.travel.guide.R;
 import com.travel.guide.helper.ClientManager;
 import com.travel.guide.helper.DialogManager;
+import com.travel.guide.helper.HelperDate;
 import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.helper.MyToaster;
+import com.travel.guide.ui.home.profile.editProfile.ProfileEditActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.CheckNickRequest;
 import com.travel.guide.model.request.SignUpRequest;
@@ -123,25 +126,35 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         policy.setOnClickListener(this);
 
         mDateSetListener = (datePicker, year, month, day) -> {
-            month = month + 1;
-            String dayString = day < 10 ? "0" + day : String.valueOf(day);
-            String monthString = month < 10 ? "0" + month : String.valueOf(month);
-
-            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-            int age = currentYear - year;
-            int ageRestrict = AGE_RESTRICTION;
-
-            if (age < ageRestrict) {
-                Toast.makeText(this, "Application age restriction 13+", Toast.LENGTH_SHORT).show();
-            } else {
-                String date = year + "/" + monthString + "/" + dayString;
-                registerBirthDate.setText(date);
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day);
-                timeStamp = calendar.getTimeInMillis();
-                Log.e("datetime", String.valueOf(timeStamp));
+            try {
+                if (HelperDate.checkAgeOfUser(year, month + 1, day)) {
+                    registerBirthDate.setText(HelperDate.getDateStringFormat(year, month, day));
+                    timeStamp = HelperDate.getDateInMilliFromDate(year, month, day);
+                } else
+                    MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
+            } catch (Exception e) {
+                MyToaster.getErrorToaster(this, "Try Again");
+                e.printStackTrace();
             }
+//            month = month + 1;
+//            String dayString = day < 10 ? "0" + day : String.valueOf(day);
+//            String monthString = month < 10 ? "0" + month : String.valueOf(month);
+//
+//            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+//            int age = currentYear - year;
+//            int ageRestrict = AGE_RESTRICTION;
+//
+//            if (age < ageRestrict) {
+//                MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
+//            } else {
+//                String date = year + "/" + monthString + "/" + dayString;
+//                registerBirthDate.setText(date);
+//
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.set(year, month, day);
+//                timeStamp = calendar.getTimeInMillis();
+//                Log.e("datetime", String.valueOf(timeStamp));
+//            }
         };
 
         RadioGroup genderGroup = findViewById(R.id.radio_group);
@@ -211,37 +224,37 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
                 break;
 
             case 2:
-                HelperUI.setBackgroundWarning(eNickName, eNickNameHead, "NickName", this);
+                HelperUI.setBackgroundWarning(eNickName, eNickNameHead, getString(R.string.nick_name), this);
                 signUpPresenter.checkNick(new CheckNickRequest(nickName, userName, userSurname));
                 break;
 
             case 3:
-                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
                 break;
 
             case 4:
-                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email", this);
+                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                HelperUI.setBackgroundWarning(eMail, eEmailHead, getString(R.string.email), this);
                 break;
 
             case 5:
-                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
                 break;
 
             case 6:
-                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
                 break;
 
             case 7:
-                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
                 break;
 
             case 8:
-                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
                 break;
 
             case 9:
-                Toast.makeText(this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
                 break;
         }
     }
@@ -249,7 +262,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
     @Override
     public void onError(String message) {
         loader.setVisibility(View.GONE);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(this, message);
     }
 
     @Override
@@ -259,13 +272,17 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
     @Override
     public void onGetNickCheckResult(CheckNickResponse checkNickResponse) {
-        registerNickOffer.setVisibility(View.VISIBLE);
-        registerNickOfferOne.setVisibility(View.VISIBLE);
-        registerNickOfferTwo.setVisibility(View.VISIBLE);
-        nickNameFirst = checkNickResponse.getNicknames_to_offer().get(0);
-        nickNameSecond = checkNickResponse.getNicknames_to_offer().get(1);
-        registerNickOfferOne.setText(nickNameFirst);
-        registerNickOfferTwo.setText(nickNameSecond);
+        try {
+            registerNickOffer.setVisibility(View.VISIBLE);
+            registerNickOfferOne.setVisibility(View.VISIBLE);
+            registerNickOfferTwo.setVisibility(View.VISIBLE);
+            nickNameFirst = checkNickResponse.getNicknames_to_offer().get(0);
+            nickNameSecond = checkNickResponse.getNicknames_to_offer().get(1);
+            registerNickOfferOne.setText(nickNameFirst);
+            registerNickOfferTwo.setText(nickNameSecond);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -300,11 +317,11 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
             case R.id.nickName_offer_1:
                 eNickName.setText(nickNameFirst);
-                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, "NickName", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
                 break;
             case R.id.nickName_offer_2:
                 eNickName.setText(nickNameSecond);
-                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, "NickName", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
                 break;
 
             case R.id.terms_register:
@@ -337,43 +354,43 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
             return;
         }
 
-        userName = HelperUI.checkEditTextData(eName, eNameHead, "Name", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        userName = HelperUI.checkEditTextData(eName, eNameHead, getString(R.string.name), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
 
-        userSurname = HelperUI.checkEditTextData(eSurname, eSurnameHead, "Surname", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        userSurname = HelperUI.checkEditTextData(eSurname, eSurnameHead, getString(R.string.surname), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
 
-        nickName = HelperUI.checkEditTextData(eNickName, eNickNameHead, "NickName", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        nickName = HelperUI.checkEditTextData(eNickName, eNickNameHead, getString(R.string.nick_name), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
 
-        String email = HelperUI.checkEditTextData(eMail, eEmailHead, "Email", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        String email = HelperUI.checkEditTextData(eMail, eEmailHead, getString(R.string.email), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
         if (email != null && HelperUI.checkEmail(email)) {
-            HelperUI.setBackgroundDefault(eMail, eEmailHead, "Email", blackColor, HelperUI.BACKGROUND_DEF_BLACK);
+            HelperUI.setBackgroundDefault(eMail, eEmailHead, getString(R.string.email), blackColor, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
-            HelperUI.setBackgroundWarning(eMail, eEmailHead, "Email", this);
+            HelperUI.setBackgroundWarning(eMail, eEmailHead, getString(R.string.email), this);
         }
 
-        String password = HelperUI.checkEditTextData(ePassword, ePasswordHead, "Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        String password = HelperUI.checkEditTextData(ePassword, ePasswordHead, getString(R.string.password), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
         if (password != null && HelperUI.checkPassword(password)) {
-            HelperUI.setBackgroundDefault(ePassword, ePasswordHead, "Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK);
+            HelperUI.setBackgroundDefault(ePassword, ePasswordHead, getString(R.string.password), blackColor, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
-            HelperUI.setBackgroundWarning(ePassword, ePasswordHead, "Password", this);
+            HelperUI.setBackgroundWarning(ePassword, ePasswordHead, getString(R.string.password), this);
         }
 
-        String confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, eConfirmPasswordHead, "Confirm Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
+        String confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, eConfirmPasswordHead, getString(R.string.confirm_password), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
         if (password != null && confirmPassword != null && HelperUI.checkConfirmPassword(password, confirmPassword)) {
-            HelperUI.setBackgroundDefault(eConfirmPassword, eConfirmPasswordHead, "Confirm Password", blackColor, HelperUI.BACKGROUND_DEF_BLACK);
+            HelperUI.setBackgroundDefault(eConfirmPassword, eConfirmPasswordHead, getString(R.string.confirm_password), blackColor, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
-            HelperUI.setBackgroundWarning(eConfirmPassword, eConfirmPasswordHead, "Confirm Password", this);
+            HelperUI.setBackgroundWarning(eConfirmPassword, eConfirmPasswordHead, getString(R.string.confirm_password), this);
         }
 
         if (ePhoneNumber.getText().toString().isEmpty() || !checkNumber(ePhoneNumber)) {
             phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
-            ePhoneNumberHead.setText("* Phone Number ");
+            ePhoneNumberHead.setText(String.format("* %s", getString(R.string.phone_number)));
             ePhoneNumberHead.setTextColor(getResources().getColor(R.color.red));
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(phoneNumberContainer);
         } else {
             phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
-            ePhoneNumberHead.setText(" Phone Number ");
+            ePhoneNumberHead.setText(String.format("* %s", getString(R.string.phone_number)));
             ePhoneNumberHead.setTextColor(getResources().getColor(R.color.black));
             phoneNumber = ePhoneNumber.getText().toString();
 
@@ -387,14 +404,14 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
 
         if (registerBirthDate.getText().toString().isEmpty()) {
             registerBirthDate.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
-            registerBirthDateHead.setText("* Birth Date ");
+            registerBirthDateHead.setText(String.format("* %s", getString(R.string.birth_date)));
             registerBirthDateHead.setTextColor(getResources().getColor(R.color.red));
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(registerBirthDate);
         } else {
             registerBirthDate.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
-            registerBirthDateHead.setText(" Birth Date ");
+            registerBirthDateHead.setText(String.format("* %s", getString(R.string.birth_date)));
             registerBirthDateHead.setTextColor(getResources().getColor(R.color.black));
             birthDate = registerBirthDate.getText().toString();
         }

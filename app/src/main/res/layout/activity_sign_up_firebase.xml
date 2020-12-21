@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:gravity="center"
-            android:text="Enter your nickname and date of birth "
+            android:text="@string/firebase_sign_up_intro"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
                 android:layout_width="282dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="This nickname is busy, you can choose free"
+                android:text="@string/nickname_busy"
                 android:textColor="@color/red"
                 android:visibility="gone" />
 
@@ -123,21 +123,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Male" />
+                    android:text="@string/male" />
 
                 <RadioButton
                     android:id="@+id/fire_radio_female"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Female" />
+                    android:text="@string/female" />
 
                 <RadioButton
                     android:id="@+id/fire_radio_other"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Other" />
+                    android:text="@string/other" />
 
             </RadioGroup>
 
@@ -149,7 +149,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/bg_btn"
-                android:text=" Save "
+                android:text="@string/save"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 

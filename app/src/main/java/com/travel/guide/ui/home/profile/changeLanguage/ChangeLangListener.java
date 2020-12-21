@@ -11,4 +11,6 @@ public interface ChangeLangListener {
 
     void onLanguageChoose(int langId);
 
+    void onError();
+
 }

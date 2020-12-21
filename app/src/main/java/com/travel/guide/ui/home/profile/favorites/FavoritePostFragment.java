@@ -1,6 +1,7 @@
 package com.travel.guide.ui.home.profile.favorites;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.ui.home.HomePageActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.FavoritePostRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -134,14 +136,25 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     @Override
     public void onPostChoose(int postId) {
-        int position = getPositionById(postId);
+        try {
+            int position = getPositionById(postId);
 
-        Bundle data = new Bundle();
-        data.putInt("postPosition", position);
-        data.putSerializable("PostShowType", FAVORITES);
-        data.putSerializable("favoritePosts", (Serializable) posts);
-        listener.onPostChoose(data);
+            Bundle data = new Bundle();
+            data.putInt("postPosition", position);
+            data.putSerializable("PostShowType", FAVORITES);
+            data.putSerializable("favoritePosts", (Serializable) posts);
+            listener.onPostChoose(data);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                Intent intent = new Intent(getContext(), HomePageActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } catch (Exception b) {
+                b.printStackTrace();
+            }
+        }
     }
 
     private int getPositionById(int postId) {

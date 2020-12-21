@@ -15,6 +15,8 @@ import com.travel.guide.model.response.PostResponse;
 
 import java.util.List;
 
+import static com.travel.guide.utility.BaseApplication.ITEM_WIDTH_FOR_POSTS;
+
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;
     private UserPostListener userPostListener;
@@ -33,10 +35,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     @Override
     public void onBindViewHolder(@NonNull UserPostAdapter.UserPostHolder holder, int position) {
         holder.loadMoreCallback(position);
-        holder.postImage.getLayoutParams().width = itemWidth;
-        HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
-        holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
-        holder.nickName.setText(String.valueOf(posts.get(position).getNickname()));
+        holder.bindView(position);
     }
 
     @Override
@@ -77,6 +76,18 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             if (position == posts.size() - 1) {
                 userPostListener.onLazyLoad(posts.get(position).getPost_id());
             }
+        }
+
+        void bindView(int position) {
+            try {
+                postImage.getLayoutParams().width = ITEM_WIDTH_FOR_POSTS;
+                HelperMedia.loadPhoto(postImage.getContext(), posts.get(position).getCover(), postImage);
+                reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
+                nickName.setText(String.valueOf(posts.get(position).getNickname()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

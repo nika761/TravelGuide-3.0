@@ -9,13 +9,16 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.travel.guide.R;
+import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.broadcast.NotificationReceiver;
+import com.travel.guide.model.ItemMedia;
 import com.travel.guide.model.response.AppSettingsResponse;
 import com.travel.guide.network.ApiService;
 import com.travel.guide.network.RetrofitManager;
@@ -27,6 +30,7 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.POST;
 
 public class BaseApplication extends Application {
 
@@ -36,6 +40,8 @@ public class BaseApplication extends Application {
     public static int CROP_OPTION_X;
     public static int CROP_OPTION_Y;
     public static int AGE_RESTRICTION;
+    public static long POST_VIEW_TIME;
+    public static int ITEM_WIDTH_FOR_POSTS;
 
     @Override
     public void onCreate() {
@@ -104,6 +110,11 @@ public class BaseApplication extends Application {
                     CROP_OPTION_X = response.body().getApp_settings().getStory_photo_crop_width();
                     CROP_OPTION_Y = response.body().getApp_settings().getStory_photo_crop_height();
                     AGE_RESTRICTION = response.body().getApp_settings().getAge_restriction();
+                    try {
+                        POST_VIEW_TIME = (long) response.body().getApp_settings().getStory_view_deley_duration();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

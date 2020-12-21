@@ -44,7 +44,7 @@ public class FollowActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.follower_page_view_pager);
 
         FollowPagerAdapter followPagerAdapter = new FollowPagerAdapter(getSupportFragmentManager());
-        followPagerAdapter.setTitles("Following", "Followers");
+        followPagerAdapter.setTitles(getString(R.string.following), getString(R.string.followers));
         if (customerUserId != 0)
             followPagerAdapter.setCustomerUserId(customerUserId);
 

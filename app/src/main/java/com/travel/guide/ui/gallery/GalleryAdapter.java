@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,9 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.travel.guide.utility.BaseApplication.ITEM_WIDTH_FOR_POSTS;
+
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageViewHolder> {
 
-    private ArrayList<String> uris = new ArrayList<>();
+    private ArrayList<String> paths = new ArrayList<>();
     private HashMap<Integer, Integer> selectedItemPositions = new HashMap<>();
     private Context context;
     private boolean isImage;
@@ -45,35 +48,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
 
     @Override
     public void onBindViewHolder(@NonNull GalleryAdapter.ImageViewHolder holder, int position) {
-
-        if (isImage) {
-//            holder.duration.setVisibility(View.GONE);
-            holder.imageView.getLayoutParams().width = itemWidth;
-            HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
-        } else {
-            holder.imageView.getLayoutParams().width = itemWidth;
-            HelperMedia.loadPhoto(context, uris.get(position), holder.imageView);
-//            holder.duration.setVisibility(View.VISIBLE);
-//            holder.duration.setText(HelperMedia.getVideoDuration(uris.get(position)));
-        }
-
-        if (selectedItemPositions.containsKey(position)) {
-            holder.selectedItemCount.setBackground(holder.itemView.getContext().getDrawable(R.drawable.unselected_image_bg));
-            holder.selectedItemCount.setText(String.valueOf(selectedItemPositions.get(position)));
-        } else {
-            holder.selectedItemCount.setText("");
-            holder.selectedItemCount.setBackground(holder.itemView.getContext().getDrawable(R.drawable.selected_image_circle));
-        }
-
+        holder.bindView(position);
     }
 
     @Override
     public int getItemCount() {
-        return uris.size();
+        return paths.size();
     }
 
     void setItems(ArrayList<String> uris) {
-        this.uris = uris;
+        this.paths = uris;
         notifyDataSetChanged();
     }
 
@@ -89,7 +73,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
 
         ImageViewHolder(@NonNull View itemView) {
             super(itemView);
-
             imageView = itemView.findViewById(R.id.media_photo);
             imageView.setOnClickListener(this);
 
@@ -108,13 +91,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                     if (selectedItemPositions.size() > 0) {
                         if (selectedItemPositions.containsKey(getLayoutPosition())) {
                             selectedItemPositions.remove(getLayoutPosition());
-                            listener.onItemSelected(uris.get(getLayoutPosition()));
+                            listener.onItemSelected(paths.get(getLayoutPosition()));
                         } else {
-                            Toast.makeText(imageView.getContext(), "You can choose only one item", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "You can choose only one item", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         selectedItemPositions.put(getLayoutPosition(), selectedItemPositions.size() + 1);
-                        listener.onItemSelected(uris.get(getLayoutPosition()));
+                        listener.onItemSelected(paths.get(getLayoutPosition()));
                     }
 //                    if (selectedItemPositions.containsKey(getLayoutPosition())) {
 //                        for (Map.Entry<Integer, Integer> integerIntegerEntry : selectedItemPositions.entrySet()) {
@@ -135,12 +118,42 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                     break;
 
                 case R.id.media_photo:
-                    Intent intent = new Intent(context, MediaDetailActivity.class);
-                    intent.putExtra("is_image", isImage);
-                    intent.putExtra("path", uris.get(getLayoutPosition()));
-                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, imageView, "image_transition");
-                    context.startActivity(intent, options.toBundle());
+                    try {
+                        Intent intent = new Intent(context, MediaDetailActivity.class);
+                        intent.putExtra("is_image", isImage);
+                        intent.putExtra("path", paths.get(getLayoutPosition()));
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, imageView, "image_transition");
+                        context.startActivity(intent, options.toBundle());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
+        }
+
+        private void bindView(int position) {
+            if (paths.get(position) != null && itemWidth != 0) {
+                if (isImage) {
+                    imageView.getLayoutParams().width = itemWidth;
+                    HelperMedia.loadPhoto(context, paths.get(position), imageView);
+                } else {
+                    imageView.getLayoutParams().width = itemWidth;
+                    HelperMedia.loadPhoto(context, paths.get(position), imageView);
+                }
+
+                try {
+                    if (selectedItemPositions.containsKey(position)) {
+                        selectedItemCount.setBackground(context.getDrawable(R.drawable.unselected_image_bg));
+                        selectedItemCount.setText(String.valueOf(selectedItemPositions.get(position)));
+                    } else {
+                        selectedItemCount.setText("");
+                        selectedItemCount.setBackground(context.getDrawable(R.drawable.selected_image_circle));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 
@@ -148,7 +161,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
         ArrayList<String> selectedPaths = new ArrayList<>();
 
         for (Map.Entry<Integer, Integer> integerIntegerEntry : selectedItemPositions.entrySet()) {
-            selectedPaths.add(uris.get((int) ((Map.Entry) integerIntegerEntry).getKey()));
+            selectedPaths.add(paths.get((int) ((Map.Entry) integerIntegerEntry).getKey()));
         }
         return selectedPaths;
     }

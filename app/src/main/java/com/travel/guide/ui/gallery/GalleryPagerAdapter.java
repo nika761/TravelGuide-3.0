@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class GalleryPagerAdapter extends FragmentPagerAdapter {
 
-    public GalleryPagerAdapter(@NonNull FragmentManager fm) {
+    GalleryPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
 

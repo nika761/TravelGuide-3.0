@@ -46,6 +46,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     private PlayMusicListener playMusicListener;
 
     private RecyclerView searchMusicRecycler, moodsRecycler;
+    private SearchMusicAdapter searchMusicAdapter;
     private EditText searchField;
 
     private SearchMusicPresenter searchMusicPresenter;
@@ -137,9 +138,18 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onGetMusic(MusicResponse musicResponse) {
-        SearchMusicAdapter searchMusicAdapter = new SearchMusicAdapter(this, playMusicListener);
-        searchMusicAdapter.setMusics(musicResponse.getAlbum());
-        searchMusicRecycler.setAdapter(searchMusicAdapter);
+        try {
+            if (searchMusicAdapter == null) {
+                searchMusicAdapter = new SearchMusicAdapter(this, playMusicListener);
+                searchMusicAdapter.setMusics(musicResponse.getAlbum());
+                searchMusicRecycler.setAdapter(searchMusicAdapter);
+            } else {
+                searchMusicAdapter.setMusics(musicResponse.getAlbum());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -148,6 +158,13 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
             musicPlayer.release();
             musicPlayer = null;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (searchMusicPresenter != null)
+            searchMusicPresenter.getMusics(GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
     }
 
     @Override
@@ -176,11 +193,11 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
     public void onFavoriteAdded(AddFavoriteMusicResponse addFavoriteMusicResponse) {
         switch (addFavoriteMusicResponse.getStatus()) {
             case 0:
-                Toast.makeText(getContext(), "Music removed from favorites", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Music removed from favorites", Toast.LENGTH_SHORT).show();
                 break;
 
             case 1:
-                Toast.makeText(getContext(), "Music add to favorites", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Music add to favorites", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

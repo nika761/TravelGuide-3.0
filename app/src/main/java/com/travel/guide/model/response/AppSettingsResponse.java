@@ -22,6 +22,9 @@ public class AppSettingsResponse {
 
     public static class App_settings {
         @Expose
+        @SerializedName("story_view_deley_duration")
+        private int story_view_deley_duration;
+        @Expose
         @SerializedName("story_video_template_for_photo")
         private int story_video_template_for_photo;
         @Expose
@@ -81,6 +84,10 @@ public class AppSettingsResponse {
         @Expose
         @SerializedName("post_videos_duration")
         private int post_videos_duration;
+
+        public int getStory_view_deley_duration() {
+            return story_view_deley_duration;
+        }
 
         public int getStory_video_template_for_photo() {
             return story_video_template_for_photo;

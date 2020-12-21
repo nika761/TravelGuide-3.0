@@ -87,18 +87,23 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     }
 
     private void verifyEmail() {
-        Uri uri = getIntent().getData();
-        if (uri != null) {
-            List<String> params = uri.getPathSegments();
+        try {
+            Uri uri = getIntent().getData();
+            if (uri != null) {
+                List<String> params = uri.getPathSegments();
 
-            String id = params.get(params.size() - 2);
-            String signature = uri.getQueryParameter("signature");
+                String id = params.get(params.size() - 2);
+                String signature = uri.getQueryParameter("signature");
 
-            if (signature != null && id != null) {
-                signInPresenter.verify(GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
-                Log.e("email", signature + " " + id);
+                if (signature != null && id != null) {
+                    signInPresenter.verify(GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
+                    Log.e("email", signature + " " + id);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void initUI() {
@@ -253,21 +258,21 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
         int white = getResources().getColor(R.color.white, null);
 
-        String email = HelperUI.checkEditTextData(enterEmail, enterMailHead, "Email or Phone Number", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
+        String email = HelperUI.checkEditTextData(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
 
-        String password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, "Password", HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
+        String password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, getString(R.string.password), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
 
         if (email != null) {
-            HelperUI.setBackgroundDefault(enterEmail, enterMailHead, "Email or Phone Number", white, HelperUI.BACKGROUND_DEF_WHITE);
+            HelperUI.setBackgroundDefault(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), white, HelperUI.BACKGROUND_DEF_WHITE);
             if (password != null && HelperUI.checkPassword(password)) {
-                HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, "Password", white, HelperUI.BACKGROUND_DEF_WHITE);
+                HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, getString(R.string.password), white, HelperUI.BACKGROUND_DEF_WHITE);
                 showLoading(true);
                 signInPresenter.singIn(new LoginRequest(email, password));
             } else {
-                HelperUI.setBackgroundWarning(enterPassword, enterPasswordHead, "Password", this);
+                HelperUI.setBackgroundWarning(enterPassword, enterPasswordHead, getString(R.string.password), this);
             }
         } else {
-            HelperUI.setBackgroundWarning(enterEmail, enterMailHead, "Email or Phone Number", this);
+            HelperUI.setBackgroundWarning(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), this);
         }
     }
 
@@ -292,7 +297,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
             @Override
             public void onCancel() {
-                Toast.makeText(SignInActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this, getString(R.string.cancel), Toast.LENGTH_SHORT).show();
             }
 
             @Override

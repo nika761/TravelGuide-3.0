@@ -12,8 +12,17 @@ public class UpdateProfileRequest {
     private String email;
     private String gender;
     private String country;
+    private int country_id;
     private String city;
     private String profile_pic;
+
+    public int getCountry_id() {
+        return country_id;
+    }
+
+    public void setCountry_id(int country_id) {
+        this.country_id = country_id;
+    }
 
     public String getName() {
         return name;

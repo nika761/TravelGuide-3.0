@@ -59,7 +59,7 @@ public interface HomeFragmentListener {
     void onError(String message);
 
 
-    void onAuthError();
+    void onAuthError(String message);
 
 
 }

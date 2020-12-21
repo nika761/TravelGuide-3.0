@@ -1,5 +1,6 @@
 package com.travel.guide.ui.home.profile.posts;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.travel.guide.enums.GetPostsFrom;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.HelperUI;
 import com.travel.guide.helper.MyToaster;
+import com.travel.guide.ui.home.HomePageActivity;
+import com.travel.guide.ui.upload.UploadPostActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.PostByUserRequest;
 import com.travel.guide.model.response.PostResponse;
@@ -97,9 +100,9 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         try {
             postAdapter = new UserPostAdapter(this);
 
-            int itemWidth = HelperMedia.getScreenWidth(getActivity());
-            if (itemWidth != 0)
-                postAdapter.setItemWidth(itemWidth);
+//            int itemWidth = HelperMedia.getScreenWidth(getActivity());
+//            if (itemWidth != 0)
+//                postAdapter.setItemWidth(itemWidth);
 
             postAdapter.setPosts(posts);
             postsRecycler.setAdapter(postAdapter);
@@ -141,6 +144,13 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                Intent intent = new Intent(getContext(), HomePageActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } catch (Exception b) {
+                b.printStackTrace();
+            }
         }
 
     }

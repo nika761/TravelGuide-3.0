@@ -303,5 +303,14 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/customer_profile_post_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contextClickable="true"
+        android:visibility="gone">
+
+    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

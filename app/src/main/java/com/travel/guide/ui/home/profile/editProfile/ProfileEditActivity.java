@@ -17,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -63,7 +64,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 
     private boolean genderChecked;
     private long timeStamp;
-    private int gender;
+    private int gender, countryId;
     private long birthDateTimeStamp;
 
     private ProfileResponse.Userinfo userInfo;
@@ -234,7 +235,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                     birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
                     birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
                 } else
-                    MyToaster.getErrorToaster(ProfileEditActivity.this, "Application age restriction 13+");
+                    MyToaster.getErrorToaster(ProfileEditActivity.this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -257,105 +258,119 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     }
 
     private void onSaveAction() {
-        getLoader(true);
-        if (profileImageFile != null) {
-            if (photoUrl == null)
-                presenter.uploadToS3(ClientManager.transferObserver(this, profileImageFile));
-        } else {
-            startUpdateInfo();
+        try {
+            getLoader(true);
+            if (profileImageFile != null) {
+                if (photoUrl == null)
+                    presenter.uploadToS3(ClientManager.transferObserver(this, profileImageFile));
+            } else {
+                startUpdateInfo();
+            }
+        } catch (Exception e) {
+            getLoader(false);
+            e.printStackTrace();
         }
+
     }
 
     private void startUpdateInfo() {
 
-        getLoader(true);
+        try {
+            getLoader(true);
 
-        nickNameBusy.setVisibility(View.GONE);
-        nickNameFirst.setVisibility(View.GONE);
-        nickNameTwo.setVisibility(View.GONE);
+            nickNameBusy.setVisibility(View.GONE);
+            nickNameFirst.setVisibility(View.GONE);
+            nickNameTwo.setVisibility(View.GONE);
 
-        String modelName = null;
-        String modelSurname = null;
-        String modelNick = null;
-        String modelEmail = null;
-        String modelNumber = null;
-        String modelPhoneIndex = null;
-        String modelBirthDate = null;
-        String modelGender = null;
+            String modelName = null;
+            String modelSurname = null;
+            String modelNick = null;
+            String modelEmail = null;
+            String modelNumber = null;
+            String modelPhoneIndex = null;
+            String modelBirthDate = null;
+            String modelGender = null;
 
-        if (checkForNullOrEmpty(name.getText().toString()))
-            HelperUI.inputWarning(this, name, nameHead);
-        else {
-            HelperUI.inputDefault(this, name, nameHead);
-            modelName = name.getText().toString();
-        }
-
-        if (checkForNullOrEmpty(surName.getText().toString()))
-            HelperUI.inputWarning(this, surName, surNameHead);
-        else {
-            HelperUI.inputDefault(this, surName, surNameHead);
-            modelSurname = surName.getText().toString();
-        }
-
-        if (checkForNullOrEmpty(nickName.getText().toString()))
-            HelperUI.inputWarning(this, nickName, nickNameHead);
-        else {
-            HelperUI.inputDefault(this, nickName, nickNameHead);
-            modelNick = nickName.getText().toString();
-        }
-
-        if (checkForNullOrEmpty(birthDate.getText().toString()))
-            HelperUI.inputWarning(this, birthDate, birthDateHead);
-        else {
-            HelperUI.inputDefault(this, birthDate, birthDateHead);
-            modelBirthDate = birthDate.getText().toString();
-        }
-
-        if (checkForNullOrEmpty(email.getText().toString()))
-            HelperUI.inputWarning(this, email, emailHead);
-        else {
-            if (HelperUI.checkEmail(email.getText().toString())) {
-                HelperUI.inputDefault(this, email, emailHead);
-                modelEmail = email.getText().toString();
-            } else
-                HelperUI.inputWarning(this, email, emailHead);
-        }
-
-        if (checkForNullOrEmpty(phoneNumber.getText().toString()))
-            HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
-        else {
-            if (checkNumber(phoneNumber)) {
-                HelperUI.inputDefault(this, phoneCodeContainer, phoneNumberHead);
-                modelNumber = phoneNumber.getText().toString();
-                modelPhoneIndex = countryCodePicker.getSelectedCountryCode();
-            } else {
-                HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
+            if (checkForNullOrEmpty(name.getText().toString()))
+                HelperUI.inputWarning(this, name, nameHead);
+            else {
+                HelperUI.inputDefault(this, name, nameHead);
+                modelName = name.getText().toString();
             }
-        }
 
-        if (!genderChecked)
-            MyToaster.getErrorToaster(this, "Please enter gender");
-        else
-            modelGender = String.valueOf(gender);
+            if (checkForNullOrEmpty(surName.getText().toString()))
+                HelperUI.inputWarning(this, surName, surNameHead);
+            else {
+                HelperUI.inputDefault(this, surName, surNameHead);
+                modelSurname = surName.getText().toString();
+            }
 
-        if (modelName != null && modelSurname != null && modelNick != null && modelEmail != null && modelBirthDate != null && modelNumber != null && modelGender != null) {
-            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
-            updateProfileRequest.setName(modelName);
-            updateProfileRequest.setLastname(modelSurname);
-            updateProfileRequest.setNickname(modelNick);
-            updateProfileRequest.setDate_of_birth(String.valueOf(birthDateTimeStamp));
-            updateProfileRequest.setEmail(modelEmail);
-            updateProfileRequest.setPhone_index(modelPhoneIndex);
-            updateProfileRequest.setPhone_num(modelNumber);
-            updateProfileRequest.setCountry(country.getText().toString());
-            updateProfileRequest.setCity(city.getText().toString());
-            updateProfileRequest.setBiography(bio.getText().toString());
-            updateProfileRequest.setGender(modelGender);
-            updateProfileRequest.setProfile_pic(photoUrl);
-            presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
-        } else {
+            if (checkForNullOrEmpty(nickName.getText().toString()))
+                HelperUI.inputWarning(this, nickName, nickNameHead);
+            else {
+                HelperUI.inputDefault(this, nickName, nickNameHead);
+                modelNick = nickName.getText().toString();
+            }
+
+            if (checkForNullOrEmpty(birthDate.getText().toString()))
+                HelperUI.inputWarning(this, birthDate, birthDateHead);
+            else {
+                HelperUI.inputDefault(this, birthDate, birthDateHead);
+                modelBirthDate = birthDate.getText().toString();
+            }
+
+            if (checkForNullOrEmpty(email.getText().toString()))
+                HelperUI.inputWarning(this, email, emailHead);
+            else {
+                if (HelperUI.checkEmail(email.getText().toString())) {
+                    HelperUI.inputDefault(this, email, emailHead);
+                    modelEmail = email.getText().toString();
+                } else
+                    HelperUI.inputWarning(this, email, emailHead);
+            }
+
+            if (checkForNullOrEmpty(phoneNumber.getText().toString()))
+                HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
+            else {
+                if (checkNumber(phoneNumber)) {
+                    HelperUI.inputDefault(this, phoneCodeContainer, phoneNumberHead);
+                    modelNumber = phoneNumber.getText().toString();
+                    modelPhoneIndex = countryCodePicker.getSelectedCountryCode();
+                } else {
+                    HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
+                }
+            }
+
+            if (!genderChecked)
+                MyToaster.getErrorToaster(this, "Please enter gender");
+            else
+                modelGender = String.valueOf(gender);
+
+            if (modelName != null && modelSurname != null && modelNick != null && modelEmail != null && modelBirthDate != null && modelNumber != null && modelGender != null) {
+                UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
+                updateProfileRequest.setName(modelName);
+                updateProfileRequest.setLastname(modelSurname);
+                updateProfileRequest.setNickname(modelNick);
+                updateProfileRequest.setDate_of_birth(String.valueOf(birthDateTimeStamp));
+                updateProfileRequest.setEmail(modelEmail);
+                updateProfileRequest.setPhone_index(modelPhoneIndex);
+                updateProfileRequest.setPhone_num(modelNumber);
+                updateProfileRequest.setCity(city.getText().toString());
+                updateProfileRequest.setBiography(bio.getText().toString());
+                updateProfileRequest.setGender(modelGender);
+                if (photoUrl != null)
+                    updateProfileRequest.setProfile_pic(photoUrl);
+                if (countryId != 0)
+                    updateProfileRequest.setCountry_id(countryId);
+                presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
+            } else {
+                getLoader(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             getLoader(false);
         }
+
 
     }
 
@@ -370,19 +385,23 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     }
 
     private void setProfileInfo(ProfileResponse.Userinfo userInfo) {
-        this.userInfo = userInfo;
-        HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), userImage);
-        name.setText(userInfo.getName());
-        surName.setText(userInfo.getLastname());
-        nickName.setText(userInfo.getNickname());
-        email.setText(userInfo.getEmail());
-        setPhoneNumber(userInfo.getPhone_number());
-//        country.setText(userInfo.getCity());
-        city.setText(userInfo.getCity());
-        bio.setText(userInfo.getBiography());
-        birthDate.setText(userInfo.getDate_of_birth());
-        birthDateTimeStamp = HelperDate.getTimeInMillisFromServerDateString(userInfo.getDate_of_birth());
-        setGender(userInfo.getGender());
+        try {
+            this.userInfo = userInfo;
+            HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), userImage);
+            name.setText(userInfo.getName());
+            surName.setText(userInfo.getLastname());
+            nickName.setText(userInfo.getNickname());
+            email.setText(userInfo.getEmail());
+            setPhoneNumber(userInfo.getPhone_number());
+            country.setText(userInfo.getCountry());
+            city.setText(userInfo.getCity());
+            bio.setText(userInfo.getBiography());
+            birthDate.setText(userInfo.getDate_of_birth());
+            birthDateTimeStamp = HelperDate.getTimeInMillisFromServerDateString(userInfo.getDate_of_birth());
+            setGender(userInfo.getGender());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPhoneNumber(String number) {
@@ -435,8 +454,17 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         getLoader(false);
         switch (updateProfileResponse.getStatus()) {
             case 0:
-                DialogManager.profileInfoUpdatedDialog(this);
-                new Handler().postDelayed(this::onBackPressed, 2000);
+                try {
+                    AlertDialog dialog = DialogManager.profileInfoUpdatedDialog(this);
+                    dialog.show();
+                    DialogManager.profileInfoUpdatedDialog(this);
+                    new Handler().postDelayed(() -> {
+                        dialog.dismiss();
+                        onBackPressed();
+                    }, 2000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case 1:
@@ -506,6 +534,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     @Override
     public void onChooseCountry(Country country) {
         this.country.setText(country.getName());
+        this.countryId = country.getId();
     }
 
 }

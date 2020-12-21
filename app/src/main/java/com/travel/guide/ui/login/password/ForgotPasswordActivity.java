@@ -75,15 +75,15 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
 
         Button save = findViewById(R.id.forgot_password_save_btn);
         save.setOnClickListener(v -> {
-            email = HelperUI.checkEditTextData(eEmail, emailHead, "Email", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, eEmail.getContext());
+            email = HelperUI.checkEditTextData(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, eEmail.getContext());
 
             if (email != null && HelperUI.checkEmail(email)) {
-                HelperUI.setBackgroundDefault(eEmail, emailHead, "Email", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
                 presenter.forgotPassword(new ForgotPasswordRequest(email, GlobalPreferences.getLanguageId(this)));
                 eEmail.clearFocus();
                 loadingVisibility(true);
             } else {
-                HelperUI.setBackgroundWarning(eEmail, emailHead, "Email", eEmail.getContext());
+                HelperUI.setBackgroundWarning(eEmail, emailHead, getString(R.string.email), eEmail.getContext());
             }
         });
     }

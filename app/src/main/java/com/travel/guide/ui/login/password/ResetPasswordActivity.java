@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperUI;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.model.request.ResetPasswordRequest;
 import com.travel.guide.model.response.ResetPasswordResponse;
 import com.travel.guide.ui.home.HomePageActivity;
@@ -67,28 +68,28 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
         save = findViewById(R.id.reset_password_save);
         save.setOnClickListener(v -> {
 
-            email = HelperUI.checkEditTextData(eEmail, emailHead, "Email", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            email = HelperUI.checkEditTextData(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
 
-            password = HelperUI.checkEditTextData(ePassword, passwordHead, "Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            password = HelperUI.checkEditTextData(ePassword, passwordHead, getString(R.string.password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
 
-            confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, confirmPasswordHead, "Confirm Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, confirmPasswordHead, getString(R.string.confirm_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
 
             if (email != null && HelperUI.checkEmail(email)) {
-                HelperUI.setBackgroundDefault(eEmail, emailHead, "Email", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             } else {
-                HelperUI.setBackgroundWarning(eEmail, emailHead, "Email", save.getContext());
+                HelperUI.setBackgroundWarning(eEmail, emailHead, getString(R.string.email), save.getContext());
             }
 
             if (password != null && HelperUI.checkPassword(password)) {
-                HelperUI.setBackgroundDefault(ePassword, passwordHead, "Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(ePassword, passwordHead, getString(R.string.password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             } else {
-                HelperUI.setBackgroundWarning(ePassword, passwordHead, "Password", save.getContext());
+                HelperUI.setBackgroundWarning(ePassword, passwordHead, getString(R.string.password), save.getContext());
             }
 
             if (password != null && confirmPassword != null && HelperUI.checkConfirmPassword(password, confirmPassword)) {
-                HelperUI.setBackgroundDefault(eConfirmPassword, confirmPasswordHead, "Confirm Password", HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(eConfirmPassword, confirmPasswordHead, getString(R.string.confirm_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             } else {
-                HelperUI.setBackgroundWarning(eConfirmPassword, confirmPasswordHead, "Confirm Password", save.getContext());
+                HelperUI.setBackgroundWarning(eConfirmPassword, confirmPasswordHead, getString(R.string.confirm_password), save.getContext());
             }
 
             if (email != null && password != null && confirmPassword != null) {
@@ -114,13 +115,14 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
 
                 if (token != null) {
                     this.token = token;
-                    Log.e("token", token);
+//                    Log.e("token", token);
                 }
 
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Token Error", Toast.LENGTH_SHORT).show();
+            MyToaster.getErrorToaster(this, "Try Again");
+            finish();
         }
 
     }

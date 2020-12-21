@@ -51,7 +51,7 @@ public class WebActivity extends AppCompatActivity {
                     break;
             }
         } else {
-            Toast.makeText(this, "Type = null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Try Again", Toast.LENGTH_SHORT).show();
         }
     }
 }

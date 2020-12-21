@@ -190,8 +190,8 @@
 
     <Button
         android:id="@+id/describe_post_post_btn"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_agree"
         android:text="Post"

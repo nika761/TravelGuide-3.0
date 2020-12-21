@@ -81,6 +81,8 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     private String address, addressName, latLng, description, videoHeight, videoWidht;
     private int musicId;
 
+    private boolean hasPermission = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,13 +91,17 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         getExtras();
         initUI();
         initHashtagRecycler();
+
+
     }
 
     private void getExtras() {
         try {
             this.musicId = getIntent().getIntExtra(MUSIC_ID, 0);
             this.itemMedia = (List<ItemMedia>) getIntent().getSerializableExtra(STORIES_PATHS);
+
         } catch (Exception e) {
+            onBackPressed();
             e.printStackTrace();
         }
     }
@@ -177,19 +183,31 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     }
 
     private void getReadyForUpload() {
+        getLoader(true);
         try {
-            if (itemMedia.get(0).getType() == 0) {
-                if (SystemManager.isWriteStoragePermission(this)) {
-                    startUpload();
-                } else {
-                    SystemManager.requestWriteStoragePermission(this);
-                }
+            if (itemMedia.get(0).getType() == 0 && !SystemManager.isWriteStoragePermission(this)) {
+                getLoader(false);
+                SystemManager.requestWriteStoragePermission(this);
             } else {
                 startUpload();
             }
         } catch (Exception e) {
+            getLoader(false);
             e.printStackTrace();
         }
+//        try {
+//            if (itemMedia.get(0).getType() == 0) {
+//                if (SystemManager.isWriteStoragePermission(this)) {
+//                    startUpload();
+//                } else {
+//                    SystemManager.requestWriteStoragePermission(this);
+//                }
+//            } else {
+//                startUpload();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -219,7 +237,6 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     }
 
     public void startUpload() {
-        getLoader(true);
         if (itemMedia.get(0).getType() == 0) {
             List<ItemMedia> convertedImages = convertImagesToPng(itemMedia);
             if (convertedImages != null) {
@@ -351,9 +368,10 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == WRITE_EXTERNAL_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLoader(true);
                 startUpload();
             } else {
-                Toast.makeText(this, "Please Permission", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Without Permission You Can't Upload Photo", Toast.LENGTH_SHORT).show();
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -392,11 +410,16 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
 
     @Override
     public void onPostUploaded() {
-        getLoader(false);
-        Intent intent = new Intent(UploadPostActivity.this, HomePageActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra("option", "uploaded");
-        startActivity(intent);
+        try {
+            getLoader(false);
+            Intent intent = new Intent(UploadPostActivity.this, HomePageActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("option", "uploaded");
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

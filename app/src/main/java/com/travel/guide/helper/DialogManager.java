@@ -2,6 +2,7 @@ package com.travel.guide.helper;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -40,7 +41,7 @@ public class DialogManager {
     }
 
 
-    public static void profileInfoUpdatedDialog(Activity activity) {
+    public static AlertDialog profileInfoUpdatedDialog(Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         View customLayout = activity.getLayoutInflater().inflate(R.layout.dialog_profile_updated, null);
@@ -62,7 +63,7 @@ public class DialogManager {
         }
 
         dialog.setCancelable(false);
-        dialog.show();
+        return dialog;
     }
 
     public static void datePickerDialog(Context context, DatePickerDialog.OnDateSetListener onDateSetListener) {

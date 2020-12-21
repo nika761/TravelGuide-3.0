@@ -1,17 +1,15 @@
 package com.travel.guide.model.request;
 
+import com.travel.guide.model.PostView;
+
+import java.util.List;
+
 public class SetPostViewRequest {
-    private int post_id;
 
-    public SetPostViewRequest(int post_id) {
-        this.post_id = post_id;
+    private List<PostView> postViews;
+
+    public SetPostViewRequest(List<PostView> postViews) {
+        this.postViews = postViews;
     }
 
-    public int getPost_id() {
-        return post_id;
-    }
-
-    public void setPost_id(int post_id) {
-        this.post_id = post_id;
-    }
 }

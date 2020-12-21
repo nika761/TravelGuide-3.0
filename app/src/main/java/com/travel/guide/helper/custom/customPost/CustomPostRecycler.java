@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -53,6 +54,8 @@ import com.travel.guide.R;
 import com.travel.guide.enums.SearchPostBy;
 import com.travel.guide.helper.HelperMedia;
 import com.travel.guide.helper.custom.CustomProgressBar;
+import com.travel.guide.helper.custom.CustomTimer;
+import com.travel.guide.model.PostView;
 import com.travel.guide.model.response.PostResponse;
 import com.travel.guide.ui.home.home.HashtagAdapter;
 import com.travel.guide.ui.home.home.HomeFragmentListener;
@@ -65,6 +68,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.travel.guide.utility.BaseApplication.POST_VIEW_TIME;
 
 public class CustomPostRecycler extends RecyclerView {
 
@@ -106,6 +111,8 @@ public class CustomPostRecycler extends RecyclerView {
     public static int ownerUserId;
     public int position;
 
+    private CustomTimer customTimer;
+
     public CustomPostRecycler(@NonNull Context context) {
         super(context);
         init(context);
@@ -130,8 +137,34 @@ public class CustomPostRecycler extends RecyclerView {
             e.printStackTrace();
         }
 
+        try {
+            if (POST_VIEW_TIME != 0)
+                customTimer = new CustomTimer(POST_VIEW_TIME, 1000);
+            else
+                customTimer = new CustomTimer(3000, 1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//        try {
+//            countDownTimer = new CountDownTimer(3000, 1000) {
+//
+//                @Override
+//                public void onTick(long millisUntilFinished) {
+//                    Log.d(TAG, "timer:" + millisUntilFinished);
+//                }
+//
+//                @Override
+//                public void onFinish() {
+//                    Log.d(TAG, "timer:" + "timer finished");
+//                }
+//
+//            };
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         videoSurfaceView = new PlayerView(this.context);
-//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 //        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
@@ -180,6 +213,7 @@ public class CustomPostRecycler extends RecyclerView {
             public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
             }
+
         });
 
         addOnChildAttachStateChangeListener(new OnChildAttachStateChangeListener() {
@@ -217,6 +251,11 @@ public class CustomPostRecycler extends RecyclerView {
                     case Player.STATE_ENDED:
                         Log.d(TAG, "onPlayerStateChanged: Video ended.");
                         videoPlayer.seekTo(0);
+                        try {
+                            customTimer.cancel();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 //                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         break;
 
@@ -225,6 +264,10 @@ public class CustomPostRecycler extends RecyclerView {
                         break;
 
                     case Player.STATE_READY:
+//                        if (countDownTimer != null) {
+//                            countDownTimer.cancel();
+//                            countDownTimer.start();
+//                        }
                         homeFragmentListener.stopLoader();
 //                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         Log.d(TAG, "onPlayerStateChanged: Ready to play.");
@@ -374,6 +417,16 @@ public class CustomPostRecycler extends RecyclerView {
     private void bindItem(CustomPostHolder holder, PostResponse.Posts post) {
 
         PostResponse.Post_stories story = post.getPost_stories().get(0);
+
+        try {
+            if (customTimer != null) {
+                customTimer.cancel();
+            }
+            customTimer.setPostView(new PostView(post.getPost_id(), story.getStory_id()));
+            customTimer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             HelperMedia.loadCirclePhotoProfile(context, post.getProfile_pic(), holder.profileImage);

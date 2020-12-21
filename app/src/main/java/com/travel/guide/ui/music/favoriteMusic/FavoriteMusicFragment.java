@@ -85,12 +85,13 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
         MyToaster.getErrorToaster(favoriteMusicRecycler.getContext(), message);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        favoriteMusicPresenter.getFavoriteMusics(GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()));
-    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (favoriteMusicPresenter != null)
+            favoriteMusicPresenter.getFavoriteMusics(GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()));
+    }
 
     @Override
     public void onDestroy() {

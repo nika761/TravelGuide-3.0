@@ -23,9 +23,18 @@ class ProfileFragmentPresenter {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0)
-                        profileFragmentListener.onGetProfile(response.body().getUserinfo());
-                    else
+                    if (response.body().getStatus() == 0) {
+                        switch (response.body().getStatus()) {
+                            case -100:
+                            case -101:
+                                profileFragmentListener.onAuthError("Sign In Again");
+                                break;
+
+                            case 0:
+                                profileFragmentListener.onGetProfile(response.body().getUserinfo());
+                                break;
+                        }
+                    } else
                         profileFragmentListener.onGetError(String.valueOf(response.body().getStatus()));
                 } else {
                     profileFragmentListener.onGetError(response.message());

@@ -30,6 +30,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.helper.HelperMedia;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.model.request.ProfileRequest;
 import com.travel.guide.model.response.ProfileResponse;
 import com.travel.guide.ui.home.profile.changeLanguage.ChangeLangFragment;
@@ -39,6 +40,7 @@ import com.travel.guide.ui.home.profile.posts.UserPostsFragment;
 import com.travel.guide.ui.home.profile.tours.UserToursFragment;
 import com.travel.guide.ui.home.profile.follow.FollowActivity;
 import com.travel.guide.ui.home.HomePageActivity;
+import com.travel.guide.ui.login.signIn.SignInActivity;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.helper.HelperUI;
 import com.google.android.material.navigation.NavigationView;
@@ -178,7 +180,14 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
         switch (item.getItemId()) {
             case R.id.settings_share_profile:
-                Toast.makeText(getContext(), "Share", Toast.LENGTH_SHORT).show();
+                try {
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, userInfo.getShare_profile());
+                    startActivityForResult(sharingIntent, 500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.settings_language:
@@ -252,6 +261,18 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     }
 
     @Override
+    public void onAuthError(String message) {
+        try {
+            MyToaster.getErrorToaster(getContext(), message);
+            Intent intent = new Intent(getContext(), SignInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onGetError(String message) {
         showLoader(false);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -289,7 +310,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     private void setBiography(String biography) {
         if (biography != null && !biography.isEmpty()) {
             bioContainer.setVisibility(View.VISIBLE);
-            seeBio.setVisibility(View.VISIBLE);
+            hideBio.setVisibility(View.VISIBLE);
             bioHead.setVisibility(View.VISIBLE);
             bioBody.setVisibility(View.VISIBLE);
             bioBody.setText(biography);
@@ -298,6 +319,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             bioHead.setVisibility(View.GONE);
             bioBody.setVisibility(View.GONE);
             seeBio.setVisibility(View.GONE);
+            hideBio.setVisibility(View.GONE);
         }
     }
 

@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import com.facebook.Profile;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel.guide.R;
 import com.travel.guide.helper.ClientManager;
@@ -106,7 +107,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     private void initBtmNav() {
         bottomNavigationView = findViewById(R.id.navigation);
-        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+//        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         bottomNavigationView.setItemIconSize(60);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -131,7 +132,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
                 case R.id.bot_nav_ntf:
                     int reqCode = 1;
-                    notification();
+//                    notification();
 //                    showNotification(this, "Please Wait", "Your post is uploading.", new Intent(), reqCode);
 //                    HelperUI.loadFragment(new NotificationsFragment(), null, R.id.notification_fragment_container, true, true, HomePageActivity.this);
                     break;
@@ -243,6 +244,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     public void onProfileChoose() {
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
+        HelperUI.loadFragment(new ProfileFragment(), null, R.id.user_page_frg_container, true, false, this);
     }
 
     public void loadRepliesFragment(Bundle repliesFragmentData) {

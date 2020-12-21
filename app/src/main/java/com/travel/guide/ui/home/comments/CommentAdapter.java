@@ -129,7 +129,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
             if (comments.get(position).getComment_reply().size() > 0) {
                 showReplies.setVisibility(View.VISIBLE);
-                showReplies.setText(MessageFormat.format("View replies ({0})", comments.get(position).getComment_replies_count()));
+                showReplies.setText(MessageFormat.format("{0} {1}", body.getContext().getString(R.string.view_replies), comments.get(position).getComment_replies_count()));
             } else {
                 showReplies.setVisibility(View.GONE);
             }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.travel.guide.R;
+import com.travel.guide.helper.MyToaster;
 import com.travel.guide.utility.GlobalPreferences;
 import com.travel.guide.model.request.ChangeLangRequest;
 import com.travel.guide.model.response.ChangeLangResponse;
@@ -77,22 +78,20 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
             initLanguageRecycler(languagesResponse.getLanguage());
             lottieAnimationView.setVisibility(View.GONE);
         } else {
-            Toast.makeText(context, "Error Language", Toast.LENGTH_SHORT).show();
+            MyToaster.getErrorToaster(context, "Try Again");
         }
 
     }
 
     @Override
     public void onLanguageChange(ChangeLangResponse changeLangResponse) {
-
         if (changeLangResponse.getStatus() == 0) {
             GlobalPreferences.saveLanguageId(context, languageId);
-            Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
             if (getDialog() != null)
                 getDialog().dismiss();
-        } else {
-            Toast.makeText(context, "Error Language Change", Toast.LENGTH_SHORT).show();
         }
+//            Toast.makeText(context, "Error Language Change", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -106,8 +105,19 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
 
     @Override
     public void onLanguageChoose(int langId) {
-        this.languageId = langId;
-        ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(GlobalPreferences.getLanguageId(context)));
-        changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, GlobalPreferences.getAccessToken(context));
+        try {
+            this.languageId = langId;
+            ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(GlobalPreferences.getLanguageId(context)));
+            changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, GlobalPreferences.getAccessToken(context));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+
+    @Override
+    public void onError() {
+        MyToaster.getErrorToaster(context, "Try Again");
+    }
+
 }
