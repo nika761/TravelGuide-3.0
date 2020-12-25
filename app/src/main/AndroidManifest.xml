@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.travel.guide">
+    package="travelguideapp.ge.travelguide">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -14,7 +14,7 @@
         android:required="false" />
 
     <application
-        android:name=".utility.BaseApplication"
+        android:name="travelguideapp.ge.travelguide.utility.BaseApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,10 +25,10 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
 
-        <receiver android:name=".helper.broadcast.NotificationReceiver" />
+        <receiver android:name="travelguideapp.ge.travelguide.helper.broadcast.NotificationReceiver" />
 
         <activity
-            android:name="com.travel.guide.ui.language.LanguageActivity"
+            android:name="travelguideapp.ge.travelguide.ui.language.LanguageActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
@@ -39,13 +39,13 @@
             android:theme="@style/Base.Theme.AppCompat" />
 
         <activity
-            android:name="com.travel.guide.ui.editPost.EditPostActivity"
+            android:name="travelguideapp.ge.travelguide.ui.editPost.EditPostActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.home.HomePageActivity"
+            android:name="travelguideapp.ge.travelguide.ui.home.HomePageActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
@@ -56,7 +56,7 @@
             android:enabled="true" />
 
         <activity
-            android:name="com.travel.guide.ui.login.signIn.SignInActivity"
+            android:name="travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
 
@@ -84,48 +84,48 @@
         </activity>
 
         <activity
-            android:name="com.travel.guide.ui.login.signUp.SignUpActivity"
+            android:name="travelguideapp.ge.travelguide.ui.login.signUp.SignUpActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.home.profile.follow.FollowActivity"
+            android:name="travelguideapp.ge.travelguide.ui.home.profile.follow.FollowActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.gallery.MediaDetailActivity"
+            android:name="travelguideapp.ge.travelguide.ui.gallery.MediaDetailActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.search.SearchActivity"
+            android:name="travelguideapp.ge.travelguide.ui.search.SearchActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.login.loggedUsers.SavedUserActivity"
+            android:name="travelguideapp.ge.travelguide.ui.login.loggedUsers.SavedUserActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.travel.guide.ui.login.password.ForgotPasswordActivity"
+            android:name="travelguideapp.ge.travelguide.ui.login.password.ForgotPasswordActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.webView.WebActivity"
+            android:name="travelguideapp.ge.travelguide.ui.webView.WebActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.splashScreen.SplashScreenActivity"
+            android:name="travelguideapp.ge.travelguide.ui.splashScreen.SplashScreenActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SplashScreenTheme">
@@ -148,7 +148,7 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name="com.travel.guide.ui.gallery.GalleryActivity"
+            android:name="travelguideapp.ge.travelguide.ui.gallery.GalleryActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
@@ -169,43 +169,43 @@
         </activity>
 
         <activity
-            android:name="com.travel.guide.ui.editPost.filterActivity.FilterActivity"
+            android:name="travelguideapp.ge.travelguide.ui.editPost.filterActivity.FilterActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.upload.UploadPostActivity"
+            android:name="travelguideapp.ge.travelguide.ui.upload.UploadPostActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.music.ChooseMusicActivity"
+            android:name="travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.editPost.sortActivity.SortStoriesActivity"
+            android:name="travelguideapp.ge.travelguide.ui.editPost.sortActivity.SortStoriesActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name=".ui.home.customerUser.CustomerProfileActivity"
+            android:name="travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.searchPost.SearchPostActivity"
+            android:name="travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.login.password.ResetPasswordActivity"
+            android:name="travelguideapp.ge.travelguide.ui.login.password.ResetPasswordActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme">
@@ -234,19 +234,19 @@
         </activity>
 
         <activity
-            android:name="com.travel.guide.ui.login.signUp.SignUpFireBaseActivity"
+            android:name="travelguideapp.ge.travelguide.ui.login.signUp.SignUpFireBaseActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.upload.tag.TagPostActivity"
+            android:name="travelguideapp.ge.travelguide.ui.upload.tag.TagPostActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="com.travel.guide.ui.home.profile.editProfile.ProfileEditActivity"
+            android:name="travelguideapp.ge.travelguide.ui.home.profile.editProfile.ProfileEditActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />

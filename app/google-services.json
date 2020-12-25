@@ -8,18 +8,26 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:869591549307:android:95e87595e283acd2b129de",
+        "mobilesdk_app_id": "1:869591549307:android:48b8a92f2454fc1cb129de",
         "android_client_info": {
-          "package_name": "com.item_story.travelguide"
+          "package_name": "travelguideapp.ge.travelguide"
         }
       },
       "oauth_client": [
         {
-          "client_id": "869591549307-7te6oggacb0i75neuqvafq390vaajfvo.apps.googleusercontent.com",
+          "client_id": "869591549307-kleeel1sv2hvsduvh6omktthghtrj1hg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.item_story.travelguide",
+            "package_name": "travelguideapp.ge.travelguide",
             "certificate_hash": "62395267becf2c9c76bfd7dc76a33096f7ae57a6"
+          }
+        },
+        {
+          "client_id": "869591549307-ldc07t8ckif6prmir1jom8bo745lpsir.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "travelguideapp.ge.travelguide",
+            "certificate_hash": "02dd44aad0421b8bf71fa94497da8e2e2bd4b887"
           }
         },
         {
