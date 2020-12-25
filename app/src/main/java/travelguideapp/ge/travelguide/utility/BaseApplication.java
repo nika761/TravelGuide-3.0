@@ -99,27 +99,30 @@ public class BaseApplication extends Application {
     }
 
     public void getAppSettings() {
-        ApiService apiService = RetrofitManager.getApiService();
-        apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
-            @Override
-            public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    CROP_OPTION_X = response.body().getApp_settings().getStory_photo_crop_width();
-                    CROP_OPTION_Y = response.body().getApp_settings().getStory_photo_crop_height();
-                    AGE_RESTRICTION = response.body().getApp_settings().getAge_restriction();
-                    try {
-                        POST_VIEW_TIME = (long) response.body().getApp_settings().getStory_view_deley_duration();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+        try {
+            ApiService apiService = RetrofitManager.getApiService();
+            apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
+                @Override
+                public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        CROP_OPTION_X = response.body().getApp_settings().getStory_photo_crop_width();
+                        CROP_OPTION_Y = response.body().getApp_settings().getStory_photo_crop_height();
+                        AGE_RESTRICTION = response.body().getApp_settings().getAge_restriction();
+                        try {
+                            POST_VIEW_TIME = (long) response.body().getApp_settings().getStory_view_deley_duration();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<AppSettingsResponse> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<AppSettingsResponse> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 }

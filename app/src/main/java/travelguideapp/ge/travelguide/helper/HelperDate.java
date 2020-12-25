@@ -78,6 +78,7 @@ public class HelperDate {
         int currentDay = cal.get(Calendar.DAY_OF_MONTH);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
             LocalDate currentDate = LocalDate.of(currentYear, currentMonth, currentDay);
             LocalDate birthDate = LocalDate.of(birthYear, birthMonth, birthDay);
 

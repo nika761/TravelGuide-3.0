@@ -20,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.hbb20.CountryCodePicker;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
@@ -188,6 +189,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 nickNameBusy.setVisibility(View.GONE);
                 HelperUI.inputDefault(this, nickName, nickNameHead);
                 break;
+
             case 2:
                 nickName.setText(nickSecond);
                 nickNameBusy.setVisibility(View.GONE);
@@ -245,7 +247,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                     onPickImageFinish(data);
                     break;
                 case Activity.RESULT_CANCELED:
-                    MyToaster.getUnknownErrorToast(this);
+//                    MyToaster.getUnknownErrorToast(this);
                     break;
             }
         }
@@ -336,7 +338,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             }
 
             if (!genderChecked)
-                MyToaster.getErrorToaster(this, "Please enter gender");
+                MyToaster.getErrorToaster(this, getString(R.string.gender_restriction_warning));
             else
                 modelGender = String.valueOf(gender);
 
@@ -476,15 +478,20 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     }
 
     public void onNickNameBusy(List<String> nicks, String message) {
-        HelperUI.inputWarning(this, nickName, nickNameHead);
-        nickNameBusy.setVisibility(View.VISIBLE);
-        nickNameFirst.setVisibility(View.VISIBLE);
-        nickNameTwo.setVisibility(View.VISIBLE);
-        nickNameBusy.setText(message);
-        nickFirst = nicks.get(0);
-        nickSecond = nicks.get(1);
-        nickNameFirst.setText(nickFirst);
-        nickNameTwo.setText(nickSecond);
+        try {
+            HelperUI.inputWarning(this, nickName, nickNameHead);
+            nickNameBusy.setVisibility(View.VISIBLE);
+            nickNameFirst.setVisibility(View.VISIBLE);
+            nickNameTwo.setVisibility(View.VISIBLE);
+            nickNameBusy.setText(message);
+            nickFirst = nicks.get(0);
+            nickSecond = nicks.get(1);
+            nickNameFirst.setText(nickFirst);
+            nickNameTwo.setText(nickSecond);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

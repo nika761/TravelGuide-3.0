@@ -12,8 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -67,12 +69,13 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
                 languagePresenter.sentLanguageRequest();
             }
         } else {
-            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            MyToaster.getErrorToaster(this, getString(R.string.no_internet_connection));
         }
     }
 
 
     public void initUI() {
+
         mainIconSun = findViewById(R.id.main_icon_sun);
         mainLogoTxt = findViewById(R.id.main_logo_text);
         justGoTxt = findViewById(R.id.just_go);

@@ -102,6 +102,7 @@
     <string name="choose_language">Choose Language</string>
     <string name="choose_country">Choose Country</string>
     <string name="sign_out">Sign out ?</string>
+    <string name="no_internet_connection">No Internet Connection</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
 
