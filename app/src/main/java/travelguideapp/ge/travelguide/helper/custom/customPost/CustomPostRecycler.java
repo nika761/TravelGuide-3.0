@@ -136,24 +136,6 @@ public class CustomPostRecycler extends RecyclerView {
             e.printStackTrace();
         }
 
-//        try {
-//            countDownTimer = new CountDownTimer(3000, 1000) {
-//
-//                @Override
-//                public void onTick(long millisUntilFinished) {
-//                    Log.d(TAG, "timer:" + millisUntilFinished);
-//                }
-//
-//                @Override
-//                public void onFinish() {
-//                    Log.d(TAG, "timer:" + "timer finished");
-//                }
-//
-//            };
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         videoSurfaceView = new PlayerView(this.context);
 //        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);

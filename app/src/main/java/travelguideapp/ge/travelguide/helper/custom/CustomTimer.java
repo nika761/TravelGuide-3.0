@@ -30,7 +30,8 @@ public class CustomTimer extends CountDownTimer {
 
     @Override
     public void onTick(long millisUntilFinished) {
-
+        /** In this case we don't need use this method */
+        /** We can just listen to this fucking music https://www.youtube.com/watch?v=hFAEYWQl1eM */
     }
 
     @Override

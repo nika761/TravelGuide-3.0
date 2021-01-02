@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.callback.AskingDialogResultCallback;
+import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
@@ -90,20 +92,6 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
         addCommentBtn = view.findViewById(R.id.comments_add_image_btn);
         addCommentBtn.setOnClickListener(this);
 
-        RxTextView.textChanges(commentField)
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(CharSequence::toString)
-                .subscribe((Consumer<CharSequence>) charSequence -> {
-                    if (charSequence.toString().isEmpty()) {
-                        addCommentBtn.setClickable(false);
-                        addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment_black, null));
-                    } else {
-                        addCommentBtn.setClickable(true);
-                        addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment, null));
-                    }
-                });
-
         return view;
     }
 
@@ -111,8 +99,25 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter.getComments(GlobalPreferences.getAccessToken(context), new CommentRequest(storyId, postId, 0));
-
+        try {
+            RxTextView.textChanges(commentField)
+                    .debounce(100, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(CharSequence::toString)
+                    .subscribe((Consumer<CharSequence>) charSequence -> {
+                        if (charSequence.toString().isEmpty()) {
+                            addCommentBtn.setClickable(false);
+                            addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment_black, null));
+                        } else {
+                            addCommentBtn.setClickable(true);
+                            addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment, null));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String accessToken = GlobalPreferences.getAccessToken(context);
+        presenter.getComments(accessToken, new CommentRequest(storyId, postId, 0));
     }
 
     @Override
@@ -257,14 +262,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onDeleteChoose(int commentId) {
-
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setTitle(getString(R.string.delete_comment))
-                .setPositiveButton(getString(R.string.yes), (dialog, which) -> presenter.deleteComment(GlobalPreferences.getAccessToken(context), new DeleteCommentRequest(postId, storyId, commentId)))
-                .setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss())
-                .create();
-        alertDialog.show();
-
+        DialogManager.getAskingDialog(context, getString(R.string.delete_comment), () -> presenter.deleteComment(GlobalPreferences.getAccessToken(context), new DeleteCommentRequest(postId, storyId, commentId)));
     }
 
     @Override
@@ -288,11 +286,6 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
                 presenter.addComment(GlobalPreferences.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
                 break;
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     @Override

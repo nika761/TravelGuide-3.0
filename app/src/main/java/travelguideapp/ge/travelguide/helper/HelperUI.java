@@ -62,7 +62,6 @@ public class HelperUI {
         else
             fragmentTransaction.add(fragmentID, currentFragment);
 
-
         fragmentTransaction.commit();
     }
 
@@ -129,11 +128,6 @@ public class HelperUI {
         return (int) (screenWidthDp / columnWidthDp + 0.5);
     }
 
-    public static String getDateFromMillis(long time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(time * 1000);
-        return DateFormat.format("dd-MM-yyyy", calendar).toString();
-    }
 
     public static void loadAnimation(View target, int animationId, int offset) {
         Animation animation = AnimationUtils.loadAnimation(target.getContext(), animationId);
@@ -155,55 +149,5 @@ public class HelperUI {
             ((EditText) view).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.selector_input_field_icon, 0);
         textView.setTextColor(activity.getResources().getColor(R.color.black, null));
     }
-
-//    public static HashMap<InputFieldPairs, String> checkInputData(Activity activity, HashMap<InputFieldPairs,
-//            HashMap<TextView, EditText>> inputFields) {
-//
-//        HashMap<InputFieldPairs, String> vars = new HashMap<>();
-//
-//        for (Map.Entry<InputFieldPairs, HashMap<TextView, EditText>> currentEntry : inputFields.entrySet()) {
-//            for (Map.Entry<TextView, EditText> currentViewEntry : currentEntry.getValue().entrySet()) {
-//                switch (currentEntry.getKey()) {
-//                    default:
-//                        if (currentViewEntry.getValue().getText().toString().isEmpty()) {
-//                            inputWarning(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
-//                        } else {
-//                            vars.put(currentEntry.getKey(), currentViewEntry.getValue().getText().toString());
-//                            inputDefault(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
-//                        }
-//                        break;
-//
-//                    case EMAIL:
-//                        if (HelperUI.checkEmail(currentViewEntry.getValue().getText().toString())) {
-//                            vars.put(InputFieldPairs.EMAIL, currentViewEntry.getValue().getText().toString());
-//                            inputDefault(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
-//                        } else {
-//                            inputWarning(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
-//                        }
-//                        break;
-//
-//                    case PASSWORD:
-//                        if (HelperUI.checkPassword(currentViewEntry.getValue().getText().toString())) {
-//                            vars.put(InputFieldPairs.PASSWORD, currentViewEntry.getValue().getText().toString());
-//                            inputDefault(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
-//                        } else {
-//                            inputWarning(activity, currentViewEntry.getValue(), currentViewEntry.getKey());
-//                        }
-//                        break;
-//
-//                    case COUNTRY:
-//
-//                    case BIO:
-//                        if (!currentViewEntry.getValue().getText().toString().isEmpty())
-//                            vars.put(currentEntry.getKey(), currentViewEntry.getValue().getText().toString());
-//
-//                        break;
-//
-//                }
-//            }
-//        }
-//        return vars;
-//    }
-
 }
 

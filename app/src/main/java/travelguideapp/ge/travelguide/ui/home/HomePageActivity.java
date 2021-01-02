@@ -23,6 +23,7 @@ import androidx.core.app.NotificationCompat;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.home.profile.editProfile.ProfileEditActivity;
 import travelguideapp.ge.travelguide.ui.home.profile.follow.FollowActivity;
@@ -36,35 +37,45 @@ import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 import travelguideapp.ge.travelguide.ui.gallery.GalleryActivity;
+
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 
-/**
- * Created by n.butskhrikidze on 01/07/2020.
- * <p>
- * დასაბამიდან იყო სიტყვა, და სიტყვა იყო ღმერთთან და ღმერთი იყო სიტყვა.
- * In the beginning was the Word, and the Word was with God, and the Word was God.
- * <p>
- */
 
-public class HomePageActivity extends AppCompatActivity implements ProfileFragment.OnPostChooseListener, ProfileFragment.ProfileFragmentCallBacks {
+public class HomePageActivity extends AppCompatActivity implements HomePageListener,
+        ProfileFragment.OnPostChooseListener,
+        ProfileFragment.ProfileFragmentCallBacks,
+        HomeFragment.LoadCommentFragmentListener {
 
-    private GoogleSignInClient mGoogleSignInClient;
     private BottomNavigationView bottomNavigationView;
-    public boolean commentFieldState;
+    private HomePagePresenter homePagePresenter;
 
     public HomePageActivity() {
+        //Required empty public constructor
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
-        checkRequestType();
+        homePagePresenter = getHomePagePresenter();
+        getUserProfileInfo();
         initBtmNav();
+    }
+
+    private void getUserProfileInfo() {
+        try {
+            homePagePresenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private HomePagePresenter getHomePagePresenter() {
+        return new HomePagePresenter(this);
     }
 
     public void checkRequestType() {
@@ -79,16 +90,17 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
             if (option.equals("uploaded")) {
                 HelperUI.loadFragment(ProfileFragment.getInstance(this), null, R.id.user_page_frg_container, false, true, this);
             }
-//
-//        String requestFrom = getIntent().getStringExtra("request_from");
-//        if (requestFrom != null) {
-//            if (requestFrom.equals("customer_profile")) {
-//                if (getIntent().getBundleExtra("fragment_data") != null) {
-//                    Bundle fragmentData = getIntent().getBundleExtra("fragment_data");
-//                    HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.user_page_frg_container, false, true, this);
-//                }
-//            }
-//        }
+
+        String requestFrom = getIntent().getStringExtra("request_from");
+        if (requestFrom != null) {
+            if (requestFrom.equals("customer_profile")) {
+                if (getIntent().getBundleExtra("fragment_data") != null) {
+                    Bundle fragmentData = getIntent().getBundleExtra("fragment_data");
+                    HelperUI.loadFragment(HomeFragment.getInstance(this), fragmentData, R.id.user_page_frg_container, false, true, this);
+                }
+            }
+        }
+
     }
 
     public void hideBottomNavigation(Boolean visible) {
@@ -108,7 +120,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                 case R.id.bot_nav_home:
                     Bundle data = new Bundle();
                     data.putSerializable("PostShowType", GetPostsFrom.FEED);
-                    HelperUI.loadFragment(new HomeFragment(), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
+                    HelperUI.loadFragment(HomeFragment.getInstance(this), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
                     break;
 
                 case R.id.bot_nav_search:
@@ -148,16 +160,20 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     public void logOutFromFacebook() {
-        LoginManager.getInstance().logOut();
-        onLogOutSuccess();
+        try {
+            LoginManager.getInstance().logOut();
+            onLogOutSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void logOutFromGoogle() {
         ClientManager.googleSignInClient(this)
                 .signOut()
                 .addOnCompleteListener(this, task -> onLogOutSuccess())
-                .addOnCanceledListener(this, () -> Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(this, e -> Toast.makeText(this, e.getMessage() + "Google Failed", Toast.LENGTH_SHORT).show());
+                .addOnCanceledListener(this, () -> MyToaster.getErrorToaster(this, "Canceled"))
+                .addOnFailureListener(this, e -> MyToaster.getErrorToaster(this, e.getMessage() + "Google Failed"));
     }
 
     public void onLogOutSuccess() {
@@ -169,7 +185,6 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
         Intent intent = new Intent(HomePageActivity.this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-
     }
 
     @Override
@@ -195,7 +210,7 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
             bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
             Bundle data = new Bundle();
             data.putSerializable("PostShowType", GetPostsFrom.FEED);
-            HelperUI.loadFragment(new HomeFragment(), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
+            HelperUI.loadFragment(HomeFragment.getInstance(this), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
         }
     }
 
@@ -219,21 +234,28 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
     }
 
     @Override
+    public void onLoadCommentFragment(int postId, int storyId) {
+        Bundle commentFragmentData = new Bundle();
+        commentFragmentData.putInt("storyId", storyId);
+        commentFragmentData.putInt("postId", postId);
+        HelperUI.loadFragment(new CommentFragment(), commentFragmentData, R.id.notification_fragment_container, true, true, this);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         if (!(bottomNavigationView.getSelectedItemId() == R.id.bot_nav_profile)) {
             bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
             Bundle data = new Bundle();
             data.putSerializable("PostShowType", GetPostsFrom.FEED);
-            HelperUI.loadFragment(new HomeFragment(), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
+            HelperUI.loadFragment(HomeFragment.getInstance(this), data, R.id.user_page_frg_container, false, true, HomePageActivity.this);
         }
     }
 
     @Override
     public void onPostChoose(Bundle fragmentData) {
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
-
-        HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.user_page_frg_container, false, true, this);
+        HelperUI.loadFragment(HomeFragment.getInstance(this), fragmentData, R.id.user_page_frg_container, false, true, this);
     }
 
     public void onProfileChoose() {
@@ -352,10 +374,9 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
 
     @Override
     public void onChooseLogOut() {
-        String loginType = GlobalPreferences.getLoginType(this);
-        if (loginType == null) {
-            MyToaster.getUnknownErrorToast(this);
-        } else {
+        try {
+            String loginType = GlobalPreferences.getLoginType(this);
+
             switch (loginType) {
                 case GlobalPreferences.FACEBOOK:
                     logOutFromFacebook();
@@ -368,7 +389,29 @@ public class HomePageActivity extends AppCompatActivity implements ProfileFragme
                 case GlobalPreferences.TRAVEL_GUIDE:
                     onLogOutSuccess();
                     break;
+
             }
+        } catch (Exception e) {
+            MyToaster.getUnknownErrorToast(this);
+            e.printStackTrace();
         }
+
+    }
+
+
+    @Override
+    public void onGetProfile(ProfileResponse.Userinfo userInfo) {
+        try {
+            GlobalPreferences.saveUserProfileInfo(this, userInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onAuthError(String s) {
+        Intent intent = new Intent(this, SignInActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

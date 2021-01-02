@@ -90,11 +90,6 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     private void initRecycler(List<PostResponse.Posts> posts) {
         try {
             postAdapter = new UserPostAdapter(this);
-
-//            int itemWidth = HelperMedia.getScreenWidth(getActivity());
-//            if (itemWidth != 0)
-//                postAdapter.setItemWidth(itemWidth);
-
             postAdapter.setPosts(posts);
             postsRecycler.setAdapter(postAdapter);
         } catch (Exception e) {
@@ -153,11 +148,12 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     @Override
     public void onLazyLoad(int postId) {
-        if (isCustomer) {
-            userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, postId));
-        } else {
-            userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId));
-        }
+        if (userPostPresenter != null)
+            if (isCustomer) {
+                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, postId));
+            } else {
+                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId));
+            }
     }
 
     @Override

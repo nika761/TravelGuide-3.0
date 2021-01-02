@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import java.util.Calendar;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.callback.AskingDialogResultCallback;
 
 public class DialogManager {
 
@@ -75,6 +76,22 @@ public class DialogManager {
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+        }
+
+        dialog.show();
+    }
+
+    public static void getAskingDialog(Context context, String question, AskingDialogResultCallback callback) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(question)
+                .setPositiveButton(context.getString(R.string.yes), (dialog, which) -> callback.onYes())
+                .setNegativeButton(context.getString(R.string.no), (dialog, which) -> dialog.dismiss())
+                .create();
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_sign_out_dialog, null));
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
 

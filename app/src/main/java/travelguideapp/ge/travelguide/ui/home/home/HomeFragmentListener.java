@@ -14,30 +14,39 @@ public interface HomeFragmentListener {
 
     void stopLoader();
 
+
     void onStoryLikeChoose(int postId, int storyId);
 
-    void onStoryLiked(SetStoryLikeResponse setStoryLikeResponse);
+    void onStoryLiked();
+
+    void onStoryUnLiked();
+
 
     void onGetPosts(List<PostResponse.Posts> posts);
 
-
     void onLocationChoose(int postId, SearchPostBy searchPostBy);
+
 
     void onFollowChoose(int userId);
 
-    void onFollowSuccess(FollowResponse followResponse);
+    void onFollowAdded();
+
+    void onFollowRemoved();
 
 
     void onFavoriteChoose(int post_id);
 
-    void onFavoriteSuccess(SetPostFavoriteResponse setPostFavoriteResponse);
+    void onFavoriteAdded();
+
+    void onFavoriteRemoved();
 
 
     void onGoChoose(String url);
 
+
     void onShareChoose(String postLink, int post_id);
 
-    void onShareSuccess(SharePostResponse sharePostResponse);
+    void onShared(SharePostResponse sharePostResponse);
 
 
     void onCommentChoose(int storyId, int postId);
@@ -56,6 +65,5 @@ public interface HomeFragmentListener {
 
 
     void onAuthError(String message);
-
 
 }

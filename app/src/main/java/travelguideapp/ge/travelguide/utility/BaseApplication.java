@@ -1,10 +1,12 @@
 package travelguideapp.ge.travelguide.utility;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.RingtoneManager;
@@ -29,10 +31,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by n.butskhrikidze on 01/07/2020.
+ * <p>
+ * დასაბამიდან იყო სიტყვა, და სიტყვა იყო ღმერთთან და ღმერთი იყო სიტყვა.
+ * In the beginning was the Word, and the Word was with God, and the Word was God.
+ * <p>
+ */
+
 public class BaseApplication extends Application {
 
     public static final String CHANNEL_ID = "uploading";
     public static final String CHANNEL_NAME = "upload_post";
+
+    public static final int SHARING_INTENT_REQUEST_CODE = 500;
 
     public static int CROP_OPTION_X;
     public static int CROP_OPTION_Y;
@@ -124,5 +136,12 @@ public class BaseApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void shareContent(Activity activity, String content) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
+        activity.startActivityForResult(sharingIntent, SHARING_INTENT_REQUEST_CODE);
     }
 }

@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.home.home;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
@@ -24,11 +26,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragmentPresenter {
-    private HomeFragmentListener homeFragmentListener;
-    private ApiService apiService;
+    private final HomeFragmentListener homeFragmentCallback;
+    private final ApiService apiService;
 
     HomeFragmentPresenter(HomeFragmentListener homeFragmentListener) {
-        this.homeFragmentListener = homeFragmentListener;
+        this.homeFragmentCallback = homeFragmentListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
@@ -40,25 +42,25 @@ public class HomeFragmentPresenter {
                     switch (response.body().getStatus()) {
                         case -100:
                         case -101:
-                            homeFragmentListener.onAuthError("Sign In Again");
+                            homeFragmentCallback.onAuthError("Sign In Again");
                             break;
 
                         case 0:
                             if (response.body().getPosts() != null) {
                                 if (response.body().getPosts().size() > 0) {
-                                    homeFragmentListener.onGetPosts(response.body().getPosts());
+                                    homeFragmentCallback.onGetPosts(response.body().getPosts());
                                 }
                             }
                             break;
                     }
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
     }
@@ -70,18 +72,18 @@ public class HomeFragmentPresenter {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0)
-                            homeFragmentListener.onGetPosts(response.body().getPosts());
+                            homeFragmentCallback.onGetPosts(response.body().getPosts());
                     } else {
-                        homeFragmentListener.onError(response.message());
+                        homeFragmentCallback.onError(response.message());
                     }
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
     }
@@ -93,17 +95,17 @@ public class HomeFragmentPresenter {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0)
-                            homeFragmentListener.onGetPosts(response.body().getPosts());
+                            homeFragmentCallback.onGetPosts(response.body().getPosts());
                     } else
-                        homeFragmentListener.onError(response.message() + response.body().getStatus());
+                        homeFragmentCallback.onError(response.message() + response.body().getStatus());
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
     }
@@ -114,16 +116,27 @@ public class HomeFragmentPresenter {
             public void onResponse(Call<SetStoryLikeResponse> call, Response<SetStoryLikeResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        homeFragmentListener.onStoryLiked(response.body());
+                        try {
+                            switch (response.body().getStatus()) {
+                                case 0:
+                                    homeFragmentCallback.onStoryLiked();
+                                case 1:
+                                    homeFragmentCallback.onStoryUnLiked();
+                                    break;
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<SetStoryLikeResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
     }
@@ -134,16 +147,26 @@ public class HomeFragmentPresenter {
             public void onResponse(Call<SetPostFavoriteResponse> call, Response<SetPostFavoriteResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        homeFragmentListener.onFavoriteSuccess(response.body());
+                        try {
+                            switch (response.body().getStatus()) {
+                                case 0:
+                                    homeFragmentCallback.onFavoriteAdded();
+                                case 1:
+                                    homeFragmentCallback.onFavoriteRemoved();
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<SetPostFavoriteResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
     }
@@ -154,16 +177,27 @@ public class HomeFragmentPresenter {
             public void onResponse(Call<SharePostResponse> call, Response<SharePostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        homeFragmentListener.onShareSuccess(response.body());
+                        try {
+                            switch (response.body().getStatus()) {
+                                case 0:
+                                    homeFragmentCallback.onShared(response.body());
+                                    break;
+                                case 1:
+                                    /*Not shared status from response*/
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<SharePostResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
     }
@@ -174,16 +208,27 @@ public class HomeFragmentPresenter {
             public void onResponse(Call<FollowResponse> call, Response<FollowResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        homeFragmentListener.onFollowSuccess(response.body());
+                        try {
+                            switch (response.body().getStatus()) {
+                                case 0:
+                                    homeFragmentCallback.onFollowAdded();
+                                case 1:
+                                    homeFragmentCallback.onFollowRemoved();
+                                    break;
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<FollowResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
 
@@ -195,16 +240,16 @@ public class HomeFragmentPresenter {
             public void onResponse(Call<DeleteStoryResponse> call, Response<DeleteStoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
-                        homeFragmentListener.onStoryDeleted(response.body());
+                        homeFragmentCallback.onStoryDeleted(response.body());
                     }
                 } else {
-                    homeFragmentListener.onError(response.message());
+                    homeFragmentCallback.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<DeleteStoryResponse> call, Throwable t) {
-                homeFragmentListener.onError(t.getMessage());
+                homeFragmentCallback.onError(t.getMessage());
             }
         });
     }
@@ -212,7 +257,7 @@ public class HomeFragmentPresenter {
     void setPostViews(String accessToken, SetPostViewRequest setPostViewRequest) {
         apiService.setPostView(accessToken, setPostViewRequest).enqueue(new Callback<SetPostViewResponse>() {
             @Override
-            public void onResponse(Call<SetPostViewResponse> call, Response<SetPostViewResponse> response) {
+            public void onResponse(@NotNull Call<SetPostViewResponse> call, @NotNull Response<SetPostViewResponse> response) {
 //                if (response.isSuccessful()) {
 //                    Log.e("sadzxccxbv", "sworia bliad" + response.code());
 //                    Log.e("sadzxccxbv", "sworia bliad" + response.body().getStatus());
@@ -222,8 +267,8 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<SetPostViewResponse> call, Throwable t) {
-//                Log.e("sadzxccxbv", t.getMessage());
+            public void onFailure(@NotNull Call<SetPostViewResponse> call, @NotNull Throwable t) {
+
             }
         });
     }

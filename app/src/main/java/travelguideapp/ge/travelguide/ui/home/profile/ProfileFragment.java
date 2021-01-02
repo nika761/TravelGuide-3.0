@@ -27,7 +27,10 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.callback.AskingDialogResultCallback;
+import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
@@ -37,8 +40,10 @@ import travelguideapp.ge.travelguide.ui.home.profile.favorites.FavoritePostFragm
 import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.tours.UserToursFragment;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
+import travelguideapp.ge.travelguide.utility.BaseApplication;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.HelperUI;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -159,8 +164,17 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showLoader(true);
-        presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+        getProfileInfo();
+    }
+
+    private void getProfileInfo() {
+        if (GlobalPreferences.getUserProfileInfo(context) != null) {
+            this.userInfo = GlobalPreferences.getUserProfileInfo(context);
+            onGetProfile(this.userInfo);
+        } else {
+            showLoader(true);
+            presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+        }
     }
 
     @Override
@@ -174,10 +188,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         switch (item.getItemId()) {
             case R.id.settings_share_profile:
                 try {
-                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, userInfo.getShare_profile());
-                    startActivityForResult(sharingIntent, 500);
+                    BaseApplication.shareContent((Activity) context, userInfo.getShare_profile());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -212,21 +223,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     };
 
     private void logOutDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Sign out ?")
-                .setPositiveButton(getString(R.string.yes), (dialog, which) -> callBack.onChooseLogOut())
-                .setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss())
-                .create();
-
-        AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(context.getResources().getDrawable(R.drawable.bg_sign_out_dialog, null));
-            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
-        }
-
-        dialog.show();
-
+        DialogManager.getAskingDialog(context, getString(R.string.sign_out), () -> callBack.onChooseLogOut());
     }
 
     @Override
@@ -268,7 +265,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onGetError(String message) {
         showLoader(false);
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(context, message);
     }
 
     private void showLoader(boolean show) {

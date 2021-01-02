@@ -22,6 +22,7 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
 import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
 import travelguideapp.ge.travelguide.ui.home.home.HomeFragment;
@@ -42,13 +43,15 @@ import travelguideapp.ge.travelguide.ui.home.profile.tours.UserToursFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CustomerProfileActivity extends AppCompatActivity implements CustomerProfileListener, ProfileFragment.OnPostChooseListener, View.OnClickListener {
+public class CustomerProfileActivity extends AppCompatActivity implements CustomerProfileListener, ProfileFragment.OnPostChooseListener, HomeFragment.LoadCommentFragmentListener, View.OnClickListener {
 
     private CustomerProfilePresenter customerProfilePresenter;
 
     private TextView userName, nickName, following, follower, reaction, bio, bioBtn, followBtn;
     private FrameLayout loaderContainer;
-    private ConstraintLayout fragmentContainer;
+    private FrameLayout fragmentContainerMain;
+    private ConstraintLayout postFragmentContainer;
+    private ConstraintLayout commentFragmentContainer;
     private LinearLayout bioContainer;
     private LottieAnimationView lottieLoader;
     private CircleImageView image;
@@ -92,7 +95,9 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         ViewPager viewPager = findViewById(R.id.customer_view_pager);
         TabLayout tabLayout = findViewById(R.id.customer_profile_tab);
 
-        fragmentContainer = findViewById(R.id.customer_profile_post_container);
+        postFragmentContainer = findViewById(R.id.customer_profile_post_container);
+        commentFragmentContainer = findViewById(R.id.customer_comments_container);
+        fragmentContainerMain = findViewById(R.id.customer_profile_fragment_container);
 
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
         profilePagerAdapter.setCustomerUserId(customerUserId);
@@ -133,7 +138,17 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
 
     public void loadCommentFragment(int storyId, int postId) {
+        postFragmentContainer.setVisibility(View.VISIBLE);
+        Bundle commentFragmentData = new Bundle();
+        commentFragmentData.putInt("storyId", storyId);
+        commentFragmentData.putInt("postId", postId);
 
+        HelperUI.loadFragment(new CommentFragment(), commentFragmentData, R.id.customer_comments_container, true, true, this);
+
+    }
+
+    @Override
+    public void onLoadCommentFragment(int postId, int storyId) {
         Bundle commentFragmentData = new Bundle();
         commentFragmentData.putInt("storyId", storyId);
         commentFragmentData.putInt("postId", postId);
@@ -188,8 +203,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     public void onError(String message) {
         loaderContainer.setVisibility(View.GONE);
         lottieLoader.setVisibility(View.GONE);
-
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(this, message);
     }
 
     @Override
@@ -213,7 +227,6 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
                 onBackPressed();
                 finish();
                 break;
-
 
             case R.id.customer_profile_report:
                 break;
@@ -241,19 +254,8 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onPostChoose(Bundle fragmentData) {
-        fragmentContainer.setVisibility(View.VISIBLE);
-        HelperUI.loadFragment(new HomeFragment(), fragmentData, R.id.customer_profile_post_container, true, true, this);
-    }
-
-    @Override
-    protected void onResume() {
-        Log.e("lifes", "resumed");
-        super.onResume();
-        try {
-            fragmentContainer.setVisibility(View.GONE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        fragmentContainerMain.setVisibility(View.VISIBLE);
+        HelperUI.loadFragment(HomeFragment.getInstance(this), fragmentData, R.id.customer_profile_post_container, true, true, this);
     }
 
     @Override
@@ -266,8 +268,8 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             try {
-                if (fragmentContainer.getVisibility() == View.VISIBLE) {
-                    fragmentContainer.setVisibility(View.GONE);
+                if (fragmentContainerMain.getVisibility() == View.VISIBLE) {
+                    fragmentContainerMain.setVisibility(View.GONE);
                 } else {
                     onBackPressed();
                 }
@@ -277,5 +279,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 }
 

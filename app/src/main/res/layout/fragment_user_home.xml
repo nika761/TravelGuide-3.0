@@ -40,7 +40,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="@color/splashScreenBackground"
-            android:padding="20dp"
             android:visibility="visible">
 
             <com.airbnb.lottie.LottieAnimationView
@@ -57,6 +56,7 @@
                 app:lottie_rawRes="@raw/loading_yellow" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </FrameLayout>
 

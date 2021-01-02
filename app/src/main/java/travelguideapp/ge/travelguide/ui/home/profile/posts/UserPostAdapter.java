@@ -44,13 +44,6 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     }
 
     public void setPosts(List<PostResponse.Posts> posts) {
-//        if (this.posts != null && this.posts.size() != 0) {
-//            this.posts.addAll(posts);
-//            notifyDataSetChanged();
-//        } else {
-//            this.posts = posts;
-//            notifyDataSetChanged();
-//        }
         this.posts = posts;
         notifyDataSetChanged();
     }

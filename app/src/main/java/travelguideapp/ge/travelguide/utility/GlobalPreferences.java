@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
 import travelguideapp.ge.travelguide.model.response.LoginResponse;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -38,7 +39,6 @@ public class GlobalPreferences {
 //        GOOGLE, FACEBOOK, TRAVEL_GUIDE
 //    }
 
-    /// User Role
 
     private static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences(TRAVEL_GUIDE_PREFERENCES, Context.MODE_PRIVATE);
@@ -47,6 +47,8 @@ public class GlobalPreferences {
     private static SharedPreferences getLanguagePref(Context context) {
         return context.getSharedPreferences(LANGUAGE_PREFERENCES, Context.MODE_PRIVATE);
     }
+
+    /// User Role
 
     public static void saveUserRole(Context context, int userRole) {
         getPref(context).edit().putInt(USER_ROLE_KEY, userRole).apply();
@@ -200,14 +202,11 @@ public class GlobalPreferences {
     }
 
     public static void saveUserProfileInfo(Context context, ProfileResponse.Userinfo userinfo) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(TRAVEL_GUIDE_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(PROFILE_KEY, new Gson().toJson(userinfo));
-        editor.apply();
+        getPref(context).edit().putString(PROFILE_KEY, new Gson().toJson(userinfo)).apply();
     }
 
     public static ProfileResponse.Userinfo getUserProfileInfo(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(TRAVEL_GUIDE_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPref(context);
         Gson gson = new Gson();
         return gson.fromJson(sharedPreferences.getString(PROFILE_KEY, null), ProfileResponse.Userinfo.class);
     }

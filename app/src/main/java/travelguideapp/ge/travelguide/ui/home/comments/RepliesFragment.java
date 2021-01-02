@@ -18,8 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentReplyRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteReplyRequest;
@@ -30,6 +33,7 @@ import travelguideapp.ge.travelguide.model.response.CommentResponse;
 import travelguideapp.ge.travelguide.model.response.DeleteReplyResponse;
 import travelguideapp.ge.travelguide.model.response.LikeCommentReplyResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
+
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import java.util.List;
@@ -195,14 +199,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onChooseDelete(int replyId) {
-
-        AlertDialog alertDialog = new AlertDialog.Builder(likeBtn.getContext())
-                .setTitle(getString(R.string.delete_comment))
-                .setPositiveButton(getString(R.string.yes), (dialog, which) -> presenter.deleteCommentReply(GlobalPreferences.getAccessToken(commentBody.getContext()), new DeleteReplyRequest(replyId)))
-                .setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss())
-                .create();
-        alertDialog.show();
-
+        DialogManager.getAskingDialog(likeBtn.getContext(), getString(R.string.delete_comment), () -> presenter.deleteCommentReply(GlobalPreferences.getAccessToken(commentBody.getContext()), new DeleteReplyRequest(replyId)));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.helper;
 
 import android.os.Build;
+import android.text.format.DateFormat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,12 @@ public class HelperDate {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMilli);
         return getDateStringFormat(cal);
+    }
+
+    public static String getDateFromMillis(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time * 1000);
+        return DateFormat.format("dd-MM-yyyy", calendar).toString();
     }
 
     public static Calendar getCalFromDate(int year, int month, int dayOfMonth) {

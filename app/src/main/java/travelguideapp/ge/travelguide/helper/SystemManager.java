@@ -29,8 +29,7 @@ public class SystemManager {
     }
 
     public static void requestReadStoragePermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                READ_EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE);
     }
 
     public static boolean isWriteStoragePermission(Activity activity) {
@@ -43,8 +42,7 @@ public class SystemManager {
     }
 
     public static void requestWriteStoragePermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                WRITE_EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
     }
 
     public static boolean isCameraPermission(Activity activity){
@@ -57,8 +55,7 @@ public class SystemManager {
     }
 
     public static void requestCameraPermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA},
-                CAMERA);
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, CAMERA);
     }
 
     public static boolean checkNetworkConnection(Context context) {

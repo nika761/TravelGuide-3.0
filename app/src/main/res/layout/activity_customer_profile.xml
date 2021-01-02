@@ -303,24 +303,33 @@
 
     </FrameLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/customer_profile_post_container"
+    <FrameLayout
+        android:id="@+id/customer_profile_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contextClickable="true"
         android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/customer_comments_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="4:5.5"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:id="@+id/customer_profile_post_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contextClickable="true"
+            android:visibility="visible">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/customer_comments_container"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:contextClickable="true"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="4:5.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
