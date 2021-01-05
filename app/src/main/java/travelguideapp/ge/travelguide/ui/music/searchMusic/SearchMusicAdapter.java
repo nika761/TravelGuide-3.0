@@ -128,32 +128,39 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.item_music_favorite:
-                    if (musics.get(getLayoutPosition()).getIs_favorite() == 0) {
-                        favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-                        musics.get(getLayoutPosition()).setIs_favorite(1);
-                    } else {
-                        favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
-                        musics.get(getLayoutPosition()).setIs_favorite(0);
+                    try {
+                        if (musics.get(getLayoutPosition()).getIs_favorite() == 0) {
+                            favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+                            musics.get(getLayoutPosition()).setIs_favorite(1);
+                        } else {
+                            favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
+                            musics.get(getLayoutPosition()).setIs_favorite(0);
+                        }
+                        searchMusicListener.onFavoriteChoose(musics.get(getLayoutPosition()).getMusic_id());
+                        notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    searchMusicListener.onFavoriteChoose(musics.get(getLayoutPosition()).getMusic_id());
-                    notifyDataSetChanged();
                     break;
 
                 case R.id.item_play_music:
-                    if (playingPosition == getLayoutPosition()) {
-                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
-                        playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
-                        playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                        playMusicListener.onChooseMusicForPost(0);
-                        playingPosition = -1;
+                    try {
+                        if (playingPosition == getLayoutPosition()) {
+                            container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
+                            playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+                            playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                            playMusicListener.onChooseMusicForPost(0);
+                            playingPosition = -1;
+                        } else {
+                            container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
+                            playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+                            playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                            playMusicListener.onChooseMusicForPost(musics.get(getLayoutPosition()).getMusic_id());
+                            playingPosition = getLayoutPosition();
+                        }
                         notifyDataSetChanged();
-                    } else {
-                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
-                        playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-                        playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                        playMusicListener.onChooseMusicForPost(musics.get(getLayoutPosition()).getMusic_id());
-                        playingPosition = getLayoutPosition();
-                        notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     break;
             }

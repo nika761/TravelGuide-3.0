@@ -8,6 +8,7 @@ import travelguideapp.ge.travelguide.model.request.AddFavoriteMusic;
 import travelguideapp.ge.travelguide.model.request.AuthWitFirebaseRequest;
 import travelguideapp.ge.travelguide.model.request.ByMoodRequest;
 import travelguideapp.ge.travelguide.model.request.ChangeLangRequest;
+import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.CommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteReplyRequest;
@@ -134,7 +135,7 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("set/post_story_view")
     Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
-                                @Body SetPostViewRequest setPostViewRequest);
+                                          @Body SetPostViewRequest setPostViewRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/get_posts")
@@ -159,6 +160,11 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("get/musics")
     Call<MusicResponse> getMusics(@Header("Authorization") String token);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_go_click")
+    Call<Object> chooseGo(@Header("Authorization") String token,
+                           @Body ChooseGoRequest chooseGoRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/favorite_music")

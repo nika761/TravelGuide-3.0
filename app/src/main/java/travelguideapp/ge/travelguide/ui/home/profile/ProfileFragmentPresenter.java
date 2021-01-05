@@ -1,5 +1,8 @@
 package travelguideapp.ge.travelguide.ui.home.profile;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
@@ -10,8 +13,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 class ProfileFragmentPresenter {
-    private ProfileFragmentListener profileFragmentListener;
-    private ApiService apiService;
+    private final ProfileFragmentListener profileFragmentListener;
+    private final ApiService apiService;
 
     ProfileFragmentPresenter(ProfileFragmentListener profileFragmentListener) {
         this.profileFragmentListener = profileFragmentListener;
@@ -27,7 +30,7 @@ class ProfileFragmentPresenter {
                         switch (response.body().getStatus()) {
                             case -100:
                             case -101:
-                                profileFragmentListener.onAuthError("Sign In Again");
+                                profileFragmentListener.onAuthenticationError("Sign In Again");
                                 break;
 
                             case 0:
@@ -35,15 +38,20 @@ class ProfileFragmentPresenter {
                                 break;
                         }
                     } else
-                        profileFragmentListener.onGetError(String.valueOf(response.body().getStatus()));
+                        profileFragmentListener.onError(String.valueOf(response.body().getStatus()));
                 } else {
-                    profileFragmentListener.onGetError(response.message());
+                    profileFragmentListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
-                profileFragmentListener.onGetError(t.getMessage());
+//                if (t instanceof UnknownHostException) {
+//                    profileFragmentListener.onConnectionError();
+//                } else {
+//                    profileFragmentListener.onError(t.getMessage());
+//                }
+                profileFragmentListener.onError(t.getMessage());
             }
         });
     }

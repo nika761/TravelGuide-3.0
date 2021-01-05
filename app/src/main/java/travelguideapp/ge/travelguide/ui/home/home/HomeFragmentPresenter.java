@@ -1,7 +1,10 @@
 package travelguideapp.ge.travelguide.ui.home.home;
 
+import android.util.Log;
+
 import org.jetbrains.annotations.NotNull;
 
+import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
@@ -35,6 +38,7 @@ public class HomeFragmentPresenter {
     }
 
     void getPosts(String accessToken, PostRequest postRequest) {
+        Log.e("postascxvx", "aq shemovida ");
         apiService.getPosts(accessToken, postRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -268,6 +272,25 @@ public class HomeFragmentPresenter {
 
             @Override
             public void onFailure(@NotNull Call<SetPostViewResponse> call, @NotNull Throwable t) {
+
+            }
+        });
+    }
+
+    void goChoosed(String accessToken, ChooseGoRequest chooseGoRequest) {
+        apiService.chooseGo(accessToken, chooseGoRequest).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
+//                if (response.isSuccessful()) {
+//                    Log.e("sadzxccxbv", "sworia bliad" + response.code());
+//                    Log.e("sadzxccxbv", "sworia bliad" + response.body().getStatus());
+//                } else {
+//                    Log.e("sadzxccxbv", response.message());
+//                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<Object> call, @NotNull Throwable t) {
 
             }
         });

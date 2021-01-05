@@ -2,6 +2,7 @@ package travelguideapp.ge.travelguide.ui.home.profile.posts;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragment;
 
 import java.io.Serializable;
 import java.util.List;
+
+import static travelguideapp.ge.travelguide.utility.BaseApplication.POST_PER_PAGE_SIZE;
 
 public class UserPostsFragment extends Fragment implements UserPostListener {
 
@@ -87,10 +90,11 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     }
 
-    private void initRecycler(List<PostResponse.Posts> posts) {
+    private void initRecycler(List<PostResponse.Posts> posts, boolean canLazyLoad) {
         try {
             postAdapter = new UserPostAdapter(this);
             postAdapter.setPosts(posts);
+            postAdapter.setCanLazyLoad(canLazyLoad);
             postsRecycler.setAdapter(postAdapter);
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,7 +126,11 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     public void onGetPosts(List<PostResponse.Posts> posts) {
         try {
             if (postAdapter == null) {
-                initRecycler(posts);
+                if (posts.size() < POST_PER_PAGE_SIZE) {
+                    initRecycler(posts, false);
+                } else {
+                    initRecycler(posts, true);
+                }
                 this.posts = posts;
             } else {
                 this.posts.addAll(posts);
@@ -142,8 +150,18 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
     }
 
     @Override
-    public void onGetPostsError(String message) {
+    public void onError(String message) {
         MyToaster.getErrorToaster(getContext(), message);
+    }
+
+    @Override
+    public void onAuthenticationError(String message) {
+        /*Supposedly TO-DO : Error when auth, redirect to sign page **/
+    }
+
+    @Override
+    public void onConnectionError() {
+        /*Supposedly TO-DO : No internet connection toast **/
     }
 
     @Override

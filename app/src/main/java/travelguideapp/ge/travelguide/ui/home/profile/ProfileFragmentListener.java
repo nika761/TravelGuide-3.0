@@ -2,12 +2,8 @@ package travelguideapp.ge.travelguide.ui.home.profile;
 
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 
-public interface ProfileFragmentListener {
+public interface ProfileFragmentListener extends BaseListener {
 
     void onGetProfile(ProfileResponse.Userinfo userInfo);
-
-    void onAuthError(String message);
-
-    void onGetError(String message);
 
 }

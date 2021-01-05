@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
+import travelguideapp.ge.travelguide.utility.BaseApplication;
 
 import java.util.List;
 
 public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.PostLocationHolder> {
     private List<PostResponse.Posts> posts;
     private int itemWidth;
-
 
     SearchPostAdapter(List<PostResponse.Posts> posts) {
         this.posts = posts;
@@ -32,10 +32,14 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Po
 
     @Override
     public void onBindViewHolder(@NonNull PostLocationHolder holder, int position) {
-        holder.postImage.getLayoutParams().width = itemWidth;
-        HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
-        holder.nickName.setText(posts.get(position).getNickname());
-        holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
+        try {
+            holder.postImage.getLayoutParams().width = BaseApplication.ITEM_WIDTH_FOR_POSTS;
+            HelperMedia.loadPhoto(holder.postImage.getContext(), posts.get(position).getCover(), holder.postImage);
+            holder.nickName.setText(posts.get(position).getNickname());
+            holder.reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

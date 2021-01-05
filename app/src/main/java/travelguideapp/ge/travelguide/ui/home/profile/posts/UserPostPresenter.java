@@ -11,8 +11,8 @@ import retrofit2.Response;
 
 class UserPostPresenter {
 
-    private UserPostListener userPostListener;
-    private ApiService apiService;
+    private final UserPostListener userPostListener;
+    private final ApiService apiService;
 
     UserPostPresenter(UserPostListener userPostListener) {
         this.userPostListener = userPostListener;
@@ -28,16 +28,16 @@ class UserPostPresenter {
                         if (response.body().getPosts().size() > 0)
                             userPostListener.onGetPosts(response.body().getPosts());
                     } else {
-                        userPostListener.onGetPostsError(response.message());
+                        userPostListener.onError(response.message());
                     }
                 } else {
-                    userPostListener.onGetPostsError(response.message());
+                    userPostListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                userPostListener.onGetPostsError(t.getMessage());
+                userPostListener.onError(t.getMessage());
             }
         });
     }

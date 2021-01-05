@@ -7,17 +7,23 @@ import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
-import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragmentListener;
 
 public class HomePagePresenter {
 
-    private final HomePageListener homePageListener;
-    private final ApiService apiService;
+    private HomePageListener homePageListener;
+    private ApiService apiService;
 
-    HomePagePresenter(HomePageListener homePageListener) {
-        this.homePageListener = homePageListener;
-        this.apiService = RetrofitManager.getApiService();
+    public static HomePagePresenter getInstance(HomePageListener homePageListener) {
+        HomePagePresenter homePagePresenter = new HomePagePresenter();
+        homePagePresenter.homePageListener = homePageListener;
+        homePagePresenter.apiService = RetrofitManager.getApiService();
+        return homePagePresenter;
     }
+
+//    HomePagePresenter(HomePageListener homePageListener) {
+//        this.homePageListener = homePageListener;
+//        this.apiService = RetrofitManager.getApiService();
+//    }
 
     void getProfile(String accessToken, ProfileRequest profileRequest) {
         apiService.getProfile(accessToken, profileRequest).enqueue(new Callback<ProfileResponse>() {
@@ -28,7 +34,7 @@ public class HomePagePresenter {
                         switch (response.body().getStatus()) {
                             case -100:
                             case -101:
-                                homePageListener.onAuthError("Sign In Again");
+                                homePageListener.onAuthenticationError("Sign In Again");
                                 break;
 
                             case 0:

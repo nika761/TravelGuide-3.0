@@ -69,6 +69,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
     private ProfileFragmentPresenter presenter;
     private String userName;
+    private boolean isOnCreate = true;
     private Context context;
 
     private ProfileResponse.Userinfo userInfo;
@@ -251,7 +252,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     }
 
     @Override
-    public void onAuthError(String message) {
+    public void onAuthenticationError(String message) {
         try {
             MyToaster.getErrorToaster(getContext(), message);
             Intent intent = new Intent(getContext(), SignInActivity.class);
@@ -263,7 +264,12 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     }
 
     @Override
-    public void onGetError(String message) {
+    public void onConnectionError() {
+        MyToaster.getErrorToaster(context, getString(R.string.no_internet_connection));
+    }
+
+    @Override
+    public void onError(String message) {
         showLoader(false);
         MyToaster.getErrorToaster(context, message);
     }
@@ -281,8 +287,11 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)
-            presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+        if (!isOnCreate) {
+            if (presenter != null)
+                presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+        }
+        isOnCreate = false;
     }
 
     private void showBiography(boolean show) {

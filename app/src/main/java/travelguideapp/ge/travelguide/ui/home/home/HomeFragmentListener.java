@@ -26,6 +26,8 @@ public interface HomeFragmentListener {
 
     void onLocationChoose(int postId, SearchPostBy searchPostBy);
 
+    void onHashtagChoose(String hashtag, SearchPostBy searchPostBy);
+
 
     void onFollowChoose(int userId);
 
@@ -41,7 +43,7 @@ public interface HomeFragmentListener {
     void onFavoriteRemoved();
 
 
-    void onGoChoose(String url);
+    void onGoChoose(String url, int post_id);
 
 
     void onShareChoose(String postLink, int post_id);

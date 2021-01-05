@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.ClientManager;
@@ -32,6 +33,7 @@ import travelguideapp.ge.travelguide.model.request.UploadPostRequest;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.HashtagAdapter;
 import travelguideapp.ge.travelguide.ui.upload.tag.TagPostActivity;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -77,7 +79,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     private String address, addressName, latLng, description, videoHeight, videoWidht;
     private int musicId;
 
-    private boolean hasPermission = false;
+    private boolean hasPermisPsion = false;
 
 
     @Override
@@ -87,8 +89,6 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         getExtras();
         initUI();
         initHashtagRecycler();
-
-
     }
 
     private void getExtras() {
@@ -168,13 +168,13 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
 
     private void getLoader(boolean show) {
         if (show) {
-            uploadBtn.setClickable(false);
             loader.setVisibility(View.VISIBLE);
             loaderContainer.setVisibility(View.VISIBLE);
+            uploadBtn.setClickable(false);
         } else {
-            uploadBtn.setClickable(true);
             loader.setVisibility(View.GONE);
             loaderContainer.setVisibility(View.GONE);
+            uploadBtn.setClickable(true);
         }
     }
 
@@ -191,19 +191,6 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
             getLoader(false);
             e.printStackTrace();
         }
-//        try {
-//            if (itemMedia.get(0).getType() == 0) {
-//                if (SystemManager.isWriteStoragePermission(this)) {
-//                    startUpload();
-//                } else {
-//                    SystemManager.requestWriteStoragePermission(this);
-//                }
-//            } else {
-//                startUpload();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
 
@@ -233,14 +220,12 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     }
 
     public void startUpload() {
-        if (itemMedia.get(0).getType() == 0) {
-            List<ItemMedia> convertedImages = HelperMedia.convertImagesToPng(itemMedia);
-            if (convertedImages != null) {
+        try {
+            if (itemMedia.get(0).getType() == 0) {
+                List<ItemMedia> convertedImages = HelperMedia.convertImagesToPng(itemMedia);
                 fileForUpload = new File(convertedImages.get(0).getPath());
-                uploadPostPresenter.uploadToS3(ClientManager.transferObserver(this, fileForUpload));
-            }
-        } else {
-            fileForUpload = new File(itemMedia.get(0).getPath());
+            } else {
+                fileForUpload = new File(itemMedia.get(0).getPath());
 //            try {
 //                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 //                retriever.setDataSource(itemMedia.get(0).getPath());
@@ -254,8 +239,14 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
 //            } catch (Exception e) {
 //                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
 //            }
+            }
             uploadPostPresenter.uploadToS3(ClientManager.transferObserver(this, fileForUpload));
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLoader(false);
+            finish();
         }
+
     }
 
     private void onGetAddLocationResult(Intent data, int resultCode) {
@@ -285,7 +276,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                 case RESULT_CANCELED:
                 case AutocompleteActivity.RESULT_ERROR:
                     Status status = Autocomplete.getStatusFromIntent(data);
-                    Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+                    MyToaster.getErrorToaster(this, status.getStatusMessage());
                     break;
             }
         }
@@ -323,9 +314,10 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                     try {
                         int friendsId = data.getIntExtra("friend_id", 0);
                         String friendName = data.getStringExtra("friend_name");
-                        this.users.add(friendsId);
 
+                        this.users.add(friendsId);
                         this.hashs.add(friendName);
+
                         if (hashs.size() > 0) {
                             setTagRecycler(true);
                             hashtagAdapter.setHashs(hashs);
@@ -362,15 +354,14 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == SystemManager.WRITE_EXTERNAL_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLoader(true);
                 startUpload();
             } else {
-                Toast.makeText(this, "Without Permission You Can't Upload Photo", Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, "Without Permission You Can't Upload Photo");
             }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -400,6 +391,8 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
 
         } catch (Exception e) {
             e.printStackTrace();
+            getLoader(false);
+            finish();
         }
 
     }

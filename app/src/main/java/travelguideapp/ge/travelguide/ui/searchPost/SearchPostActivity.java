@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.SearchPostBy;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
@@ -40,14 +41,12 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
         initUI();
 
         switch (type) {
-
             case LOCATION:
                 searchPostPresenter.getPostsByLocation(GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
                 break;
             case HASHTAG:
                 searchPostPresenter.getPostsByHashtag(GlobalPreferences.getAccessToken(this), new PostByHashtagRequest(hashtag));
                 break;
-
         }
     }
 
@@ -56,7 +55,6 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
 
         ImageButton backBtn = findViewById(R.id.posts_by_location_back_btn);
         backBtn.setOnClickListener(v -> finish());
-
     }
 
     private void getExtras() {
@@ -67,31 +65,33 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
 
     @Override
     public void onGetPosts(PostResponse postResponse) {
-        switch (type) {
-            case LOCATION:
-                if (postResponse.getPosts() != null)
-                    if (postResponse.getPosts().size() != 0)
-                        head.setText(postResponse.getPosts().get(0).getPost_locations().get(0).getAddress());
-                break;
+        try {
+            switch (type) {
+                case LOCATION:
+                    if (postResponse.getPosts() != null)
+                        if (postResponse.getPosts().size() != 0)
+                            head.setText(postResponse.getPosts().get(0).getPost_locations().get(0).getAddress());
+                    break;
 
-            case HASHTAG:
-                head.setText(hashtag);
-                break;
+                case HASHTAG:
+                    head.setText(hashtag);
+                    break;
+            }
+
+            SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts());
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+            RecyclerView recyclerView = findViewById(R.id.posts_by_location_recycler);
+            recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts());
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
-        int itemWidth = HelperMedia.getScreenWidth(this);
-        if (itemWidth != 0)
-            adapter.setItemWidth(itemWidth);
-        RecyclerView recyclerView = findViewById(R.id.posts_by_location_recycler);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onGetPostError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(this, message);
     }
 
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -21,6 +22,7 @@ import travelguideapp.ge.travelguide.model.request.SearchFollowersRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
+
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import java.util.List;
@@ -106,15 +108,14 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
     @Override
     public void onGetHashtags(List<HashtagResponse.Hashtags> hashtags) {
         try {
+            loader.setVisibility(View.GONE);
             if (hashtags == null || hashtags.size() == 0) {
                 searchBtn.setText("Add Hashtag");
-                loader.setVisibility(View.GONE);
             } else {
                 searchBtn.setText("Search");
                 AddTagAdapter addTagAdapter = new AddTagAdapter(this);
                 addTagAdapter.setHashtags(hashtags);
                 recyclerView.setAdapter(addTagAdapter);
-                loader.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             e.printStackTrace();

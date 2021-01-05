@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
@@ -31,6 +32,7 @@ import travelguideapp.ge.travelguide.model.request.SignUpRequest;
 import travelguideapp.ge.travelguide.model.response.CheckNickResponse;
 import travelguideapp.ge.travelguide.model.response.SignUpResponse;
 import travelguideapp.ge.travelguide.helper.HelperUI;
+
 import com.hbb20.CountryCodePicker;
 
 import java.io.File;
@@ -130,25 +132,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
                 MyToaster.getErrorToaster(this, "Try Again");
                 e.printStackTrace();
             }
-//            month = month + 1;
-//            String dayString = day < 10 ? "0" + day : String.valueOf(day);
-//            String monthString = month < 10 ? "0" + month : String.valueOf(month);
-//
-//            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-//            int age = currentYear - year;
-//            int ageRestrict = AGE_RESTRICTION;
-//
-//            if (age < ageRestrict) {
-//                MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
-//            } else {
-//                String date = year + "/" + monthString + "/" + dayString;
-//                registerBirthDate.setText(date);
-//
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.set(year, month, day);
-//                timeStamp = calendar.getTimeInMillis();
-//                Log.e("datetime", String.valueOf(timeStamp));
-//            }
         };
 
         RadioGroup genderGroup = findViewById(R.id.radio_group);
@@ -344,7 +327,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
     private void onGetData() {
 
         if (!genderChecked) {
-            Toast.makeText(this, "Please enter gender", Toast.LENGTH_SHORT).show();
+            MyToaster.getErrorToaster(this, getString(R.string.gender_restriction_warning));
             return;
         }
 

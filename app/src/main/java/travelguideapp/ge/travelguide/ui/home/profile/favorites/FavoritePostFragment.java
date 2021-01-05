@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -27,6 +28,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
+
+import static travelguideapp.ge.travelguide.utility.BaseApplication.POST_PER_PAGE_SIZE;
 
 public class FavoritePostFragment extends Fragment implements FavoritePostListener {
 
@@ -76,16 +79,16 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         this.context = context;
     }
 
-    private void initRecycler(List<PostResponse.Posts> posts) {
+    private void initRecycler(List<PostResponse.Posts> posts, boolean canLazyLoad) {
+        try {
+            favoritePostAdapter = new FavoritePostAdapter(this);
+            favoritePostAdapter.setCanLazyLoad(canLazyLoad);
+            favoritePostAdapter.setPosts(posts);
+            recyclerView.setAdapter(favoritePostAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        favoritePostAdapter = new FavoritePostAdapter(this);
-
-        int itemWidth = HelperMedia.getScreenWidth(getActivity());
-        if (itemWidth != 0)
-            favoritePostAdapter.setItemWidth(itemWidth);
-
-        favoritePostAdapter.setPosts(posts);
-        recyclerView.setAdapter(favoritePostAdapter);
     }
 
 
@@ -93,7 +96,11 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
     public void onGetPosts(List<PostResponse.Posts> posts) {
         try {
             if (favoritePostAdapter == null) {
-                initRecycler(posts);
+                if (posts.size() < POST_PER_PAGE_SIZE) {
+                    initRecycler(posts, false);
+                } else {
+                    initRecycler(posts, true);
+                }
                 this.posts = posts;
             } else {
                 this.posts.addAll(posts);

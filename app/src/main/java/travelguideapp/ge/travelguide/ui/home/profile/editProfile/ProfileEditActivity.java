@@ -227,7 +227,8 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     private DatePickerDialog.OnDateSetListener getOnDateSetListener() {
         return (view, year, month, dayOfMonth) -> {
             try {
-                if (HelperDate.checkAgeOfUser(year, month + 1, dayOfMonth)) {
+                int monthRight = month + 1;
+                if (HelperDate.checkAgeOfUser(year, monthRight, dayOfMonth)) {
                     birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
                     birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
                 } else

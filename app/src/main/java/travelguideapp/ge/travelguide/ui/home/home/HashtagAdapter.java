@@ -17,10 +17,12 @@ import java.util.List;
 
 
 public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagHolder> {
+    private HomeFragmentListener homeFragmentListener;
     private List<String> hashtags;
 
-    public HashtagAdapter(List<String> hashtags) {
+    public HashtagAdapter(List<String> hashtags, HomeFragmentListener homeFragmentListener) {
         this.hashtags = hashtags;
+        this.homeFragmentListener = homeFragmentListener;
     }
 
     @NonNull
@@ -45,12 +47,7 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
         HashtagHolder(@NonNull View itemView) {
             super(itemView);
             hashtag = itemView.findViewById(R.id.hashtag_hashtag);
-            hashtag.setOnClickListener(v -> {
-                Intent postHashtagIntent = new Intent(hashtag.getContext(), SearchPostActivity.class);
-                postHashtagIntent.putExtra("search_type", SearchPostBy.HASHTAG);
-                postHashtagIntent.putExtra("search_hashtag", hashtags.get(getLayoutPosition()));
-                hashtag.getContext().startActivity(postHashtagIntent);
-            });
+            hashtag.setOnClickListener(v -> homeFragmentListener.onHashtagChoose(hashtags.get(getLayoutPosition()), SearchPostBy.HASHTAG));
         }
 
     }

@@ -43,4 +43,8 @@ public class CustomTimer extends CountDownTimer {
         return postViews;
     }
 
+    public void clearPostsViews() {
+        postViews.clear();
+    }
+
 }

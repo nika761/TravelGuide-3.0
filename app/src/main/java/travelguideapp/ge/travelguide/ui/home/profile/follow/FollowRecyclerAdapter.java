@@ -102,20 +102,19 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         FollowerHolder(@NonNull View itemView) {
             super(itemView);
-            userImage = itemView.findViewById(R.id.followers_user_image);
             userName = itemView.findViewById(R.id.followers_user_name);
             nickName = itemView.findViewById(R.id.followers_user_nick_name);
 
-            followBtn = itemView.findViewById(R.id.followers_user_follow);
-            followBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (followers.get(getLayoutPosition()).getIs_following() == 1) {
+            userImage = itemView.findViewById(R.id.followers_user_image);
+            userImage.setOnClickListener(v -> listener.onChooseUser(followers.get(getLayoutPosition()).getUser_id()));
 
-                    }
-                }
-            });
+            followBtn = itemView.findViewById(R.id.followers_user_follow);
             followBtn.setOnClickListener(v -> listener.onFollowAction(followers.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
+//            followBtn.setOnClickListener(v -> {
+//                if (followers.get(getLayoutPosition()).getIs_following() == 1) {
+//
+//                }
+//            });
 
 //            animation = AnimationUtils.loadAnimation(nickName.getContext(), R.anim.anim_follow_item_up);
 
@@ -157,9 +156,11 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         FollowingHolder(@NonNull View itemView) {
             super(itemView);
-            userImage = itemView.findViewById(R.id.following_user_image);
             userName = itemView.findViewById(R.id.following_user_name);
             userNickName = itemView.findViewById(R.id.following_user_nick_name);
+
+            userImage = itemView.findViewById(R.id.following_user_image);
+            userImage.setOnClickListener(v -> listener.onChooseUser(followings.get(getLayoutPosition()).getUser_id()));
 
             unFollow = itemView.findViewById(R.id.following_user_unfollow);
             unFollow.setOnClickListener(v -> listener.onFollowAction(followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));

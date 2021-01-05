@@ -34,6 +34,7 @@ import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostAdapter;
 import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.model.PostView;
+import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
@@ -150,7 +151,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                             break;
 
                         case CUSTOMER_POSTS:
-                            this.customerUserId = getArguments().getInt("customer_user_id");
+                            this.customerUserId = getArguments().getInt("customer_user_id", 0);
                             List<PostResponse.Posts> customerPosts = (List<PostResponse.Posts>) getArguments().getSerializable("customer_posts");
                             initRecyclerView(customerPosts, true, scrollPosition);
                             break;
@@ -287,15 +288,32 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void onLocationChoose(int postId, SearchPostBy searchPostBy) {
+        try {
+            Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
+            postHashtagIntent.putExtra("search_type", searchPostBy);
+            postHashtagIntent.putExtra("search_post_id", postId);
+            customPostRecycler.getContext().startActivity(postHashtagIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
-    public void onLocationChoose(int postId, SearchPostBy searchPostBy) {
-        Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
-        postHashtagIntent.putExtra("search_type", searchPostBy);
-        postHashtagIntent.putExtra("search_post_id", postId);
-        customPostRecycler.getContext().startActivity(postHashtagIntent);
+    public void onHashtagChoose(String hashtag, SearchPostBy searchPostBy) {
+        try {
+            Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
+            postHashtagIntent.putExtra("search_type", searchPostBy);
+            postHashtagIntent.putExtra("search_hashtag", hashtag);
+            customPostRecycler.getContext().startActivity(postHashtagIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -329,7 +347,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     }
 
     @Override
-    public void onGoChoose(String url) {
+    public void onGoChoose(String url, int post_id) {
+        try {
+            presenter.goChoosed(GlobalPreferences.getAccessToken(postRecycler.getContext()), new ChooseGoRequest(post_id));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         HelperUI.startWebActivity(postRecycler.getContext(), LoadWebViewBy.GO, url);
     }
 
@@ -369,7 +392,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onCommentChoose(int storyId, int postId) {
         try {
-            commentFragmentCallback.onLoadCommentFragment(storyId, postId);
+            commentFragmentCallback.onLoadCommentFragment(postId, storyId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -389,6 +412,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         if (userId == GlobalPreferences.getUserId(postRecycler.getContext())) {
             try {
                 ((HomePageActivity) getContext()).onProfileChoose();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (customerUserId != 0) {
+            try {
+                getActivity().onBackPressed();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -451,6 +480,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
             /*Supposedly TO-DO : handle sharing request by result **/
         }
     }
+
+
 
     @Override
     public void onStop() {

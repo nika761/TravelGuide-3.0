@@ -132,6 +132,9 @@ public class CustomPostRecycler extends RecyclerView {
                 customTimer = new CustomTimer(BaseApplication.POST_VIEW_TIME, 1000);
             else
                 customTimer = new CustomTimer(3000, 1000);
+
+            customTimer.clearPostsViews();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -447,7 +450,7 @@ public class CustomPostRecycler extends RecyclerView {
             } else {
                 if (post.getHashtags().size() > 0) {
                     holder.hashtagRecycler.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                    holder.hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags()));
+                    holder.hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags(), homeFragmentListener));
                     holder.hashtagRecycler.setVisibility(View.VISIBLE);
                 } else {
                     holder.hashtagRecycler.setVisibility(View.GONE);
@@ -484,7 +487,7 @@ public class CustomPostRecycler extends RecyclerView {
 
             holder.menu.setOnClickListener(v -> holder.showMenu(holder.menu));
 
-            holder.go.setOnClickListener(v -> homeFragmentListener.onGoChoose(post.getGo()));
+            holder.go.setOnClickListener(v -> homeFragmentListener.onGoChoose(post.getGo(), post.getPost_id()));
 
             holder.profileImage.setOnClickListener(v -> homeFragmentListener.onUserChoose(post.getUser_id()));
 

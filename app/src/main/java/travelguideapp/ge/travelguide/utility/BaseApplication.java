@@ -46,10 +46,12 @@ public class BaseApplication extends Application {
 
     public static final int SHARING_INTENT_REQUEST_CODE = 500;
 
+    public static long POST_VIEW_TIME;
+
     public static int CROP_OPTION_X;
     public static int CROP_OPTION_Y;
     public static int AGE_RESTRICTION;
-    public static long POST_VIEW_TIME;
+    public static int POST_PER_PAGE_SIZE;
     public static int ITEM_WIDTH_FOR_POSTS;
 
     @Override
@@ -120,6 +122,7 @@ public class BaseApplication extends Application {
                         CROP_OPTION_X = response.body().getApp_settings().getStory_photo_crop_width();
                         CROP_OPTION_Y = response.body().getApp_settings().getStory_photo_crop_height();
                         AGE_RESTRICTION = response.body().getApp_settings().getAge_restriction();
+                        POST_PER_PAGE_SIZE = response.body().getApp_settings().getProfile_posts_quntity_per_page();
                         try {
                             POST_VIEW_TIME = (long) response.body().getApp_settings().getStory_view_deley_duration();
                         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.ui.home.profile.posts;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import travelguideapp.ge.travelguide.utility.BaseApplication;
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;
     private UserPostListener userPostListener;
+    private boolean canLazyLoad;
     private int itemWidth;
 
     UserPostAdapter(UserPostListener userPostListener) {
@@ -34,7 +36,8 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
     @Override
     public void onBindViewHolder(@NonNull UserPostAdapter.UserPostHolder holder, int position) {
-        holder.loadMoreCallback(position);
+        if (canLazyLoad)
+            holder.loadMoreCallback(position);
         holder.bindView(position);
     }
 
@@ -46,6 +49,10 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     public void setPosts(List<PostResponse.Posts> posts) {
         this.posts = posts;
         notifyDataSetChanged();
+    }
+
+    public void setCanLazyLoad(boolean canLazyLoad) {
+        this.canLazyLoad = canLazyLoad;
     }
 
     void setItemWidth(int itemWidth) {

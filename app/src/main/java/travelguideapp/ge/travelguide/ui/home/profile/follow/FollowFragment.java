@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.ui.home.profile.follow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.FollowType;
+import travelguideapp.ge.travelguide.model.response.ProfileResponse;
+import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.FollowersRequest;
@@ -27,9 +30,17 @@ import java.util.List;
 
 public class FollowFragment extends Fragment implements FollowFragmentListener {
 
+    public static FollowFragment getInstance(FollowFragmentCallbacks callback) {
+        FollowFragment followFragment = new FollowFragment();
+        followFragment.callback = callback;
+        return followFragment;
+    }
+
     private FollowFragmentPresenter presenter;
-    private RecyclerView followRecycler;
     private FollowRecyclerAdapter followRecyclerAdapter;
+    private RecyclerView followRecycler;
+
+    private FollowFragmentCallbacks callback;
 
     private FollowType requestType;
 
@@ -60,12 +71,6 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getFollowData();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (presenter != null)
@@ -89,6 +94,12 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onChooseUser(int userId) {
+        if (callback != null)
+            callback.onChooseUser(userId);
     }
 
 
@@ -153,6 +164,10 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
             presenter = null;
         }
         super.onDestroy();
+    }
+
+    public interface FollowFragmentCallbacks {
+        void onChooseUser(int userId);
     }
 
 }

@@ -61,7 +61,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePageListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
-        homePagePresenter = getHomePagePresenter();
+        homePagePresenter = HomePagePresenter.getInstance(this);
         getUserProfileInfo();
         initBtmNav();
     }
@@ -74,9 +74,9 @@ public class HomePageActivity extends AppCompatActivity implements HomePageListe
         }
     }
 
-    private HomePagePresenter getHomePagePresenter() {
-        return new HomePagePresenter(this);
-    }
+//    private HomePagePresenter getHomePagePresenter() {
+//        return new HomePagePresenter(this);
+//    }
 
     public void checkRequestType() {
         String changed = getIntent().getStringExtra("password_changed");
@@ -116,6 +116,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePageListe
 //        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         bottomNavigationView.setItemIconSize(60);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+
             switch (item.getItemId()) {
                 case R.id.bot_nav_home:
                     Bundle data = new Bundle();
@@ -169,8 +170,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePageListe
     }
 
     public void logOutFromGoogle() {
-        ClientManager.googleSignInClient(this)
-                .signOut()
+        ClientManager.googleSignInClient(this).signOut()
                 .addOnCompleteListener(this, task -> onLogOutSuccess())
                 .addOnCanceledListener(this, () -> MyToaster.getErrorToaster(this, "Canceled"))
                 .addOnFailureListener(this, e -> MyToaster.getErrorToaster(this, e.getMessage() + "Google Failed"));
@@ -409,9 +409,20 @@ public class HomePageActivity extends AppCompatActivity implements HomePageListe
     }
 
     @Override
-    public void onAuthError(String s) {
+    public void onError(String message) {
+        /*Supposedly TO-DO : Show Error Message  **/
+    }
+
+    @Override
+    public void onAuthenticationError(String s) {
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+
+    @Override
+    public void onConnectionError() {
+        /*Supposedly TO-DO : Show Error Message  **/
+    }
+
 }

@@ -15,16 +15,17 @@ import java.util.ArrayList;
 public class FollowPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<String> fragmentsTitle = new ArrayList<>();
+    private FollowFragment.FollowFragmentCallbacks followFragmentCallback;
     private int customerUserId;
 
     FollowPagerAdapter(@NonNull FragmentManager fm) {
-        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        super(fm);
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        FollowFragment followFragment = new FollowFragment();
+        FollowFragment followFragment = FollowFragment.getInstance(followFragmentCallback);
         Bundle bundle = new Bundle();
         bundle.putSerializable("request_type", position == 0 ? FollowType.FOLLOWING : FollowType.FOLLOWER);
         bundle.putInt("customer_user_id", customerUserId);
@@ -37,15 +38,19 @@ public class FollowPagerAdapter extends FragmentPagerAdapter {
         return 2;
     }
 
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return position == 0 ? fragmentsTitle.get(0) : fragmentsTitle.get(1);
+    }
+
     void setTitles(String titleFirst, String titleSecond) {
         fragmentsTitle.add(0, titleFirst);
         fragmentsTitle.add(1, titleSecond);
     }
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return position == 0 ? fragmentsTitle.get(0) : fragmentsTitle.get(1);
+    public void setFollowFragmentCallback(FollowFragment.FollowFragmentCallbacks followFragmentCallback) {
+        this.followFragmentCallback = followFragmentCallback;
     }
 
     void setCustomerUserId(int customerUserId) {

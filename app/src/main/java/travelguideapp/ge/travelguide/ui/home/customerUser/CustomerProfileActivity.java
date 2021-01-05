@@ -49,14 +49,15 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
     private TextView userName, nickName, following, follower, reaction, bio, bioBtn, followBtn;
     private FrameLayout loaderContainer;
-    private FrameLayout fragmentContainerMain;
-    private ConstraintLayout postFragmentContainer;
+    private ConstraintLayout fragmentContainerMain;
+    private FrameLayout postFragmentContainer;
     private ConstraintLayout commentFragmentContainer;
     private LinearLayout bioContainer;
     private LottieAnimationView lottieLoader;
     private CircleImageView image;
 
     private int customerUserId;
+    private boolean isReplyOpened = false;
     private String customerUserName;
 
     @Override
@@ -75,6 +76,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
             customerProfilePresenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
         else
             onBackPressed();
+
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 //
 //        Bundle bundle = new Bundle();
@@ -86,6 +88,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 //        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 //        mFirebaseAnalytics.setSessionTimeoutDuration(500);
 //        mFirebaseAnalytics.setUserId(String.valueOf(customerUserId));
+
     }
 
     private void initUI() {
@@ -95,9 +98,9 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         ViewPager viewPager = findViewById(R.id.customer_view_pager);
         TabLayout tabLayout = findViewById(R.id.customer_profile_tab);
 
+        fragmentContainerMain = findViewById(R.id.customer_profile_fragment_container_main);
         postFragmentContainer = findViewById(R.id.customer_profile_post_container);
         commentFragmentContainer = findViewById(R.id.customer_comments_container);
-        fragmentContainerMain = findViewById(R.id.customer_profile_fragment_container);
 
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
         profilePagerAdapter.setCustomerUserId(customerUserId);
@@ -149,6 +152,8 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
 
     @Override
     public void onLoadCommentFragment(int postId, int storyId) {
+        commentFragmentContainer.setVisibility(View.VISIBLE);
+
         Bundle commentFragmentData = new Bundle();
         commentFragmentData.putInt("storyId", storyId);
         commentFragmentData.putInt("postId", postId);
@@ -158,6 +163,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     }
 
     public void loadRepliesFragment(Bundle repliesFragmentData) {
+        isReplyOpened = true;
         HelperUI.loadFragment(new RepliesFragment(), repliesFragmentData, R.id.customer_comments_container, true, true, this);
     }
 
@@ -267,15 +273,20 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            try {
-                if (fragmentContainerMain.getVisibility() == View.VISIBLE) {
-                    fragmentContainerMain.setVisibility(View.GONE);
-                } else {
-                    onBackPressed();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                if (isReplyOpened){
+//                    isReplyOpened = false;
+//                }
+//                if (commentFragmentContainer.getVisibility() == View.VISIBLE) {
+//                    commentFragmentContainer.setVisibility(View.GONE);
+//                } else if (fragmentContainerMain.getVisibility() == View.VISIBLE) {
+//                    fragmentContainerMain.setVisibility(View.GONE);
+//                } else {
+//                    onBackPressed();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
         return super.onKeyDown(keyCode, event);
     }

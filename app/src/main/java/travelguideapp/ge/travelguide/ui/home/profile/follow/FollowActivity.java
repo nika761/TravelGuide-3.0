@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.ui.home.profile.follow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -9,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
+
 import com.google.android.material.tabs.TabLayout;
 
-public class FollowActivity extends AppCompatActivity {
+public class FollowActivity extends AppCompatActivity implements FollowFragment.FollowFragmentCallbacks {
 
     private int customerUserId;
 
@@ -45,9 +48,8 @@ public class FollowActivity extends AppCompatActivity {
 
         FollowPagerAdapter followPagerAdapter = new FollowPagerAdapter(getSupportFragmentManager());
         followPagerAdapter.setTitles(getString(R.string.following), getString(R.string.followers));
-        if (customerUserId != 0)
-            followPagerAdapter.setCustomerUserId(customerUserId);
-
+        followPagerAdapter.setCustomerUserId(customerUserId);
+        followPagerAdapter.setFollowFragmentCallback(this);
         viewPager.setAdapter(followPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -56,5 +58,17 @@ public class FollowActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
+    }
+
+    @Override
+    public void onChooseUser(int userId) {
+        try {
+            Intent intent = new Intent(this, CustomerProfileActivity.class);
+            intent.putExtra("id", userId);
+            startActivity(intent);
+            overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -6,7 +6,8 @@ import android.widget.Toast;
 public class MyToaster {
 
     public static void getUnknownErrorToast(Context context) {
-        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+        if (context != null)
+            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
     }
 
     public static void getErrorToaster(Context context, String message) {

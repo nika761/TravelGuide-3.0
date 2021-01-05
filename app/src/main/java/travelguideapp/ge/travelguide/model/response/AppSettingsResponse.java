@@ -22,11 +22,17 @@ public class AppSettingsResponse {
 
     public static class App_settings {
         @Expose
+        @SerializedName("android_version")
+        private int android_version;
+        @Expose
+        @SerializedName("ios_version")
+        private int ios_version;
+        @Expose
         @SerializedName("story_view_deley_duration")
         private int story_view_deley_duration;
         @Expose
         @SerializedName("story_video_template_for_photo")
-        private int story_video_template_for_photo;
+        private String story_video_template_for_photo;
         @Expose
         @SerializedName("story_photo_crop_height")
         private int story_photo_crop_height;
@@ -50,13 +56,13 @@ public class AppSettingsResponse {
         private int home_posts_quntity_per_page;
         @Expose
         @SerializedName("openapp_redirect_link")
-        private int openapp_redirect_link;
+        private String openapp_redirect_link;
         @Expose
         @SerializedName("ios_download_link")
-        private int ios_download_link;
+        private String ios_download_link;
         @Expose
         @SerializedName("android_download_link")
-        private int android_download_link;
+        private String android_download_link;
         @Expose
         @SerializedName("registration_deley")
         private int registration_deley;
@@ -85,11 +91,19 @@ public class AppSettingsResponse {
         @SerializedName("post_videos_duration")
         private int post_videos_duration;
 
+        public int getAndroid_version() {
+            return android_version;
+        }
+
+        public int getIos_version() {
+            return ios_version;
+        }
+
         public int getStory_view_deley_duration() {
             return story_view_deley_duration;
         }
 
-        public int getStory_video_template_for_photo() {
+        public String getStory_video_template_for_photo() {
             return story_video_template_for_photo;
         }
 
@@ -121,15 +135,15 @@ public class AppSettingsResponse {
             return home_posts_quntity_per_page;
         }
 
-        public int getOpenapp_redirect_link() {
+        public String getOpenapp_redirect_link() {
             return openapp_redirect_link;
         }
 
-        public int getIos_download_link() {
+        public String getIos_download_link() {
             return ios_download_link;
         }
 
-        public int getAndroid_download_link() {
+        public String getAndroid_download_link() {
             return android_download_link;
         }
 

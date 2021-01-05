@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.SearchPostBy;
 import travelguideapp.ge.travelguide.enums.StoryEmotionType;
@@ -207,7 +208,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
         void setHashtagRecycler() {
             hashtagRecycler.setLayoutManager(new LinearLayoutManager(share.getContext(), RecyclerView.HORIZONTAL, false));
-            hashtagRecycler.setAdapter(new HashtagAdapter(currentPost.getHashtags()));
+            hashtagRecycler.setAdapter(new HashtagAdapter(currentPost.getHashtags(), homeFragmentListener));
         }
 
         void setVideoItem(int position) {

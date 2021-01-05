@@ -308,7 +308,6 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     }
 
     private void signInWithFacebook() {
-        Log.e("facebookError", "method started from head UI");
         GlobalPreferences.saveLoginType(this, GlobalPreferences.FACEBOOK);
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email", "user_friends"));
 //        signBtnFacebook.performClick();
@@ -316,7 +315,6 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
         signBtnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.e("facebookError", "method started from UI");
                 showLoading(true);
                 signInPresenter.authWithFb(loginResult.getAccessToken());
             }
@@ -425,7 +423,6 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("facebookError", "callback for manager UI");
         callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GOOGLE_SIGN_IN) {

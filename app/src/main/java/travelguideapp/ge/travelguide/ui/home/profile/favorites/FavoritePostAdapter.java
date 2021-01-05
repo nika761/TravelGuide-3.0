@@ -20,7 +20,7 @@ import travelguideapp.ge.travelguide.utility.BaseApplication;
 public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapter.PostViewHolder> {
     private List<PostResponse.Posts> posts;
     private FavoritePostListener favoritePostListener;
-
+    private boolean canLazyLoad;
     private int itemWidth;
 
     FavoritePostAdapter(FavoritePostListener favoritePostListener) {
@@ -35,7 +35,8 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
 
     @Override
     public void onBindViewHolder(@NonNull FavoritePostAdapter.PostViewHolder holder, int position) {
-        holder.loadMoreCallback(position);
+        if (canLazyLoad)
+            holder.loadMoreCallback(position);
         holder.bindView(position);
     }
 
@@ -46,6 +47,10 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
 
     void setItemWidth(int itemWidth) {
         this.itemWidth = itemWidth;
+    }
+
+    public void setCanLazyLoad(boolean canLazyLoad) {
+        this.canLazyLoad = canLazyLoad;
     }
 
     void setPosts(List<PostResponse.Posts> posts) {
