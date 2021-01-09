@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.FollowType;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -61,6 +62,8 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
         }
 
         followRecyclerAdapter = new FollowRecyclerAdapter(this);
+        if (customerUserId != 0)
+            followRecyclerAdapter.setIsCustomer(true);
         followRecycler = view.findViewById(R.id.follow_recycler);
         followRecycler.setLayoutManager(new LinearLayoutManager(followRecycler.getContext()));
         followRecycler.setHasFixedSize(true);
@@ -127,7 +130,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
 
     @Override
     public void onError(String message) {
-        Toast.makeText(followRecycler.getContext(), message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(followRecycler.getContext(), message);
     }
 
     private boolean checkRequestType() {

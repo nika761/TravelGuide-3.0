@@ -1,6 +1,5 @@
 package travelguideapp.ge.travelguide.ui.home.profile.posts;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 import java.util.List;
 
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;

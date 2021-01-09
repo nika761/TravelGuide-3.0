@@ -10,5 +10,5 @@ package travelguideapp.ge.travelguide.enums;
  */
 
 public enum GetPostsFrom {
-    FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED
+    FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED, SEARCH
 }

@@ -1,7 +1,7 @@
 package travelguideapp.ge.travelguide.ui.home.profile.posts;
 
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.ui.home.profile.BaseListener;
+import travelguideapp.ge.travelguide.base.BaseListener;
 
 import java.util.List;
 

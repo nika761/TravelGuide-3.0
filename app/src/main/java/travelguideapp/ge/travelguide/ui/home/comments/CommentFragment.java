@@ -1,11 +1,16 @@
 package travelguideapp.ge.travelguide.ui.home.comments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -22,9 +27,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 
+import gun0912.tedkeyboardobserver.TedKeyboardObserver;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.AskingDialogResultCallback;
 import travelguideapp.ge.travelguide.helper.DialogManager;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
@@ -37,6 +44,8 @@ import travelguideapp.ge.travelguide.model.response.DeleteCommentResponse;
 import travelguideapp.ge.travelguide.model.response.LikeCommentResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import java.text.MessageFormat;
@@ -47,7 +56,19 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
 
-public class CommentFragment extends Fragment implements CommentListener, View.OnClickListener {
+public class CommentFragment extends Fragment implements CommentListener {
+
+    public enum CommentFragmentType {
+        COMMENT_REPLY, COMMENT;
+    }
+
+    public static CommentFragment getInstance(CommentFragment.LoadCommentFragmentListener callback) {
+        CommentFragment commentFragment = new CommentFragment();
+        commentFragment.callback = callback;
+        return commentFragment;
+    }
+
+    private CommentFragment.LoadCommentFragmentListener callback;
 
     private CommentPresenter presenter;
 
@@ -56,7 +77,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     private Context context;
     private TextView commentsHead, loadMore;
     private FrameLayout pagingContainer;
-    private EditText commentField;
+    private TextView commentField;
     private ImageButton addCommentBtn;
 
     private CommentAdapter commentAdapter;
@@ -64,6 +85,8 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     private int storyId;
     private int postId;
     private int commentPosition;
+
+    private boolean bottomSheetOpen = false;
 
     @Nullable
     @Override
@@ -90,7 +113,7 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
         closeBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
 
         addCommentBtn = view.findViewById(R.id.comments_add_image_btn);
-        addCommentBtn.setOnClickListener(this);
+//        addCommentBtn.setOnClickListener(v -> addComment(null));
 
         return view;
     }
@@ -99,25 +122,31 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+//        try {
+//            RxTextView.textChanges(commentField)
+//                    .debounce(100, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .map(CharSequence::toString)
+//                    .subscribe((Consumer<CharSequence>) charSequence -> {
+//                        if (charSequence.toString().isEmpty()) {
+//                            addCommentBtn.setClickable(false);
+//                            addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment_black, null));
+//                        } else {
+//                            addCommentBtn.setClickable(true);
+//                            addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment, null));
+//                        }
+//                    });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         try {
-            RxTextView.textChanges(commentField)
-                    .debounce(100, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map(CharSequence::toString)
-                    .subscribe((Consumer<CharSequence>) charSequence -> {
-                        if (charSequence.toString().isEmpty()) {
-                            addCommentBtn.setClickable(false);
-                            addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment_black, null));
-                        } else {
-                            addCommentBtn.setClickable(true);
-                            addCommentBtn.setBackground(getResources().getDrawable(R.drawable.icon_add_comment, null));
-                        }
-                    });
+            commentField.setOnClickListener(v -> openBottomSheetFragment());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String accessToken = GlobalPreferences.getAccessToken(context);
-        presenter.getComments(accessToken, new CommentRequest(storyId, postId, 0));
+
+        presenter.getComments(GlobalPreferences.getAccessToken(context), new CommentRequest(storyId, postId, 0));
     }
 
     @Override
@@ -145,35 +174,76 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
             pagingContainer.setVisibility(View.GONE);
             pagingLoader.setVisibility(View.GONE);
             if (commentAdapter == null) {
-
                 commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), commentResponse.getCount()));
-//                commentsHead.setText(MessageFormat.format("Comments  {0}", commentResponse.getCount()));
-
                 commentAdapter = new CommentAdapter(this);
                 commentAdapter.setComments(commentResponse.getPost_story_comments());
                 commentRecycler.setLayoutManager(new LinearLayoutManager(context));
                 commentRecycler.setAdapter(commentAdapter);
-
-
             } else {
                 loadMore.setVisibility(View.GONE);
                 commentAdapter.setComments(commentResponse.getPost_story_comments());
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void openBottomSheetFragment() {
+        try {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(commentRecycler.getContext());
+            View bottomSheetView = View.inflate(commentRecycler.getContext(), R.layout.dialog_comment, null);
+
+            EditText editText = bottomSheetView.findViewById(R.id.bottom_sheet_comment_field);
+            ImageButton imageButton = bottomSheetView.findViewById(R.id.bottom_sheet_comment_add_btn);
+
+            imageButton.setOnClickListener(v -> {
+                addComment(editText.getText().toString());
+                bottomSheetDialog.dismiss();
+            });
+
+            RxTextView.textChanges(editText)
+                    .debounce(100, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(CharSequence::toString)
+                    .subscribe((Consumer<CharSequence>) charSequence -> {
+                        if (charSequence.toString().isEmpty()) {
+                            imageButton.setClickable(false);
+                            imageButton.setBackground(getResources().getDrawable(R.drawable.icon_add_comment_black, null));
+                        } else {
+                            imageButton.setClickable(true);
+                            imageButton.setBackground(getResources().getDrawable(R.drawable.icon_add_comment, null));
+                        }
+                    });
+
+//                editText.setOnKeyListener((v, keyCode, event) -> {
+//                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                        inputMethodManager.hideSoftInputFromWindow(bottomSheetView.getWindowToken(), 0);
+//                        return true;
+//                    }
+//                    return false;
+//                });
+
+            bottomSheetDialog.setContentView(bottomSheetView);
+            bottomSheetDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            bottomSheetDialog.show();
+            editText.requestFocus();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onAddComment(AddCommentResponse addCommentResponse) {
-        loader.setVisibility(View.GONE);
-
-        commentFieldFocus(false);
-        commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), addCommentResponse.getCount()));
-        commentAdapter.onCommentsChanged(addCommentResponse.getPost_story_comments());
-
+        try {
+            loader.setVisibility(View.GONE);
+            commentFieldFocus(false);
+            commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), addCommentResponse.getCount()));
+            commentAdapter.onCommentsChanged(addCommentResponse.getPost_story_comments());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -183,7 +253,6 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
 
     @Override
     public void onReplyChoose(CommentResponse.Post_story_comments currentComment, boolean requestReply, int position) {
-
         try {
             this.commentPosition = position;
 
@@ -193,32 +262,20 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
             repliesFragmentData.putInt("storyId", storyId);
             repliesFragmentData.putInt("postId", postId);
 
-            try {
-                if (getContext() instanceof HomePageActivity) {
-                    ((HomePageActivity) context).loadRepliesFragment(repliesFragmentData);
-                } else if (getContext() instanceof CustomerProfileActivity) {
-                    ((CustomerProfileActivity) context).loadRepliesFragment(repliesFragmentData);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            callback.commitCommentFragment(repliesFragmentData, CommentFragmentType.COMMENT_REPLY);
+//            try {
+//                if (getContext() instanceof HomePageActivity) {
+//                    ((HomePageActivity) context).loadRepliesFragment(repliesFragmentData);
+//                } else if (getContext() instanceof CustomerProfileActivity) {
+//                    ((CustomerProfileActivity) context).loadRepliesFragment(repliesFragmentData);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             commentAdapter = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//
-//        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(commentRecycler.getContext());
-//        View view = View.inflate(getContext(), R.layout.dialog_comment, null);
-//        EditText editText = view.findViewById(R.id.dialog____);
-//        editText.requestFocus();
-//
-//        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        inputMethodManager.showSoftInput(commentField, InputMethodManager.SHOW_FORCED);
-//
-//        bottomSheetDialog.setContentView(view);
-//        bottomSheetDialog.show();
-
     }
 
     @Override
@@ -244,11 +301,11 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
             InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (inputMethodManager != null) {
                 if (requestFocus) {
-                    commentField.requestFocus();
+//                    commentField.requestFocus();
                     inputMethodManager.showSoftInput(commentField, InputMethodManager.SHOW_FORCED);
                 } else {
-                    commentField.getText().clear();
-                    commentField.clearFocus();
+//                    commentField.getText().clear();
+//                    commentField.clearFocus();
                     inputMethodManager.hideSoftInputFromWindow(commentField.getWindowToken(), 0);
                 }
             }
@@ -275,17 +332,17 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
     public void onError(String message) {
         loader.setVisibility(View.GONE);
         pagingLoader.setVisibility(View.GONE);
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(context, message);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.comments_add_image_btn:
-                loader.setVisibility(View.VISIBLE);
-                presenter.addComment(GlobalPreferences.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
-                break;
-        }
+    private void addComment(String comment) {
+        addCommentBtn.setClickable(false);
+        loader.setVisibility(View.VISIBLE);
+//        if (comment == null)
+//            presenter.addComment(GlobalPreferences.getAccessToken(context), new AddCommentRequest(storyId, postId, commentField.getText().toString()));
+//        else
+        presenter.addComment(GlobalPreferences.getAccessToken(context), new AddCommentRequest(storyId, postId, comment));
+
     }
 
     @Override
@@ -309,6 +366,10 @@ public class CommentFragment extends Fragment implements CommentListener, View.O
         }
 
         super.onDestroy();
+    }
+
+    public interface LoadCommentFragmentListener {
+        void commitCommentFragment(Bundle dataForFragment, CommentFragmentType commentFragmentType);
     }
 
 }

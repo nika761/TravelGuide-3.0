@@ -139,6 +139,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:layout_marginTop="5dp"
+                        android:autoSizeTextType="uniform"
                         android:text="@string/if_you_do_not_have_an_account"
                         android:textColor="@color/white"
                         app:layout_constraintStart_toStartOf="@+id/forgot_password_sign_in"
@@ -146,16 +147,19 @@
 
                     <TextView
                         android:id="@+id/register_now"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|bottom"
                         android:layout_marginStart="4dp"
+                        android:autoSizeTextType="uniform"
                         android:background="?attr/selectableItemBackground"
+                        android:maxLines="1"
                         android:text="@string/sign_up"
                         android:textColor="@color/yellowTextView"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@id/not_have_account"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/not_have_account"
                         app:layout_constraintTop_toTopOf="@+id/not_have_account" />
 
@@ -188,22 +192,24 @@
                         android:id="@+id/line_left"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
                         android:background="@drawable/bg_line_second" />
 
                     <TextView
                         android:id="@+id/connect_with"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
                         android:text="@string/or"
                         android:textColor="@color/white"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <ImageView
                         android:id="@+id/line_right"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_weight="0.5"
                         android:background="@drawable/bg_line_second" />
 
                 </LinearLayout>
@@ -276,6 +282,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/and"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:autoSizeTextType="uniform"

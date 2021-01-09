@@ -22,9 +22,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
     private List<FollowerResponse.Followers> followers;
     private TagPostListener tagPostListener;
 
-    FriendsAdapter(TagPostListener tagPostListener) {
+    public FriendsAdapter(TagPostListener tagPostListener) {
         this.tagPostListener = tagPostListener;
     }
+
 
     @NonNull
     @Override

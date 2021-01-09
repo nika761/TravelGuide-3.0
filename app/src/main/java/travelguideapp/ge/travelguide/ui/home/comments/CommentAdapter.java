@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.response.CommentResponse;
@@ -129,7 +130,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
             if (comments.get(position).getComment_reply().size() > 0) {
                 showReplies.setVisibility(View.VISIBLE);
-                showReplies.setText(MessageFormat.format("{0} {1}", body.getContext().getString(R.string.view_replies), comments.get(position).getComment_replies_count()));
+                showReplies.setText(body.getContext().getString(R.string.view_replies) + " (" + comments.get(position).getComment_replies_count() + ") ");
             } else {
                 showReplies.setVisibility(View.GONE);
             }

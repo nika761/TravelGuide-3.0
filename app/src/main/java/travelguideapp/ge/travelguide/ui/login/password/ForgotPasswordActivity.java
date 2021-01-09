@@ -16,8 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperUI;
+import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
 import travelguideapp.ge.travelguide.model.request.ChangePasswordRequest;
 import travelguideapp.ge.travelguide.model.request.ForgotPasswordRequest;
 import travelguideapp.ge.travelguide.model.response.ChangePasswordResponse;
@@ -27,18 +30,27 @@ import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 public class ForgotPasswordActivity extends AppCompatActivity implements ForgotPasswordListener, ChangePasswordFragment.ChangePasswordListener {
     private EditText eEmail;
-    private TextView emailHead;
+    private TextView emailHead, forgotPassword, forgotPasswordBody, backBtn;
+    private Button save;
     private ConstraintLayout changePasswordContainer;
     private ScrollView forgotPasswordContainer;
     private String email;
     private ForgotPasswordPresenter presenter;
     private FrameLayout loaderContainer;
     private LottieAnimationView loader;
+    private GlobalLanguages currentLanguage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+
+        try {
+            currentLanguage = GlobalPreferences.getCurrentLanguage(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             if (getIntent().getStringExtra("request_for").equals("change")) {
                 HelperUI.loadFragment(ChangePasswordFragment.getInstance(this), null, R.id.change_password_container, false, true, this);
@@ -53,8 +65,11 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
     private void initUI() {
         presenter = new ForgotPasswordPresenter(this);
 
-        TextView backBtn = findViewById(R.id.forgot_psw_back);
+        backBtn = findViewById(R.id.forgot_psw_back);
         backBtn.setOnClickListener(v -> finish());
+
+        forgotPassword = findViewById(R.id.forgot_password_forgot_password);
+        forgotPasswordBody = findViewById(R.id.forgot_password_offer_body);
 
         loaderContainer = findViewById(R.id.forgot_password_loader_container);
         loader = findViewById(R.id.forgot_password_loader);
@@ -73,8 +88,9 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
 
         emailHead = findViewById(R.id.forgot_password_email_head);
 
-        Button save = findViewById(R.id.forgot_password_save_btn);
+        save = findViewById(R.id.forgot_password_save_btn);
         save.setOnClickListener(v -> {
+
             email = HelperUI.checkEditTextData(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, eEmail.getContext());
 
             if (email != null && HelperUI.checkEmail(email)) {
@@ -86,6 +102,21 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
                 HelperUI.setBackgroundWarning(eEmail, emailHead, getString(R.string.email), eEmail.getContext());
             }
         });
+
+        setTextsByLanguage();
+    }
+
+    private void setTextsByLanguage() {
+        try {
+            forgotPassword.setText(currentLanguage.getForgot_password());
+            forgotPasswordBody.setText(currentLanguage.getForgot_password_intro());
+            emailHead.setText(currentLanguage.getEmail_field_head());
+            save.setText(currentLanguage.getSend());
+            backBtn.setText(currentLanguage.getBack_to_sign_in());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -99,7 +130,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
     @Override
     public void onChangePassword(ChangePasswordResponse changePasswordResponse) {
         loadingVisibility(false);
-        Toast.makeText(this, changePasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(this, changePasswordResponse.getMessage());
         if (changePasswordResponse.getStatus() == 0)
             finish();
     }
@@ -107,7 +138,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
     @Override
     public void onError(String message) {
         loadingVisibility(false);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(this, message);
     }
 
     public void loadingVisibility(boolean visible) {

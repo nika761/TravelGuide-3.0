@@ -156,7 +156,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/replies_view_more" />
 
-        <EditText
+        <TextView
             android:id="@+id/replies_add_field"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

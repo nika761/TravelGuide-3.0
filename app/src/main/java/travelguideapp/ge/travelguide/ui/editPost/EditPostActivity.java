@@ -31,7 +31,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 
 
 public class EditPostActivity extends AppCompatActivity implements EditPostCallback {

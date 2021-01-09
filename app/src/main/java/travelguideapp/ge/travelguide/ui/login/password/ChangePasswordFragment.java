@@ -15,7 +15,9 @@ import androidx.fragment.app.Fragment;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
 import travelguideapp.ge.travelguide.model.request.ChangePasswordRequest;
+import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
 public class ChangePasswordFragment extends Fragment {
@@ -28,7 +30,7 @@ public class ChangePasswordFragment extends Fragment {
 
     private ChangePasswordListener callback;
 
-    private TextView currentHead, passwordHead, confirmHead;
+    private TextView mainHead, currentHead, passwordHead, confirmHead;
     private EditText currentField, passwordField, confirmField;
 
     private Button save;
@@ -39,6 +41,7 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_change_password, container, false);
+        mainHead = view.findViewById(R.id.change_password_main_head);
         currentHead = view.findViewById(R.id.change_password_current_head);
         passwordHead = view.findViewById(R.id.change_password_head);
         confirmHead = view.findViewById(R.id.change_password_confirm_head);
@@ -47,8 +50,20 @@ public class ChangePasswordFragment extends Fragment {
         passwordField = view.findViewById(R.id.change_password_field);
         confirmField = view.findViewById(R.id.change_password_confirm_field);
 
-
         save = view.findViewById(R.id.change_password_save);
+
+        try {
+            GlobalLanguages currentLanguage = GlobalPreferences.getCurrentLanguage(save.getContext());
+
+            mainHead.setText(currentLanguage.getReset_password_intro());
+//            currentHead.setText(currentLanguage.head());
+            passwordHead.setText(currentLanguage.getPassword_field_head());
+            confirmHead.setText(currentLanguage.getConfirm_password_filed_head());
+            save.setText(currentLanguage.getSave());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return view;
     }

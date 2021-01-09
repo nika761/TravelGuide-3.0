@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.Country;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.request.UpdateProfileRequest;
@@ -146,8 +149,16 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         toolbarBackBtn.setOnClickListener(v -> onBackPressed());
 
         View changePhotoBtn = findViewById(R.id.change_photo_btn);
-        changePhotoBtn.setOnClickListener(v -> HelperMedia.startImagePicker(this));
+        changePhotoBtn.setOnClickListener(v -> checkPermissionAndStartPick());
 
+    }
+
+    private void checkPermissionAndStartPick() {
+        if (SystemManager.isReadStoragePermission(this)) {
+            HelperMedia.startImagePicker(this);
+        } else {
+            SystemManager.requestReadStoragePermission(this);
+        }
     }
 
     private boolean checkNumber(EditText enteredNumber) {
@@ -251,6 +262,16 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
 //                    MyToaster.getUnknownErrorToast(this);
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            HelperMedia.startImagePicker(this);
+        } else {
+            MyToaster.getErrorToaster(this, "No permission granted");
         }
     }
 

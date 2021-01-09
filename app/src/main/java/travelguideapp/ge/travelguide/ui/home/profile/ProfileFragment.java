@@ -13,12 +13,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -29,7 +27,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.callback.AskingDialogResultCallback;
+import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -40,7 +39,7 @@ import travelguideapp.ge.travelguide.ui.home.profile.favorites.FavoritePostFragm
 import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.tours.UserToursFragment;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 
@@ -62,16 +61,16 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     private ImageButton seeBio, hideBio;
     private CircleImageView userPrfImage;
     private ActionBarDrawerToggle toggle;
-    private View mIncludedLayout;
     private FrameLayout loaderContainer;
     private LottieAnimationView loader;
     private LinearLayout bioContainer;
+    private View mIncludedLayout;
 
-    private ProfileFragmentPresenter presenter;
-    private String userName;
     private boolean isOnCreate = true;
+    private String userName;
     private Context context;
 
+    private ProfileFragmentPresenter presenter;
     private ProfileResponse.Userinfo userInfo;
     private ProfileFragmentCallBacks callBack;
 
@@ -120,11 +119,12 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         TabLayout tabLayout = mIncludedLayout.findViewById(R.id.profile_tabs);
 
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getChildFragmentManager());
+        profilePagerAdapter.setCallback((OnPostChooseCallback) context);
         profilePagerAdapter.addFragment(new UserPostsFragment());
         profilePagerAdapter.addFragment(new FavoritePostFragment());
         profilePagerAdapter.addFragment(new UserToursFragment());
-        viewPager.setAdapter(profilePagerAdapter);
 
+        viewPager.setAdapter(profilePagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         try {
             tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
@@ -189,7 +189,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         switch (item.getItemId()) {
             case R.id.settings_share_profile:
                 try {
-                    BaseApplication.shareContent((Activity) context, userInfo.getShare_profile());
+                    ((BaseActivity) context).shareContent(userInfo.getShare_profile());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -328,11 +328,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             presenter = null;
         }
         super.onDestroy();
-    }
-
-
-    public interface OnPostChooseListener {
-        void onPostChoose(Bundle fragmentData);
     }
 
     public interface ProfileFragmentCallBacks {

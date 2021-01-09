@@ -193,7 +193,6 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         }
     }
 
-
 //    @Override
 //    public void onClick(View v) {
 ////                ArrayList<String> files = new ArrayList<>();
@@ -209,7 +208,6 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
 ////                S3Helper s3Helper = new S3Helper();
 ////                s3Helper.upload(files, this);
 //    }
-
 
     private void setTagRecycler(boolean isShow) {
         if (isShow) {
@@ -244,6 +242,12 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         } catch (Exception e) {
             e.printStackTrace();
             getLoader(false);
+            try {
+                MyToaster.getErrorToaster(this, e.getMessage());
+                MyToaster.getErrorToaster(this, e.getLocalizedMessage());
+            } catch (Exception b) {
+                b.printStackTrace();
+            }
             finish();
         }
 
@@ -392,6 +396,12 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         } catch (Exception e) {
             e.printStackTrace();
             getLoader(false);
+            try {
+                MyToaster.getErrorToaster(this, e.getMessage());
+                MyToaster.getErrorToaster(this, e.getLocalizedMessage());
+            } catch (Exception b) {
+                b.printStackTrace();
+            }
             finish();
         }
 

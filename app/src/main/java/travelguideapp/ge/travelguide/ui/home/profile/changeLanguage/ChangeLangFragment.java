@@ -53,11 +53,6 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         changeLangPresenter.sentLanguageRequest();

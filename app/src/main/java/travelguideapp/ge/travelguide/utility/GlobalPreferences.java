@@ -35,10 +35,6 @@ public class GlobalPreferences {
     private static final String USER_ROLE_KEY = "user_role";
     private static final String PLATFORM_KEY = "platform_key";
 
-//    public enum LoginType {
-//        GOOGLE, FACEBOOK, TRAVEL_GUIDE
-//    }
-
 
     private static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences(TRAVEL_GUIDE_PREFERENCES, Context.MODE_PRIVATE);

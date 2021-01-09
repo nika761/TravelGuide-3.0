@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
 
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 
 public class HelperDate {
 
@@ -54,7 +54,6 @@ public class HelperDate {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 return format.parse(dateStr).getTime();
-
             } catch (ParseException e) {
                 e.printStackTrace();
                 return -1;

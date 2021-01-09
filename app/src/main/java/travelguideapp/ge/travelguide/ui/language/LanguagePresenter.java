@@ -46,7 +46,12 @@ public class LanguagePresenter {
             @Override
             public void onResponse(Call<LanguageStringsResponse> call, Response<LanguageStringsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    languageListener.onGetStrings(response.body());
+                    try {
+                        if (response.body().getStatus() == 0)
+                            languageListener.onGetStrings(response.body());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     languageListener.onGetError(response.message());
                 }

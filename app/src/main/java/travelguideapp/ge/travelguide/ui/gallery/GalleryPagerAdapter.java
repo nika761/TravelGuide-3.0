@@ -29,7 +29,6 @@ public class GalleryPagerAdapter extends FragmentPagerAdapter {
         return 2;
     }
 
-
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {

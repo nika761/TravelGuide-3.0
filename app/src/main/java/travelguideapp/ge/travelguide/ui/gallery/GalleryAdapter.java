@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +91,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                             selectedItemPositions.remove(getLayoutPosition());
                             listener.onItemSelected(paths.get(getLayoutPosition()));
                         } else {
-                            Toast.makeText(context, "You can choose only one item", Toast.LENGTH_SHORT).show();
+                            MyToaster.getErrorToaster(context, "You can choose only one item");
                         }
                     } else {
                         selectedItemPositions.put(getLayoutPosition(), selectedItemPositions.size() + 1);

@@ -10,20 +10,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
+import java.util.List;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.enums.SearchPostBy;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.ui.home.home.HomeFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 
-public class SearchPostActivity extends AppCompatActivity implements SearchPostListener {
+public class SearchPostActivity extends BaseActivity implements SearchPostListener {
 
     private SearchPostPresenter searchPostPresenter;
     private TextView head;
+
+    private List<PostResponse.Posts> posts;
 
     private SearchPostBy type;
     private String hashtag;
@@ -78,7 +87,9 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
                     break;
             }
 
-            SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts());
+            this.posts = postResponse.getPosts();
+
+            SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts(), this);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
             RecyclerView recyclerView = findViewById(R.id.posts_by_location_recycler);
             recyclerView.setLayoutManager(gridLayoutManager);
@@ -87,6 +98,33 @@ public class SearchPostActivity extends AppCompatActivity implements SearchPostL
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onChoosePost(int postId) {
+        try {
+            int position = getPositionById(postId);
+
+            Bundle data = new Bundle();
+            data.putInt("postPosition", position);
+            data.putSerializable("searchedPosts", (Serializable) posts);
+            data.putSerializable("PostShowType", GetPostsFrom.SEARCH);
+
+            HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, true, true, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private int getPositionById(int postId) {
+        for (int i = 0; i < posts.size(); i++) {
+            if (posts.get(i).getPost_id() == postId) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override

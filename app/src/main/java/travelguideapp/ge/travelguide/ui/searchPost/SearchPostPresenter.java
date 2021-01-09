@@ -12,8 +12,8 @@ import retrofit2.Response;
 
 class SearchPostPresenter {
 
-    private SearchPostListener searchPostListener;
-    private ApiService apiService;
+    private final SearchPostListener searchPostListener;
+    private final ApiService apiService;
 
     SearchPostPresenter(SearchPostListener searchPostListener) {
         this.searchPostListener = searchPostListener;
@@ -25,10 +25,13 @@ class SearchPostPresenter {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().getStatus() == 0)
-                        searchPostListener.onGetPosts(response.body());
-                    else
+                    if (response.body() != null && response.body().getStatus() == 0) {
+                        if (response.body().getPosts().size() > 0) {
+                            searchPostListener.onGetPosts(response.body());
+                        }
+                    } else {
                         searchPostListener.onGetPostError(response.message());
+                    }
                 } else {
                     searchPostListener.onGetPostError(response.message());
                 }
@@ -46,10 +49,13 @@ class SearchPostPresenter {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().getStatus() == 0)
-                        searchPostListener.onGetPosts(response.body());
-                    else
+                    if (response.body() != null && response.body().getStatus() == 0) {
+                        if (response.body().getPosts().size() > 0) {
+                            searchPostListener.onGetPosts(response.body());
+                        }
+                    } else {
                         searchPostListener.onGetPostError(response.message());
+                    }
                 } else {
                     searchPostListener.onGetPostError(response.message());
                 }

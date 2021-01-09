@@ -1,8 +1,8 @@
 package travelguideapp.ge.travelguide.ui.home.profile.posts;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -25,15 +26,21 @@ import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragment;
 import java.io.Serializable;
 import java.util.List;
 
-import static travelguideapp.ge.travelguide.utility.BaseApplication.POST_PER_PAGE_SIZE;
+import static travelguideapp.ge.travelguide.base.BaseApplication.POST_PER_PAGE_SIZE;
 
 public class UserPostsFragment extends Fragment implements UserPostListener {
+
+    public static UserPostsFragment getInstance(OnPostChooseCallback callback) {
+        UserPostsFragment userPostsFragment = new UserPostsFragment();
+        userPostsFragment.callback = callback;
+        return userPostsFragment;
+    }
 
     private static final int sColumnWidth = 120; // assume cell width of 120dp
 
     private RecyclerView postsRecycler;
 
-    private ProfileFragment.OnPostChooseListener listener;
+    private OnPostChooseCallback callback;
     private UserPostPresenter userPostPresenter;
     private List<PostResponse.Posts> posts;
 
@@ -59,13 +66,6 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         postsRecycler.setHasFixedSize(true);
 
         userPostPresenter = new UserPostPresenter(this);
-
-        try {
-            this.listener = (ProfileFragment.OnPostChooseListener) postsRecycler.getContext();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
         return view;
     }
 
@@ -189,7 +189,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
                 data.putSerializable("PostShowType", GetPostsFrom.MY_POSTS);
                 data.putSerializable("my_posts", (Serializable) posts);
             }
-            listener.onPostChoose(data);
+            callback.onPostChoose(data);
         } catch (Exception e) {
             e.printStackTrace();
         }

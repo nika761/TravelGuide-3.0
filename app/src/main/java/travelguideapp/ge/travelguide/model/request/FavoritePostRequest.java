@@ -6,4 +6,5 @@ public class FavoritePostRequest {
     public FavoritePostRequest(int from_post_id) {
         this.from_post_id = from_post_id;
     }
+
 }

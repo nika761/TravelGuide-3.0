@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,8 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
+import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
@@ -29,9 +30,15 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 
-import static travelguideapp.ge.travelguide.utility.BaseApplication.POST_PER_PAGE_SIZE;
+import static travelguideapp.ge.travelguide.base.BaseApplication.POST_PER_PAGE_SIZE;
 
 public class FavoritePostFragment extends Fragment implements FavoritePostListener {
+
+    public static FavoritePostFragment getInstance(OnPostChooseCallback callback) {
+        FavoritePostFragment favoritePostFragment = new FavoritePostFragment();
+        favoritePostFragment.callback = callback;
+        return favoritePostFragment;
+    }
 
     private Context context;
     private RecyclerView recyclerView;
@@ -40,7 +47,8 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     private List<PostResponse.Posts> posts;
     private FavoritePostPresenter favoritePostPresenter;
-    private ProfileFragment.OnPostChooseListener listener;
+
+    private OnPostChooseCallback callback;
 
     private LottieAnimationView loader;
 
@@ -57,12 +65,6 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         loader = view.findViewById(R.id.favorite_paging_loader);
 
         favoritePostPresenter = new FavoritePostPresenter(this);
-
-        try {
-            this.listener = (ProfileFragment.OnPostChooseListener) context;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
 
         return view;
     }
@@ -132,12 +134,13 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     @Override
     public void onGetPostsError(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        MyToaster.getErrorToaster(context, message);
     }
 
     @Override
     public void onLazyLoad(int postId) {
-        favoritePostPresenter.getFavoritePosts(GlobalPreferences.getAccessToken(context), new FavoritePostRequest(postId));
+        if (favoritePostPresenter != null)
+            favoritePostPresenter.getFavoritePosts(GlobalPreferences.getAccessToken(context), new FavoritePostRequest(postId));
     }
 
     @Override
@@ -149,8 +152,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
             data.putInt("postPosition", position);
             data.putSerializable("PostShowType", GetPostsFrom.FAVORITES);
             data.putSerializable("favoritePosts", (Serializable) posts);
-            listener.onPostChoose(data);
-
+            callback.onPostChoose(data);
         } catch (Exception e) {
             e.printStackTrace();
             try {

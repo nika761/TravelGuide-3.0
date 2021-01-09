@@ -315,7 +315,7 @@
         android:visibility="visible">
 
         <FrameLayout
-            android:id="@+id/customer_profile_post_container"
+            android:id="@+id/home_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible" />

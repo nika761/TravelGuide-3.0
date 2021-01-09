@@ -50,7 +50,6 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
     private void initUI() {
         resetPasswordPresenter = new ResetPasswordPresenter(this);
 
-
         loaderContainer = findViewById(R.id.reset_password_loader_container);
         loader = findViewById(R.id.reset_password_loader);
 

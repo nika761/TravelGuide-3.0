@@ -6,6 +6,8 @@ public interface SearchPostListener {
 
     void onGetPosts(PostResponse postResponse);
 
+    void onChoosePost(int postId);
+
     void onGetPostError(String message);
 
 }

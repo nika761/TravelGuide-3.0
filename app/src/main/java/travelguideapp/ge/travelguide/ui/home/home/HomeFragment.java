@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.ui.home.home;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +12,9 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.enums.SearchPostBy;
@@ -44,12 +45,10 @@ import travelguideapp.ge.travelguide.model.request.SetPostViewRequest;
 import travelguideapp.ge.travelguide.model.request.SetStoryLikeRequest;
 import travelguideapp.ge.travelguide.model.request.SharePostRequest;
 import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
-import travelguideapp.ge.travelguide.model.response.FollowResponse;
-import travelguideapp.ge.travelguide.model.response.SetPostFavoriteResponse;
-import travelguideapp.ge.travelguide.model.response.SetStoryLikeResponse;
 import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
+import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
 import travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity;
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
@@ -60,23 +59,19 @@ import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 
 import java.util.List;
 
-import static travelguideapp.ge.travelguide.utility.BaseApplication.SHARING_INTENT_REQUEST_CODE;
+public class HomeFragment extends Fragment implements HomeFragmentListener, CommentFragment.LoadCommentFragmentListener {
 
-public class HomeFragment extends Fragment implements HomeFragmentListener {
-
-    public static HomeFragment getInstance(HomeFragment.LoadCommentFragmentListener commentFragmentCallback) {
+    public static HomeFragment getInstance() {
         HomeFragment homeFragment = new HomeFragment();
-        homeFragment.commentFragmentCallback = commentFragmentCallback;
         return homeFragment;
     }
-
-    private HomeFragment.LoadCommentFragmentListener commentFragmentCallback;
 
     private HomeFragmentPresenter presenter;
     private PostAdapter postAdapter;
 
     private LottieAnimationView loader;
     private ConstraintLayout loaderContainer;
+    private ConstraintLayout commentFragmentContainer;
     private RecyclerView postRecycler;
     private CustomProgressBar customProgressBar;
 
@@ -160,6 +155,11 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
                             loaderContainer.setVisibility(View.VISIBLE);
                             presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
                             break;
+
+                        case SEARCH:
+                            List<PostResponse.Posts> searchedPosts = (List<PostResponse.Posts>) getArguments().getSerializable("searchedPosts");
+                            initRecyclerView(searchedPosts, true, scrollPosition);
+                            break;
                     }
                 }
             } catch (Exception e) {
@@ -168,6 +168,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 
         }
     }
+
 
     private void initRecyclerView(List<PostResponse.Posts> posts, boolean scrollToPosition, int scrollPosition) {
         customPostRecycler.setPosts(posts);
@@ -270,12 +271,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
 //            postAdapter.setPosts(posts);
 //        }
 
-//        if (customPostAdapter == null) {
-//            initRecyclerView(posts, false, 0);
-//        } else {
-//            customPostAdapter.setPosts(posts);
-//            customPostRecycler.setPosts(posts);
-//        }
         try {
             if (customPostAdapter == null) {
                 initRecyclerView(posts, false, 0);
@@ -360,9 +355,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     public void onShareChoose(String postLink, int post_id) {
         try {
             presenter.setPostShare(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(post_id));
-
-            BaseApplication.shareContent((Activity) postRecycler.getContext(), postLink);
-
+            ((BaseActivity) postRecycler.getContext()).shareContent(postLink);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -392,7 +385,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onCommentChoose(int storyId, int postId) {
         try {
-            commentFragmentCallback.onLoadCommentFragment(postId, storyId);
+            Bundle data = new Bundle();
+            data.putInt("storyId", storyId);
+            data.putInt("postId", postId);
+            commitCommentFragment(data, CommentFragment.CommentFragmentType.COMMENT);
+//            loadFragment(storyId, postId);
+//            commentFragmentCallback.onLoadCommentFragment(postId, storyId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -452,39 +450,44 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
     @Override
     public void onLazyLoad(int fromPostId) {
 
+        String accessToken = GlobalPreferences.getAccessToken(postRecycler.getContext());
+
         switch (getPostsFrom) {
 
             case FAVORITES:
-                presenter.getFavoritePosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new FavoritePostRequest(fromPostId));
+                presenter.getFavoritePosts(accessToken, new FavoritePostRequest(fromPostId));
                 break;
 
             case MY_POSTS:
-                presenter.getUserPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
+                presenter.getUserPosts(accessToken, new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
                 break;
 
             case CUSTOMER_POSTS:
-                presenter.getUserPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostByUserRequest(customerUserId, fromPostId));
+                presenter.getUserPosts(accessToken, new PostByUserRequest(customerUserId, fromPostId));
                 break;
 
             case FEED:
-                presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(fromPostId));
+                presenter.getPosts(accessToken, new PostRequest(fromPostId));
+                break;
+
+            case SEARCH:
+                MyToaster.getErrorToaster(postRecycler.getContext(), "Lazy Load here");
                 break;
         }
     }
 
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SHARING_INTENT_REQUEST_CODE) {
-            /*Supposedly TO-DO : handle sharing request by result **/
+    public void onResume() {
+        super.onResume();
+        try {
+            customPostRecycler.startPlayer();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-
-
     @Override
-    public void onStop() {
+    public void onDestroy() {
         try {
             List<PostView> views = CustomTimer.getPostViews();
             if (views.size() != 0)
@@ -499,6 +502,16 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         if (presenter != null)
             presenter = null;
 
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        try {
+            customPostRecycler.pausePlayer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onStop();
     }
 
@@ -536,8 +549,35 @@ public class HomeFragment extends Fragment implements HomeFragmentListener {
         }
     }
 
-    public interface LoadCommentFragmentListener {
-        void onLoadCommentFragment(int postId, int storyId);
+    @Override
+    public void commitCommentFragment(Bundle dataForFragment, CommentFragment.CommentFragmentType commentType) {
+        try {
+            FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+            switch (commentType) {
+                case COMMENT:
+                    CommentFragment commentFragment = CommentFragment.getInstance(this);
+                    commentFragment.setArguments(dataForFragment);
+
+                    fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_slide_up, R.anim.anim_swipe_bottom);
+                    fragmentTransaction.addToBackStack("COMMENT_FRAGMENT_STACK");
+                    fragmentTransaction.replace(R.id.post_comment_fragment_container, commentFragment, "COMMENT_FRAGMENT_TAG");
+                    fragmentTransaction.commit();
+                    break;
+
+                case COMMENT_REPLY:
+                    RepliesFragment repliesFragment = new RepliesFragment();
+                    repliesFragment.setArguments(dataForFragment);
+
+                    fragmentTransaction.addToBackStack("REPLIES_FRAGMENT_STACK");
+                    fragmentTransaction.replace(R.id.post_comment_fragment_container, repliesFragment, "REPLIES_FRAGMENT_TAG");
+                    fragmentTransaction.commit();
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

@@ -25,6 +25,8 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private FollowType requestType;
     private FollowFragmentListener listener;
 
+    private boolean isCustomer;
+
     private List<FollowerResponse.Followers> followers;
     private List<FollowingResponse.Followings> followings;
 
@@ -71,6 +73,10 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.followings = followings;
         this.requestType = FollowType.FOLLOWING;
         notifyDataSetChanged();
+    }
+
+    public void setIsCustomer(boolean customer) {
+        isCustomer = customer;
     }
 
     void followed(int position) {
@@ -165,7 +171,10 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             unFollow = itemView.findViewById(R.id.following_user_unfollow);
             unFollow.setOnClickListener(v -> listener.onFollowAction(followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
 //            animation = AnimationUtils.loadAnimation(userName.getContext(), R.anim.anim_follow_item_up);
+            if (isCustomer)
+                unFollow.setVisibility(View.GONE);
         }
+
 
         void bindView(int position) {
             try {

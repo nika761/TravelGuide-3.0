@@ -19,6 +19,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
@@ -43,21 +45,19 @@ import travelguideapp.ge.travelguide.ui.home.profile.tours.UserToursFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CustomerProfileActivity extends AppCompatActivity implements CustomerProfileListener, ProfileFragment.OnPostChooseListener, HomeFragment.LoadCommentFragmentListener, View.OnClickListener {
+public class CustomerProfileActivity extends BaseActivity implements CustomerProfileListener, OnPostChooseCallback,
+        View.OnClickListener {
 
     private CustomerProfilePresenter customerProfilePresenter;
 
     private TextView userName, nickName, following, follower, reaction, bio, bioBtn, followBtn;
     private FrameLayout loaderContainer;
     private ConstraintLayout fragmentContainerMain;
-    private FrameLayout postFragmentContainer;
-    private ConstraintLayout commentFragmentContainer;
     private LinearLayout bioContainer;
     private LottieAnimationView lottieLoader;
     private CircleImageView image;
 
     private int customerUserId;
-    private boolean isReplyOpened = false;
     private String customerUserName;
 
     @Override
@@ -99,11 +99,10 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         TabLayout tabLayout = findViewById(R.id.customer_profile_tab);
 
         fragmentContainerMain = findViewById(R.id.customer_profile_fragment_container_main);
-        postFragmentContainer = findViewById(R.id.customer_profile_post_container);
-        commentFragmentContainer = findViewById(R.id.customer_comments_container);
 
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
         profilePagerAdapter.setCustomerUserId(customerUserId);
+        profilePagerAdapter.setCallback(this);
         profilePagerAdapter.setGetPostsFrom(GetPostsFrom.CUSTOMER_POSTS);
         profilePagerAdapter.addFragment(new UserPostsFragment());
         profilePagerAdapter.addFragment(new UserToursFragment());
@@ -138,35 +137,6 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
         loaderContainer = findViewById(R.id.customer_profile_frame);
         lottieLoader = findViewById(R.id.loader_customer_profile);
     }
-
-
-    public void loadCommentFragment(int storyId, int postId) {
-        postFragmentContainer.setVisibility(View.VISIBLE);
-        Bundle commentFragmentData = new Bundle();
-        commentFragmentData.putInt("storyId", storyId);
-        commentFragmentData.putInt("postId", postId);
-
-        HelperUI.loadFragment(new CommentFragment(), commentFragmentData, R.id.customer_comments_container, true, true, this);
-
-    }
-
-    @Override
-    public void onLoadCommentFragment(int postId, int storyId) {
-        commentFragmentContainer.setVisibility(View.VISIBLE);
-
-        Bundle commentFragmentData = new Bundle();
-        commentFragmentData.putInt("storyId", storyId);
-        commentFragmentData.putInt("postId", postId);
-
-        HelperUI.loadFragment(new CommentFragment(), commentFragmentData, R.id.customer_comments_container, true, true, this);
-
-    }
-
-    public void loadRepliesFragment(Bundle repliesFragmentData) {
-        isReplyOpened = true;
-        HelperUI.loadFragment(new RepliesFragment(), repliesFragmentData, R.id.customer_comments_container, true, true, this);
-    }
-
 
     @Override
     public void onGetProfile(ProfileResponse profileResponse) {
@@ -261,7 +231,7 @@ public class CustomerProfileActivity extends AppCompatActivity implements Custom
     @Override
     public void onPostChoose(Bundle fragmentData) {
         fragmentContainerMain.setVisibility(View.VISIBLE);
-        HelperUI.loadFragment(HomeFragment.getInstance(this), fragmentData, R.id.customer_profile_post_container, true, true, this);
+        HelperUI.loadFragment(HomeFragment.getInstance(), fragmentData, R.id.home_fragment_container, true, true, this);
     }
 
     @Override

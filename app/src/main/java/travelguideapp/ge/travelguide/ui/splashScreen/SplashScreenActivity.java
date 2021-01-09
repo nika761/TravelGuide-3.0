@@ -9,7 +9,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -24,7 +23,7 @@ import travelguideapp.ge.travelguide.ui.language.LanguageListener;
 import travelguideapp.ge.travelguide.ui.login.loggedUsers.SavedUserActivity;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
 import travelguideapp.ge.travelguide.ui.language.LanguagePresenter;
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import java.io.Serializable;

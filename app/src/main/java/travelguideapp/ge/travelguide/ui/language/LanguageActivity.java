@@ -3,8 +3,10 @@ package travelguideapp.ge.travelguide.ui.language;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -12,8 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
+import travelguideapp.ge.travelguide.model.request.LanguageStringsRequest;
 import travelguideapp.ge.travelguide.model.response.LanguageStringsResponse;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
@@ -26,18 +32,27 @@ import travelguideapp.ge.travelguide.ui.splashScreen.SplashScreenActivity;
 
 public class LanguageActivity extends AppCompatActivity implements LanguageListener {
     private LanguagePresenter languagePresenter;
+    private FrameLayout loaderContainer;
+    private LottieAnimationView loader;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
+        loaderContainer = findViewById(R.id.frame_language_loader);
+        loader = findViewById(R.id.animation_view_languages);
 
         languagePresenter = new LanguagePresenter(this);
 
-        List<LanguagesResponse.Language> languages = (List<LanguagesResponse.Language>) getIntent().getSerializableExtra(SplashScreenActivity.INTENT_LANGUAGES);
-        if (languages != null) {
-            iniRecyclerAdapter(languages);
+        try {
+            List<LanguagesResponse.Language> languages = (List<LanguagesResponse.Language>) getIntent().getSerializableExtra(SplashScreenActivity.INTENT_LANGUAGES);
+            if (languages != null) {
+                iniRecyclerAdapter(languages);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 //
 //        Button crashButton = new Button(this);
 //        crashButton.setText("Crash!");
@@ -62,30 +77,35 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
 
     @Override
     public void onChooseLanguage(int languageId) {
-        GlobalPreferences.saveLanguageId(this, languageId);
-        Intent signIntent = new Intent(this, SignInActivity.class);
-        startActivity(signIntent);
-//        languagePresenter.getLanguageStrings(new LanguageStringsRequest(languageId));
+        try {
+            loaderContainer.setVisibility(View.VISIBLE);
+            loader.setVisibility(View.VISIBLE);
+            GlobalPreferences.saveLanguageId(this, languageId);
+            languagePresenter.getLanguageStrings(new LanguageStringsRequest(languageId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onGetStrings(LanguageStringsResponse languageStringsResponse) {
         if (languageStringsResponse.getGlobalLanguages() != null)
             try {
-//                saveLanguage(languageStringsResponse.getGlobalLanguages());
+                new Handler().post(() -> GlobalPreferences.saveCurrentLanguage(LanguageActivity.this, languageStringsResponse.getGlobalLanguages()));
+                new Handler().postDelayed(() -> {
+                    Intent signIntent = new Intent(LanguageActivity.this, SignInActivity.class);
+                    startActivity(signIntent);
+                }, 2000);
             } catch (Exception e) {
-                Toast.makeText(this, "Please Try Again", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
     }
 
-    private void saveLanguage(GlobalLanguages globalLanguages) {
-        new Handler().post(() -> GlobalPreferences.saveCurrentLanguage(LanguageActivity.this, globalLanguages));
-    }
-
     @Override
     public void onGetError(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        loaderContainer.setVisibility(View.GONE);
+        loader.setVisibility(View.GONE);
+        MyToaster.getErrorToaster(this, error);
     }
 
     @Override

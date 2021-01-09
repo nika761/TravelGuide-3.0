@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.ui.gallery;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.ui.editPost.EditPostActivity;
+
 import com.google.android.material.tabs.TabLayout;
 
 import java.text.MessageFormat;
@@ -77,7 +80,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 intent.putStringArrayListExtra(EditPostActivity.STORIES_PATHS, pickedItems);
                 startActivity(intent);
             } else {
-                Toast.makeText(GalleryActivity.this, "Please choose item", Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, "Please choose item");
             }
         });
 
@@ -130,6 +133,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onItemSelected(String path) {
 
@@ -158,7 +162,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                     galleryAdapterMin.setItemsPath(pickedItems);
                     isVideo = false;
                 } else {
-                    Toast.makeText(this, "You can choose only one video", Toast.LENGTH_SHORT).show();
+                    MyToaster.getErrorToaster(this, "You can choose only one video");
                 }
 
             } else {
@@ -169,7 +173,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 } else {
                     nextBtn.setClickable(false);
                     nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_next_btn_grey, null));
-                    Toast.makeText(this, "You can choose only one photo", Toast.LENGTH_SHORT).show();
+                    MyToaster.getErrorToaster(this, "You can choose only one photo");
                 }
                 choosedItemRecyclerVisibility(true);
                 nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
@@ -194,7 +198,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getMediaFilesByRole();
             } else {
-                Toast.makeText(this, "No permission granted", Toast.LENGTH_SHORT).show();
+                MyToaster.getErrorToaster(this, "No permission granted");
             }
         }
 

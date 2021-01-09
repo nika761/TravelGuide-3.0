@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.ui.home.profile;
+package travelguideapp.ge.travelguide.base;
 
 public interface BaseListener {
 

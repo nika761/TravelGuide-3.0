@@ -38,21 +38,14 @@ public class NotificationsFragment extends Fragment implements View.OnClickListe
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
-
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.notification_close_btn:
-                Objects.requireNonNull(getActivity()).onBackPressed();
+                try {
+                    getActivity().onBackPressed();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }

@@ -15,7 +15,7 @@ import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 import java.util.List;
 
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 
 public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapter.PostViewHolder> {
     private List<PostResponse.Posts> posts;

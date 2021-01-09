@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.ui.home.profile.favorites.FavoritePostFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
 
+    private OnPostChooseCallback callback;
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private GetPostsFrom getPostsFrom;
     private int customerUserId;
@@ -33,7 +35,7 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
             data.putSerializable("request_type", getPostsFrom);
             switch (position) {
                 case 0:
-                    UserPostsFragment userPostsFragment = new UserPostsFragment();
+                    UserPostsFragment userPostsFragment = UserPostsFragment.getInstance(callback);
                     userPostsFragment.setArguments(data);
                     return userPostsFragment;
                 case 1:
@@ -44,9 +46,9 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
         } else {
             switch (position) {
                 case 0:
-                    return new UserPostsFragment();
+                    return UserPostsFragment.getInstance(callback);
                 case 1:
-                    return new FavoritePostFragment();
+                    return FavoritePostFragment.getInstance(callback);
                 case 2:
                     return new UserToursFragment();
             }
@@ -69,6 +71,10 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
 
     public void setCustomerUserId(int customerUserId) {
         this.customerUserId = customerUserId;
+    }
+
+    public void setCallback(OnPostChooseCallback callback) {
+        this.callback = callback;
     }
 
 }

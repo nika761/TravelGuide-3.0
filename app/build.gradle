@@ -87,6 +87,8 @@ dependencies {
 
     implementation 'ja.burhanrashid52:photoeditor:1.0.0'
 
+    implementation 'gun0912.ted:tedkeyboardobserver:1.0.0-alpha2'
+
     implementation 'com.github.jakebonk:ChipView:1.0.1'
 
     implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true }

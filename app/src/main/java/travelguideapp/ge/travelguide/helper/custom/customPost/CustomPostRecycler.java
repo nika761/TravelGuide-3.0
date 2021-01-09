@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.helper.custom.customPost;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -59,7 +60,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import travelguideapp.ge.travelguide.utility.BaseApplication;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 
 public class CustomPostRecycler extends RecyclerView {
 
@@ -389,6 +390,7 @@ public class CustomPostRecycler extends RecyclerView {
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void bindItem(CustomPostHolder holder, PostResponse.Posts post) {
 
         PostResponse.Post_stories story = post.getPost_stories().get(0);
@@ -624,6 +626,7 @@ public class CustomPostRecycler extends RecyclerView {
     }
 
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void animateBtn(View view, EmotionType emotionType, EmotionState emotionState) {
         switch (emotionType) {
             case LIKE:
@@ -699,14 +702,14 @@ public class CustomPostRecycler extends RecyclerView {
         }
     }
 
-    private void pausePlayer() {
+    public void pausePlayer() {
         videoPlaying = false;
         animateVideoPlyIcon(false);
         videoPlayer.setPlayWhenReady(false);
         videoPlayer.getPlaybackState();
     }
 
-    private void startPlayer() {
+    public void startPlayer() {
         videoPlaying = true;
         animateVideoPlyIcon(true);
         videoPlayer.setPlayWhenReady(true);
@@ -738,6 +741,7 @@ public class CustomPostRecycler extends RecyclerView {
     }
 
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void animateVideoPlyIcon(boolean videoPlaying) {
         if (videoPlayIcon != null) {
 

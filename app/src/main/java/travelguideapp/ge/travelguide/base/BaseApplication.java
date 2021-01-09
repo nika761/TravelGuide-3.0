@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.utility;
+package travelguideapp.ge.travelguide.base;
 
 import android.app.Activity;
 import android.app.Application;
@@ -43,8 +43,6 @@ public class BaseApplication extends Application {
 
     public static final String CHANNEL_ID = "uploading";
     public static final String CHANNEL_NAME = "upload_post";
-
-    public static final int SHARING_INTENT_REQUEST_CODE = 500;
 
     public static long POST_VIEW_TIME;
 
@@ -139,12 +137,5 @@ public class BaseApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void shareContent(Activity activity, String content) {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
-        activity.startActivityForResult(sharingIntent, SHARING_INTENT_REQUEST_CODE);
     }
 }

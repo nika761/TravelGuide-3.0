@@ -109,7 +109,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/comments_paging_container" />
 
-        <EditText
+        <TextView
             android:id="@+id/comments_add_txt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

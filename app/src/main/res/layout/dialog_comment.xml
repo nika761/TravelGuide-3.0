@@ -7,7 +7,7 @@
     android:padding="8dp">
 
     <EditText
-        android:id="@+id/dialog____"
+        android:id="@+id/bottom_sheet_comment_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -15,20 +15,20 @@
         android:padding="10dp"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/dialog____asdasd"
+        app:layout_constraintEnd_toStartOf="@+id/bottom_sheet_comment_add_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/dialog____asdasd"
+        android:id="@+id/bottom_sheet_comment_add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:background="@drawable/icon_add_comment_black"
-        app:layout_constraintBottom_toBottomOf="@id/dialog____"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_sheet_comment_field"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dialog____"
-        app:layout_constraintTop_toTopOf="@id/dialog____" />
+        app:layout_constraintStart_toEndOf="@+id/bottom_sheet_comment_field"
+        app:layout_constraintTop_toTopOf="@id/bottom_sheet_comment_field" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

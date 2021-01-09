@@ -14,4 +14,5 @@ public class MyToaster {
         if (context != null && message != null)
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
+
 }

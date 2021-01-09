@@ -1,8 +1,10 @@
 package travelguideapp.ge.travelguide.ui.login.signUp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +29,7 @@ import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.CheckNickRequest;
 import travelguideapp.ge.travelguide.model.request.SignUpRequest;
@@ -262,15 +266,22 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         }
     }
 
+    private void checkPermissionAndStartPick() {
+        if (SystemManager.isReadStoragePermission(this)) {
+            HelperMedia.startImagePicker(this);
+        } else {
+            SystemManager.requestReadStoragePermission(this);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
             case R.id.register_upload_photo:
-
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, PICK_IMAGE);
-
+                checkPermissionAndStartPick();
+//                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(i, PICK_IMAGE);
 //                Intent intent = new Intent();
 //                intent.setType("image/*");
 //                intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -312,6 +323,15 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            HelperMedia.startImagePicker(this);
+        } else {
+            MyToaster.getErrorToaster(this, "No permission granted");
+        }
+    }
 
     private boolean checkNumber(EditText enteredNumber) {
         boolean numberValidate = false;
@@ -324,6 +344,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         return numberValidate;
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void onGetData() {
 
         if (!genderChecked) {
