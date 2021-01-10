@@ -1,7 +1,6 @@
 package travelguideapp.ge.travelguide.ui.home.home;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -48,13 +47,11 @@ import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
 import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
 import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
 import travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity;
-import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.model.response.SharePostResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
-import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 
 import java.util.List;
@@ -302,10 +299,11 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onHashtagChoose(String hashtag, SearchPostBy searchPostBy) {
         try {
-            Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
-            postHashtagIntent.putExtra("search_type", searchPostBy);
-            postHashtagIntent.putExtra("search_hashtag", hashtag);
-            customPostRecycler.getContext().startActivity(postHashtagIntent);
+            ((BaseActivity) getActivity()).startSearchPostActivity(hashtag, searchPostBy);
+//            Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
+//            postHashtagIntent.putExtra("search_type", searchPostBy);
+//            postHashtagIntent.putExtra("search_hashtag", hashtag);
+//            customPostRecycler.getContext().startActivity(postHashtagIntent);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -421,10 +419,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
             }
         } else {
             try {
-                Intent intent = new Intent(postRecycler.getContext(), CustomerProfileActivity.class);
-                intent.putExtra("id", userId);
-                postRecycler.getContext().startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+                ((BaseActivity) getActivity()).startCustomerActivity(userId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -517,6 +512,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void stopLoader() {
+
         try {
             loaderContainer.setVisibility(View.GONE);
             loader.setVisibility(View.GONE);
@@ -557,7 +553,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                 case COMMENT:
                     CommentFragment commentFragment = CommentFragment.getInstance(this);
                     commentFragment.setArguments(dataForFragment);
-
                     fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_slide_up, R.anim.anim_swipe_bottom);
                     fragmentTransaction.addToBackStack("COMMENT_FRAGMENT_STACK");
                     fragmentTransaction.replace(R.id.post_comment_fragment_container, commentFragment, "COMMENT_FRAGMENT_TAG");
@@ -567,7 +562,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                 case COMMENT_REPLY:
                     RepliesFragment repliesFragment = new RepliesFragment();
                     repliesFragment.setArguments(dataForFragment);
-
                     fragmentTransaction.addToBackStack("REPLIES_FRAGMENT_STACK");
                     fragmentTransaction.replace(R.id.post_comment_fragment_container, repliesFragment, "REPLIES_FRAGMENT_TAG");
                     fragmentTransaction.commit();

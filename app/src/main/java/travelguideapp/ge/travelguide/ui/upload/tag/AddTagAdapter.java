@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
+import travelguideapp.ge.travelguide.ui.search.hashtag.HashtagsFragmentListener;
 
 import java.util.List;
 
@@ -17,9 +18,14 @@ public class AddTagAdapter extends RecyclerView.Adapter<AddTagAdapter.AddTagHold
 
     private List<HashtagResponse.Hashtags> hashtags;
     private TagPostListener tagPostListener;
+    private HashtagsFragmentListener hashtagsFragmentListener;
 
-    AddTagAdapter(TagPostListener tagPostListener) {
+    public AddTagAdapter(TagPostListener tagPostListener) {
         this.tagPostListener = tagPostListener;
+    }
+
+    public AddTagAdapter(HashtagsFragmentListener hashtagsFragmentListener) {
+        this.hashtagsFragmentListener = hashtagsFragmentListener;
     }
 
     @NonNull
@@ -53,7 +59,14 @@ public class AddTagAdapter extends RecyclerView.Adapter<AddTagAdapter.AddTagHold
         AddTagHolder(@NonNull View itemView) {
             super(itemView);
             hashtag = itemView.findViewById(R.id.hashtag_add);
-            hashtag.setOnClickListener(v -> tagPostListener.onChooseHashtag(hashtags.get(getLayoutPosition()).getHashtag()));
+            try {
+                if (tagPostListener != null)
+                    hashtag.setOnClickListener(v -> tagPostListener.onChooseHashtag(hashtags.get(getLayoutPosition()).getHashtag()));
+                else
+                    hashtag.setOnClickListener(v -> hashtagsFragmentListener.onHashtagChoose(hashtags.get(getLayoutPosition())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

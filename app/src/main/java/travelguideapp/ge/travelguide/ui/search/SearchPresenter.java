@@ -1,5 +1,8 @@
-package travelguideapp.ge.travelguide.ui.upload.tag;
+package travelguideapp.ge.travelguide.ui.search;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import travelguideapp.ge.travelguide.model.request.SearchFollowersRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
@@ -7,17 +10,12 @@ import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-class TagPostPresenter {
-
-    private TagPostListener tagPostListener;
+public class SearchPresenter {
+    private SearchListener searchListener;
     private ApiService apiService;
 
-    TagPostPresenter(TagPostListener tagPostListener) {
-        this.tagPostListener = tagPostListener;
+    public SearchPresenter(SearchListener searchListener) {
+        this.searchListener = searchListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
@@ -28,49 +26,53 @@ class TagPostPresenter {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
-                            tagPostListener.onGetHashtags(response.body().getHashtags());
+                            if (response.body().getHashtags().size() > 0)
+                                searchListener.onGetHashtags(response.body().getHashtags());
+                            else
+                                searchListener.onError(response.message());
                             break;
                         case 1:
-                            tagPostListener.onGetError(response.message());
+                            searchListener.onError(response.message());
                             break;
                     }
                 } else {
-                    tagPostListener.onGetError(response.message());
+                    searchListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<HashtagResponse> call, Throwable t) {
-                tagPostListener.onGetError(t.getMessage());
+                searchListener.onError(t.getMessage());
             }
         });
     }
 
-    void searchFollowers(String accessToken, SearchFollowersRequest searchFollowersRequest) {
+    void getFollowers(String accessToken, SearchFollowersRequest searchFollowersRequest) {
         apiService.searchFollowers(accessToken, searchFollowersRequest).enqueue(new Callback<FollowerResponse>() {
             @Override
             public void onResponse(Call<FollowerResponse> call, Response<FollowerResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
-                            tagPostListener.onGetFollowers(response.body().getFollowers());
+                            if (response.body().getFollowers().size() > 0)
+                                searchListener.onGetUsers(response.body().getFollowers());
+                            else
+                                searchListener.onError(response.message());
                             break;
                         case 1:
-                            tagPostListener.onGetError(response.message());
+                            searchListener.onError(response.message());
                             break;
                     }
                 } else {
-                    tagPostListener.onGetError(response.message());
+                    searchListener.onError(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<FollowerResponse> call, Throwable t) {
-                tagPostListener.onGetError(t.getMessage());
-
+                searchListener.onError(t.getMessage());
             }
         });
     }
-
 
 }

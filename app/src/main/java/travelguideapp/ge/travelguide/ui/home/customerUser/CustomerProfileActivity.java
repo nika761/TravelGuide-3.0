@@ -51,19 +51,20 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
     private CustomerProfilePresenter customerProfilePresenter;
 
     private TextView userName, nickName, following, follower, reaction, bio, bioBtn, followBtn;
-    private FrameLayout loaderContainer;
     private ConstraintLayout fragmentContainerMain;
-    private LinearLayout bioContainer;
     private LottieAnimationView lottieLoader;
+    private FrameLayout loaderContainer;
+    private LinearLayout bioContainer;
     private CircleImageView image;
 
-    private int customerUserId;
     private String customerUserName;
+    private int customerUserId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_profile);
+
         try {
             this.customerUserId = getIntent().getIntExtra("id", 0);
         } catch (Exception e) {
@@ -78,7 +79,6 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
             onBackPressed();
 
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-//
 //        Bundle bundle = new Bundle();
 //        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(customerUserId));
 //        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "first");
@@ -136,6 +136,7 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
 
         loaderContainer = findViewById(R.id.customer_profile_frame);
         lottieLoader = findViewById(R.id.loader_customer_profile);
+
     }
 
     @Override

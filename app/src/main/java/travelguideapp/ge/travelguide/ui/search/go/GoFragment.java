@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.ui.search;
+package travelguideapp.ge.travelguide.ui.search.go;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

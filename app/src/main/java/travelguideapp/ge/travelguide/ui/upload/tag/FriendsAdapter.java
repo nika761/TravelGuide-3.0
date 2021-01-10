@@ -16,14 +16,20 @@ import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import travelguideapp.ge.travelguide.ui.search.user.UsersFragmentListener;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsHolder> {
 
     private List<FollowerResponse.Followers> followers;
     private TagPostListener tagPostListener;
+    private UsersFragmentListener usersFragmentListener;
 
     public FriendsAdapter(TagPostListener tagPostListener) {
         this.tagPostListener = tagPostListener;
+    }
+
+    public FriendsAdapter(UsersFragmentListener usersFragmentListener) {
+        this.usersFragmentListener = usersFragmentListener;
     }
 
 
@@ -59,8 +65,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
         FriendsHolder(@NonNull View itemView) {
             super(itemView);
             container = itemView.findViewById(R.id.followers_container);
-            container.setOnClickListener(v -> tagPostListener.onChooseFollower(followers.get(getLayoutPosition()).getUser_id(), followers.get(getLayoutPosition()).getNickname()));
-
+            try {
+                if (tagPostListener != null)
+                    container.setOnClickListener(v -> tagPostListener.onChooseFollower(followers.get(getLayoutPosition()).getUser_id(), followers.get(getLayoutPosition()).getNickname()));
+                else
+                    container.setOnClickListener(v -> usersFragmentListener.onUserChoose(followers.get(getLayoutPosition())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             profileImage = itemView.findViewById(R.id.followers_user_image);
             userName = itemView.findViewById(R.id.followers_user_name);
             nickName = itemView.findViewById(R.id.followers_user_nick_name);
@@ -69,7 +81,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
         }
 
         void bindView(int position) {
-            HelperMedia.loadCirclePhoto(follow.getContext(), followers.get(position).getProfile_pic(), profileImage);
+            HelperMedia.loadCirclePhoto(nickName.getContext(), followers.get(position).getProfile_pic(), profileImage);
             userName.setText(followers.get(position).getName());
             nickName.setText(followers.get(position).getNickname());
         }

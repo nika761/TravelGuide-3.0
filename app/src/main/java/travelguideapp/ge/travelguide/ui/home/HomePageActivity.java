@@ -293,10 +293,8 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
     }
 
     @Override
-    public void onAuthenticationError(String s) {
-        Intent intent = new Intent(this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+    public void onAuthenticationError(String message) {
+        super.onAuthenticateError(message);
     }
 
     @Override

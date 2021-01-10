@@ -1,8 +1,10 @@
 package travelguideapp.ge.travelguide.base;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,9 +13,14 @@ import androidx.fragment.app.FragmentManager;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
+import travelguideapp.ge.travelguide.enums.SearchPostBy;
 import travelguideapp.ge.travelguide.helper.HelperUI;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
+import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.ui.home.home.HomeFragment;
+import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
+import travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -58,6 +65,14 @@ public class BaseActivity extends AppCompatActivity {
         startActivityForResult(sharingIntent, SHARING_INTENT_REQUEST_CODE);
     }
 
+    protected void onAuthenticateError(String message) {
+        MyToaster.getErrorToaster(this, message);
+
+        Intent intent = new Intent(this, SignInActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -65,4 +80,42 @@ public class BaseActivity extends AppCompatActivity {
             /*Supposedly TO-DO : handle sharing request by result **/
         }
     }
+
+    protected void getKeyboard(boolean show, View view) {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                if (show) {
+                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+                } else {
+                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startCustomerActivity(int userId) {
+        try {
+            Intent intent = new Intent(this, CustomerProfileActivity.class);
+            intent.putExtra("id", userId);
+            startActivity(intent);
+            overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startSearchPostActivity(String hashtag, SearchPostBy searchPostBy) {
+        try {
+            Intent postHashtagIntent = new Intent(this, SearchPostActivity.class);
+            postHashtagIntent.putExtra("search_type", searchPostBy);
+            postHashtagIntent.putExtra("search_hashtag", hashtag);
+            startActivity(postHashtagIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
