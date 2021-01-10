@@ -32,6 +32,7 @@ import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.home.profile.changeLanguage.ChangeLangFragment;
@@ -57,7 +58,11 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         return profileFragment;
     }
 
-    private TextView nickName, name, bioBody, following, follower, reaction, bioHead;
+    private TextView nickName, name, bioBody, followingCount, following, followerCount, follower, reactionCount, reaction, bioHead, editProfile;
+
+    private String editProfileText, followingText, followersText, reactionsText, bioText, settingsText, shareProfileText,
+            languageText, aboutText, termsText, privacyText, signOutText;
+
     private ImageButton seeBio, hideBio;
     private CircleImageView userPrfImage;
     private ActionBarDrawerToggle toggle;
@@ -137,7 +142,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         View followStates = mIncludedLayout.findViewById(R.id.profile_follow_states);
         followStates.setOnClickListener(v -> callBack.onChooseFollowers(userName));
 
-        TextView editProfile = mIncludedLayout.findViewById(R.id.profile_edit_profile_btn);
+        editProfile = mIncludedLayout.findViewById(R.id.profile_edit_profile_btn);
         editProfile.setOnClickListener(v -> callBack.onChooseEditProfile(userInfo));
 
         seeBio = mIncludedLayout.findViewById(R.id.profile_see_bio_btn);
@@ -148,9 +153,12 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
         userPrfImage = mIncludedLayout.findViewById(R.id.profile_image);
         nickName = mIncludedLayout.findViewById(R.id.user_prf_nickName);
-        follower = mIncludedLayout.findViewById(R.id.followers_count);
-        following = mIncludedLayout.findViewById(R.id.following_count);
-        reaction = mIncludedLayout.findViewById(R.id.reactions_count);
+        followerCount = mIncludedLayout.findViewById(R.id.followers_count);
+        follower = mIncludedLayout.findViewById(R.id.followers);
+        followingCount = mIncludedLayout.findViewById(R.id.following_count);
+        following = mIncludedLayout.findViewById(R.id.following);
+        reactionCount = mIncludedLayout.findViewById(R.id.reactions_count);
+        reaction = mIncludedLayout.findViewById(R.id.reactions);
         bioBody = mIncludedLayout.findViewById(R.id.bio_text);
         bioContainer = mIncludedLayout.findViewById(R.id.profile_bio);
         bioHead = mIncludedLayout.findViewById(R.id.profile_bio_head);
@@ -162,9 +170,56 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
+    private void setStringsByLanguage() {
+
+        GlobalLanguages currentLanguage = GlobalPreferences.getCurrentLanguage(context);
+
+        try {
+            if (currentLanguage.getEdit_profile() != null) {
+                editProfileText = currentLanguage.getEdit_profile();
+                editProfile.setText(editProfileText);
+            }
+        } catch (Exception e) {
+            editProfileText = getString(R.string.edit_profile);
+            editProfile.setText(editProfileText);
+        }
+
+        try {
+            if (currentLanguage.getFollowing() != null) {
+                followingText = currentLanguage.getFollowing();
+                following.setText(followingText);
+            }
+        } catch (Exception e) {
+            followingText = getString(R.string.following);
+            following.setText(followingText);
+        }
+
+        try {
+            if (currentLanguage.getFollowers() != null) {
+                followersText = currentLanguage.getFollowers();
+                follower.setText(followersText);
+            }
+        } catch (Exception e) {
+            followersText = getString(R.string.followers);
+            follower.setText(followersText);
+        }
+
+        try {
+            if (currentLanguage.getBio() != null) {
+                bioText = currentLanguage.getBio();
+                bioHead.setText(bioText);
+            }
+        } catch (Exception e) {
+            bioText = getString(R.string.bio);
+            bioHead.setText(bioText);
+        }
+
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setStringsByLanguage();
         getProfileInfo();
     }
 
@@ -238,9 +293,9 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         userName = userInfo.getName() + " " + userInfo.getLastname();
         name.setText(String.format("%s %s", userInfo.getName(), userInfo.getLastname()));
         nickName.setText(String.format("@%s", userInfo.getNickname()));
-        follower.setText(String.valueOf(userInfo.getFollower()));
-        following.setText(String.valueOf(userInfo.getFollowing()));
-        reaction.setText(String.valueOf(userInfo.getReactions()));
+        followerCount.setText(String.valueOf(userInfo.getFollower()));
+        followingCount.setText(String.valueOf(userInfo.getFollowing()));
+        reactionCount.setText(String.valueOf(userInfo.getReactions()));
         setBiography(userInfo.getBiography());
 
 //        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(bioHead.getContext());

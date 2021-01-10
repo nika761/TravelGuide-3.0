@@ -16,12 +16,15 @@ import java.util.List;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
+import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
+import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
 import travelguideapp.ge.travelguide.ui.upload.tag.FriendsAdapter;
 
 public class UsersFragment extends Fragment implements UsersFragmentListener {
 
     private RecyclerView usersRecycler;
+    private FriendsAdapter friendsAdapter;
 
     @Nullable
     @Override
@@ -31,9 +34,14 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
         return view;
     }
 
-    public void setUsersRecycler(List<FollowerResponse.Followers> followers) {
-        FriendsAdapter friendsAdapter = new FriendsAdapter(this);
+    public void setUsers(List<FollowerResponse.Followers> followers) {
         friendsAdapter.setFollowers(followers);
+    }
+
+    public void initUsersRecycler(List<FollowerResponse.Followers> followers) {
+        friendsAdapter = new FriendsAdapter(this);
+        friendsAdapter.setFollowers(followers);
+
         usersRecycler.setLayoutManager(new LinearLayoutManager(usersRecycler.getContext()));
         usersRecycler.setHasFixedSize(true);
         usersRecycler.setAdapter(friendsAdapter);
@@ -42,20 +50,24 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
     @Override
     public void onStart() {
         super.onStart();
-        try {
-            List<FollowerResponse.Followers> followers = ((SearchActivity) usersRecycler.getContext()).getFollowers();
-            if (followers != null) {
-                setUsersRecycler(followers);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getCachedUsers();
     }
 
     @Override
     public void onUserChoose(FollowerResponse.Followers user) {
         try {
             ((BaseActivity) getActivity()).startCustomerActivity(user.getUser_id());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getCachedUsers() {
+        try {
+            List<FollowerResponse.Followers> followers = ((SearchActivity) usersRecycler.getContext()).getFollowers();
+            if (followers != null) {
+                setUsers(followers);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -16,8 +16,8 @@ import java.util.List;
 
 public class AddTagAdapter extends RecyclerView.Adapter<AddTagAdapter.AddTagHolder> {
 
-    private List<HashtagResponse.Hashtags> hashtags;
     private TagPostListener tagPostListener;
+    private List<HashtagResponse.Hashtags> hashtags;
     private HashtagsFragmentListener hashtagsFragmentListener;
 
     public AddTagAdapter(TagPostListener tagPostListener) {
@@ -54,6 +54,7 @@ public class AddTagAdapter extends RecyclerView.Adapter<AddTagAdapter.AddTagHold
     }
 
     class AddTagHolder extends RecyclerView.ViewHolder {
+
         TextView hashtag;
 
         AddTagHolder(@NonNull View itemView) {

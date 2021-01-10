@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -96,8 +97,8 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
         save.setOnClickListener(v -> {
 
             nickName = HelperUI.checkEditTextData(eNickName, nickHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, this);
-            if (nickName != null) {
 
+            if (nickName != null) {
                 nickError.setVisibility(View.GONE);
                 nickOffer1.setVisibility(View.GONE);
                 nickOffer2.setVisibility(View.GONE);
@@ -106,10 +107,10 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
                 int languageId = GlobalPreferences.getLanguageId(SignUpFireBaseActivity.this);
                 presenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(startTime), languageId, platformId, gender));
-
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (inputMethodManager != null)
                     inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
             }
         });
 
@@ -124,34 +125,6 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
                 MyToaster.getErrorToaster(this, "Try Again");
                 e.printStackTrace();
             }
-//
-//            month = month + 1;
-//
-////            Log.d("dates", "onDateSet: mm/dd/yyy: " + month + "/" + day + "/" + year);
-//
-//            String dayString = day < 10 ? "0" + day : String.valueOf(day);
-//            String monthString = month < 10 ? "0" + month : String.valueOf(month);
-//
-//            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-//
-////            Date currentDate = new Date();
-////            int age = currentDate.getYear() - year;
-//
-//            int age = currentYear - year;
-//
-//            if (age < 13) {
-//                MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
-//            } else {
-//
-//                String date = year + "/" + monthString + "/" + dayString;
-//                dateOfBirth.setText(date);
-//
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.set(year, month, day);
-//                startTime = calendar.getTimeInMillis();
-////                Log.e("datetime", String.valueOf(startTime));
-//            }
-//
         };
 
         RadioGroup genderGroup = findViewById(R.id.fire_radio_group);

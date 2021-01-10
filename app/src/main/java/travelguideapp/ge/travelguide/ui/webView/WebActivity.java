@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.HelperUI;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.ui.webView.about.AboutFragment;
 import travelguideapp.ge.travelguide.ui.webView.go.GoFragment;
 import travelguideapp.ge.travelguide.ui.webView.policy.PolicyFragment;
@@ -48,7 +49,8 @@ public class WebActivity extends AppCompatActivity {
                     break;
             }
         } else {
-            Toast.makeText(this, "Try Again", Toast.LENGTH_SHORT).show();
+            MyToaster.getErrorToaster(this, "Try Again");
+            finish();
         }
     }
 }

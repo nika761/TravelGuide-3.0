@@ -22,15 +22,25 @@
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/bg_content"
-        android:drawableEnd="@drawable/icon_close"
         android:gravity="start|center"
         android:hint="Search"
+        android:maxLines="1"
         android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingEnd="25dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@id/search_btn"
         app:layout_constraintStart_toEndOf="@+id/search_back_btn_second"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/search_clear_searched_text_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/icon_close"
+        app:layout_constraintBottom_toBottomOf="@id/search_edit_text_second"
+        app:layout_constraintEnd_toEndOf="@+id/search_edit_text_second"
+        app:layout_constraintTop_toTopOf="@id/search_edit_text_second" />
 
     <ImageButton
         android:id="@+id/search_btn"
@@ -110,6 +120,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="@color/blackTone"
+        android:contextClickable="true"
         android:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView

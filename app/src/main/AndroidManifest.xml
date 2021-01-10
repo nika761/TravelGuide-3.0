@@ -106,7 +106,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="travelguideapp.ge.travelguide.ui.login.loggedUsers.SavedUserActivity"
@@ -123,7 +123,8 @@
             android:name="travelguideapp.ge.travelguide.ui.webView.WebActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/SecondAppTheme" />
+            android:theme="@style/SecondAppTheme"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="travelguideapp.ge.travelguide.ui.splashScreen.SplashScreenActivity"
@@ -203,9 +204,9 @@
         <activity
             android:name="travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity"
             android:configChanges="orientation"
-            android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait"
-            android:theme="@style/SecondAppTheme" />
+            android:theme="@style/SecondAppTheme"
+            android:windowSoftInputMode="adjustNothing" />
 
         <activity
             android:name="travelguideapp.ge.travelguide.ui.login.password.ResetPasswordActivity"

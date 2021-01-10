@@ -23,6 +23,7 @@ import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
 public class HashtagsFragment extends Fragment implements HashtagsFragmentListener {
 
     private RecyclerView hashtagRecycler;
+    private AddTagAdapter addTagAdapter;
 
     @Nullable
     @Override
@@ -32,14 +33,18 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
         return view;
     }
 
-    public void setHashtagRecycler(List<HashtagResponse.Hashtags> hashtags) {
-        AddTagAdapter addTagAdapter = new AddTagAdapter(this);
+    public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
         addTagAdapter.setHashtags(hashtags);
+    }
+
+    public void initHashtagRecycler(List<HashtagResponse.Hashtags> hashtags) {
+        addTagAdapter = new AddTagAdapter(this);
+        addTagAdapter.setHashtags(hashtags);
+
         hashtagRecycler.setLayoutManager(new LinearLayoutManager(hashtagRecycler.getContext()));
         hashtagRecycler.setHasFixedSize(true);
         hashtagRecycler.setAdapter(addTagAdapter);
     }
-
 
     @Override
     public void onHashtagChoose(HashtagResponse.Hashtags hashtag) {
@@ -53,10 +58,14 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     @Override
     public void onStart() {
         super.onStart();
+        getCachedHashtags();
+    }
+
+    private void getCachedHashtags() {
         try {
             List<HashtagResponse.Hashtags> hashtags = ((SearchActivity) hashtagRecycler.getContext()).getHashtags();
             if (hashtags != null) {
-                setHashtagRecycler(hashtags);
+                setHashtags(hashtags);
             }
         } catch (Exception e) {
             e.printStackTrace();

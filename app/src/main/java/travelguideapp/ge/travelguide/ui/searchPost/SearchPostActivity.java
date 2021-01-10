@@ -94,6 +94,7 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
             RecyclerView recyclerView = findViewById(R.id.posts_by_location_recycler);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(adapter);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

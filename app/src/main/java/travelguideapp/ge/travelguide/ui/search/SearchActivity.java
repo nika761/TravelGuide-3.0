@@ -31,6 +31,7 @@ public class SearchActivity extends BaseActivity implements SearchListener {
     private ViewPager viewPager;
     private EditText searchField;
     private ConstraintLayout loader;
+    private ImageButton searchBtn, backBtn, clearTextBtn;
 
     private SearchPresenter searchPresenter;
 
@@ -46,7 +47,6 @@ public class SearchActivity extends BaseActivity implements SearchListener {
         setContentView(R.layout.activity_search);
         initUI();
         setViewPager(viewPager);
-        tabLayout.setupWithViewPager(viewPager);
         searchPresenter = new SearchPresenter(this);
     }
 
@@ -56,20 +56,41 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 
         loader = findViewById(R.id.search_loader);
 
-        ImageButton backBtn = findViewById(R.id.search_back_btn_second);
+        searchField = findViewById(R.id.search_edit_text_second);
+
+        backBtn = findViewById(R.id.search_back_btn_second);
         backBtn.setOnClickListener(v -> finish());
 
-        ImageButton searchBtn = findViewById(R.id.search_btn);
+        clearTextBtn = findViewById(R.id.search_clear_searched_text_btn);
+        clearTextBtn.setOnClickListener(v -> clearPreviousText());
+
+        searchBtn = findViewById(R.id.search_btn);
         searchBtn.setOnClickListener(v -> startSearch());
 
-        searchField = findViewById(R.id.search_edit_text_second);
+    }
+
+    private void clearPreviousText() {
+        try {
+            if (searchField.getText().toString() != null) {
+                if (!searchField.getText().toString().isEmpty())
+                    searchField.getText().clear();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getLoader(boolean show) {
         try {
             if (show) {
                 loader.setVisibility(View.VISIBLE);
+                clearTextBtn.setClickable(false);
+                searchBtn.setClickable(false);
+                backBtn.setClickable(false);
             } else {
+                clearTextBtn.setClickable(true);
+                searchBtn.setClickable(true);
+                backBtn.setClickable(true);
                 loader.setVisibility(View.GONE);
             }
         } catch (Exception e) {
@@ -103,14 +124,27 @@ public class SearchActivity extends BaseActivity implements SearchListener {
         searchPagerAdapter.addFragment(hashtagsFragment, "HASHTAGS");
         searchPagerAdapter.addFragment(new GoFragment(), "GO !");
         viewPager.setAdapter(searchPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onGetHashtags(List<HashtagResponse.Hashtags> hashtags) {
+//        try {
+//            if (this.hashtags == null) {
+//                this.hashtags = hashtags;
+//                hashtagsFragment.initHashtagRecycler(this.hashtags);
+//                getLoader(false);
+//            } else {
+//                this.hashtags.addAll(hashtags);
+//                hashtagsFragment.setHashtags(this.hashtags);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         try {
-            this.hashtags = hashtags;
-            hashtagsFragment.setHashtagRecycler(hashtags);
             getLoader(false);
+            this.hashtags = hashtags;
+            hashtagsFragment.initHashtagRecycler(this.hashtags);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,13 +152,26 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 
     @Override
     public void onGetUsers(List<FollowerResponse.Followers> followers) {
+//        try {
+//            if (this.followers == null) {
+//                this.followers = followers;
+//                searchUsersFragment.initUsersRecycler(this.followers);
+//                getLoader(false);
+//            } else {
+//                this.followers.addAll(followers);
+//                searchUsersFragment.setUsers(this.followers);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         try {
-            this.followers = followers;
-            searchUsersFragment.setUsersRecycler(followers);
             getLoader(false);
+            this.followers = followers;
+            searchUsersFragment.initUsersRecycler(this.followers);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public List<FollowerResponse.Followers> getFollowers() {

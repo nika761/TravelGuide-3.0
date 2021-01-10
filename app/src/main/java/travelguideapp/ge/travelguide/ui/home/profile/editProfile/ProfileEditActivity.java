@@ -475,7 +475,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 try {
                     AlertDialog dialog = DialogManager.profileInfoUpdatedDialog(this);
                     dialog.show();
-                    DialogManager.profileInfoUpdatedDialog(this);
                     new Handler().postDelayed(() -> {
                         dialog.dismiss();
                         onBackPressed();

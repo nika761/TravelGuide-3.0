@@ -3,7 +3,7 @@
     <item
         android:id="@+id/settings_share_profile"
         android:icon="@drawable/icon_settings_share"
-        android:title="Share Profile" />
+        android:title="@string/share_profile" />
     <!--    <item-->
     <!--        android:id="@+id/settings_balance"-->
     <!--        android:icon="@drawable/icon_settings_balance"-->
@@ -11,22 +11,22 @@
     <item
         android:id="@+id/settings_language"
         android:icon="@drawable/icon_settings_language"
-        android:title="Language" />
+        android:title="@string/language" />
     <item
         android:id="@+id/settings_about"
         android:icon="@drawable/icon_settings_about"
-        android:title="About Travel Guide" />
+        android:title="@string/about_travel_guide" />
     <item
         android:id="@+id/settings_terms"
         android:icon="@drawable/icon_settings_terms"
-        android:title="Terms and Conditions" />
+        android:title="@string/terms_and_conditions" />
     <item
         android:id="@+id/settings_privacy"
         android:icon="@drawable/icon_feedback"
-        android:title="Privacy Policy" />
+        android:title="@string/privacy_policy_menu_txt" />
     <item
         android:id="@+id/settings_sing_out"
         android:icon="@drawable/icon_settings_log_out"
-        android:title="Sign out" />
+        android:title="@string/sign_out_menu_txt" />
 
 </menu>
