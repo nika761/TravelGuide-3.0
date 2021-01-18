@@ -6,4 +6,5 @@ public class SearchFollowersRequest {
     public SearchFollowersRequest(String text) {
         this.text = text;
     }
+
 }

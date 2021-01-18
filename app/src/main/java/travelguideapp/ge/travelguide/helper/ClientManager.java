@@ -18,7 +18,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.model.ItemMedia;
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientManager {
+
     private static final String S3_KEY = "AKIAVWUTGVROTZGHURQ4";
     private static final String S3_SECRET = "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";
     private static final String AMAZONS3_END_POINT = "https://travel-guide-3.s3.eu-central-1.amazonaws.com";

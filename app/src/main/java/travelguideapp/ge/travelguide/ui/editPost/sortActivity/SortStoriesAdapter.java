@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.model.ItemMedia;
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 
 import java.util.ArrayList;
 import java.util.List;

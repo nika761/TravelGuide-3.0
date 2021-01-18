@@ -1,6 +1,5 @@
-package travelguideapp.ge.travelguide.ui.home.home;
+package travelguideapp.ge.travelguide.ui.home.feed;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.enums.SearchPostBy;
-import travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity;
 
 import java.util.List;
 
+import static travelguideapp.ge.travelguide.model.parcelable.PostDataSearch.SearchBy.HASHTAG;
+
 
 public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagHolder> {
+
     private HomeFragmentListener homeFragmentListener;
     private List<String> hashtags;
 
@@ -47,7 +47,7 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
         HashtagHolder(@NonNull View itemView) {
             super(itemView);
             hashtag = itemView.findViewById(R.id.hashtag_hashtag);
-            hashtag.setOnClickListener(v -> homeFragmentListener.onHashtagChoose(hashtags.get(getLayoutPosition()), SearchPostBy.HASHTAG));
+            hashtag.setOnClickListener(v -> homeFragmentListener.onHashtagChoose(hashtags.get(getLayoutPosition()), HASHTAG));
         }
 
     }

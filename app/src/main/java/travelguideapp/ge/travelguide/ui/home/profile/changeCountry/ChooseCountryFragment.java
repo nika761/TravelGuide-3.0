@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jakewharton.rxbinding4.widget.RxTextView;
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.model.Country;
+import travelguideapp.ge.travelguide.model.customModel.Country;
 
 import java.util.ArrayList;
 import java.util.List;

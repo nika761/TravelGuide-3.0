@@ -2,17 +2,14 @@ package travelguideapp.ge.travelguide.ui.home.customerUser;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -25,9 +22,7 @@ import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
-import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
-import travelguideapp.ge.travelguide.ui.home.home.HomeFragment;
+import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
@@ -36,7 +31,6 @@ import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 
 import com.google.android.material.tabs.TabLayout;
 
-import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.ProfilePagerAdapter;
 import travelguideapp.ge.travelguide.ui.home.profile.follow.FollowActivity;
 import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
@@ -206,6 +200,7 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
                 break;
 
             case R.id.customer_profile_report:
+                openReportDialog();
                 break;
 
             case R.id.customer_profile_follow_btn:

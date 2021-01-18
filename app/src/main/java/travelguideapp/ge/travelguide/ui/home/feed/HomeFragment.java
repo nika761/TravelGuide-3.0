@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.ui.home.home;
+package travelguideapp.ge.travelguide.ui.home.feed;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,7 +25,6 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
-import travelguideapp.ge.travelguide.enums.SearchPostBy;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -33,7 +32,9 @@ import travelguideapp.ge.travelguide.helper.custom.CustomTimer;
 import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostAdapter;
 import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
-import travelguideapp.ge.travelguide.model.PostView;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.customModel.PostView;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
@@ -46,7 +47,6 @@ import travelguideapp.ge.travelguide.model.request.SharePostRequest;
 import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
 import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
 import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
-import travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
@@ -54,7 +54,10 @@ import travelguideapp.ge.travelguide.model.response.SharePostResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static travelguideapp.ge.travelguide.ui.home.comments.CommentFragment.CommentFragmentType.COMMENT;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener, CommentFragment.LoadCommentFragmentListener {
 
@@ -71,6 +74,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     private ConstraintLayout commentFragmentContainer;
     private RecyclerView postRecycler;
     private CustomProgressBar customProgressBar;
+
+    private ArrayList<Integer> reports = new ArrayList<>();
 
     private int customerUserId;
 
@@ -107,7 +112,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         customPostRecycler = view.findViewById(R.id.testing_recycler);
         customPostRecycler.setLayoutManager(new LinearLayoutManager(customPostRecycler.getContext()));
         customPostRecycler.setHomeFragmentListener(this);
-//        customPostRecycler.setCustomProgressBar(customProgressBar);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(customPostRecycler);
 
@@ -127,37 +131,62 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
+//            try {
+//                getPostsFrom = (GetPostsFrom) getArguments().getSerializable("PostShowType");
+//                int scrollPosition = getArguments().getInt("postPosition");
+//                if (getPostsFrom != null) {
+//                    switch (getPostsFrom) {
+//                        case FAVORITES:
+//                            List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
+//                            initRecyclerView(favoritePosts, true, scrollPosition);
+//                            break;
+//
+//                        case MY_POSTS:
+//                            List<PostResponse.Posts> myPosts = (List<PostResponse.Posts>) getArguments().getSerializable("my_posts");
+//                            initRecyclerView(myPosts, true, scrollPosition);
+//                            break;
+//
+//                        case CUSTOMER_POSTS:
+//                            this.customerUserId = getArguments().getInt("customer_user_id", 0);
+//                            List<PostResponse.Posts> customerPosts = (List<PostResponse.Posts>) getArguments().getSerializable("customer_posts");
+//                            initRecyclerView(customerPosts, true, scrollPosition);
+//                            break;
+//
+//                        case FEED:
+//                            loaderContainer.setVisibility(View.VISIBLE);
+//                            presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
+//                            break;
+//
+//                        case SEARCH:
+//                            List<PostResponse.Posts> searchedPosts = (List<PostResponse.Posts>) getArguments().getSerializable("searchedPosts");
+//                            initRecyclerView(searchedPosts, true, scrollPosition);
+//                            break;
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             try {
-                getPostsFrom = (GetPostsFrom) getArguments().getSerializable("PostShowType");
-                int scrollPosition = getArguments().getInt("postPosition");
-                if (getPostsFrom != null) {
-                    switch (getPostsFrom) {
-                        case FAVORITES:
-                            List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
-                            initRecyclerView(favoritePosts, true, scrollPosition);
-                            break;
+                PostDataLoad postDataLoad = getArguments().getParcelable(PostDataLoad.INTENT_KEY_LOAD);
+                this.getPostsFrom = postDataLoad.getGetPostsFrom();
+                switch (getPostsFrom) {
+                    case FAVORITES:
 
-                        case MY_POSTS:
-                            List<PostResponse.Posts> myPosts = (List<PostResponse.Posts>) getArguments().getSerializable("my_posts");
-                            initRecyclerView(myPosts, true, scrollPosition);
-                            break;
+                    case SEARCH:
 
-                        case CUSTOMER_POSTS:
-                            this.customerUserId = getArguments().getInt("customer_user_id", 0);
-                            List<PostResponse.Posts> customerPosts = (List<PostResponse.Posts>) getArguments().getSerializable("customer_posts");
-                            initRecyclerView(customerPosts, true, scrollPosition);
-                            break;
+                    case MY_POSTS:
+                        initRecyclerView(postDataLoad.getPosts(), true, postDataLoad.getScrollPosition());
+                        break;
 
-                        case FEED:
-                            loaderContainer.setVisibility(View.VISIBLE);
-                            presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
-                            break;
+                    case CUSTOMER_POSTS:
+                        this.customerUserId = postDataLoad.getUserId();
+                        initRecyclerView(postDataLoad.getPosts(), true, postDataLoad.getScrollPosition());
+                        break;
 
-                        case SEARCH:
-                            List<PostResponse.Posts> searchedPosts = (List<PostResponse.Posts>) getArguments().getSerializable("searchedPosts");
-                            initRecyclerView(searchedPosts, true, scrollPosition);
-                            break;
-                    }
+                    case FEED:
+                        loaderContainer.setVisibility(View.VISIBLE);
+                        presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -261,13 +290,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void onGetPosts(List<PostResponse.Posts> posts) {
-//
-//        if (postAdapter == null) {
-//            initRecyclerView(posts, false, 0);
-//        } else {
-//            postAdapter.setPosts(posts);
-//        }
-
         try {
             if (customPostAdapter == null) {
                 initRecyclerView(posts, false, 0);
@@ -284,12 +306,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
 
     @Override
-    public void onLocationChoose(int postId, SearchPostBy searchPostBy) {
+    public void onLocationChoose(int postId, PostDataSearch.SearchBy searchBy) {
         try {
-            Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
-            postHashtagIntent.putExtra("search_type", searchPostBy);
-            postHashtagIntent.putExtra("search_post_id", postId);
-            customPostRecycler.getContext().startActivity(postHashtagIntent);
+            ((BaseActivity) getActivity()).startSearchPostActivity(new PostDataSearch(postId, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -297,13 +316,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     }
 
     @Override
-    public void onHashtagChoose(String hashtag, SearchPostBy searchPostBy) {
+    public void onHashtagChoose(String hashtag, PostDataSearch.SearchBy searchBy) {
         try {
-            ((BaseActivity) getActivity()).startSearchPostActivity(hashtag, searchPostBy);
-//            Intent postHashtagIntent = new Intent(customPostRecycler.getContext(), SearchPostActivity.class);
-//            postHashtagIntent.putExtra("search_type", searchPostBy);
-//            postHashtagIntent.putExtra("search_hashtag", hashtag);
-//            customPostRecycler.getContext().startActivity(postHashtagIntent);
+            ((BaseActivity) getActivity()).startSearchPostActivity(new PostDataSearch(hashtag, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -386,7 +401,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
             Bundle data = new Bundle();
             data.putInt("storyId", storyId);
             data.putInt("postId", postId);
-            commitCommentFragment(data, CommentFragment.CommentFragmentType.COMMENT);
+            commitCommentFragment(data, COMMENT);
 //            loadFragment(storyId, postId);
 //            commentFragmentCallback.onLoadCommentFragment(postId, storyId);
         } catch (Exception e) {
@@ -423,6 +438,15 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onReportChoose() {
+        try {
+            ((BaseActivity) getActivity()).openReportDialog();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -466,7 +490,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                 break;
 
             case SEARCH:
-                MyToaster.getErrorToaster(postRecycler.getContext(), "Lazy Load here");
+//                MyToaster.getErrorToaster(postRecycler.getContext(), "Lazy Load here");
                 break;
         }
     }
@@ -570,8 +594,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 }

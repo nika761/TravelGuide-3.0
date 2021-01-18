@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.model.ItemMedia;
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 
 import java.io.Serializable;
 import java.util.ArrayList;

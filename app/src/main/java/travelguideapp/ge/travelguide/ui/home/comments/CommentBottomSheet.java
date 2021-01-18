@@ -20,5 +20,4 @@ public class CommentBottomSheet extends BottomSheetDialog {
         super(context, cancelable, cancelListener);
     }
 
-
 }

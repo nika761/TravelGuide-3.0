@@ -1,6 +1,5 @@
 package travelguideapp.ge.travelguide.ui.home.profile.posts;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,13 +16,12 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragment;
 
-import java.io.Serializable;
 import java.util.List;
 
 import static travelguideapp.ge.travelguide.base.BaseApplication.POST_PER_PAGE_SIZE;
@@ -179,17 +177,19 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         try {
             int position = getPositionById(postId);
 
-            Bundle data = new Bundle();
-            data.putInt("postPosition", position);
+            PostDataLoad postDataLoad = new PostDataLoad();
+
+            Bundle bundle = new Bundle();
+            postDataLoad.setPosts(posts);
+            postDataLoad.setScrollPosition(position);
             if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
-                data.putSerializable("PostShowType", GetPostsFrom.CUSTOMER_POSTS);
-                data.putInt("customer_user_id", customerUserId);
-                data.putSerializable("customer_posts", (Serializable) posts);
+                postDataLoad.setGetPostsFrom(GetPostsFrom.CUSTOMER_POSTS);
+                postDataLoad.setUserId(customerUserId);
             } else {
-                data.putSerializable("PostShowType", GetPostsFrom.MY_POSTS);
-                data.putSerializable("my_posts", (Serializable) posts);
+                postDataLoad.setGetPostsFrom(GetPostsFrom.MY_POSTS);
             }
-            callback.onPostChoose(data);
+            bundle.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+            callback.onPostChoose(bundle);
         } catch (Exception e) {
             e.printStackTrace();
         }

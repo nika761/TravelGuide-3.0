@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class GalleryPagerAdapter extends FragmentPagerAdapter {
 
+    private String videoTitle, photoTitle;
+
     GalleryPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
@@ -32,7 +34,11 @@ public class GalleryPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return position == 0 ? "Video" : "Photos";
+        return position == 0 ? videoTitle : photoTitle;
     }
 
+    public void setTabs(String videoTitle, String photoTitle) {
+        this.videoTitle = videoTitle;
+        this.photoTitle = photoTitle;
+    }
 }

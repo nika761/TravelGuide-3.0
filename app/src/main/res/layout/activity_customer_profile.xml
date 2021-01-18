@@ -100,7 +100,7 @@
 
                         <TextView
                             android:id="@+id/customer_profile_follow_btn"
-                            android:layout_width="90dp"
+                            android:layout_width="100dp"
                             android:layout_height="36dp"
                             android:background="@drawable/bg_agree"
                             android:gravity="center"
@@ -120,8 +120,7 @@
                             android:textColor="@color/yellowTextView"
                             android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="@id/customer_profile_image"
-                            app:layout_constraintEnd_toEndOf="@+id/customer_profile_follow_btn"
-                            app:layout_constraintStart_toStartOf="@id/customer_profile_follow_btn"
+                            app:layout_constraintEnd_toEndOf="@+id/customer_profile_follow_container"
                             app:layout_constraintTop_toBottomOf="@+id/customer_profile_follow_btn" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -294,7 +293,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loader_customer_profile"

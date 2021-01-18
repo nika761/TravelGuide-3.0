@@ -1,10 +1,12 @@
 package travelguideapp.ge.travelguide.ui.searchPost;
 
+import java.util.List;
+
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 public interface SearchPostListener {
 
-    void onGetPosts(PostResponse postResponse);
+    void onGetPosts(List<PostResponse.Posts> posts);
 
     void onChoosePost(int postId);
 

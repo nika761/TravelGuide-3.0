@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.model.Country;
+import travelguideapp.ge.travelguide.model.customModel.Country;
 
 import java.util.List;
 

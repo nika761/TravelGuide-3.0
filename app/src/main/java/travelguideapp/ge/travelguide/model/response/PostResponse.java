@@ -1,9 +1,13 @@
 package travelguideapp.ge.travelguide.model.response;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostResponse {
@@ -31,7 +35,7 @@ public class PostResponse {
         this.status = status;
     }
 
-    public static class Posts implements Serializable {
+    public static class Posts implements Serializable, Parcelable {
         @Expose
         @SerializedName("post_stories")
         private List<Post_stories> post_stories;
@@ -104,6 +108,60 @@ public class PostResponse {
         @Expose
         @SerializedName("post_id")
         private int post_id;
+
+        protected Posts(Parcel in) {
+            if (in.readByte() == 0x01) {
+                post_stories = new ArrayList<Post_stories>();
+                in.readList(post_stories, Post_stories.class.getClassLoader());
+            } else {
+                post_stories = null;
+            }
+            post_reactions = in.readInt();
+            i_favor_post = in.readByte() != 0x00;
+            i_follow_post_owner = in.readByte() != 0x00;
+            if (in.readByte() == 0x01) {
+                post_locations = new ArrayList<Post_locations>();
+                in.readList(post_locations, Post_locations.class.getClassLoader());
+            } else {
+                post_locations = null;
+            }
+            if (in.readByte() == 0x01) {
+                hashtags = new ArrayList<String>();
+                in.readList(hashtags, String.class.getClassLoader());
+            } else {
+                hashtags = null;
+            }
+            post_shares = in.readInt();
+            post_favorites = in.readInt();
+            post_go_activity = in.readInt();
+            past_time = in.readString();
+            music_url = in.readString();
+            music_text = in.readString();
+            post_share_url = in.readString();
+            post_view = in.readInt();
+            created_at = in.readString();
+            cover = in.readString();
+            music_id = in.readInt();
+            go = in.readString();
+            description = in.readString();
+            post_title = in.readString();
+            profile_pic = in.readString();
+            nickname = in.readString();
+            user_id = in.readInt();
+            post_id = in.readInt();
+        }
+
+        public static final Creator<Posts> CREATOR = new Creator<Posts>() {
+            @Override
+            public Posts createFromParcel(Parcel in) {
+                return new Posts(in);
+            }
+
+            @Override
+            public Posts[] newArray(int size) {
+                return new Posts[size];
+            }
+        };
 
         public List<Post_stories> getPost_stories() {
             return post_stories;
@@ -296,9 +354,57 @@ public class PostResponse {
         public void setPost_id(int post_id) {
             this.post_id = post_id;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            if (post_stories == null) {
+                dest.writeByte((byte) (0x00));
+            } else {
+                dest.writeByte((byte) (0x01));
+                dest.writeList(post_stories);
+            }
+            dest.writeInt(post_reactions);
+            dest.writeByte((byte) (i_favor_post ? 0x01 : 0x00));
+            dest.writeByte((byte) (i_follow_post_owner ? 0x01 : 0x00));
+            if (post_locations == null) {
+                dest.writeByte((byte) (0x00));
+            } else {
+                dest.writeByte((byte) (0x01));
+                dest.writeList(post_locations);
+            }
+            if (hashtags == null) {
+                dest.writeByte((byte) (0x00));
+            } else {
+                dest.writeByte((byte) (0x01));
+                dest.writeList(hashtags);
+            }
+            dest.writeInt(post_shares);
+            dest.writeInt(post_favorites);
+            dest.writeInt(post_go_activity);
+            dest.writeString(past_time);
+            dest.writeString(music_url);
+            dest.writeString(music_text);
+            dest.writeString(post_share_url);
+            dest.writeInt(post_view);
+            dest.writeString(created_at);
+            dest.writeString(cover);
+            dest.writeInt(music_id);
+            dest.writeString(go);
+            dest.writeString(description);
+            dest.writeString(post_title);
+            dest.writeString(profile_pic);
+            dest.writeString(nickname);
+            dest.writeInt(user_id);
+            dest.writeInt(post_id);
+        }
     }
 
-    public static class Post_stories implements Serializable {
+    public static class Post_stories implements Serializable, Parcelable {
         @Expose
         @SerializedName("story_like_by_me")
         private boolean story_like_by_me;
@@ -317,6 +423,27 @@ public class PostResponse {
         @Expose
         @SerializedName("story_id")
         private int story_id;
+
+        protected Post_stories(Parcel in) {
+            story_like_by_me = in.readByte() != 0;
+            second = in.readInt();
+            url = in.readString();
+            story_comments = in.readInt();
+            story_likes = in.readInt();
+            story_id = in.readInt();
+        }
+
+        public static final Creator<Post_stories> CREATOR = new Creator<Post_stories>() {
+            @Override
+            public Post_stories createFromParcel(Parcel in) {
+                return new Post_stories(in);
+            }
+
+            @Override
+            public Post_stories[] newArray(int size) {
+                return new Post_stories[size];
+            }
+        };
 
         public boolean getStory_like_by_me() {
             return story_like_by_me;
@@ -365,9 +492,24 @@ public class PostResponse {
         public void setStory_id(int story_id) {
             this.story_id = story_id;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeByte((byte) (story_like_by_me ? 1 : 0));
+            dest.writeInt(second);
+            dest.writeString(url);
+            dest.writeInt(story_comments);
+            dest.writeInt(story_likes);
+            dest.writeInt(story_id);
+        }
     }
 
-    public static class Post_locations implements Serializable {
+    public static class Post_locations implements Serializable, Parcelable {
         @Expose
         @SerializedName("lng")
         private String lng;
@@ -377,6 +519,24 @@ public class PostResponse {
         @Expose
         @SerializedName("address")
         private String address;
+
+        protected Post_locations(Parcel in) {
+            lng = in.readString();
+            lat = in.readString();
+            address = in.readString();
+        }
+
+        public static final Creator<Post_locations> CREATOR = new Creator<Post_locations>() {
+            @Override
+            public Post_locations createFromParcel(Parcel in) {
+                return new Post_locations(in);
+            }
+
+            @Override
+            public Post_locations[] newArray(int size) {
+                return new Post_locations[size];
+            }
+        };
 
         public String getLng() {
             return lng;
@@ -400,6 +560,18 @@ public class PostResponse {
 
         public void setAddress(String address) {
             this.address = address;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(lng);
+            dest.writeString(lat);
+            dest.writeString(address);
         }
     }
 }

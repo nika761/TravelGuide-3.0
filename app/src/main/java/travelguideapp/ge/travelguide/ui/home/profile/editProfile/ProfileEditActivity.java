@@ -31,7 +31,7 @@ import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.model.Country;
+import travelguideapp.ge.travelguide.model.customModel.Country;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.request.UpdateProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;

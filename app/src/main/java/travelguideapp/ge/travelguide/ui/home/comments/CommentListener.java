@@ -21,6 +21,8 @@ public interface CommentListener {
 
     void onReplyChoose(CommentResponse.Post_story_comments currentComment, boolean requestReply, int position);
 
+    void onUserChoose(int userId);
+
     void onLazyLoad(boolean visible, int commentId);
 
     void onError(String message);

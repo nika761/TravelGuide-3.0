@@ -2,7 +2,7 @@ package travelguideapp.ge.travelguide.helper.custom;
 
 import android.os.CountDownTimer;
 
-import travelguideapp.ge.travelguide.model.PostView;
+import travelguideapp.ge.travelguide.model.customModel.PostView;
 
 import java.util.ArrayList;
 import java.util.List;

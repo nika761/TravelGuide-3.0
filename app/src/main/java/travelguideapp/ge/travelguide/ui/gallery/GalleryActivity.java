@@ -61,6 +61,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
 
     }
 
+
     private void getMediaFilesByRole() {
         if (GlobalPreferences.getUserRole(this) == 0)
             loadGalleryFragment();
@@ -117,6 +118,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         viewPager.setVisibility(View.VISIBLE);
 
         GalleryPagerAdapter galleryPagerAdapter = new GalleryPagerAdapter(getSupportFragmentManager());
+        galleryPagerAdapter.setTabs(getString(R.string.video), getString(R.string.photos));
         viewPager.setAdapter(galleryPagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -145,7 +147,8 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
             if (pickedItems.size() <= 2) {
                 nextBtn.setClickable(true);
                 nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree, null));
-                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+                nextBtn.setText(MessageFormat.format("{0}({1})", getString(R.string.next), pickedItems.size()));
+//                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
                 galleryAdapterMin.setItemsPath(pickedItems);
             }
 
@@ -158,7 +161,8 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 if (isVideo) {
                     pickedItems.add(path);
                     choosedItemRecyclerVisibility(true);
-                    nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+//                    nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+                    nextBtn.setText(MessageFormat.format("{0}({1})", getString(R.string.next), pickedItems.size()));
                     galleryAdapterMin.setItemsPath(pickedItems);
                     isVideo = false;
                 } else {
@@ -176,7 +180,8 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                     MyToaster.getErrorToaster(this, "You can choose only one photo");
                 }
                 choosedItemRecyclerVisibility(true);
-                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+//                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
+                nextBtn.setText(MessageFormat.format("{0}({1})", getString(R.string.next), pickedItems.size()));
                 galleryAdapterMin.setItemsPath(pickedItems);
             }
         }

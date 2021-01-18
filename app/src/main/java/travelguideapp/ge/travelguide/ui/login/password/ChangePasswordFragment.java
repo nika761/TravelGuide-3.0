@@ -81,7 +81,7 @@ public class ChangePasswordFragment extends Fragment {
                 passwordHead.setText(textPasswordHead);
             }
         } catch (Exception e) {
-            textPasswordHead = getString(R.string.password_field_head);
+            textPasswordHead = getString(R.string.password);
             passwordHead.setText(textPasswordHead);
         }
 
@@ -101,7 +101,7 @@ public class ChangePasswordFragment extends Fragment {
                 confirmHead.setText(textConfirmHead);
             }
         } catch (Exception e) {
-            textConfirmHead = getString(R.string.confirm_password_field_head);
+            textConfirmHead = getString(R.string.confirm_password);
             confirmHead.setText(textConfirmHead);
         }
 

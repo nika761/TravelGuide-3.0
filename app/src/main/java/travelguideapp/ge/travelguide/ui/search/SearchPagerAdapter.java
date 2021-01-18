@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class SearchPagerAdapter extends FragmentPagerAdapter {
 
-    private ArrayList<Fragment> fragments = new ArrayList<>();
-    private ArrayList<String> fragmentsTitle = new ArrayList<>();
+    private final ArrayList<Fragment> fragments = new ArrayList<>();
+    private final ArrayList<String> fragmentsTitle = new ArrayList<>();
 
     SearchPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);

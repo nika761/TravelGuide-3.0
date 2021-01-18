@@ -3,24 +3,21 @@ package travelguideapp.ge.travelguide.ui.searchPost;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.Serializable;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
-import travelguideapp.ge.travelguide.enums.SearchPostBy;
-import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.ui.home.home.HomeFragment;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
+import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
@@ -34,7 +31,7 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
 
     private List<PostResponse.Posts> posts;
 
-    private SearchPostBy type;
+    private PostDataSearch.SearchBy searchBy;
     private String hashtag;
     private int postId;
 
@@ -43,20 +40,14 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts_locatiom);
 
-        getExtras();
-
         searchPostPresenter = new SearchPostPresenter(this);
+
+        getExtras();
 
         initUI();
 
-        switch (type) {
-            case LOCATION:
-                searchPostPresenter.getPostsByLocation(GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
-                break;
-            case HASHTAG:
-                searchPostPresenter.getPostsByHashtag(GlobalPreferences.getAccessToken(this), new PostByHashtagRequest(hashtag));
-                break;
-        }
+        getPosts();
+
     }
 
     private void initUI() {
@@ -66,30 +57,56 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
         backBtn.setOnClickListener(v -> finish());
     }
 
+    public void setHead(String headTxt) {
+        if (headTxt != null)
+            head.setText(headTxt);
+    }
+
     private void getExtras() {
-        this.postId = getIntent().getIntExtra("search_post_id", 0);
-        this.hashtag = getIntent().getStringExtra("search_hashtag");
-        this.type = (SearchPostBy) getIntent().getSerializableExtra("search_type");
+        try {
+            PostDataSearch postDataSearch = getIntent().getParcelableExtra(PostDataSearch.INTENT_KEY_SEARCH);
+            this.searchBy = postDataSearch.getSearchBy();
+            switch (searchBy) {
+                case HASHTAG:
+                    this.hashtag = postDataSearch.getHashtag();
+                    break;
+                case LOCATION:
+                    this.postId = postDataSearch.getPostId();
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            finish();
+        }
+    }
+
+    private void getPosts() {
+        switch (searchBy) {
+            case LOCATION:
+                searchPostPresenter.getPostsByLocation(GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
+                break;
+            case HASHTAG:
+                searchPostPresenter.getPostsByHashtag(GlobalPreferences.getAccessToken(this), new PostByHashtagRequest(hashtag, 0));
+                break;
+        }
     }
 
     @Override
-    public void onGetPosts(PostResponse postResponse) {
+    public void onGetPosts(List<PostResponse.Posts> posts) {
         try {
-            switch (type) {
+            switch (searchBy) {
                 case LOCATION:
-                    if (postResponse.getPosts() != null)
-                        if (postResponse.getPosts().size() != 0)
-                            head.setText(postResponse.getPosts().get(0).getPost_locations().get(0).getAddress());
+                    setHead(posts.get(0).getPost_locations().get(0).getAddress());
                     break;
 
                 case HASHTAG:
-                    head.setText(hashtag);
+                    setHead(hashtag);
                     break;
             }
 
-            this.posts = postResponse.getPosts();
+            this.posts = posts;
 
-            SearchPostAdapter adapter = new SearchPostAdapter(postResponse.getPosts(), this);
+            SearchPostAdapter adapter = new SearchPostAdapter(posts, this);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
             RecyclerView recyclerView = findViewById(R.id.posts_by_location_recycler);
             recyclerView.setLayoutManager(gridLayoutManager);
@@ -106,10 +123,13 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
         try {
             int position = getPositionById(postId);
 
+            PostDataLoad postDataLoad = new PostDataLoad();
+            postDataLoad.setGetPostsFrom(GetPostsFrom.SEARCH);
+            postDataLoad.setScrollPosition(position);
+            postDataLoad.setPosts(posts);
+
             Bundle data = new Bundle();
-            data.putInt("postPosition", position);
-            data.putSerializable("searchedPosts", (Serializable) posts);
-            data.putSerializable("PostShowType", GetPostsFrom.SEARCH);
+            data.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
 
             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, true, true, this);
 
@@ -133,4 +153,10 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
         MyToaster.getErrorToaster(this, message);
     }
 
+    @Override
+    protected void onDestroy() {
+        if (searchPostPresenter != null)
+            searchPostPresenter = null;
+        super.onDestroy();
+    }
 }

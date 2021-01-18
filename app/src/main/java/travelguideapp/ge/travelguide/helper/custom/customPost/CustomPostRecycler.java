@@ -45,14 +45,14 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.enums.SearchPostBy;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.helper.custom.CustomTimer;
-import travelguideapp.ge.travelguide.model.PostView;
+import travelguideapp.ge.travelguide.model.customModel.PostView;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.ui.home.home.HashtagAdapter;
-import travelguideapp.ge.travelguide.ui.home.home.HomeFragmentListener;
+import travelguideapp.ge.travelguide.ui.home.feed.HashtagAdapter;
+import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import org.jetbrains.annotations.NotNull;
@@ -320,6 +320,10 @@ public class CustomPostRecycler extends RecyclerView {
 
         viewHolderParent = holder.itemView;
         frameLayout = holder.itemView.findViewById(R.id.pl_container);
+        frameLayout.setOnLongClickListener(v -> {
+            homeFragmentListener.onReportChoose();
+            return true;
+        });
         videoPlayIcon = holder.videoPlayIcon;
 
 
@@ -495,7 +499,7 @@ public class CustomPostRecycler extends RecyclerView {
 
             holder.comment.setOnClickListener(v -> homeFragmentListener.onCommentChoose(story.getStory_id(), post.getPost_id()));
 
-            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), SearchPostBy.LOCATION));
+            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), PostDataSearch.SearchBy.LOCATION));
 
             holder.share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
 

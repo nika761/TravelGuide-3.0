@@ -6,6 +6,7 @@ import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import java.util.List;
 
 interface TagPostListener {
+
     void onGetHashtags(List<HashtagResponse.Hashtags> hashtags);
 
     void onGetError(String message);
@@ -15,4 +16,5 @@ interface TagPostListener {
     void onGetFollowers(List<FollowerResponse.Followers> followers);
 
     void onChooseFollower(int followerId, String name);
+
 }

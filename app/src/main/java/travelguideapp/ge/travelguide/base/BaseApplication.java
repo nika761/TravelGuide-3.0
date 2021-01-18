@@ -8,9 +8,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -25,11 +29,15 @@ import travelguideapp.ge.travelguide.network.RetrofitManager;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.ui.language.LanguageActivity;
+import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
+import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 /**
  * Created by n.butskhrikidze on 01/07/2020.
@@ -51,6 +59,7 @@ public class BaseApplication extends Application {
     public static int AGE_RESTRICTION;
     public static int POST_PER_PAGE_SIZE;
     public static int ITEM_WIDTH_FOR_POSTS;
+    public static int APP_VERSION = 0;
 
     @Override
     public void onCreate() {
@@ -63,6 +72,14 @@ public class BaseApplication extends Application {
         getAppSettings();
     }
 
+    private void setFirstUse() {
+        try {
+            GlobalPreferences.saveIsFirstUse(getApplicationContext(), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
@@ -70,29 +87,6 @@ public class BaseApplication extends Application {
             if (manager != null)
                 manager.createNotificationChannel(channel);
         }
-    }
-
-    public void showNotification() {
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_uploading);
-        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_uploading);
-
-        Intent clickIntent = new Intent(this, NotificationReceiver.class);
-        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this, 0, clickIntent, 0);
-//        collapsedView.setTextViewText(R.id.text_view_collapsed_1, "Hello World!");
-//        collapsedView.setOnClickPendingIntent(R.id.image_view_expanded, clickPendingIntent);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.main_icon_sun)
-                .setCustomContentView(collapsedView)
-                .setCustomBigContentView(expandedView)
-                .setAutoCancel(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-//                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .build();
-
-        notificationManager.notify(1, notification);
     }
 
     public void overrideFont(String defaultFontNameToOverride, String customFontFileNameInAssets) {
@@ -110,6 +104,9 @@ public class BaseApplication extends Application {
         }
     }
 
+
+
+
     public void getAppSettings() {
         try {
             ApiService apiService = RetrofitManager.getApiService();
@@ -126,6 +123,11 @@ public class BaseApplication extends Application {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        if (GlobalPreferences.getIseFirstUse(getApplicationContext())) {
+                            setFirstUse();
+                            GlobalPreferences.saveAppVersion(getApplicationContext(), response.body().getApp_settings().getAndroid_version());
+                        }
+                        APP_VERSION = response.body().getApp_settings().getAndroid_version();
                     }
                 }
 

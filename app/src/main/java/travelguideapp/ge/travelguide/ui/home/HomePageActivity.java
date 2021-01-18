@@ -1,49 +1,33 @@
 package travelguideapp.ge.travelguide.ui.home;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
-import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.home.profile.editProfile.ProfileEditActivity;
 import travelguideapp.ge.travelguide.ui.home.profile.follow.FollowActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
-import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
-import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
-import travelguideapp.ge.travelguide.ui.home.home.HomeFragment;
+import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragment;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
-import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 import travelguideapp.ge.travelguide.ui.gallery.GalleryActivity;
 
-import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
@@ -55,7 +39,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
     private BottomNavigationView bottomNavigationView;
     private HomePagePresenter homePagePresenter;
 
-    private boolean isFirstTime = true;
+    private boolean isFromLanguageChanged = true;
 
     public HomePageActivity() {
         //Required empty public constructor
@@ -68,6 +52,31 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
         homePagePresenter = HomePagePresenter.getInstance(this);
         getUserProfileInfo();
         initBtmNav();
+        checkAppVersion();
+        try {
+            isFromLanguageChanged = getIntent().getBooleanExtra("IS_LANGUAGE_CHANGED", false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkAppVersion() {
+        try {
+            if (BaseApplication.APP_VERSION > 0) {
+                int appVersion = BaseApplication.APP_VERSION;
+                if (GlobalPreferences.getAppVersion(this) < appVersion) {
+                    GlobalPreferences.saveAppVersion(getApplicationContext(), appVersion);
+                    final String appPackageName = getPackageName();
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getUserProfileInfo() {
@@ -121,8 +130,10 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
                     try {
                         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
                         if (!(fragment instanceof HomeFragment)) {
+                            PostDataLoad postDataLoad = new PostDataLoad();
+                            postDataLoad.setGetPostsFrom(GetPostsFrom.FEED);
                             Bundle data = new Bundle();
-                            data.putSerializable("PostShowType", GetPostsFrom.FEED);
+                            data.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
                             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, false, true, HomePageActivity.this);
                         }
                     } catch (Exception e) {
@@ -162,32 +173,6 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
 //        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
     }
 
-    public void logOutFromFacebook() {
-        try {
-            LoginManager.getInstance().logOut();
-            onLogOutSuccess();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void logOutFromGoogle() {
-        ClientManager.googleSignInClient(this).signOut()
-                .addOnCompleteListener(this, task -> onLogOutSuccess())
-                .addOnCanceledListener(this, () -> MyToaster.getErrorToaster(this, "Canceled"))
-                .addOnFailureListener(this, e -> MyToaster.getErrorToaster(this, e.getMessage() + "Google Failed"));
-    }
-
-    public void onLogOutSuccess() {
-        GlobalPreferences.removeAccessToken(this);
-        GlobalPreferences.removeLoginType(this);
-        GlobalPreferences.removeUserId(this);
-        GlobalPreferences.removeUserRole(this);
-
-        Intent intent = new Intent(HomePageActivity.this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -216,12 +201,14 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
     @Override
     protected void onStart() {
         super.onStart();
-//        if (isFirstTime) {
-        if (!(bottomNavigationView.getSelectedItemId() == R.id.bot_nav_profile)) {
-            bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+        if (isFromLanguageChanged) {
+            bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
+            isFromLanguageChanged = false;
+        } else {
+            if (!(bottomNavigationView.getSelectedItemId() == R.id.bot_nav_profile)) {
+                bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+            }
         }
-//            isFirstTime = false;
-//        }
     }
 
     @Override
@@ -253,30 +240,8 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
 
     @Override
     public void onChooseLogOut() {
-        try {
-            String loginType = GlobalPreferences.getLoginType(this);
-
-            switch (loginType) {
-                case GlobalPreferences.FACEBOOK:
-                    logOutFromFacebook();
-                    break;
-
-                case GlobalPreferences.GOOGLE:
-                    logOutFromGoogle();
-                    break;
-
-                case GlobalPreferences.TRAVEL_GUIDE:
-                    onLogOutSuccess();
-                    break;
-
-            }
-        } catch (Exception e) {
-            MyToaster.getUnknownErrorToast(this);
-            e.printStackTrace();
-        }
-
+        startLogOut();
     }
-
 
     @Override
     public void onGetProfile(ProfileResponse.Userinfo userInfo) {
@@ -299,7 +264,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
 
     @Override
     public void onConnectionError() {
-        /*Supposedly TO-DO : Show Error Message  **/
+        super.onConnectionError();
     }
 
 }

@@ -36,15 +36,19 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
 
     public void setUsers(List<FollowerResponse.Followers> followers) {
         friendsAdapter.setFollowers(followers);
+        usersRecycler.setAdapter(friendsAdapter);
     }
 
-    public void initUsersRecycler(List<FollowerResponse.Followers> followers) {
-        friendsAdapter = new FriendsAdapter(this);
-        friendsAdapter.setFollowers(followers);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initUsersRecycler();
+    }
 
+    public void initUsersRecycler() {
+        friendsAdapter = new FriendsAdapter(this);
         usersRecycler.setLayoutManager(new LinearLayoutManager(usersRecycler.getContext()));
         usersRecycler.setHasFixedSize(true);
-        usersRecycler.setAdapter(friendsAdapter);
     }
 
     @Override

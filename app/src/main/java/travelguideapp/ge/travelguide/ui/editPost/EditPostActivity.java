@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.ItemMedia;
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity;
 import travelguideapp.ge.travelguide.ui.editPost.filterActivity.FilterActivity;
 import travelguideapp.ge.travelguide.ui.editPost.sortActivity.SortStoriesActivity;

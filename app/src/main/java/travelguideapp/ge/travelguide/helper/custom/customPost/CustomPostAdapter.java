@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.ui.home.home.HomeFragmentListener;
+import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
 
 import java.util.List;
 
@@ -28,6 +28,7 @@ public class CustomPostAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+        ((CustomPostHolder) viewHolder).setIsRecyclable(false);
         ((CustomPostHolder) viewHolder).onBind(posts.get(position), listener, position);
         loadMoreCallback(position);
     }

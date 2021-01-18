@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,7 @@ import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.model.ItemMedia;
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.model.request.UploadPostRequest;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.HashtagAdapter;

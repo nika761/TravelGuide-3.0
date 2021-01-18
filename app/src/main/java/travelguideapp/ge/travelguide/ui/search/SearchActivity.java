@@ -2,6 +2,7 @@ package travelguideapp.ge.travelguide.ui.search;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -41,13 +42,15 @@ public class SearchActivity extends BaseActivity implements SearchListener {
     private List<HashtagResponse.Hashtags> hashtags;
     private List<FollowerResponse.Followers> followers;
 
+    private String searchedText;
+    private boolean isLazyLoad;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        initUI();
-        setViewPager(viewPager);
         searchPresenter = new SearchPresenter(this);
+        initUI();
     }
 
     private void initUI() {
@@ -57,6 +60,7 @@ public class SearchActivity extends BaseActivity implements SearchListener {
         loader = findViewById(R.id.search_loader);
 
         searchField = findViewById(R.id.search_edit_text_second);
+        searchField.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         backBtn = findViewById(R.id.search_back_btn_second);
         backBtn.setOnClickListener(v -> finish());
@@ -66,6 +70,8 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 
         searchBtn = findViewById(R.id.search_btn);
         searchBtn.setOnClickListener(v -> startSearch());
+
+        setViewPager(viewPager);
 
     }
 
@@ -108,6 +114,8 @@ public class SearchActivity extends BaseActivity implements SearchListener {
                 getLoader(true);
                 searchPresenter.getHashtags(accessToken, new SearchHashtagRequest(requestText));
                 searchPresenter.getFollowers(accessToken, new SearchFollowersRequest(requestText));
+                this.searchedText = requestText;
+                isLazyLoad = false;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,34 +128,33 @@ public class SearchActivity extends BaseActivity implements SearchListener {
         searchUsersFragment = new UsersFragment();
         SearchPagerAdapter searchPagerAdapter = new SearchPagerAdapter(getSupportFragmentManager());
 //        searchPagerAdapter.addFragment(new SearchStoriesFragment(), "STORIES");
-        searchPagerAdapter.addFragment(searchUsersFragment, "USERS");
-        searchPagerAdapter.addFragment(hashtagsFragment, "HASHTAGS");
-        searchPagerAdapter.addFragment(new GoFragment(), "GO !");
+        searchPagerAdapter.addFragment(searchUsersFragment, getString(R.string.users_tab));
+        searchPagerAdapter.addFragment(hashtagsFragment, getString(R.string.hashtags_tab));
+        searchPagerAdapter.addFragment(new GoFragment(), getString(R.string.go_tab));
         viewPager.setAdapter(searchPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onGetHashtags(List<HashtagResponse.Hashtags> hashtags) {
-//        try {
-//            if (this.hashtags == null) {
-//                this.hashtags = hashtags;
-//                hashtagsFragment.initHashtagRecycler(this.hashtags);
-//                getLoader(false);
-//            } else {
-//                this.hashtags.addAll(hashtags);
-//                hashtagsFragment.setHashtags(this.hashtags);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        try {
-            getLoader(false);
-            this.hashtags = hashtags;
-            hashtagsFragment.initHashtagRecycler(this.hashtags);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isLazyLoad) {
+            try {
+                getLoader(false);
+                this.hashtags.addAll(hashtags);
+                hashtagsFragment.setHashtags(this.hashtags);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                getLoader(false);
+                this.hashtags = hashtags;
+                hashtagsFragment.setHashtags(this.hashtags);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     @Override
@@ -167,11 +174,21 @@ public class SearchActivity extends BaseActivity implements SearchListener {
         try {
             getLoader(false);
             this.followers = followers;
-            searchUsersFragment.initUsersRecycler(this.followers);
+            searchUsersFragment.setUsers(this.followers);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void getHashtagsNextPage(int page) {
+        try {
+            searchPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchedText, page));
+            isLazyLoad = true;
+            getLoader(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public List<FollowerResponse.Followers> getFollowers() {
@@ -201,8 +218,13 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 
     @Override
     public void onConnectionError() {
-        /*Supposedly TO-DO : Show Error Message  **/
+        super.onConnectionError();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        if (searchPresenter != null)
+            searchPresenter = null;
+        super.onDestroy();
+    }
 }

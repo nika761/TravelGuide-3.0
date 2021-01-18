@@ -1,6 +1,9 @@
 package travelguideapp.ge.travelguide.ui.home.profile.changeLanguage;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -24,6 +28,7 @@ import travelguideapp.ge.travelguide.model.response.ChangeLangResponse;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
 
 import java.util.List;
+import java.util.Locale;
 
 
 public class ChangeLangFragment extends DialogFragment implements ChangeLangListener {
@@ -80,6 +85,17 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     public void onLanguageChange(ChangeLangResponse changeLangResponse) {
         if (changeLangResponse.getStatus() == 0) {
             GlobalPreferences.saveLanguageId(context, languageId);
+            switch (languageId) {
+                case 1:
+                    changeLanguage("ka");
+                    break;
+                case 2:
+                    changeLanguage("en");
+                    break;
+                case 3:
+                    changeLanguage("ru");
+                    break;
+            }
 //            Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
             if (getDialog() != null)
                 getDialog().dismiss();
@@ -106,6 +122,18 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
             e.printStackTrace();
         }
 
+    }
+
+    private void changeLanguage(String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Resources resources = getActivity().getResources();
+        Configuration config = resources.getConfiguration();
+        config.setLocale(locale);
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        GlobalPreferences.saveLanguage(context, language);
+        getActivity().getIntent().putExtra("IS_LANGUAGE_CHANGED", true);
+        getActivity().recreate();
     }
 
     @Override

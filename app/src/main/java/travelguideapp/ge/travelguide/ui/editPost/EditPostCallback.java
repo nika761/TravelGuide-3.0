@@ -1,7 +1,7 @@
 package travelguideapp.ge.travelguide.ui.editPost;
 
 
-import travelguideapp.ge.travelguide.model.ItemMedia;
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 
 import java.util.List;
 

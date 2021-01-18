@@ -20,8 +20,8 @@ import travelguideapp.ge.travelguide.ui.search.user.UsersFragmentListener;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsHolder> {
 
-    private List<FollowerResponse.Followers> followers;
     private TagPostListener tagPostListener;
+    private List<FollowerResponse.Followers> followers;
     private UsersFragmentListener usersFragmentListener;
 
     public FriendsAdapter(TagPostListener tagPostListener) {
@@ -83,7 +83,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
         void bindView(int position) {
             HelperMedia.loadCirclePhoto(nickName.getContext(), followers.get(position).getProfile_pic(), profileImage);
             userName.setText(followers.get(position).getName());
-            nickName.setText(followers.get(position).getNickname());
+            nickName.setText(followers.get(position).getNickname( ));
         }
     }
 }

@@ -140,7 +140,7 @@
                         android:layout_gravity="start|bottom"
                         android:layout_marginTop="5dp"
                         android:autoSizeTextType="uniform"
-                        android:text="@string/if_you_do_not_have_an_account"
+                        android:text="@string/sign_up_offer_body"
                         android:textColor="@color/white"
                         app:layout_constraintStart_toStartOf="@+id/forgot_password_sign_in"
                         app:layout_constraintTop_toBottomOf="@id/forgot_password_sign_in" />
@@ -174,7 +174,7 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/bg_start_btn"
-                    android:text="@string/sign_in_btn"
+                    android:text="@string/sign_in"
                     android:textAllCaps="true"
                     android:textColor="@color/yellowTextView"
                     android:textSize="16sp" />
@@ -201,7 +201,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
-                        android:text="@string/or"
+                        android:text="@string/connect_with_offer_body"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 

@@ -1,6 +1,7 @@
-package travelguideapp.ge.travelguide.model;
+package travelguideapp.ge.travelguide.model.customModel;
 
 public class FireBaseUserModel {
+
     private String email;
     private String name;
     private String lastName;

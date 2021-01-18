@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import travelguideapp.ge.travelguide.model.FireBaseUserModel;
+import travelguideapp.ge.travelguide.model.customModel.FireBaseUserModel;
 import travelguideapp.ge.travelguide.model.request.AuthWitFirebaseRequest;
 import travelguideapp.ge.travelguide.model.request.LoginRequest;
 import travelguideapp.ge.travelguide.model.request.VerifyEmailRequest;

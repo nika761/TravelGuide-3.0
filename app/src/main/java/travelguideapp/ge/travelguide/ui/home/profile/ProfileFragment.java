@@ -33,8 +33,10 @@ import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
+import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.home.profile.changeLanguage.ChangeLangFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.favorites.FavoritePostFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
@@ -309,10 +311,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onAuthenticationError(String message) {
         try {
-            MyToaster.getErrorToaster(getContext(), message);
-            Intent intent = new Intent(getContext(), SignInActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            ((HomePageActivity) context).onAuthenticationError(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -320,7 +319,11 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
     @Override
     public void onConnectionError() {
-        MyToaster.getErrorToaster(context, getString(R.string.no_internet_connection));
+        try {
+            ((HomePageActivity) context).onConnectionError();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

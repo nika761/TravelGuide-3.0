@@ -130,7 +130,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_describe"
             android:gravity="center"
-            android:text="# Hashtags"
+            android:text="@string/hashtags"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -142,7 +142,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_describe"
             android:gravity="center"
-            android:text="\@ Friends"
+            android:text="@string/friends"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -155,7 +155,7 @@
             android:background="@drawable/bg_describe"
             android:drawableStart="@drawable/icon_location"
             android:gravity="center"
-            android:text="Location"
+            android:text="@string/location"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
@@ -194,7 +194,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_agree"
-        android:text="Post"
+        android:text="@string/post"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:visibility="visible"
@@ -207,7 +207,7 @@
         android:id="@+id/loader_upload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_loader"
+        android:background="@color/greyLightMedium"
         android:contextClickable="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

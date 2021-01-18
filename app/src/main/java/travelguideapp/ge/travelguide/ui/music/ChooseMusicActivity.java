@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.model.ItemMedia;
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.ui.music.favoriteMusic.FavoriteMusicFragment;
 import travelguideapp.ge.travelguide.ui.music.searchMusic.SearchMusicFragment;
 import travelguideapp.ge.travelguide.ui.upload.UploadPostActivity;

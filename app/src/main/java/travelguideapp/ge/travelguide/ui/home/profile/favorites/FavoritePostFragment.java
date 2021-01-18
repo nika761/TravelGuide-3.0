@@ -18,14 +18,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
-import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragment;
 
-import java.io.Serializable;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.enums.GetPostsFrom;
@@ -148,11 +146,14 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         try {
             int position = getPositionById(postId);
 
-            Bundle data = new Bundle();
-            data.putInt("postPosition", position);
-            data.putSerializable("PostShowType", GetPostsFrom.FAVORITES);
-            data.putSerializable("favoritePosts", (Serializable) posts);
-            callback.onPostChoose(data);
+            PostDataLoad postDataLoad = new PostDataLoad();
+            postDataLoad.setGetPostsFrom(GetPostsFrom.FAVORITES);
+            postDataLoad.setScrollPosition(position);
+            postDataLoad.setPosts(posts);
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+            callback.onPostChoose(bundle);
         } catch (Exception e) {
             e.printStackTrace();
             try {

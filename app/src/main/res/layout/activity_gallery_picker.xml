@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="All"
+        android:text="@string/all"
         android:textColor="@color/yellowTextView"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/media_tab"
@@ -45,13 +45,13 @@
             android:id="@+id/media_videos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Videos" />
+            android:text="@string/video" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/media_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Image" />
+            android:text="@string/photos" />
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -97,7 +97,7 @@
 
         <TextView
             android:id="@+id/desc"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/upload_content_restriction_body"
@@ -109,11 +109,11 @@
 
         <Button
             android:id="@+id/next_btn"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="30dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/bg_agree"
-            android:text="Next (5)"
+            android:text="@string/next"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:visibility="gone"

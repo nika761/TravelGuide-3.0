@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.model;
+package travelguideapp.ge.travelguide.model.customModel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

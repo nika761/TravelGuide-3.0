@@ -27,7 +27,7 @@ class SearchPostPresenter {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0) {
-                            searchPostListener.onGetPosts(response.body());
+                            searchPostListener.onGetPosts(response.body().getPosts());
                         }
                     } else {
                         searchPostListener.onGetPostError(response.message());
@@ -51,7 +51,7 @@ class SearchPostPresenter {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0) {
-                            searchPostListener.onGetPosts(response.body());
+                            searchPostListener.onGetPosts(response.body().getPosts());
                         }
                     } else {
                         searchPostListener.onGetPostError(response.message());

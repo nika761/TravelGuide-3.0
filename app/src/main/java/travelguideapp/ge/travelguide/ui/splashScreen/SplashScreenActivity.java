@@ -3,8 +3,14 @@ package travelguideapp.ge.travelguide.ui.splashScreen;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -29,6 +35,7 @@ import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SplashScreenActivity extends AppCompatActivity implements LanguageListener.SplashListener {
 
@@ -43,10 +50,23 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        setLanguage();
         calculateScreenWidth();
         initUI();
         setAnimation();
         checkNetwork();
+    }
+
+    private void setLanguage() {
+        Locale locale = new Locale(GlobalPreferences.getLanguage(this));
+        Locale.setDefault(locale);
+        Resources resources = getResources();
+        Configuration config = resources.getConfiguration();
+        config.setLocale(locale);
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
     }
 
     private void calculateScreenWidth() {

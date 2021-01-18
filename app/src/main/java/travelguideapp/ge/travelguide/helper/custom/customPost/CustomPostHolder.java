@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.StoryEmotionType;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.ui.home.home.HomeFragmentListener;
+import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

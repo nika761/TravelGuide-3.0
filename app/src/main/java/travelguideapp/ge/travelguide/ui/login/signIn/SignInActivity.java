@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
@@ -71,6 +72,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
     private TextView enterMailHead, enterPasswordHead, registerTxt, privacyPolicy, and, connectWith, notHaveAccount,
             forgotPassword, termsOfServices;
+
     private LottieAnimationView animationView;
     private FrameLayout frameLayout;
     private EditText enterEmail, enterPassword;
@@ -100,6 +102,8 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
         initUI();
 
+        checkAppVersion();
+
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo("travelguideapp.ge.travelguide", PackageManager.GET_SIGNATURES);
 //            for (Signature signature : info.signatures) {
@@ -113,6 +117,25 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 //            e.printStackTrace();
 //        }
 
+    }
+
+    private void checkAppVersion() {
+        try {
+            if (BaseApplication.APP_VERSION > 0) {
+                int appVersion = BaseApplication.APP_VERSION;
+                if (GlobalPreferences.getAppVersion(this) < appVersion) {
+                    GlobalPreferences.saveAppVersion(getApplicationContext(), appVersion);
+                    final String appPackageName = getPackageName();
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void verifyEmail() {

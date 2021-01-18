@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.ui.home.home;
+package travelguideapp.ge.travelguide.ui.home.feed;
 
 import android.util.Log;
 import android.view.LayoutInflater;

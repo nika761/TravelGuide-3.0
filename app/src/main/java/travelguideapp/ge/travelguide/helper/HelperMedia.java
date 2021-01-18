@@ -18,7 +18,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import travelguideapp.ge.travelguide.model.ItemMedia;
+
+import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

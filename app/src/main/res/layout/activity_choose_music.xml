@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Sounds"
+            android:text="@string/sounds"
             android:textSize="16sp"
             android:textStyle="normal" />
 
@@ -37,7 +37,7 @@
             android:layout_gravity="end"
             android:layout_marginEnd="8dp"
             android:padding="10dp"
-            android:text="Next"
+            android:text="@string/next"
             android:textColor="@color/yellowTextView"
             android:textSize="16sp"
             android:textStyle="normal" />
@@ -71,13 +71,13 @@
             android:id="@+id/music_search_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search" />
+            android:text="@string/search" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/music_favorites_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Favorites" />
+            android:text="@string/favorites" />
 
     </com.google.android.material.tabs.TabLayout>
 

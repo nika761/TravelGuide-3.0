@@ -27,6 +27,7 @@ public class GlobalPreferences {
 
     private static final String TRAVEL_GUIDE_PREFERENCES = "travel_guide_preference";
     private static final String LANGUAGE_KEY = "language_Id";
+    private static final String LANGUAGE_LOCALE_KEY = "language";
     private static final String USER_KEY = "users";
     private static final String LOGGED_USER_KEY = "logged_user";
     private static final String ACCESS_KEY = "access_token";
@@ -34,6 +35,8 @@ public class GlobalPreferences {
     private static final String USER_ID_KEY = "user_id";
     private static final String USER_ROLE_KEY = "user_role";
     private static final String PLATFORM_KEY = "platform_key";
+    private static final String APP_VERSION_KEY = "app_version_key";
+    private static final String FIRST_USE = "first_use";
 
 
     private static SharedPreferences getPref(Context context) {
@@ -112,6 +115,18 @@ public class GlobalPreferences {
         return languageId;
     }
 
+    public static void saveLanguage(Context context, String language) {
+        getPref(context).edit().putString(LANGUAGE_LOCALE_KEY, language).apply();
+    }
+
+    public static String getLanguage(Context context) {
+        String language = "en";
+        if (getPref(context).getString(LANGUAGE_LOCALE_KEY, null) != null) {
+            return getPref(context).getString(LANGUAGE_LOCALE_KEY, null);
+        } else
+            return language;
+    }
+
     ///AccessToken
 
     public static void saveAccessToken(Context context, String accessToken) {
@@ -131,6 +146,33 @@ public class GlobalPreferences {
         }
 
         return accessToken;
+    }
+
+
+    public static void saveIsFirstUse(Context context, boolean firsUse) {
+        getPref(context).edit().putBoolean(FIRST_USE, firsUse).apply();
+    }
+
+
+    public static boolean getIseFirstUse(Context context) {
+        return getPref(context).getBoolean(FIRST_USE, true);
+    }
+
+
+    public static void saveAppVersion(Context context, int appVersion) {
+        getPref(context).edit().putInt(APP_VERSION_KEY, appVersion).apply();
+    }
+
+    public static void removeAppVersion(Context context) {
+        getPref(context).edit().remove(APP_VERSION_KEY).apply();
+    }
+
+    public static int getAppVersion(Context context) {
+        int appVersion = 0;
+        if (getPref(context).getInt(APP_VERSION_KEY, 0) != 0) {
+            appVersion = getPref(context).getInt(APP_VERSION_KEY, 0);
+        }
+        return appVersion;
     }
 
     public static void saveCurrentLanguage(Context context, GlobalLanguages globalLanguages) {

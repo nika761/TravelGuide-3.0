@@ -30,6 +30,7 @@ class TagPostPresenter {
                         case 0:
                             tagPostListener.onGetHashtags(response.body().getHashtags());
                             break;
+
                         case 1:
                             tagPostListener.onGetError(response.message());
                             break;

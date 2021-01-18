@@ -3,38 +3,27 @@
     <!--    <string name="facebook_app_id" translatable="false">660410181561551</string>-->
     <!--    <string name="fb_login_protocol_scheme" translatable="false">fb660410181561551</string>-->
 
-
     <!--    dfb7b73ec365936b9b41c7a491b6bba5-->
 
     <string name="facebook_app_id" translatable="false">448814346126704</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb448814346126704</string>
 
-
     <string name="app_name">TravelGuide</string>
-    <string name="welcome">Welcome</string>
-    <string name="or">Or connect with</string>
+    <string name="welcome">Welcome !</string>
     <string name="email_or_phone_number">Email or Phone Number</string>
     <string name="password">Password</string>
-    <string name="name"> Name</string>
+    <string name="name">Name</string>
     <string name="surname">Surname</string>
     <string name="nick_name">NickName</string>
     <string name="birth_date">Birth date</string>
     <string name="email">Email</string>
     <string name="phone_number">Phone Number</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="if_you_do_not_have_an_account">If you do not have an account</string>
     <string name="cancel_btn">Cancel</string>
-    <string name="sign_in_btn">Sign in</string>
     <string name="continue_as">Continue as</string>
     <string name="open">open</string>
     <string name="close">close</string>
-    <string name="title_activity_user_followers">UserFollowersActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
 
-    ////Sign in page
-    <string name="email_field_head">Email or Phone Number</string>
-    <string name="password_field_head">Password</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="sign_up_offer_body">if_you_do_not_have_an_account</string>
     <string name="sign_up">Sign Up</string>
@@ -45,14 +34,7 @@
     <string name="privacy_policy"> <u>Privacy Policy</u>.</string>
     <string name="and">and</string>
 
-    ////Sign up page
     <string name="upload_photo">Upload Photo</string>
-    <string name="name_field_head">Name</string>
-    <string name="surname_field_head">Surname</string>
-    <string name="nickname_field_head">NickName</string>
-    <string name="birthdate_field_head">Birth Date</string>
-    <string name="phone_number_field_head">Phone Number</string>
-    <string name="confirm_password_field_head">Confirm Password</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="other">Other</string>
@@ -60,24 +42,20 @@
     <string name="age_restriction_warning">Age is limited to 13+</string>
     <string name="gender_restriction_warning">Please select a gender</string>
 
-    ////Fire base Page
     <string name="firebase_sign_up_intro">Enter your nickname and date of birth</string>
     <string name="save">Save</string>
     <string name="nickname_busy">This nickname is busy, you can choose free</string>
 
-    ///Forgot Password
     <string name="forgot_password_intro">Do not worry. Resetting your password is easy, just tell us the email address you registered with Travel guide</string>
     <string name="send">Send</string>
     <string name="back_to_sign_in">Back to Sign in</string>
     <string name="current_password">Current Password</string>
     <string name="not_match_password">Password not match</string>
 
-    ///Reset Password
     <string name="reset_password_intro">Enter your New password</string>
     <string name="hint_for_passwords">min 8 symbols</string>
 
-    ///Comments
-    <string name="add_comment">Add Comment..</string>
+    <string name="add_comment">Add Comment</string>
     <string name="comments">Comments</string>
     <string name="delete_comment">Delete comment ?</string>
     <string name="view_more_comments">View more comments</string>
@@ -85,7 +63,6 @@
     <string name="reply">Reply</string>
     <string name="replies">Replies</string>
 
-    ///Profile
     <string name="report">Report</string>
     <string name="following">Following</string>
     <string name="follow">Follow</string>
@@ -105,7 +82,6 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
 
-    ///Media
     <string name="video">Video</string>
     <string name="photos">Photos</string>
     <string name="all">All</string>
@@ -118,7 +94,6 @@
     <string name="done">Done</string>
     <string name="trim">Trim</string>
 
-    ///Music page
     <string name="delete_story">Delete Story ?</string>
     <string name="sounds">Sounds</string>
     <string name="music">MUSIC</string>
@@ -126,12 +101,15 @@
     <string name="search">Search</string>
     <string name="music_new">new</string>
 
-    ////Upload post
     <string name="post">Post</string>
-    <string name="describe_post_intro">Trim</string>
     <string name="hashtags">#Hashtags</string>
     <string name="friends">#Friends</string>
     <string name="location">Location</string>
+    <string name="hashtags_tab">HASHTAGS</string>
+    <string name="users_tab">USERS</string>
+    <string name="go_tab">GO !</string>
+    <string name="posts_tab">POSTS</string>
+
 
     <string name="settings">Settings</string>
     <string name="share_profile">Share Profile</string>
@@ -140,6 +118,14 @@
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="privacy_policy_menu_txt">Privacy Policy</string>
     <string name="sign_out_menu_txt">Sign out</string>
+
+    <string name="report_head">Please state your reason for reporting this user</string>
+    <string name="report_profile_picture">inappropriate profile picture(s)</string>
+    <string name="report_sexual_content">sexual text or pictures</string>
+    <string name="report_spam">spam / advertizing</string>
+    <string name="report_hate_speech">harassment or hate speech</string>
+    <string name="report_fraud">fraud</string>
+    <string name="report_other">other</string>
 
 
 </resources>

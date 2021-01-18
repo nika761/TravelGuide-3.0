@@ -18,6 +18,7 @@ import travelguideapp.ge.travelguide.callback.AskingDialogResultCallback;
 public class DialogManager {
 
     public static void signUpConfirmDialog(Activity activity, String title, String message) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         View customLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
@@ -37,6 +38,7 @@ public class DialogManager {
             dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.bg_transparent, null));
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
+
         dialog.show();
     }
 

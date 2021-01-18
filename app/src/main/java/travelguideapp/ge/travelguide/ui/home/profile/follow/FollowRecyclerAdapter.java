@@ -147,6 +147,9 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 if (followers.get(position).getUser_id() == GlobalPreferences.getUserId(userImage.getContext()))
                     followBtn.setVisibility(View.GONE);
 
+                if (isCustomer)
+                    followBtn.setVisibility(View.GONE);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

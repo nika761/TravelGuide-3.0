@@ -149,5 +149,6 @@ public class HelperUI {
             ((EditText) view).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.selector_input_field_icon, 0);
         textView.setTextColor(activity.getResources().getColor(R.color.black, null));
     }
+
 }
 

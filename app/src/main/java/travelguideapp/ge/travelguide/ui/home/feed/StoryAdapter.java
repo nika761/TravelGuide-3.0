@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.ui.home.home;
+package travelguideapp.ge.travelguide.ui.home.feed;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -18,9 +18,9 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.enums.SearchPostBy;
 import travelguideapp.ge.travelguide.enums.StoryEmotionType;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.custom.CustomFrameLayout;
 import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
@@ -273,7 +273,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
                 case R.id.post_location:
                     Intent postHashtagIntent = new Intent(videoItem.getContext(), SearchPostActivity.class);
-                    postHashtagIntent.putExtra("search_type", SearchPostBy.LOCATION);
+                    postHashtagIntent.putExtra("search_type", PostDataSearch.SearchBy.LOCATION);
                     postHashtagIntent.putExtra("search_post_id", currentPost.getPost_id());
                     like.getContext().startActivity(postHashtagIntent);
                     break;

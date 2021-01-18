@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="38dp"
         android:background="@drawable/bg_signup_fields"
-        android:hint="Search"
+        android:hint="@string/search"
         android:maxLines="2"
         android:paddingStart="5dp"
         android:paddingEnd="10dp"

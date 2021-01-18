@@ -23,7 +23,7 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/bg_content"
         android:gravity="start|center"
-        android:hint="Search"
+        android:hint="@string/search"
         android:maxLines="1"
         android:paddingStart="10dp"
         android:paddingEnd="25dp"
@@ -63,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@id/search_edit_text_second"
         app:tabIndicatorColor="@color/yellowTextView"
         app:tabIndicatorFullWidth="false"
-        app:tabMode="fixed"
+        app:tabMode="auto"
         app:tabRippleColor="@android:color/transparent"
         app:tabSelectedTextColor="@color/yellowTextView">
 
@@ -71,25 +71,25 @@
             android:id="@+id/search_tab_stories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="STORIES" />
+            android:text="@string/posts_tab" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/search_tab_users"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="USERS" />
+            android:text="@string/users_tab" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/search_tab_hashtags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="HASHTAGS" />
+            android:text="@string/hashtags_tab" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/search_tab_go"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GO !" />
+            android:text="@string/go_tab" />
 
     </com.google.android.material.tabs.TabLayout>
 

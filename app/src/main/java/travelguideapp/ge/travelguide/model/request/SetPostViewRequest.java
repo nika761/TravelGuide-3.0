@@ -1,6 +1,6 @@
 package travelguideapp.ge.travelguide.model.request;
 
-import travelguideapp.ge.travelguide.model.PostView;
+import travelguideapp.ge.travelguide.model.customModel.PostView;
 
 import java.util.List;
 

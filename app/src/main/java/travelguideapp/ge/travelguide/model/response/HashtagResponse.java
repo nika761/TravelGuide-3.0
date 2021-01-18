@@ -10,6 +10,7 @@ public class HashtagResponse {
     @Expose
     @SerializedName("hashtags")
     private List<Hashtags> hashtags;
+
     @Expose
     @SerializedName("status")
     private int status;
@@ -31,9 +32,11 @@ public class HashtagResponse {
     }
 
     public static class Hashtags {
+
         @Expose
         @SerializedName("hashtag")
         private String hashtag;
+
         @Expose
         @SerializedName("id")
         private int id;

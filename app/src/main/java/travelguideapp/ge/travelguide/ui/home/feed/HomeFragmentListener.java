@@ -1,11 +1,8 @@
-package travelguideapp.ge.travelguide.ui.home.home;
+package travelguideapp.ge.travelguide.ui.home.feed;
 
-import travelguideapp.ge.travelguide.enums.SearchPostBy;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
-import travelguideapp.ge.travelguide.model.response.FollowResponse;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.model.response.SetPostFavoriteResponse;
-import travelguideapp.ge.travelguide.model.response.SetStoryLikeResponse;
 import travelguideapp.ge.travelguide.model.response.SharePostResponse;
 
 import java.util.List;
@@ -24,9 +21,9 @@ public interface HomeFragmentListener {
 
     void onGetPosts(List<PostResponse.Posts> posts);
 
-    void onLocationChoose(int postId, SearchPostBy searchPostBy);
+    void onLocationChoose(int postId, PostDataSearch.SearchBy searchBy);
 
-    void onHashtagChoose(String hashtag, SearchPostBy searchPostBy);
+    void onHashtagChoose(String hashtag, PostDataSearch.SearchBy searchBy);
 
 
     void onFollowChoose(int userId);
@@ -55,6 +52,8 @@ public interface HomeFragmentListener {
 
     void onUserChoose(int userId);
 
+
+    void onReportChoose();
 
     void onChooseDeleteStory(int storyId, int postId, int position);
 

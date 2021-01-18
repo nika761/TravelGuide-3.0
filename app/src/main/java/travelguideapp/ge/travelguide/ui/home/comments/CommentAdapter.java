@@ -86,7 +86,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             super(itemView);
 
             likeCount = itemView.findViewById(R.id.comments_like_count);
+
             userImage = itemView.findViewById(R.id.comments_user_image);
+            userImage.setOnClickListener(this);
+
             userName = itemView.findViewById(R.id.comments_user_name);
             date = itemView.findViewById(R.id.comments_date);
             body = itemView.findViewById(R.id.comments_body);
@@ -170,6 +173,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
                 case R.id.comments_see_more_body:
                     body.setMaxLines(10);
+                    break;
+
+                case R.id.comments_user_image:
+                    listener.onUserChoose(comments.get(getLayoutPosition()).getUser_id());
                     break;
             }
         }

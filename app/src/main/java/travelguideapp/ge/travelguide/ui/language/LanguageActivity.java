@@ -1,6 +1,8 @@
 package travelguideapp.ge.travelguide.ui.language;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -26,6 +28,7 @@ import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import java.util.List;
+import java.util.Locale;
 
 import travelguideapp.ge.travelguide.ui.splashScreen.SplashScreenActivity;
 
@@ -78,13 +81,40 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
     @Override
     public void onChooseLanguage(int languageId) {
         try {
-            loaderContainer.setVisibility(View.VISIBLE);
-            loader.setVisibility(View.VISIBLE);
+
             GlobalPreferences.saveLanguageId(this, languageId);
-            languagePresenter.getLanguageStrings(new LanguageStringsRequest(languageId));
+
+            switch (languageId) {
+                case 1:
+                    changeLanguage("ka");
+                    break;
+                case 2:
+                    changeLanguage("en");
+                    break;
+                case 3:
+                    changeLanguage("ru");
+                    break;
+            }
+//
+//            loaderContainer.setVisibility(View.VISIBLE);
+//            loader.setVisibility(View.VISIBLE);
+//            GlobalPreferences.saveLanguageId(this, languageId);
+//            languagePresenter.getLanguageStrings(new LanguageStringsRequest(languageId));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void changeLanguage(String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Resources resources = getResources();
+        Configuration config = resources.getConfiguration();
+        config.setLocale(locale);
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        GlobalPreferences.saveLanguage(this, language);
+        Intent signIntent = new Intent(LanguageActivity.this, SignInActivity.class);
+        startActivity(signIntent);
     }
 
     @Override

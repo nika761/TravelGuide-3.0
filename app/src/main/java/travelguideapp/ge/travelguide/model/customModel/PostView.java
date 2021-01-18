@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.model;
+package travelguideapp.ge.travelguide.model.customModel;
 
 public class PostView {
 

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import travelguideapp.ge.travelguide.model.Country;
+import travelguideapp.ge.travelguide.model.customModel.Country;
 
 import java.util.ArrayList;
 import java.util.List;
