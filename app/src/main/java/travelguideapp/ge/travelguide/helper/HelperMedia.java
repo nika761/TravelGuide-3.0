@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
 
 public class HelperMedia {
 
@@ -103,7 +104,7 @@ public class HelperMedia {
 
     }
 
-    public static long getVideoDurationInt(String path) {
+    public static long getVideoDurationLong(String path) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(path);
         long duration = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
@@ -284,6 +285,34 @@ public class HelperMedia {
                     convertedImages.add(new ItemMedia(0, imageFilePNG.getAbsolutePath()));
 
                 } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return convertedImages;
+    }
+
+    public static List<MediaFileData> convertMediaToPng(List<MediaFileData> itemMedia) {
+
+        List<MediaFileData> convertedImages = new ArrayList<>();
+
+        for (MediaFileData item : itemMedia) {
+            if (item.getMediaType() == MediaFileData.MediaType.PHOTO) {
+                try {
+                    Bitmap bmp = BitmapFactory.decodeFile(item.getMediaPath());
+
+                    File imageFileJGP = new File(item.getMediaPath());
+
+                    File imageFilePNG = new File(imageFileJGP.getParent() + "/" + System.currentTimeMillis() + ".png");
+
+                    FileOutputStream out = new FileOutputStream(imageFilePNG);
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out); //100-best quality
+                    out.flush();
+                    out.close();
+                    convertedImages.add(new MediaFileData(imageFilePNG.getAbsolutePath(), MediaFileData.MediaType.PHOTO));
+
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }

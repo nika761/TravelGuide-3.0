@@ -95,6 +95,9 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
                 case 3:
                     changeLanguage("ru");
                     break;
+                case 4:
+                    changeLanguage("zh");
+                    break;
             }
 //            Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
             if (getDialog() != null)
@@ -116,7 +119,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     public void onLanguageChoose(int langId) {
         try {
             this.languageId = langId;
-            ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(GlobalPreferences.getLanguageId(context)));
+            ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(languageId));
             changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, GlobalPreferences.getAccessToken(context));
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,15 +128,20 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     }
 
     private void changeLanguage(String language) {
-        Locale locale = new Locale(language);
-        Locale.setDefault(locale);
-        Resources resources = getActivity().getResources();
-        Configuration config = resources.getConfiguration();
-        config.setLocale(locale);
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-        GlobalPreferences.saveLanguage(context, language);
-        getActivity().getIntent().putExtra("IS_LANGUAGE_CHANGED", true);
-        getActivity().recreate();
+        try {
+            GlobalPreferences.saveLanguage(context, language);
+            Locale locale = new Locale(language);
+            Locale.setDefault(locale);
+            Resources resources = getActivity().getResources();
+            Configuration config = resources.getConfiguration();
+            config.setLocale(locale);
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+            getActivity().getIntent().putExtra("IS_LANGUAGE_CHANGED", true);
+            getActivity().recreate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

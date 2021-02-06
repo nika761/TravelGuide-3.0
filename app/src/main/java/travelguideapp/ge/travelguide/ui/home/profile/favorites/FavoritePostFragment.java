@@ -26,8 +26,6 @@ import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 import java.util.List;
 
-import travelguideapp.ge.travelguide.enums.GetPostsFrom;
-
 import static travelguideapp.ge.travelguide.base.BaseApplication.POST_PER_PAGE_SIZE;
 
 public class FavoritePostFragment extends Fragment implements FavoritePostListener {
@@ -88,7 +86,6 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -147,7 +144,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
             int position = getPositionById(postId);
 
             PostDataLoad postDataLoad = new PostDataLoad();
-            postDataLoad.setGetPostsFrom(GetPostsFrom.FAVORITES);
+            postDataLoad.setLoadSource(PostDataLoad.Source.FAVORITES);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 

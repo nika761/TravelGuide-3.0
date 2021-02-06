@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.ui.searchPost;
+package travelguideapp.ge.travelguide.ui.search.posts;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -12,7 +12,6 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
@@ -23,8 +22,7 @@ import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
-
-public class SearchPostActivity extends BaseActivity implements SearchPostListener {
+public class SearchPostActivity extends BaseActivity implements SearchPostListener, SearchPostAdapter.ChoosePostCallback {
 
     private SearchPostPresenter searchPostPresenter;
     private TextView head;
@@ -70,6 +68,7 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
                 case HASHTAG:
                     this.hashtag = postDataSearch.getHashtag();
                     break;
+
                 case LOCATION:
                     this.postId = postDataSearch.getPostId();
                     break;
@@ -106,7 +105,8 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
 
             this.posts = posts;
 
-            SearchPostAdapter adapter = new SearchPostAdapter(posts, this);
+            SearchPostAdapter adapter = new SearchPostAdapter(this);
+            adapter.setPosts(posts);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
             RecyclerView recyclerView = findViewById(R.id.posts_by_location_recycler);
             recyclerView.setLayoutManager(gridLayoutManager);
@@ -124,7 +124,7 @@ public class SearchPostActivity extends BaseActivity implements SearchPostListen
             int position = getPositionById(postId);
 
             PostDataLoad postDataLoad = new PostDataLoad();
-            postDataLoad.setGetPostsFrom(GetPostsFrom.SEARCH);
+            postDataLoad.setLoadSource(PostDataLoad.Source.SEARCH);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 

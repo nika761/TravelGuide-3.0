@@ -234,9 +234,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
             passwordStateBtn = findViewById(R.id.password_visibility);
             passwordStateBtn.setOnClickListener(this::onViewClick);
-
-            setTextsByLanguage();
-
+            
             HelperUI.loadAnimation(enterMailHead, R.anim.anim_swipe_bottom, 0);
             HelperUI.loadAnimation(enterEmail, R.anim.anim_swipe_bottom, 50);
             HelperUI.loadAnimation(enterPasswordHead, R.anim.anim_swipe_bottom, 100);

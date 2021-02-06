@@ -17,6 +17,11 @@ public interface CommentListener {
 
     void onDeleteChoose(int commentId);
 
+    void onReportChoose(int commentId);
+
+
+//    void onReportChoose();
+
     void onDeleted(DeleteCommentResponse deleteCommentResponse);
 
     void onReplyChoose(CommentResponse.Post_story_comments currentComment, boolean requestReply, int position);

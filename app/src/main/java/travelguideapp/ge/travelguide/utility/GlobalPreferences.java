@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
+import travelguideapp.ge.travelguide.model.customModel.AppSettings;
+import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
 import travelguideapp.ge.travelguide.model.response.LoginResponse;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 
+import com.google.android.exoplayer2.C;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,6 +40,7 @@ public class GlobalPreferences {
     private static final String PLATFORM_KEY = "platform_key";
     private static final String APP_VERSION_KEY = "app_version_key";
     private static final String FIRST_USE = "first_use";
+    private static final String APP_SETTINGS_KEY = "app_settings_key";
 
 
     private static SharedPreferences getPref(Context context) {
@@ -237,6 +241,16 @@ public class GlobalPreferences {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(USER_KEY, new Gson().toJson(users));
         editor.apply();
+    }
+
+    public static void saveAppSettings(Context context, AppSettings appSettings) {
+        getPref(context).edit().putString(APP_SETTINGS_KEY, new Gson().toJson(appSettings)).apply();
+    }
+
+    public static AppSettings getAppSettings(Context context) {
+        SharedPreferences sharedPreferences = getPref(context);
+        Gson gson = new Gson();
+        return gson.fromJson(sharedPreferences.getString(APP_SETTINGS_KEY, null), AppSettings.class);
     }
 
     public static void saveUserProfileInfo(Context context, ProfileResponse.Userinfo userinfo) {

@@ -13,6 +13,7 @@ import travelguideapp.ge.travelguide.model.request.CommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteReplyRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
+import travelguideapp.ge.travelguide.model.request.FullSearchRequest;
 import travelguideapp.ge.travelguide.model.request.LanguageStringsRequest;
 import travelguideapp.ge.travelguide.model.request.LikeCommentReplyRequest;
 import travelguideapp.ge.travelguide.model.request.LikeCommentRequest;
@@ -34,7 +35,9 @@ import travelguideapp.ge.travelguide.model.request.ResetPasswordRequest;
 import travelguideapp.ge.travelguide.model.request.SearchMusicRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostFavoriteRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostViewRequest;
+import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetStoryLikeRequest;
+import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
 import travelguideapp.ge.travelguide.model.request.SharePostRequest;
 import travelguideapp.ge.travelguide.model.request.SignUpRequest;
 import travelguideapp.ge.travelguide.model.request.SignUpWithFirebaseRequest;
@@ -58,6 +61,7 @@ import travelguideapp.ge.travelguide.model.response.FavoriteMusicResponse;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FollowingResponse;
 import travelguideapp.ge.travelguide.model.response.ForgotPasswordResponse;
+import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.model.response.LanguageStringsResponse;
 import travelguideapp.ge.travelguide.model.response.LikeCommentReplyResponse;
@@ -71,6 +75,7 @@ import travelguideapp.ge.travelguide.model.response.FollowResponse;
 import travelguideapp.ge.travelguide.model.response.ResetPasswordResponse;
 import travelguideapp.ge.travelguide.model.response.SetPostFavoriteResponse;
 import travelguideapp.ge.travelguide.model.response.SetPostViewResponse;
+import travelguideapp.ge.travelguide.model.response.SetReportResponse;
 import travelguideapp.ge.travelguide.model.response.SetStoryLikeResponse;
 import travelguideapp.ge.travelguide.model.response.SharePostResponse;
 import travelguideapp.ge.travelguide.model.response.SignUpResponse;
@@ -164,7 +169,7 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("set/post_go_click")
     Call<Object> chooseGo(@Header("Authorization") String token,
-                           @Body ChooseGoRequest chooseGoRequest);
+                          @Body ChooseGoRequest chooseGoRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/favorite_music")
@@ -210,6 +215,11 @@ public interface ApiService {
     Call<MusicResponse> searchMusic(@Header("Authorization") String token,
                                     @Body SearchMusicRequest searchMusicRequest);
 
+    @Headers({"Accept: application/json"})
+    @POST("search/all")
+    Call<FullSearchResponse> searchAll(@Header("Authorization") String token,
+                                       @Body FullSearchRequest fullSearchRequest);
+
 //    @Headers({"Accept: application/json"})
 //    @POST("set/post/view")
 //    Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
@@ -234,6 +244,16 @@ public interface ApiService {
     @POST("set/story_like")
     Call<SetStoryLikeResponse> setStoryLike(@Header("Authorization") String token,
                                             @Body SetStoryLikeRequest setStoryLikeRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/post_report")
+    Call<SetReportResponse> setPostReport(@Header("Authorization") String token,
+                                      @Body SetPostReportRequest setReportRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/user_report")
+    Call<SetReportResponse> setUserReport(@Header("Authorization") String token,
+                                      @Body SetUserReportRequest setUserReportRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/post_favourite")

@@ -23,7 +23,6 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
@@ -32,6 +31,7 @@ import travelguideapp.ge.travelguide.helper.custom.CustomTimer;
 import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostAdapter;
 import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
+import travelguideapp.ge.travelguide.model.customModel.ReportData;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.customModel.PostView;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private int customerUserId;
 
-    private GetPostsFrom getPostsFrom;
+    private PostDataLoad.Source loadSource;
     private CustomPostRecycler customPostRecycler;
     private CustomPostAdapter customPostAdapter;
 
@@ -168,8 +168,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 //            }
             try {
                 PostDataLoad postDataLoad = getArguments().getParcelable(PostDataLoad.INTENT_KEY_LOAD);
-                this.getPostsFrom = postDataLoad.getGetPostsFrom();
-                switch (getPostsFrom) {
+                this.loadSource = postDataLoad.getLoadSource();
+                switch (loadSource) {
                     case FAVORITES:
 
                     case SEARCH:
@@ -401,7 +401,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
             Bundle data = new Bundle();
             data.putInt("storyId", storyId);
             data.putInt("postId", postId);
-            commitCommentFragment(data, COMMENT);
+            loadCommentFragment(data, COMMENT);
 //            loadFragment(storyId, postId);
 //            commentFragmentCallback.onLoadCommentFragment(postId, storyId);
         } catch (Exception e) {
@@ -442,9 +442,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     }
 
     @Override
-    public void onReportChoose() {
+    public void onReportChoose(int postId) {
         try {
-            ((BaseActivity) getActivity()).openReportDialog();
+            ((BaseActivity) getActivity()).openReportDialog(ReportData.getInstance(ReportData.Type.POST, postId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -471,7 +471,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
         String accessToken = GlobalPreferences.getAccessToken(postRecycler.getContext());
 
-        switch (getPostsFrom) {
+        switch (loadSource) {
 
             case FAVORITES:
                 presenter.getFavoritePosts(accessToken, new FavoritePostRequest(fromPostId));
@@ -570,7 +570,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     }
 
     @Override
-    public void commitCommentFragment(Bundle dataForFragment, CommentFragment.CommentFragmentType commentType) {
+    public void loadCommentFragment(Bundle dataForFragment, CommentFragment.CommentFragmentType commentType) {
         try {
             FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
             switch (commentType) {

@@ -1,42 +1,23 @@
 package travelguideapp.ge.travelguide.base;
 
-import android.app.Activity;
 import android.app.Application;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
-import android.widget.RemoteViews;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import travelguideapp.ge.travelguide.R;
-
-import travelguideapp.ge.travelguide.helper.broadcast.NotificationReceiver;
 import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import travelguideapp.ge.travelguide.ui.language.LanguageActivity;
-import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 /**
@@ -105,8 +86,6 @@ public class BaseApplication extends Application {
     }
 
 
-
-
     public void getAppSettings() {
         try {
             ApiService apiService = RetrofitManager.getApiService();
@@ -114,20 +93,26 @@ public class BaseApplication extends Application {
                 @Override
                 public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        CROP_OPTION_X = response.body().getApp_settings().getStory_photo_crop_width();
-                        CROP_OPTION_Y = response.body().getApp_settings().getStory_photo_crop_height();
-                        AGE_RESTRICTION = response.body().getApp_settings().getAge_restriction();
-                        POST_PER_PAGE_SIZE = response.body().getApp_settings().getProfile_posts_quntity_per_page();
+
+                        CROP_OPTION_X = response.body().getApp_settings().get_CROP_OPTION_X();
+                        CROP_OPTION_Y = response.body().getApp_settings().get_CROP_OPTION_Y();
+                        AGE_RESTRICTION = response.body().getApp_settings().get_AGE_RESTRICTION();
+                        POST_PER_PAGE_SIZE = response.body().getApp_settings().get_POST_PER_PAGE_SIZE();
+
                         try {
-                            POST_VIEW_TIME = (long) response.body().getApp_settings().getStory_view_deley_duration();
+                            POST_VIEW_TIME = (long) response.body().getApp_settings().get_POST_VIEW_TIME();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        if (GlobalPreferences.getIseFirstUse(getApplicationContext())) {
-                            setFirstUse();
-                            GlobalPreferences.saveAppVersion(getApplicationContext(), response.body().getApp_settings().getAndroid_version());
+
+                        if (GlobalPreferences.getAppVersion(getApplicationContext()) == 0) {
+                            GlobalPreferences.saveAppVersion(getApplicationContext(), 1);
                         }
-                        APP_VERSION = response.body().getApp_settings().getAndroid_version();
+
+                        APP_VERSION = response.body().getApp_settings().get_APP_VERSION();
+
+                        GlobalPreferences.saveAppSettings(BaseApplication.this, response.body().getApp_settings());
+
                     }
                 }
 
@@ -140,4 +125,5 @@ public class BaseApplication extends Application {
             e.printStackTrace();
         }
     }
+
 }

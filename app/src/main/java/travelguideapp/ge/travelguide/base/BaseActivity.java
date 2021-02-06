@@ -25,12 +25,15 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.Report;
+import travelguideapp.ge.travelguide.model.customModel.ReportData;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
+import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
+import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.home.report.ReportAdapter;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
-import travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity;
+import travelguideapp.ge.travelguide.ui.search.posts.SearchPostActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
@@ -38,11 +41,15 @@ public class BaseActivity extends AppCompatActivity {
 
     public static final int SHARING_INTENT_REQUEST_CODE = 500;
 
-    private final ArrayList<Integer> reports = new ArrayList<>();
+    private final List<Report> reports = new ArrayList<>();
+    private final List<Integer> reportsId = new ArrayList<>();
+
+    private BasePresenter basePresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        basePresenter = new BasePresenter();
     }
 
     public FragmentManager getCurrentChildFragmentManager() {
@@ -127,22 +134,44 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void openReportDialog() {
+    public void openReportDialog(ReportData reportData) {
         try {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
             View bottomSheetLayout = View.inflate(this, R.layout.dialog_report, null);
 
             TextView sentBtn = bottomSheetLayout.findViewById(R.id.report_sent);
-            sentBtn.setOnClickListener(v -> bottomSheetDialog.dismiss());
+            sentBtn.setOnClickListener(v -> {
+                switch (reportData.getReportType()) {
+                    case USER:
+                        basePresenter.setUserReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetUserReportRequest(reportData.getUserId(), reportsId));
+                        break;
+                    case POST:
+                        basePresenter.setPostReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetPostReportRequest(reportData.getPostId(), reportsId));
+                        break;
+                    case COMMENT:
+                        break;
+                }
+
+                bottomSheetDialog.dismiss();
+
+            });
 
             RecyclerView recyclerView = bottomSheetLayout.findViewById(R.id.report_recycler);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(new ReportAdapter(getReports(), reportId -> reports.add(reportId)));
+            recyclerView.setAdapter(new ReportAdapter(getReports(), new ReportAdapter.OnReportChooseCallback() {
+                @Override
+                public void onReportAdd(Report report) {
+                    reportsId.add(report.getReportReasonId());
+                }
+
+                @Override
+                public void onReportRemove(Report report) {
+                    reportsId.remove(report.getReportReasonId());
+                }
+            }));
 
             bottomSheetDialog.setContentView(bottomSheetLayout);
-            bottomSheetDialog.setOnDismissListener(dialog -> {
-                reports.clear();
-            });
+            bottomSheetDialog.setOnDismissListener(dialog -> reportsId.clear());
             bottomSheetDialog.show();
         } catch (Exception e) {
             e.printStackTrace();

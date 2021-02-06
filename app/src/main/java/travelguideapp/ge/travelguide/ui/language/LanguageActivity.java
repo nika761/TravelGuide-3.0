@@ -94,12 +94,16 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
                 case 3:
                     changeLanguage("ru");
                     break;
+                case 4:
+                    changeLanguage("zh");
+                    break;
             }
-//
+
 //            loaderContainer.setVisibility(View.VISIBLE);
 //            loader.setVisibility(View.VISIBLE);
 //            GlobalPreferences.saveLanguageId(this, languageId);
 //            languagePresenter.getLanguageStrings(new LanguageStringsRequest(languageId));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,6 +117,7 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
         config.setLocale(locale);
         resources.updateConfiguration(config, resources.getDisplayMetrics());
         GlobalPreferences.saveLanguage(this, language);
+
         Intent signIntent = new Intent(LanguageActivity.this, SignInActivity.class);
         startActivity(signIntent);
     }

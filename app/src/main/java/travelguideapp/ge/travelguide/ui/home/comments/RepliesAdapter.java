@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.response.CommentResponse;
 
 import java.util.List;
@@ -84,8 +85,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
 
             like = itemView.findViewById(R.id.com_replies_like);
             like.setOnClickListener(v -> {
-                listener.onChooseLike(commentReplies.get(getLayoutPosition()).getComment_id(),
-                        commentReplies.get(getLayoutPosition()).getComment_reply_id());
+                listener.onChooseLike(commentReplies.get(getLayoutPosition()).getComment_id(), commentReplies.get(getLayoutPosition()).getComment_reply_id());
                 setCommentLike(getLayoutPosition());
             });
 
@@ -128,9 +128,9 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
 
 
             if (commentReplies.get(position).isI_can_edit_reply()) {
-                setDeleteFunction(true, position);
+                setCommentOption(true, position);
             } else {
-                setDeleteFunction(false, 0);
+                setCommentOption(false, 0);
             }
         }
 
@@ -165,16 +165,15 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
 
         }
 
-        void setDeleteFunction(boolean canDelete, int position) {
-            if (canDelete) {
-                itemView.setOnLongClickListener(v -> {
+        void setCommentOption(boolean canEdit, int position) {
+            itemView.setOnLongClickListener(v -> {
+                if (canEdit) {
                     listener.onChooseDelete(commentReplies.get(position).getComment_reply_id());
-                    return true;
-                });
-            } else {
-                itemView.setOnLongClickListener(null);
-            }
+                } else {
+                    listener.onChooseReport(commentReplies.get(position).getComment_reply_id());
+                }
+                return true;
+            });
         }
-
     }
 }

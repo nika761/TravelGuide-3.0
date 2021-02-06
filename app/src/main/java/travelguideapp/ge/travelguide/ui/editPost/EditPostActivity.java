@@ -3,10 +3,10 @@ package travelguideapp.ge.travelguide.ui.editPost;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,20 +18,22 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
 import travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity;
 import travelguideapp.ge.travelguide.ui.editPost.filterActivity.FilterActivity;
 import travelguideapp.ge.travelguide.ui.editPost.sortActivity.SortStoriesActivity;
+
 import com.gowtham.library.ui.ActVideoTrimmer;
 import com.gowtham.library.utils.TrimmerConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.base.BaseApplication;
+import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
 public class EditPostActivity extends AppCompatActivity implements EditPostCallback {
@@ -42,13 +44,15 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
     private static final int SORT_ACTIVITY = 2;
     private static final int TRIM_ACTIVITY = 3;
 
-
     private List<ItemMedia> itemMedias = new ArrayList<>();
+    private List<MediaFileData> mediaFiles = new ArrayList<>();
 
     private EditPostAdapter editPostAdapter;
     private RecyclerView editPostRecycler;
 
     private int adapterPosition;
+
+    private boolean isMustTrim = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,25 +70,27 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
             try {
                 for (String currentPath : storiesPath) {
                     if (currentPath.endsWith(".mp4")) {
-                        itemMedias.add(new ItemMedia(1, currentPath));
+                        mediaFiles.add(new MediaFileData(currentPath, MediaFileData.MediaType.VIDEO));
                     } else {
-                        itemMedias.add(new ItemMedia(0, currentPath));
+                        mediaFiles.add(new MediaFileData(currentPath, MediaFileData.MediaType.PHOTO));
                     }
                 }
-                if (itemMedias.size() > 0)
-                    initRecycler(itemMedias);
+                if (mediaFiles.size() > 0)
+                    initRecycler(mediaFiles);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
     }
 
     private void checkVideoDuration() {
         try {
-            if (itemMedias.size() > 0 && itemMedias.get(0).getType() == 1) {
-                long duration = HelperMedia.getVideoDurationInt(itemMedias.get(0).getPath());
-                if (duration > 60000) {
-                    MyToaster.getErrorToaster(this, "ვიდეოს მაქსიმალური ზომა არის 60 წამი");
+            if (mediaFiles.size() > 0 && mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.VIDEO) {
+                long duration = HelperMedia.getVideoDurationLong(mediaFiles.get(0).getMediaPath());
+                if (duration > GlobalPreferences.getAppSettings(this).getStory_video_duration_max()) {
+                    isMustTrim = true;
+                    onTrimChoose(mediaFiles.get(0).getMediaPath(), 0);
                 } else {
                     Log.e("dasdasd", "naklebia");
                     Log.e("dasdasd", String.valueOf(duration));
@@ -100,7 +106,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
         TextView btnNext = findViewById(R.id.edit_post_next_btn);
         btnNext.setOnClickListener(v -> {
             Intent intent = new Intent(EditPostActivity.this, ChooseMusicActivity.class);
-            intent.putExtra(STORIES_PATHS, (Serializable) itemMedias);
+            intent.putParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA, (ArrayList<? extends Parcelable>) mediaFiles);
             startActivity(intent);
         });
 
@@ -110,7 +116,6 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
         editPostRecycler = findViewById(R.id.recycler_post);
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(editPostRecycler);
-
         editPostRecycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         editPostRecycler.setHasFixedSize(true);
         editPostAdapter = new EditPostAdapter(this);
@@ -137,8 +142,8 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
         }
     }
 
-    private void initRecycler(List<ItemMedia> itemMedia) {
-        editPostAdapter.setItemMedias(itemMedia);
+    private void initRecycler(List<MediaFileData> mediaFiles) {
+        editPostAdapter.setItemMedias(mediaFiles);
         editPostRecycler.setAdapter(editPostAdapter);
     }
 
@@ -175,31 +180,33 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
     }
 
     @Override
-    public void onSortChoose(List<ItemMedia> stories) {
-        this.itemMedias = stories;
+    public void onSortChoose(List<MediaFileData> stories) {
+        this.mediaFiles = stories;
         Intent intent = new Intent(this, SortStoriesActivity.class);
-        intent.putExtra(STORIES_PATHS, (Serializable) itemMedias);
+        intent.putParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA, (ArrayList<? extends Parcelable>) mediaFiles);
         startActivityForResult(intent, SORT_ACTIVITY);
     }
 
     @Override
     public void onTrimChoose(String path, int position) {
+        long minValue = GlobalPreferences.getAppSettings(this).getStory_video_duration_min();
+        long maxValue = GlobalPreferences.getAppSettings(this).getStory_video_duration_max();
         this.adapterPosition = position;
         Uri videoUri = Uri.fromFile(new File(path));
         Intent intent = new Intent(this, ActVideoTrimmer.class);
         intent.putExtra(TrimmerConstants.TRIM_VIDEO_URI, String.valueOf(videoUri));
         intent.putExtra(TrimmerConstants.TRIM_TYPE, 3);
         intent.putExtra(TrimmerConstants.MIN_FROM_DURATION, 5L);
-        intent.putExtra(TrimmerConstants.MAX_TO_DURATION, 60L);
+        intent.putExtra(TrimmerConstants.MAX_TO_DURATION, 30L);
         startActivityForResult(intent, TRIM_ACTIVITY);
     }
 
     @Override
-    public void onStoryDeleted(List<ItemMedia> itemMedias) {
+    public void onStoryDeleted(List<MediaFileData> itemMedias) {
         if (itemMedias.size() == 0) {
             finish();
         } else {
-            this.itemMedias = itemMedias;
+            this.mediaFiles = itemMedias;
         }
     }
 
@@ -210,10 +217,9 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
                 case RESULT_OK:
                     String path = result.getUri().getPath();
                     editPostAdapter.onCropFinish(path, adapterPosition);
-                    Toast.makeText(this, "Image Crop Successful", Toast.LENGTH_LONG).show();
                     break;
+
                 case RESULT_CANCELED:
-                    Toast.makeText(this, "Image Crop Error", Toast.LENGTH_LONG).show();
                     break;
             }
         }
@@ -225,10 +231,8 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
                 String path = data.getStringExtra("filtered_path");
                 int position = data.getIntExtra("filtered_position", 0);
                 editPostAdapter.onFilterFinish(path, position);
-//                Toast.makeText(this, "Image Filter Successful", Toast.LENGTH_LONG).show();
                 break;
             case RESULT_CANCELED:
-//                Toast.makeText(this, "Image Filter Error", Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -236,13 +240,11 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
     private void onSortFinish(int resultCode, Intent data) {
         switch (resultCode) {
             case RESULT_OK:
-                this.itemMedias = (List<ItemMedia>) data.getSerializableExtra(STORIES_PATHS);
-                editPostAdapter.setItemMedias((itemMedias));
-//                Toast.makeText(this, "Item Sort Successful", Toast.LENGTH_LONG).show();
+                this.mediaFiles = data.getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);
+                editPostAdapter.setItemMedias(mediaFiles);
                 break;
 
             case RESULT_CANCELED:
-//                Toast.makeText(this, "Item Sort Error", Toast.LENGTH_LONG).show();
                 break;
 
         }
@@ -252,14 +254,26 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
         switch (resultCode) {
             case RESULT_OK:
                 if (data != null) {
-                    String trimmedVideoPath = data.getStringExtra(TrimmerConstants.TRIMMED_VIDEO_PATH);
-                    editPostAdapter.onTrimFinish(trimmedVideoPath, adapterPosition);
-                    Toast.makeText(this, "Video Trimmed Successful", Toast.LENGTH_LONG).show();
+                    try {
+                        String trimmedVideoPath = data.getStringExtra(TrimmerConstants.TRIMMED_VIDEO_PATH);
+                        long duration = HelperMedia.getVideoDurationLong(trimmedVideoPath);
+                        if (duration > GlobalPreferences.getAppSettings(this).getStory_video_duration_max()) {
+                            MyToaster.getErrorToaster(this, "Video should be smaller then " + GlobalPreferences.getAppSettings(this).getStory_video_duration_max());
+                            finish();
+                        } else
+                            editPostAdapter.onTrimFinish(trimmedVideoPath, adapterPosition);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
 
             case RESULT_CANCELED:
-                Toast.makeText(this, "Video Trim Error", Toast.LENGTH_LONG).show();
+                if (isMustTrim) {
+                    MyToaster.getErrorToaster(this, "Video should be smaller then " + GlobalPreferences.getAppSettings(this).getStory_video_duration_max());
+                    isMustTrim = false;
+                    finish();
+                }
                 break;
 
         }

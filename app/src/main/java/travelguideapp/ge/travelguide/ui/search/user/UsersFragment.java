@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.ui.search.user;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
+import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
@@ -24,31 +26,31 @@ import travelguideapp.ge.travelguide.ui.upload.tag.FriendsAdapter;
 public class UsersFragment extends Fragment implements UsersFragmentListener {
 
     private RecyclerView usersRecycler;
-    private FriendsAdapter friendsAdapter;
+    private UserAdapter userAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_s_users, container, false);
         usersRecycler = view.findViewById(R.id.search_user_recycler);
+        usersRecycler.setLayoutManager(new LinearLayoutManager(usersRecycler.getContext()));
+        usersRecycler.setHasFixedSize(true);
+        userAdapter = new UserAdapter(this);
         return view;
     }
 
-    public void setUsers(List<FollowerResponse.Followers> followers) {
-        friendsAdapter.setFollowers(followers);
-        usersRecycler.setAdapter(friendsAdapter);
+    public void setUsers(List<FullSearchResponse.Users> users) {
+        try {
+            userAdapter.setUsers(users);
+            usersRecycler.setAdapter(userAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initUsersRecycler();
-    }
-
-    public void initUsersRecycler() {
-        friendsAdapter = new FriendsAdapter(this);
-        usersRecycler.setLayoutManager(new LinearLayoutManager(usersRecycler.getContext()));
-        usersRecycler.setHasFixedSize(true);
     }
 
     @Override
@@ -58,9 +60,9 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
     }
 
     @Override
-    public void onUserChoose(FollowerResponse.Followers user) {
+    public void onUserChoose(FullSearchResponse.Users user) {
         try {
-            ((BaseActivity) getActivity()).startCustomerActivity(user.getUser_id());
+            ((BaseActivity) getActivity()).startCustomerActivity(user.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,12 +70,24 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
 
     private void getCachedUsers() {
         try {
-            List<FollowerResponse.Followers> followers = ((SearchActivity) usersRecycler.getContext()).getFollowers();
-            if (followers != null) {
-                setUsers(followers);
+            List<FullSearchResponse.Users> users = ((SearchActivity) usersRecycler.getContext()).getUsers();
+            if (users != null) {
+                setUsers(users);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onStop() {
+        Log.e("asdzxc", "userebis fragmenti stopi");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("asdzxc", "userebis fragmenti destroy");
+        super.onDestroy();
     }
 }

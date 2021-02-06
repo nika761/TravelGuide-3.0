@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -14,6 +15,7 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.response.CommentResponse;
 
 import java.text.MessageFormat;
@@ -80,7 +82,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         int countPlus = -1;
         int countMinus = Integer.MAX_VALUE;
 
-
         CommentHolder(@NonNull View itemView) {
 
             super(itemView);
@@ -101,7 +102,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             replyBtn.setOnClickListener(this);
 
             showReplies = itemView.findViewById(R.id.comments_view_replies);
-            showReplies.setOnClickListener(this);
+            showReplies.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
 
             likeBtn = itemView.findViewById(R.id.comments_like_btn);
             likeBtn.setOnClickListener(this);
@@ -139,17 +145,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             }
 
             if (comments.get(position).getComment_liked_by_me())
-                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
+                likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked));
             else
-                likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
+                likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked));
 
 
             if (comments.get(position).getI_can_edit_comment()) {
-                setDeleteFunction(true, position);
                 replyBtn.setVisibility(View.VISIBLE);
+                setCommentOption(true, position);
             } else {
                 replyBtn.setVisibility(View.GONE);
-                setDeleteFunction(false, 0);
+                setCommentOption(false, position);
             }
 
 
@@ -187,14 +193,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
                 if (countPlus > comments.get(position).getComment_likes()) {
                     YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null)))
+                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked)))
                             .duration(250)
                             .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
                     comments.get(position).setComment_liked_by_me(false);
                 } else {
                     YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null)))
+                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked)))
                             .duration(250)
                             .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes() - 1));
@@ -206,14 +212,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
                 if (countMinus < comments.get(position).getComment_likes()) {
                     YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null)))
+                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked)))
                             .duration(250)
                             .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
                     comments.get(position).setComment_liked_by_me(true);
                 } else {
                     YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(body.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null)))
+                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked)))
                             .duration(250)
                             .playOn(likeBtn);
                     likeCount.setText(String.valueOf(comments.get(position).getComment_likes() + 1));
@@ -225,16 +231,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         }
 
-        void setDeleteFunction(boolean canDelete, int position) {
-            if (canDelete) {
-                itemView.setOnLongClickListener(v -> {
+        void setCommentOption(boolean canEdit, int position) {
+            itemView.setOnLongClickListener(v -> {
+                if (canEdit) {
                     listener.onDeleteChoose(comments.get(position).getComment_id());
-                    return true;
-                });
-            } else {
-                itemView.setOnLongClickListener(null);
-            }
+                } else {
+                    listener.onReportChoose(comments.get(position).getComment_id());
+                }
+                return true;
+            });
         }
-
     }
 }

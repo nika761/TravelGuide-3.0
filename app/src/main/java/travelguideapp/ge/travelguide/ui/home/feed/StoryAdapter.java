@@ -18,13 +18,12 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.enums.StoryEmotionType;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.custom.CustomFrameLayout;
 import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
-import travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity;
+import travelguideapp.ge.travelguide.ui.search.posts.SearchPostActivity;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 import java.util.List;
@@ -280,12 +279,12 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
                 case R.id.story_like:
                     homeFragmentListener.onStoryLikeChoose(currentPost.getPost_id(), currentPost.getPost_stories().get(getLayoutPosition()).getStory_id());
-                    setStoryEmotion(getLayoutPosition(), StoryEmotionType.LIKE);
+//                    setStoryEmotion(getLayoutPosition(), StoryEmotionType.LIKE);
                     break;
 
                 case R.id.story_follow_btn:
                     homeFragmentListener.onFollowChoose(currentPost.getUser_id());
-                    setStoryEmotion(getLayoutPosition(), StoryEmotionType.FOLLOW);
+//                    setStoryEmotion(getLayoutPosition(), StoryEmotionType.FOLLOW);
                     break;
 
                 case R.id.story_share:
@@ -294,7 +293,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
                 case R.id.story_favorites:
                     homeFragmentListener.onFavoriteChoose(currentPost.getPost_id());
-                    setStoryEmotion(getLayoutPosition(), StoryEmotionType.FAVORITE);
+//                    setStoryEmotion(getLayoutPosition(), StoryEmotionType.FAVORITE);
                     break;
 
                 case R.id.story_comment:
@@ -304,80 +303,80 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
         }
 
-        void setStoryEmotion(int position, StoryEmotionType storyEmotionType) {
-
-            switch (storyEmotionType) {
-                case LIKE:
-                    if (stories.get(position).getStory_like_by_me()) {
-
-                        if (countLikeUp > stories.get(position).getStory_likes()) {
-                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
-                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes()));
-                            stories.get(position).setStory_like_by_me(false);
-                        } else {
-                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes() - 1));
-                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
-                            countLikeDown = stories.get(position).getStory_likes() - 1;
-                            stories.get(position).setStory_like_by_me(false);
-                        }
-
-                    } else {
-
-                        if (countLikeDown < stories.get(position).getStory_likes()) {
-                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
-                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes()));
-                            stories.get(position).setStory_like_by_me(true);
-                        } else {
-                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
-                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes() + 1));
-                            countLikeUp = stories.get(position).getStory_likes() + 1;
-                            stories.get(position).setStory_like_by_me(true);
-                        }
-                    }
-
-                    break;
-
-                case FAVORITE:
-                    if (currentPost.getI_favor_post()) {
-
-                        if (countFavoriteUp > currentPost.getPost_favorites()) {
-                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
-                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites()));
-                            currentPost.setI_favor_post(false);
-                        } else {
-                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
-                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites() - 1));
-                            countLikeDown = currentPost.getPost_favorites() - 1;
-                            currentPost.setI_favor_post(false);
-                        }
-
-                    } else {
-
-                        if (countFavoriteDown < currentPost.getPost_favorites()) {
-                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites()));
-                            currentPost.setI_favor_post(true);
-                        } else {
-                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites() + 1));
-                            countLikeDown = currentPost.getPost_favorites() + 1;
-                            currentPost.setI_favor_post(true);
-                        }
-
-                    }
-                    break;
-
-                case FOLLOW:
-
-                    if (!currentPost.getI_follow_post_owner()) {
-                        follow.setVisibility(View.GONE);
-                        currentPost.setI_follow_post_owner(true);
-                    }
-                    break;
-            }
-
-
-        }
+//        void setStoryEmotion(int position, StoryEmotionType storyEmotionType) {
+//
+//            switch (storyEmotionType) {
+//                case LIKE:
+//                    if (stories.get(position).getStory_like_by_me()) {
+//
+//                        if (countLikeUp > stories.get(position).getStory_likes()) {
+//                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
+//                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes()));
+//                            stories.get(position).setStory_like_by_me(false);
+//                        } else {
+//                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes() - 1));
+//                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
+//                            countLikeDown = stories.get(position).getStory_likes() - 1;
+//                            stories.get(position).setStory_like_by_me(false);
+//                        }
+//
+//                    } else {
+//
+//                        if (countLikeDown < stories.get(position).getStory_likes()) {
+//                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+//                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes()));
+//                            stories.get(position).setStory_like_by_me(true);
+//                        } else {
+//                            like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+//                            storyLikes.setText(String.valueOf(stories.get(position).getStory_likes() + 1));
+//                            countLikeUp = stories.get(position).getStory_likes() + 1;
+//                            stories.get(position).setStory_like_by_me(true);
+//                        }
+//                    }
+//
+//                    break;
+//
+//                case FAVORITE:
+//                    if (currentPost.getI_favor_post()) {
+//
+//                        if (countFavoriteUp > currentPost.getPost_favorites()) {
+//                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
+//                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites()));
+//                            currentPost.setI_favor_post(false);
+//                        } else {
+//                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
+//                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites() - 1));
+//                            countLikeDown = currentPost.getPost_favorites() - 1;
+//                            currentPost.setI_favor_post(false);
+//                        }
+//
+//                    } else {
+//
+//                        if (countFavoriteDown < currentPost.getPost_favorites()) {
+//                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+//                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites()));
+//                            currentPost.setI_favor_post(true);
+//                        } else {
+//                            favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+//                            storyFavorites.setText(String.valueOf(currentPost.getPost_favorites() + 1));
+//                            countLikeDown = currentPost.getPost_favorites() + 1;
+//                            currentPost.setI_favor_post(true);
+//                        }
+//
+//                    }
+//                    break;
+//
+//                case FOLLOW:
+//
+//                    if (!currentPost.getI_follow_post_owner()) {
+//                        follow.setVisibility(View.GONE);
+//                        currentPost.setI_follow_post_owner(true);
+//                    }
+//                    break;
+//            }
+//
+//
+//        }
 
     }
 }

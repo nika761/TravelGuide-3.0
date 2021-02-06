@@ -15,6 +15,7 @@ public class PostResponse {
     @Expose
     @SerializedName("posts")
     private List<Posts> posts;
+
     @Expose
     @SerializedName("status")
     private int status;
@@ -39,72 +40,95 @@ public class PostResponse {
         @Expose
         @SerializedName("post_stories")
         private List<Post_stories> post_stories;
+
         @Expose
         @SerializedName("post_reactions")
         private int post_reactions;
+
         @Expose
         @SerializedName("i_favor_post")
         private boolean i_favor_post;
+
         @Expose
         @SerializedName("i_follow_post_owner")
         private boolean i_follow_post_owner;
+
         @Expose
         @SerializedName("post_locations")
         private List<Post_locations> post_locations;
+
         @Expose
         @SerializedName("hashtags")
         private List<String> hashtags;
+
         @Expose
         @SerializedName("post_shares")
         private int post_shares;
+
         @Expose
         @SerializedName("post_favorites")
         private int post_favorites;
+
         @Expose
         @SerializedName("post_go_activity")
         private int post_go_activity;
+
         @Expose
         @SerializedName("past_time")
         private String past_time;
+
         @Expose
         @SerializedName("music_url")
         private String music_url;
+
         @Expose
         @SerializedName("music_text")
         private String music_text;
+
         @Expose
         @SerializedName("post_share_url")
         private String post_share_url;
+
         @Expose
         @SerializedName("post_view")
         private int post_view;
+
         @Expose
         @SerializedName("created_at")
         private String created_at;
+
         @Expose
         @SerializedName("cover")
         private String cover;
+
         @Expose
         @SerializedName("music_id")
         private int music_id;
+
         @Expose
         @SerializedName("go")
         private String go;
+
         @Expose
         @SerializedName("description")
         private String description;
+
         @Expose
         @SerializedName("post_title")
         private String post_title;
+
         @Expose
         @SerializedName("profile_pic")
         private String profile_pic;
+
         @Expose
         @SerializedName("nickname")
         private String nickname;
+
         @Expose
         @SerializedName("user_id")
         private int user_id;
+
         @Expose
         @SerializedName("post_id")
         private int post_id;
@@ -362,27 +386,32 @@ public class PostResponse {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+
             if (post_stories == null) {
                 dest.writeByte((byte) (0x00));
             } else {
                 dest.writeByte((byte) (0x01));
                 dest.writeList(post_stories);
             }
+
             dest.writeInt(post_reactions);
             dest.writeByte((byte) (i_favor_post ? 0x01 : 0x00));
             dest.writeByte((byte) (i_follow_post_owner ? 0x01 : 0x00));
+
             if (post_locations == null) {
                 dest.writeByte((byte) (0x00));
             } else {
                 dest.writeByte((byte) (0x01));
                 dest.writeList(post_locations);
             }
+
             if (hashtags == null) {
                 dest.writeByte((byte) (0x00));
             } else {
                 dest.writeByte((byte) (0x01));
                 dest.writeList(hashtags);
             }
+
             dest.writeInt(post_shares);
             dest.writeInt(post_favorites);
             dest.writeInt(post_go_activity);
@@ -401,25 +430,32 @@ public class PostResponse {
             dest.writeString(nickname);
             dest.writeInt(user_id);
             dest.writeInt(post_id);
+
         }
     }
 
     public static class Post_stories implements Serializable, Parcelable {
+
         @Expose
         @SerializedName("story_like_by_me")
         private boolean story_like_by_me;
+
         @Expose
         @SerializedName("second")
         private int second;
+
         @Expose
         @SerializedName("url")
         private String url;
+
         @Expose
         @SerializedName("story_comments")
         private int story_comments;
+
         @Expose
         @SerializedName("story_likes")
         private int story_likes;
+
         @Expose
         @SerializedName("story_id")
         private int story_id;
@@ -434,6 +470,7 @@ public class PostResponse {
         }
 
         public static final Creator<Post_stories> CREATOR = new Creator<Post_stories>() {
+
             @Override
             public Post_stories createFromParcel(Parcel in) {
                 return new Post_stories(in);
@@ -443,6 +480,7 @@ public class PostResponse {
             public Post_stories[] newArray(int size) {
                 return new Post_stories[size];
             }
+
         };
 
         public boolean getStory_like_by_me() {
@@ -510,12 +548,15 @@ public class PostResponse {
     }
 
     public static class Post_locations implements Serializable, Parcelable {
+
         @Expose
         @SerializedName("lng")
         private String lng;
+
         @Expose
         @SerializedName("lat")
         private String lat;
+
         @Expose
         @SerializedName("address")
         private String address;

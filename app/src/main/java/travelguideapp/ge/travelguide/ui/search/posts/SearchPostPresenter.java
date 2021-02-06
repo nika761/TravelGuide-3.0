@@ -1,4 +1,6 @@
-package travelguideapp.ge.travelguide.ui.searchPost;
+package travelguideapp.ge.travelguide.ui.search.posts;
+
+import org.jetbrains.annotations.NotNull;
 
 import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
@@ -23,7 +25,7 @@ class SearchPostPresenter {
     void getPostsByLocation(String accessToken, PostByLocationRequest postByLocationRequest) {
         apiService.getPostsByLocation(accessToken, postByLocationRequest).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0) {
@@ -38,7 +40,7 @@ class SearchPostPresenter {
             }
 
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
                 searchPostListener.onGetPostError(t.getMessage());
             }
         });
@@ -47,7 +49,7 @@ class SearchPostPresenter {
     void getPostsByHashtag(String accessToken, PostByHashtagRequest postByHashtagRequest) {
         apiService.getPostsByHashtag(accessToken, postByHashtagRequest).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0) {
@@ -62,7 +64,7 @@ class SearchPostPresenter {
             }
 
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
                 searchPostListener.onGetPostError(t.getMessage());
             }
         });

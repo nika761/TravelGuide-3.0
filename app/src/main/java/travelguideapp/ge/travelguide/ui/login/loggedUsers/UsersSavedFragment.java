@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.swipe.util.Attributes;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -62,6 +63,7 @@ public class UsersSavedFragment extends Fragment {
     }
 
     private void initRecycler(View view) {
+
 //        RecyclerView recyclerView = view.findViewById(R.id.saved_user_recycler);
 //        recyclerView.setHasFixedSize(true);
 //        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());

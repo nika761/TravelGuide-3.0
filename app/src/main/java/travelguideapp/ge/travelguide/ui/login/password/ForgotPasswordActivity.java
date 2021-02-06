@@ -54,7 +54,6 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
             e.printStackTrace();
         }
         initUI();
-        getStringsByLanguage();
     }
 
     private void initUI() {

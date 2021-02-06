@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
-import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -44,7 +43,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     private UserPostAdapter postAdapter;
 
-    private GetPostsFrom getPostsFrom;
+    private PostDataLoad.Source loadSource;
     private int customerUserId;
 
     private int pastVisibleItems;
@@ -75,8 +74,8 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
                 isCustomer = false;
                 userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
             } else {
-                this.getPostsFrom = (GetPostsFrom) getArguments().getSerializable("request_type");
-                if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
+                this.loadSource = (PostDataLoad.Source) getArguments().getSerializable("request_type");
+                if (loadSource == PostDataLoad.Source.CUSTOMER_POSTS) {
                     isCustomer = true;
                     this.customerUserId = getArguments().getInt("customer_user_id");
                     userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
@@ -97,27 +96,6 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        postsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                if (dy > 0) {
-//                    visibleItemCount = gridLayoutManager.getChildCount();
-//                    totalItemCount = gridLayoutManager.getItemCount();
-//                    pastVisibleItems = gridLayoutManager.findFirstVisibleItemPosition();
-//
-//                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-//                        if (isCustomer) {
-//
-//                        }
-//                        Log.e("dasdasdaczxczxczxczx", "now");
-//                    }
-//
-//                }
-//            }
-//        });
-
     }
 
     @Override
@@ -182,11 +160,11 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
             Bundle bundle = new Bundle();
             postDataLoad.setPosts(posts);
             postDataLoad.setScrollPosition(position);
-            if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
-                postDataLoad.setGetPostsFrom(GetPostsFrom.CUSTOMER_POSTS);
+            if (loadSource == PostDataLoad.Source.CUSTOMER_POSTS) {
+                postDataLoad.setLoadSource(PostDataLoad.Source.CUSTOMER_POSTS);
                 postDataLoad.setUserId(customerUserId);
             } else {
-                postDataLoad.setGetPostsFrom(GetPostsFrom.MY_POSTS);
+                postDataLoad.setLoadSource(PostDataLoad.Source.MY_POSTS);
             }
             bundle.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
             callback.onPostChoose(bundle);

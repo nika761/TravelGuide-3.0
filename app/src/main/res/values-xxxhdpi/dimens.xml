@@ -10,7 +10,7 @@
 
     <dimen name="user_info_field_width">282dp</dimen>
 
-    <dimen name="user_profile_pic_width">110dp</dimen>
-    <dimen name="user_profile_pic_height">110dp</dimen>
+    <dimen name="user_profile_pic_width">100dp</dimen>
+    <dimen name="user_profile_pic_height">100dp</dimen>
 
 </resources>

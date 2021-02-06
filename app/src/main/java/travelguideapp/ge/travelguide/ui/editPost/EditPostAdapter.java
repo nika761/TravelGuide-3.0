@@ -14,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
 
 import java.util.List;
 
 public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<ItemMedia> itemMedias;
-    private EditPostCallback editPostCallback;
+    private List<MediaFileData> mediaFiles;
+    private final EditPostCallback editPostCallback;
 
     EditPostAdapter(EditPostCallback editPostCallback) {
         this.editPostCallback = editPostCallback;
@@ -50,37 +52,40 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        return itemMedias.get(position).getType();
+        if (mediaFiles.get(position).getMediaType() == MediaFileData.MediaType.PHOTO)
+            return 0;
+        else
+            return 1;
     }
 
     @Override
     public int getItemCount() {
-        return itemMedias.size();
+        return mediaFiles.size();
     }
 
-    void setItemMedias(List<ItemMedia> itemMedias) {
-        this.itemMedias = itemMedias;
+    void setItemMedias(List<MediaFileData> mediaFiles) {
+        this.mediaFiles = mediaFiles;
         notifyDataSetChanged();
     }
 
     void onCropFinish(String croppedPhoto, int itemPosition) {
-        itemMedias.set(itemPosition, new ItemMedia(0, croppedPhoto));
+        mediaFiles.set(itemPosition, new MediaFileData(croppedPhoto, MediaFileData.MediaType.PHOTO));
         notifyDataSetChanged();
     }
 
     void onFilterFinish(String filteredPhoto, int itemPosition) {
-        itemMedias.set(itemPosition, new ItemMedia(0, filteredPhoto));
+        mediaFiles.set(itemPosition, new MediaFileData(filteredPhoto, MediaFileData.MediaType.PHOTO));
         notifyDataSetChanged();
     }
 
     void onTrimFinish(String trimmedVideo, int itemPosition) {
-        itemMedias.set(itemPosition, new ItemMedia(1, trimmedVideo));
+        mediaFiles.set(itemPosition, new MediaFileData(trimmedVideo, MediaFileData.MediaType.VIDEO));
         notifyDataSetChanged();
     }
 
     class PhotoItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ImageView photoItem;
+        private final ImageView photoItem;
 
         PhotoItemHolder(@NonNull View itemView) {
             super(itemView);
@@ -105,27 +110,27 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.crop_image:
-                    editPostCallback.onCropChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
+                    editPostCallback.onCropChoose(mediaFiles.get(getLayoutPosition()).getMediaPath(), getLayoutPosition());
                     break;
 
                 case R.id.filter_image:
-                    editPostCallback.onFilterChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
+                    editPostCallback.onFilterChoose(mediaFiles.get(getLayoutPosition()).getMediaPath(), getLayoutPosition());
                     break;
 
                 case R.id.sort_image:
-                    editPostCallback.onSortChoose(itemMedias);
+                    editPostCallback.onSortChoose(mediaFiles);
                     break;
 
                 case R.id.delete_image:
-                    itemMedias.remove(getLayoutPosition());
+                    mediaFiles.remove(getLayoutPosition());
                     notifyItemRemoved(getLayoutPosition());
-                    editPostCallback.onStoryDeleted(itemMedias);
+                    editPostCallback.onStoryDeleted(mediaFiles);
                     break;
             }
         }
 
         private void setPhotoItem(int position) {
-            HelperMedia.loadPhoto(photoItem.getContext(), itemMedias.get(position).getPath(), photoItem);
+            HelperMedia.loadPhoto(photoItem.getContext(), mediaFiles.get(position).getMediaPath(), photoItem);
         }
     }
 
@@ -157,7 +162,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void setVideoItem(int position) {
-            videoItem.setVideoPath(itemMedias.get(position).getPath());
+            videoItem.setVideoPath(mediaFiles.get(position).getMediaPath());
             videoItem.requestFocus();
             videoItem.setOnPreparedListener(mp -> {
 //                        holder.videoItem.setMediaController(new MediaController(context));
@@ -172,7 +177,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             switch (v.getId()) {
 
                 case R.id.trim_video:
-                    editPostCallback.onTrimChoose(itemMedias.get(getLayoutPosition()).getPath(), getLayoutPosition());
+                    editPostCallback.onTrimChoose(mediaFiles.get(getLayoutPosition()).getMediaPath(), getLayoutPosition());
                     break;
 //                case R.id.speed_video:
 //                    if (visibility) {
@@ -184,7 +189,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //                    }
 //                    break;
                 case R.id.sort_video:
-                    editPostCallback.onSortChoose(itemMedias);
+                    editPostCallback.onSortChoose(mediaFiles);
                     break;
 
                 case R.id.video_item:
@@ -196,9 +201,9 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     break;
 
                 case R.id.delete_image_video:
-                    itemMedias.remove(getLayoutPosition());
+                    mediaFiles.remove(getLayoutPosition());
                     notifyItemRemoved(getLayoutPosition());
-                    editPostCallback.onStoryDeleted(itemMedias);
+                    editPostCallback.onStoryDeleted(mediaFiles);
                     break;
             }
         }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.daimajia.androidanimations.library.Techniques;
@@ -44,7 +45,9 @@ import java.io.File;
 import de.hdodenhof.circleimageview.CircleImageView;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 
-public class SignUpActivity extends AppCompatActivity implements SignUpListener, View.OnClickListener {
+import static travelguideapp.ge.travelguide.helper.SystemManager.READ_EXTERNAL_STORAGE;
+
+public class SignUpActivity extends AppCompatActivity implements SignUpListener {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
@@ -75,7 +78,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
     }
 
     private void initUI() {
-        this.blackColor = getResources().getColor(R.color.black, null);
+        this.blackColor = ContextCompat.getColor(this, R.color.black);
 
         signUpPresenter = new SignUpPresenter(this);
 
@@ -102,28 +105,28 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         profileImage = findViewById(R.id.register_photo);
 
         registerBirthDate = findViewById(R.id.register_birth_date);
-        registerBirthDate.setOnClickListener(this);
+        registerBirthDate.setOnClickListener(v -> DialogManager.datePickerDialog(SignUpActivity.this, mDateSetListener));
 
         registerNickOfferOne = findViewById(R.id.nickName_offer_1);
-        registerNickOfferOne.setOnClickListener(this);
+        registerNickOfferOne.setOnClickListener(v -> setNickName(1));
 
         registerNickOfferTwo = findViewById(R.id.nickName_offer_2);
-        registerNickOfferTwo.setOnClickListener(this);
+        registerNickOfferTwo.setOnClickListener(v -> setNickName(2));
 
         View uploadImage = findViewById(R.id.register_upload_photo);
-        uploadImage.setOnClickListener(this);
+        uploadImage.setOnClickListener(v -> checkPermissionAndStartPick());
 
         TextView signUpBtn = findViewById(R.id.register_sign_btn);
-        signUpBtn.setOnClickListener(this);
+        signUpBtn.setOnClickListener(v -> startSignUp());
 
         TextView signUpCancelBtn = findViewById(R.id.register_cancel_btn);
-        signUpCancelBtn.setOnClickListener(this);
+        signUpCancelBtn.setOnClickListener(v -> finish());
 
         TextView terms = findViewById(R.id.terms_register);
-        terms.setOnClickListener(this);
+        terms.setOnClickListener(v -> HelperUI.startWebActivity(SignUpActivity.this, LoadWebViewBy.TERMS, ""));
 
         TextView policy = findViewById(R.id.policy_register);
-        policy.setOnClickListener(this);
+        policy.setOnClickListener(v -> HelperUI.startWebActivity(SignUpActivity.this, LoadWebViewBy.POLICY, ""));
 
         mDateSetListener = (datePicker, year, month, day) -> {
             try {
@@ -155,6 +158,26 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
             }
             genderChecked = true;
         });
+    }
+
+    private void setNickName(int nickType) {
+        switch (nickType) {
+            case 1:
+                eNickName.setText(nickNameFirst);
+                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                break;
+            case 2:
+                eNickName.setText(nickNameSecond);
+                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                break;
+        }
+    }
+
+    private void startSignUp() {
+        onGetData();
+        registerNickOffer.setVisibility(View.GONE);
+        registerNickOfferOne.setVisibility(View.GONE);
+        registerNickOfferTwo.setVisibility(View.GONE);
     }
 
     @Override
@@ -275,62 +298,18 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.register_upload_photo:
-                checkPermissionAndStartPick();
-//                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(i, PICK_IMAGE);
-//                Intent intent = new Intent();
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-                break;
-
-            case R.id.register_sign_btn:
-                onGetData();
-                registerNickOffer.setVisibility(View.GONE);
-                registerNickOfferOne.setVisibility(View.GONE);
-                registerNickOfferTwo.setVisibility(View.GONE);
-                break;
-
-            case R.id.register_cancel_btn:
-                finish();
-                break;
-
-            case R.id.register_birth_date:
-                DialogManager.datePickerDialog(this, mDateSetListener);
-                break;
-
-            case R.id.nickName_offer_1:
-                eNickName.setText(nickNameFirst);
-                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
-                break;
-            case R.id.nickName_offer_2:
-                eNickName.setText(nickNameSecond);
-                HelperUI.setBackgroundDefault(eNickName, eNickNameHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
-                break;
-
-            case R.id.terms_register:
-                HelperUI.startWebActivity(this, LoadWebViewBy.TERMS, "");
-                break;
-
-            case R.id.policy_register:
-                HelperUI.startWebActivity(this, LoadWebViewBy.POLICY, "");
-                break;
-
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            HelperMedia.startImagePicker(this);
-        } else {
-            MyToaster.getErrorToaster(this, "No permission granted");
+        switch (requestCode) {
+            case READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    HelperMedia.startImagePicker(this);
+                } else {
+                    MyToaster.getErrorToaster(this, "No permission granted");
+                }
+                break;
         }
+
     }
 
     private boolean checkNumber(EditText enteredNumber) {
@@ -344,7 +323,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         return numberValidate;
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private void onGetData() {
 
         if (!genderChecked) {
@@ -380,16 +358,16 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         }
 
         if (ePhoneNumber.getText().toString().isEmpty() || !checkNumber(ePhoneNumber)) {
-            phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
+            phoneNumberContainer.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_fields_warning));
             ePhoneNumberHead.setText(String.format("* %s", getString(R.string.phone_number)));
-            ePhoneNumberHead.setTextColor(getResources().getColor(R.color.red));
+            ePhoneNumberHead.setTextColor(ContextCompat.getColor(this, R.color.red));
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(phoneNumberContainer);
         } else {
-            phoneNumberContainer.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
+            phoneNumberContainer.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_signup_fields));
             ePhoneNumberHead.setText(String.format("* %s", getString(R.string.phone_number)));
-            ePhoneNumberHead.setTextColor(getResources().getColor(R.color.black));
+            ePhoneNumberHead.setTextColor(ContextCompat.getColor(this, R.color.black));
             phoneNumber = ePhoneNumber.getText().toString();
 
             String name = countryCodePicker.getSelectedCountryName();
@@ -401,16 +379,16 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener,
         }
 
         if (registerBirthDate.getText().toString().isEmpty()) {
-            registerBirthDate.setBackground(getResources().getDrawable(R.drawable.bg_fields_warning));
+            registerBirthDate.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_fields_warning));
             registerBirthDateHead.setText(String.format("* %s", getString(R.string.birth_date)));
-            registerBirthDateHead.setTextColor(getResources().getColor(R.color.red));
+            registerBirthDateHead.setTextColor(ContextCompat.getColor(this, R.color.red));
             YoYo.with(Techniques.Shake)
                     .duration(300)
                     .playOn(registerBirthDate);
         } else {
-            registerBirthDate.setBackground(getResources().getDrawable(R.drawable.bg_signup_fields));
+            registerBirthDate.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_signup_fields));
             registerBirthDateHead.setText(String.format("* %s", getString(R.string.birth_date)));
-            registerBirthDateHead.setTextColor(getResources().getColor(R.color.black));
+            registerBirthDateHead.setTextColor(ContextCompat.getColor(this, R.color.black));
             birthDate = registerBirthDate.getText().toString();
         }
 

@@ -125,6 +125,7 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
             });
         } catch (Exception e) {
             e.printStackTrace();
+            finish();
         }
 
     }

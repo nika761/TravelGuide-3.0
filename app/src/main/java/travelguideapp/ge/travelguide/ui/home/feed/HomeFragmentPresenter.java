@@ -41,7 +41,7 @@ public class HomeFragmentPresenter {
         Log.e("postascxvx", "aq shemovida ");
         apiService.getPosts(accessToken, postRequest).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case -100:
@@ -63,7 +63,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });
@@ -72,7 +72,7 @@ public class HomeFragmentPresenter {
     void getUserPosts(String accessToken, PostByUserRequest postByUserRequest) {
         apiService.getPostsByUser(accessToken, postByUserRequest).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0)
@@ -86,7 +86,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });
@@ -95,7 +95,7 @@ public class HomeFragmentPresenter {
     void getFavoritePosts(String accessToken, FavoritePostRequest favoritePostRequest) {
         apiService.getFavoritePosts(accessToken, favoritePostRequest).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
                         if (response.body().getPosts().size() > 0)
@@ -108,7 +108,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });
@@ -117,7 +117,7 @@ public class HomeFragmentPresenter {
     void setStoryLike(String accessToken, SetStoryLikeRequest setStoryLikeRequest) {
         apiService.setStoryLike(accessToken, setStoryLikeRequest).enqueue(new Callback<SetStoryLikeResponse>() {
             @Override
-            public void onResponse(Call<SetStoryLikeResponse> call, Response<SetStoryLikeResponse> response) {
+            public void onResponse(@NotNull Call<SetStoryLikeResponse> call, @NotNull Response<SetStoryLikeResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         try {
@@ -139,7 +139,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<SetStoryLikeResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<SetStoryLikeResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });
@@ -148,7 +148,7 @@ public class HomeFragmentPresenter {
     void setPostFavorite(String accessToken, SetPostFavoriteRequest setPostFavoriteRequest) {
         apiService.setPostFavorite(accessToken, setPostFavoriteRequest).enqueue(new Callback<SetPostFavoriteResponse>() {
             @Override
-            public void onResponse(Call<SetPostFavoriteResponse> call, Response<SetPostFavoriteResponse> response) {
+            public void onResponse(@NotNull Call<SetPostFavoriteResponse> call, @NotNull Response<SetPostFavoriteResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         try {
@@ -169,7 +169,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<SetPostFavoriteResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<SetPostFavoriteResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });
@@ -178,7 +178,7 @@ public class HomeFragmentPresenter {
     void setPostShare(String accessToken, SharePostRequest sharePostRequest) {
         apiService.setPostShare(accessToken, sharePostRequest).enqueue(new Callback<SharePostResponse>() {
             @Override
-            public void onResponse(Call<SharePostResponse> call, Response<SharePostResponse> response) {
+            public void onResponse(@NotNull Call<SharePostResponse> call, @NotNull Response<SharePostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         try {
@@ -200,7 +200,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<SharePostResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<SharePostResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });
@@ -209,7 +209,7 @@ public class HomeFragmentPresenter {
     public void follow(String accessToken, FollowRequest followRequest) {
         apiService.follow(accessToken, followRequest).enqueue(new Callback<FollowResponse>() {
             @Override
-            public void onResponse(Call<FollowResponse> call, Response<FollowResponse> response) {
+            public void onResponse(@NotNull Call<FollowResponse> call, @NotNull Response<FollowResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         try {
@@ -231,7 +231,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<FollowResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<FollowResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });
@@ -241,7 +241,7 @@ public class HomeFragmentPresenter {
     void deleteStory(String accessToken, DeleteStoryRequest deleteStoryRequest) {
         apiService.deleteStory(accessToken, deleteStoryRequest).enqueue(new Callback<DeleteStoryResponse>() {
             @Override
-            public void onResponse(Call<DeleteStoryResponse> call, Response<DeleteStoryResponse> response) {
+            public void onResponse(@NotNull Call<DeleteStoryResponse> call, @NotNull Response<DeleteStoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
                         homeFragmentCallback.onStoryDeleted(response.body());
@@ -252,7 +252,7 @@ public class HomeFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<DeleteStoryResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<DeleteStoryResponse> call, @NotNull Throwable t) {
                 homeFragmentCallback.onError(t.getMessage());
             }
         });

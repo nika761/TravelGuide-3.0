@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.ui.search.hashtag;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,33 +27,55 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     private AddTagAdapter addTagAdapter;
     private int fromPage = 1;
 
+    private boolean isLoading;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_s_hashtags, container, false);
         hashtagRecycler = view.findViewById(R.id.search_hashtags_recycler);
+        hashtagRecycler.setLayoutManager(new LinearLayoutManager(hashtagRecycler.getContext()));
+        hashtagRecycler.setHasFixedSize(true);
+        addTagAdapter = new AddTagAdapter(this);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initHashtagRecycler();
     }
 
     public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
         try {
+            isLoading = false;
             addTagAdapter.setHashtags(hashtags);
-            hashtagRecycler.setAdapter(addTagAdapter);
+            if (hashtagRecycler.getAdapter() == null) {
+                hashtagRecycler.setAdapter(addTagAdapter);
+            }
+
+            hashtagRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                    if (!isLoading) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == hashtags.size() - 1) {
+//                            onLazyLoad();
+                            isLoading = true;
+                        }
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void initHashtagRecycler() {
-        addTagAdapter = new AddTagAdapter(this);
-        hashtagRecycler.setLayoutManager(new LinearLayoutManager(hashtagRecycler.getContext()));
-        hashtagRecycler.setHasFixedSize(true);
     }
 
     @Override
@@ -66,8 +89,8 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
 
     @Override
     public void onLazyLoad() {
-        fromPage++;
-        ((SearchActivity) hashtagRecycler.getContext()).getHashtagsNextPage(fromPage);
+//        fromPage++;
+//        ((SearchActivity) hashtagRecycler.getContext()).getHashtagsNextPage(fromPage);
     }
 
     @Override

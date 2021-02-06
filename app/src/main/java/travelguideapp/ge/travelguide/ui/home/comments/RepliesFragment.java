@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,8 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.model.customModel.ReportData;
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -122,9 +125,9 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                 date.setText(currentComment.getComment_time());
 
                 if (currentComment.getComment_liked_by_me())
-                    likeBtn.setBackground(likeBtn.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
+                    likeBtn.setBackground(ContextCompat.getDrawable(likeBtn.getContext(), R.drawable.icon_like_liked));
                 else
-                    likeBtn.setBackground(likeBtn.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
+                    likeBtn.setBackground(ContextCompat.getDrawable(likeBtn.getContext(), R.drawable.icon_like_unliked));
 
                 likeCount.setText(String.valueOf(currentComment.getComment_likes()));
 
@@ -140,7 +143,6 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                 repliesAdapter = new RepliesAdapter(this);
                 repliesAdapter.setCommentReplies(currentComment.getComment_reply());
                 repliesRecycler.setAdapter(repliesAdapter);
-
             }
         }
 
@@ -209,8 +211,18 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     }
 
     @Override
+    public void onChooseReport(int replyId) {
+        try {
+            ((BaseActivity) getActivity()).openReportDialog(ReportData.getInstance(ReportData.Type.COMMENT, replyId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onDeleted(DeleteReplyResponse deleteReplyResponse) {
         try {
+
             if (deleteReplyResponse.getComment_reply().size() > 0)
                 repliesAdapter.onRepliesChanged(deleteReplyResponse.getComment_reply());
             else
@@ -218,6 +230,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
             this.replies = deleteReplyResponse.getComment_reply();
             this.repliesCount = deleteReplyResponse.getCount();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -244,21 +257,13 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                     .subscribe((Consumer<CharSequence>) charSequence -> {
                         if (charSequence.toString().isEmpty()) {
                             imageButton.setClickable(false);
-                            imageButton.setBackground(getResources().getDrawable(R.drawable.icon_add_comment_black, null));
+                            imageButton.setBackground(ContextCompat.getDrawable(likeBtn.getContext(), R.drawable.icon_add_comment_black));
                         } else {
                             imageButton.setClickable(true);
-                            imageButton.setBackground(getResources().getDrawable(R.drawable.icon_add_comment, null));
+                            imageButton.setBackground(ContextCompat.getDrawable(likeBtn.getContext(), R.drawable.icon_add_comment));
                         }
                     });
 
-//                editText.setOnKeyListener((v, keyCode, event) -> {
-//                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-//                        inputMethodManager.hideSoftInputFromWindow(bottomSheetView.getWindowToken(), 0);
-//
-//                        return true;
-//                    }
-//                    return false;
-//                });
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             bottomSheetDialog.show();
@@ -346,14 +351,6 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onDestroy() {
-//        currentComment.setComment_replies_count(repliesCount);
-//        currentComment.setComment_reply(replies);
-//
-//        CommentListener listener = (CommentListener) repliesRecycler.getContext();
-//
-//        if (listener != null) {
-//            listener.onRepliesSetChanged(currentComment);
-//        }
 
         if (presenter != null)
             presenter = null;

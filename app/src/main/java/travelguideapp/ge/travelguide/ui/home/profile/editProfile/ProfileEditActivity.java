@@ -32,6 +32,7 @@ import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.Country;
+import travelguideapp.ge.travelguide.model.customModel.DateModel;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.request.UpdateProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
@@ -45,6 +46,8 @@ import java.io.File;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static travelguideapp.ge.travelguide.helper.SystemManager.READ_EXTERNAL_STORAGE;
 
 public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener, ChooseCountryListener {
 
@@ -268,10 +271,15 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            HelperMedia.startImagePicker(this);
-        } else {
-            MyToaster.getErrorToaster(this, "No permission granted");
+        switch (requestCode) {
+            case READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    HelperMedia.startImagePicker(this);
+                } else {
+                    MyToaster.getErrorToaster(this, "No permission granted");
+                }
+                break;
+
         }
     }
 
@@ -347,9 +355,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                     HelperUI.inputWarning(this, email, emailHead);
             }
 
-            if (checkForNullOrEmpty(phoneNumber.getText().toString()))
-                HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
-            else {
+            if (!checkForNullOrEmpty(phoneNumber.getText().toString())) {
                 if (checkNumber(phoneNumber)) {
                     HelperUI.inputDefault(this, phoneCodeContainer, phoneNumberHead);
                     modelNumber = phoneNumber.getText().toString();
@@ -364,7 +370,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             else
                 modelGender = String.valueOf(gender);
 
-            if (modelName != null && modelSurname != null && modelNick != null && modelEmail != null && modelBirthDate != null && modelNumber != null && modelGender != null) {
+            if (modelName != null && modelSurname != null && modelNick != null && modelEmail != null && modelBirthDate != null && modelGender != null) {
                 UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
                 updateProfileRequest.setName(modelName);
                 updateProfileRequest.setLastname(modelSurname);

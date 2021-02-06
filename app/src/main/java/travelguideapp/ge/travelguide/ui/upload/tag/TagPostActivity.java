@@ -112,7 +112,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
             if (hashtags == null || hashtags.size() == 0) {
                 searchBtn.setText("Add Hashtag");
             } else {
-                searchBtn.setText("Search");
+                searchBtn.setText(getString(R.string.search));
                 AddTagAdapter addTagAdapter = new AddTagAdapter(this);
                 addTagAdapter.setHashtags(hashtags);
                 recyclerView.setAdapter(addTagAdapter);
@@ -122,7 +122,6 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
             setResult(Activity.RESULT_CANCELED);
             finish();
         }
-
     }
 
     @Override
@@ -151,7 +150,6 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
             setResult(Activity.RESULT_CANCELED);
             finish();
         }
-
     }
 
     @Override
@@ -169,6 +167,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
             case R.id.tag_post_back_btn:
                 finish();
                 break;
+
 //            case R.id.tag_post_search_btn:
 //                postPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchEditTxt.getText().toString()));
 //                break;

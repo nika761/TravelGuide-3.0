@@ -18,9 +18,11 @@ import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -86,6 +88,7 @@ public class CustomPostRecycler extends RecyclerView {
     private int videoSurfaceDefaultHeight = 0;
     private int screenDefaultHeight = 0;
     private int playPosition = -1;
+    public int position;
 
     // controlling playback state
     private boolean soundOn = true;
@@ -100,7 +103,6 @@ public class CustomPostRecycler extends RecyclerView {
     public View parent;
 
     public static int ownerUserId;
-    public int position;
 
     private CustomTimer customTimer;
 
@@ -320,10 +322,6 @@ public class CustomPostRecycler extends RecyclerView {
 
         viewHolderParent = holder.itemView;
         frameLayout = holder.itemView.findViewById(R.id.pl_container);
-        frameLayout.setOnLongClickListener(v -> {
-            homeFragmentListener.onReportChoose();
-            return true;
-        });
         videoPlayIcon = holder.videoPlayIcon;
 
 
@@ -423,19 +421,19 @@ public class CustomPostRecycler extends RecyclerView {
             }
 
             if (story.getStory_like_by_me())
-                holder.like.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart_red, null));
+                holder.like.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_heart_red));
             else
-                holder.like.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart, null));
-
+                holder.like.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_heart));
             holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
+
             holder.storyComments.setText(String.valueOf(story.getStory_comments()));
             holder.storyShares.setText(String.valueOf(post.getPost_shares()));
 
             holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
             if (post.getI_favor_post())
-                holder.favorite.setBackground(context.getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+                holder.favorite.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_link_yellow));
             else
-                holder.favorite.setBackground(context.getResources().getDrawable(R.drawable.emoji_link, null));
+                holder.favorite.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_link));
 
 
             holder.nickName.setText(post.getNickname());
@@ -491,7 +489,7 @@ public class CustomPostRecycler extends RecyclerView {
 
             ////Listeners
 
-            holder.menu.setOnClickListener(v -> holder.showMenu(holder.menu));
+            holder.menu.setOnClickListener(v -> showMenu(holder.menu, post.getPost_id(), post.getPost_stories().get(0).getStory_id()));
 
             holder.go.setOnClickListener(v -> homeFragmentListener.onGoChoose(post.getGo(), post.getPost_id()));
 
@@ -520,10 +518,10 @@ public class CustomPostRecycler extends RecyclerView {
 
             holder.music.setOnClickListener(v -> {
                 if (soundOn) {
-                    holder.music.setBackground(context.getResources().getDrawable(R.drawable.icon_music_off, null));
+                    holder.music.setBackground(ContextCompat.getDrawable(context, R.drawable.icon_music_off));
                     setVolume(VolumeState.OFF);
                 } else {
-                    holder.music.setBackground(context.getResources().getDrawable(R.drawable.icon_music, null));
+                    holder.music.setBackground(ContextCompat.getDrawable(context, R.drawable.icon_music));
                     setVolume(VolumeState.ON);
                 }
             });
@@ -534,6 +532,11 @@ public class CustomPostRecycler extends RecyclerView {
                 } else {
                     startPlayer();
                 }
+            });
+
+            frameLayout.setOnLongClickListener(v -> {
+                homeFragmentListener.onReportChoose(post.getPost_id());
+                return true;
             });
 
         } catch (Exception e) {
@@ -553,33 +556,11 @@ public class CustomPostRecycler extends RecyclerView {
                     holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
                     animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
 
-//                    if (countLikeUp > story.getStory_likes()) {
-//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
-//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
-//                        story.setStory_like_by_me(false);
-//                    } else {
-//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.DEFAULT);
-//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() - 1));
-//                        countLikeDown = story.getStory_likes() - 1;
-//                        story.setStory_like_by_me(false);
-//                    }
-
                 } else {
                     story.setStory_likes(story.getStory_likes() + 1);
                     story.setStory_like_by_me(true);
                     holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
                     animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
-
-//                    if (countLikeDown < story.getStory_likes()) {
-//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
-//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
-//                        story.setStory_like_by_me(true);
-//                    } else {
-//                        animateBtn(holder.like, EmotionType.LIKE, EmotionState.CUSTOM);
-//                        holder.storyLikes.setText(String.valueOf(story.getStory_likes() + 1));
-//                        countLikeUp = story.getStory_likes() + 1;
-//                        story.setStory_like_by_me(true);
-//                    }
                 }
 
                 break;
@@ -590,32 +571,11 @@ public class CustomPostRecycler extends RecyclerView {
                     post.setI_favor_post(false);
                     holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
                     animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
-//                    if (countFavoriteUp > post.getPost_favorites()) {
-//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
-//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
-//                        post.setI_favor_post(false);
-//                    } else {
-//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.DEFAULT);
-//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() - 1));
-//                        countFavoriteDown = post.getPost_favorites() - 1;
-//                        post.setI_favor_post(false);
-//                    }
-
                 } else {
                     post.setPost_favorites(post.getPost_favorites() + 1);
                     post.setI_favor_post(true);
                     holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
                     animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
-//                    if (countFavoriteDown < post.getPost_favorites()) {
-//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
-//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
-//                        post.setI_favor_post(true);
-//                    } else {
-//                        animateBtn(holder.favorite, EmotionType.FAVORITE, EmotionState.CUSTOM);
-//                        holder.storyFavorites.setText(String.valueOf(post.getPost_favorites() + 1));
-//                        countFavoriteUp = post.getPost_favorites() + 1;
-//                        post.setI_favor_post(true);
-//                    }
                 }
                 break;
 
@@ -637,13 +597,13 @@ public class CustomPostRecycler extends RecyclerView {
                 switch (emotionState) {
                     case DEFAULT:
                         YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart, null)))
+                                .onEnd(animator -> view.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_heart)))
                                 .duration(250)
                                 .playOn(view);
                         break;
                     case CUSTOM:
                         YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_heart_red, null)))
+                                .onEnd(animator -> view.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_heart_red)))
                                 .duration(250)
                                 .playOn(view);
                         break;
@@ -654,14 +614,14 @@ public class CustomPostRecycler extends RecyclerView {
                 switch (emotionState) {
                     case CUSTOM:
                         YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_link_yellow, null)))
+                                .onEnd(animator -> view.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_link_yellow)))
                                 .duration(250)
                                 .playOn(view);
                         break;
 
                     case DEFAULT:
                         YoYo.with(Techniques.RubberBand)
-                                .onEnd(animator -> view.setBackground(context.getResources().getDrawable(R.drawable.emoji_link, null)))
+                                .onEnd(animator -> view.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_link)))
                                 .duration(250)
                                 .playOn(view);
                         break;
@@ -678,6 +638,22 @@ public class CustomPostRecycler extends RecyclerView {
         }
 
     }
+
+
+    public void showMenu(View view, int postId, int storyId) {
+        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+        popupMenu.inflate(R.menu.post_option_menu);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.post_option_delete:
+                    homeFragmentListener.onChooseDeleteStory(storyId, postId, 0);
+                    return true;
+            }
+            return false;
+        });
+        popupMenu.show();
+    }
+
 
     private void addVideoView() {
         frameLayout.addView(videoSurfaceView);
@@ -752,9 +728,9 @@ public class CustomPostRecycler extends RecyclerView {
             videoPlayIcon.bringToFront();
 
             if (videoPlaying)
-                videoPlayIcon.setBackground(videoPlayIcon.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+                videoPlayIcon.setBackground(ContextCompat.getDrawable(context, R.drawable.icon_pause));
             else
-                videoPlayIcon.setBackground(videoPlayIcon.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+                videoPlayIcon.setBackground(ContextCompat.getDrawable(context, R.drawable.icon_play));
 
             videoPlayIcon.animate().cancel();
 

@@ -69,6 +69,7 @@ public class DialogManager {
     }
 
     public static void datePickerDialog(Context context, DatePickerDialog.OnDateSetListener onDateSetListener) {
+
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
@@ -82,6 +83,7 @@ public class DialogManager {
         }
 
         dialog.show();
+
     }
 
     public static void getAskingDialog(Context context, String question, AskingDialogResultCallback callback) {
@@ -99,6 +101,5 @@ public class DialogManager {
 
         dialog.show();
     }
-
 
 }

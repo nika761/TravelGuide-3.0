@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ import java.util.List;
 public class SortStoriesAdapter extends RecyclerView.Adapter<SortStoriesAdapter.SortStoriesHolder> {
 
     private ArrayList<String> stories;
-    private List<ItemMedia> itemMedia;
+    private List<MediaFileData> itemMedia;
 
-    SortStoriesAdapter(List<ItemMedia> itemMedia) {
+    SortStoriesAdapter(List<MediaFileData> itemMedia) {
         this.itemMedia = itemMedia;
     }
 
@@ -34,10 +35,10 @@ public class SortStoriesAdapter extends RecyclerView.Adapter<SortStoriesAdapter.
     @Override
     public void onBindViewHolder(@NonNull SortStoriesHolder holder, int position) {
         holder.sortPosition.setText(String.valueOf(position + 1));
-        HelperMedia.loadPhoto(holder.imageView.getContext(), itemMedia.get(position).getPath(), holder.imageView);
+        HelperMedia.loadPhoto(holder.imageView.getContext(), itemMedia.get(position).getMediaPath(), holder.imageView);
     }
 
-    public List<ItemMedia> getItemMedia() {
+    public List<MediaFileData> getItemMedia() {
         return itemMedia;
     }
 

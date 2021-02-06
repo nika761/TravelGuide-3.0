@@ -53,7 +53,7 @@ public interface HomeFragmentListener {
     void onUserChoose(int userId);
 
 
-    void onReportChoose();
+    void onReportChoose(int postId);
 
     void onChooseDeleteStory(int storyId, int postId, int position);
 

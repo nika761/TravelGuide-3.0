@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.model.request;
 
 public class SignUpWithFirebaseRequest {
+
     private String token;
     private String nickname;
     private String date_of_birth;
@@ -56,4 +57,5 @@ public class SignUpWithFirebaseRequest {
     public void setPlatform_id(int platform_id) {
         this.platform_id = platform_id;
     }
+
 }

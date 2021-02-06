@@ -15,6 +15,7 @@ import travelguideapp.ge.travelguide.model.response.LoginResponse;
 import travelguideapp.ge.travelguide.model.response.VerifyEmailResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
+
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -43,10 +44,10 @@ import retrofit2.Response;
 
 class SignInPresenter {
 
-    private SignInListener signInListener;
-    private ApiService apiService;
-    private DatabaseReference database;
-    private FirebaseAuth firebaseAuth;
+    private final SignInListener signInListener;
+    private final ApiService apiService;
+    private final DatabaseReference database;
+    private final FirebaseAuth firebaseAuth;
     private String key;
 
     SignInPresenter(SignInListener onSignListener) {
@@ -60,21 +61,18 @@ class SignInPresenter {
         apiService.verifyEmail(accessToken, verifyEmailRequest).enqueue(new Callback<VerifyEmailResponse>() {
             @Override
             public void onResponse(Call<VerifyEmailResponse> call, Response<VerifyEmailResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        switch (response.body().getStatus()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    switch (response.body().getStatus()) {
+                        case 0:
+                            signInListener.onVerify(response.body());
+                            break;
 
-                            case 0:
-                                signInListener.onVerify(response.body());
-                                break;
+                        case -100:
+                            signInListener.onError(response.body().getStatus() + " not valid");
+                            break;
 
-                            case -100:
-                                signInListener.onError(response.body().getStatus() + " not valid");
-                                break;
-
-                            default:
-                                signInListener.onError(String.valueOf(response.body().getStatus()));
-                        }
+                        default:
+                            signInListener.onError(String.valueOf(response.body().getStatus()));
                     }
                 } else {
                     signInListener.onError(response.message());
@@ -90,7 +88,6 @@ class SignInPresenter {
 
     void authWithFb(AccessToken accessToken) {
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
-        Log.e("facebookError", "method start here 1");
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
@@ -104,8 +101,6 @@ class SignInPresenter {
                         }
                     });
                 }
-
-                Log.e("facebookError", "method start here");
 
                 GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
                     try {
@@ -124,7 +119,6 @@ class SignInPresenter {
 
                             signInListener.onFireBaseSignUp(key, 1, firstName);
 
-//                            iSignInFragment.onFireBaseAuth(user);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -135,8 +129,6 @@ class SignInPresenter {
                 parameters.putString("fields", "first_name,last_name,email,id");
                 request.setParameters(parameters);
                 request.executeAsync();
-
-                Log.e("facebookError", "signed");
             } else {
                 Log.e("facebookError", task.getException().getMessage());
             }
@@ -176,9 +168,6 @@ class SignInPresenter {
 
                         authWithFireBase(new AuthWitFirebaseRequest(key));
 
-//                        iSignInFragment.onFireBaseAuth(user);
-
-                        Log.e("googleError", "signed");
                     } else {
                         signInListener.onError(authResultTask.getException().getMessage());
                     }
@@ -196,10 +185,16 @@ class SignInPresenter {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == -100)
-                        signInListener.onError(response.body().getMessage());
-                    else
-                        signInListener.onSign(response.body());
+                    switch (response.body().getStatus()) {
+                        case 0:
+                            signInListener.onSign(response.body());
+                            break;
+
+                        case -100:
+                        case -101:
+                            signInListener.onError(response.body().getMessage());
+                            break;
+                    }
                 } else {
                     signInListener.onError(response.message());
                 }
@@ -251,7 +246,6 @@ class SignInPresenter {
             SecretKey secret = gen.generateKey();
             byte[] binary = secret.getEncoded();
             keyToken = String.format("%032X", new BigInteger(+1, binary));
-
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

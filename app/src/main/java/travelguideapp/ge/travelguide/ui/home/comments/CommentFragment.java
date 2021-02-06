@@ -2,9 +2,7 @@ package travelguideapp.ge.travelguide.ui.home.comments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +25,7 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.customModel.ReportData;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
 import travelguideapp.ge.travelguide.model.request.CommentRequest;
@@ -213,17 +212,6 @@ public class CommentFragment extends Fragment implements CommentListener {
                         }
                     });
 
-//            bottomSheetView.setOnKeyListener((v, keyCode, event) -> {
-//                if (keyCode == KeyEvent.KEYCODE_BACK) {
-//                    bottomSheetView.post(() -> {
-//                        bottomSheetView.post(() -> inputMethodManager.hideSoftInputFromWindow(bottomSheetView.getWindowToken(), 0));
-//                        bottomSheetDialog.dismiss();
-//                    });
-//                    return true;
-//                }
-//                return false;
-//            });
-
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             bottomSheetDialog.setOnShowListener(dialog -> keyBoardShowing = true);
@@ -263,7 +251,7 @@ public class CommentFragment extends Fragment implements CommentListener {
             repliesFragmentData.putInt("storyId", storyId);
             repliesFragmentData.putInt("postId", postId);
 
-            callback.commitCommentFragment(repliesFragmentData, CommentFragmentType.COMMENT_REPLY);
+            callback.loadCommentFragment(repliesFragmentData, CommentFragmentType.COMMENT_REPLY);
 
             commentAdapter = null;
         } catch (Exception e) {
@@ -325,6 +313,15 @@ public class CommentFragment extends Fragment implements CommentListener {
     }
 
     @Override
+    public void onReportChoose(int commentId) {
+        try {
+            ((BaseActivity) getActivity()).openReportDialog(ReportData.getInstance(ReportData.Type.COMMENT, commentId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onDeleted(DeleteCommentResponse deleteCommentResponse) {
         try {
             commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), deleteCommentResponse.getCount()));
@@ -374,7 +371,7 @@ public class CommentFragment extends Fragment implements CommentListener {
     }
 
     public interface LoadCommentFragmentListener {
-        void commitCommentFragment(Bundle dataForFragment, CommentFragmentType commentFragmentType);
+        void loadCommentFragment(Bundle dataForFragment, CommentFragmentType commentFragmentType);
     }
 
 }

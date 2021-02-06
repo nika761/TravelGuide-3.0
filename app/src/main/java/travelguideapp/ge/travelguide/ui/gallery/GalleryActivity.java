@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -48,7 +50,6 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_picker);
-
         iniUI();
 
         if (SystemManager.isReadStoragePermission((this))) {
@@ -59,6 +60,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
 
         initRecycler();
 
+        Log.e("aszxcmgdfg", String.valueOf(GlobalPreferences.getAppSettings(this).get_AGE_RESTRICTION()));
     }
 
 
@@ -135,7 +137,6 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onItemSelected(String path) {
 
@@ -146,7 +147,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
             }
             if (pickedItems.size() <= 2) {
                 nextBtn.setClickable(true);
-                nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree, null));
+                nextBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_agree));
                 nextBtn.setText(MessageFormat.format("{0}({1})", getString(R.string.next), pickedItems.size()));
 //                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
                 galleryAdapterMin.setItemsPath(pickedItems);
@@ -173,10 +174,10 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 if (pickedItems.size() < 1) {
                     pickedItems.add(path);
                     nextBtn.setClickable(true);
-                    nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_agree, null));
+                    nextBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_agree));
                 } else {
                     nextBtn.setClickable(false);
-                    nextBtn.setBackground(getResources().getDrawable(R.drawable.bg_next_btn_grey, null));
+                    nextBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_next_btn_grey));
                     MyToaster.getErrorToaster(this, "You can choose only one photo");
                 }
                 choosedItemRecyclerVisibility(true);

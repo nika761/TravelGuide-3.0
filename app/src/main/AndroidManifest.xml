@@ -200,7 +200,7 @@
             android:windowSoftInputMode="adjustNothing" />
 
         <activity
-            android:name="travelguideapp.ge.travelguide.ui.searchPost.SearchPostActivity"
+            android:name="travelguideapp.ge.travelguide.ui.search.posts.SearchPostActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme"

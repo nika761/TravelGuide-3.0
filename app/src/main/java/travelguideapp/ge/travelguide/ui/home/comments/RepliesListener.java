@@ -23,6 +23,8 @@ public interface RepliesListener {
 
     void onChooseDelete(int replyId);
 
+    void onChooseReport(int replyId);
+
     void onDeleted(DeleteReplyResponse deleteReplyResponse);
 
 

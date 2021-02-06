@@ -6,12 +6,12 @@ import android.os.Parcelable;
 public class PostDataSearch implements Parcelable {
 
     /**
+     * Created by n.butskhrikidze on 01/07/2020.
      * Use this key for intents
      */
     public static final String INTENT_KEY_SEARCH = "post_data_search";
 
     /**
-     * Created by n.butskhrikidze on 01/07/2020.
      * Hahtags - Search posts by hashtags.
      * Location - Search posts by location.
      */

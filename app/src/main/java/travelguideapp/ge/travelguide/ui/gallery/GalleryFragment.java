@@ -27,15 +27,14 @@ public class GalleryFragment extends Fragment {
     private Context context;
     private int widthDiff;
 
-    private ArrayList<String> pathsGlobal;
     private ArrayList<String> photosAll;
     private ArrayList<String> photosInner = new ArrayList<>();
     private ArrayList<String> videosAll;
     private ArrayList<String> videosInner = new ArrayList<>();
 
-    private boolean is_image;
-    private boolean isLoading;
     private boolean isNeedLazyLoad;
+    private boolean isLoading;
+    private boolean is_image;
 
     private GalleryAdapter galleryAdapter;
     private RecyclerView galleryRecycler;
@@ -45,25 +44,8 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_media, container, false);
         galleryRecycler = layout.findViewById(R.id.media_recyclerview);
-//
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        ViewTreeObserver viewTreeObserver = layout.getViewTreeObserver();
-//        viewTreeObserver.addOnGlobalLayoutListener(() -> {
-//            layout.getRootView().getDisplay().getMetrics(displayMetrics);
-//            widthDiff = displayMetrics.widthPixels;
-////                widthDiff = layout.getRootView().getWidth() / 3;
-////                try {
-////                    layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-////                } catch (Exception e) {
-////                    e.printStackTrace();
-////                }
-//        });
-
-//        widthDiff = layout.getRootView().getWidth() / 3;
-
         try {
             if (getArguments() != null) {
-//                int wd = widthDiff / 3;
                 is_image = getArguments().getBoolean("is_image");
 
                 galleryAdapter = new GalleryAdapter(context, is_image);
@@ -84,7 +66,6 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        getPathsAsync(is_image ? 1 : 2);
         getLazyPaths(is_image ? 1 : 2);
         initScrollListener(is_image ? 1 : 2);
     }
@@ -114,6 +95,7 @@ public class GalleryFragment extends Fragment {
                     }
                 });
                 break;
+
             case 2:
                 galleryRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
@@ -180,48 +162,12 @@ public class GalleryFragment extends Fragment {
         }
     }
 
-    private void getPathsAsync(int type) {
-        switch (type) {
-            case 1:
-                new Thread(() -> {
-                    try {
-                        pathsGlobal = HelperMedia.getImagesPathByDate(context);
-                        if (pathsGlobal != null) {
-                            galleryAdapter.setItems(pathsGlobal);
-                            galleryRecycler.setAdapter(galleryAdapter);
-                        }
-                    } catch (Exception e) {
-//                        runOnUiThread(() -> MyToaster.getErrorToaster(context, "Content Provider Failed Photos"));
-                        e.printStackTrace();
-                    }
-                }).start();
-                break;
-
-            case 2:
-                new Thread(() -> {
-                    try {
-                        pathsGlobal = HelperMedia.getVideosPathByDate(context);
-                        if (pathsGlobal != null) {
-                            galleryAdapter.setItems(pathsGlobal);
-                            galleryRecycler.setAdapter(galleryAdapter);
-                        }
-                    } catch (Exception e) {
-//                        runOnUiThread(() -> MyToaster.getErrorToaster(context, "Content Provider Failed Videos"));
-                        e.printStackTrace();
-                    }
-                }).start();
-                break;
-        }
-
-    }
-
     private void getLazyPaths(int type) {
         switch (type) {
             case 1:
                 photosAll = HelperMedia.getImagesPathByDate(context);
                 Handler handler = new Handler();
                 handler.postDelayed(() -> {
-                    MyToaster.getErrorToaster(context, String.valueOf(photosAll.size()));
                     if (photosAll.size() > 15) {
                         isNeedLazyLoad = true;
                         for (int i = 0; i < 15; i++) {
@@ -240,7 +186,6 @@ public class GalleryFragment extends Fragment {
                 videosAll = HelperMedia.getVideosPathByDate(context);
                 Handler handler1 = new Handler();
                 handler1.postDelayed(() -> {
-                    MyToaster.getErrorToaster(context, String.valueOf(videosAll.size()));
                     if (videosAll.size() > 15) {
                         isNeedLazyLoad = true;
                         for (int i = 0; i < 15; i++) {

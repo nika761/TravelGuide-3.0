@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:text="Done"
+            android:text="@string/done"
             android:textColor="@color/yellowTextView"
             android:textSize="15sp" />
 
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginEnd="10dp"
-        android:text="Search"
+        android:text="@string/search"
         android:textColor="@color/yellowTextView"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/tag_post_search"

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static travelguideapp.ge.travelguide.model.parcelable.PostDataSearch.SearchBy.HASHTAG;
@@ -38,10 +39,19 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
 
     @Override
     public int getItemCount() {
-        return hashtags.size();
+        if (hashtags.size() < 8) {
+            return hashtags.size();
+        } else {
+            List<String> limitedHashtags = new ArrayList<>();
+            for (int i = 0; i < 8; i++) {
+                limitedHashtags.add(hashtags.get(i));
+            }
+            return limitedHashtags.size();
+        }
     }
 
     class HashtagHolder extends RecyclerView.ViewHolder {
+
         TextView hashtag;
 
         HashtagHolder(@NonNull View itemView) {

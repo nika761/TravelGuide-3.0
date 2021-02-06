@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.enums.StoryEmotionType;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
 
@@ -176,86 +175,86 @@ public class CustomPostHolder extends RecyclerView.ViewHolder {
 //        HelperMedia.loadCirclePhoto(profileImage.getContext(), post.getProfile_pic(), profileImage);
     }
 
-    private void setStoryEmotion(int position, StoryEmotionType storyEmotionType) {
-        switch (storyEmotionType) {
-            case LIKE:
-                if (post.getPost_stories().get(0).getStory_like_by_me()) {
-
-                    if (countLikeUp > post.getPost_stories().get(0).getStory_likes()) {
-                        animate(like, storyLikes);
-                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes()));
-                        post.getPost_stories().get(0).setStory_like_by_me(false);
-                    } else {
-                        animate(like, storyLikes);
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes() - 1));
-                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
-                        countLikeDown = post.getPost_stories().get(0).getStory_likes() - 1;
-                        post.getPost_stories().get(0).setStory_like_by_me(false);
-                    }
-
-                } else {
-
-                    if (countLikeDown < post.getPost_stories().get(0).getStory_likes()) {
-                        animate(like, storyLikes);
-                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes()));
-                        post.getPost_stories().get(0).setStory_like_by_me(true);
-                    } else {
-                        animate(like, storyLikes);
-                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
-                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes() + 1));
-                        countLikeUp = post.getPost_stories().get(0).getStory_likes() + 1;
-                        post.getPost_stories().get(0).setStory_like_by_me(true);
-                    }
-                }
-
-                break;
-
-            case FAVORITE:
-                if (post.getI_favor_post()) {
-                    if (countFavoriteUp > post.getPost_favorites()) {
-                        animate(favorite, storyFavorites);
-                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites()));
-                        post.setI_favor_post(false);
-                    } else {
-                        animate(favorite, storyFavorites);
-                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites() - 1));
-                        countFavoriteDown = post.getPost_favorites() - 1;
-                        post.setI_favor_post(false);
-                    }
-
-                } else {
-
-                    if (countFavoriteDown < post.getPost_favorites()) {
-                        animate(favorite, storyFavorites);
-                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites()));
-                        post.setI_favor_post(true);
-                    } else {
-                        animate(favorite, storyFavorites);
-                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-                        storyFavorites.setText(String.valueOf(post.getPost_favorites() + 1));
-                        countFavoriteUp = post.getPost_favorites() + 1;
-                        post.setI_favor_post(true);
-                    }
-
-                }
-                break;
-
-            case FOLLOW:
-
-                if (!post.getI_follow_post_owner()) {
-                    follow.setVisibility(View.GONE);
-                    post.setI_follow_post_owner(true);
-                }
-                break;
-        }
-
-
-    }
+//    private void setStoryEmotion(int position, StoryEmotionType storyEmotionType) {
+//        switch (storyEmotionType) {
+//            case LIKE:
+//                if (post.getPost_stories().get(0).getStory_like_by_me()) {
+//
+//                    if (countLikeUp > post.getPost_stories().get(0).getStory_likes()) {
+//                        animate(like, storyLikes);
+//                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
+//                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes()));
+//                        post.getPost_stories().get(0).setStory_like_by_me(false);
+//                    } else {
+//                        animate(like, storyLikes);
+//                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes() - 1));
+//                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart, null));
+//                        countLikeDown = post.getPost_stories().get(0).getStory_likes() - 1;
+//                        post.getPost_stories().get(0).setStory_like_by_me(false);
+//                    }
+//
+//                } else {
+//
+//                    if (countLikeDown < post.getPost_stories().get(0).getStory_likes()) {
+//                        animate(like, storyLikes);
+//                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+//                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes()));
+//                        post.getPost_stories().get(0).setStory_like_by_me(true);
+//                    } else {
+//                        animate(like, storyLikes);
+//                        like.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_heart_red, null));
+//                        storyLikes.setText(String.valueOf(post.getPost_stories().get(0).getStory_likes() + 1));
+//                        countLikeUp = post.getPost_stories().get(0).getStory_likes() + 1;
+//                        post.getPost_stories().get(0).setStory_like_by_me(true);
+//                    }
+//                }
+//
+//                break;
+//
+//            case FAVORITE:
+//                if (post.getI_favor_post()) {
+//                    if (countFavoriteUp > post.getPost_favorites()) {
+//                        animate(favorite, storyFavorites);
+//                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
+//                        storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+//                        post.setI_favor_post(false);
+//                    } else {
+//                        animate(favorite, storyFavorites);
+//                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link, null));
+//                        storyFavorites.setText(String.valueOf(post.getPost_favorites() - 1));
+//                        countFavoriteDown = post.getPost_favorites() - 1;
+//                        post.setI_favor_post(false);
+//                    }
+//
+//                } else {
+//
+//                    if (countFavoriteDown < post.getPost_favorites()) {
+//                        animate(favorite, storyFavorites);
+//                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+//                        storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+//                        post.setI_favor_post(true);
+//                    } else {
+//                        animate(favorite, storyFavorites);
+//                        favorite.setBackground(like.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+//                        storyFavorites.setText(String.valueOf(post.getPost_favorites() + 1));
+//                        countFavoriteUp = post.getPost_favorites() + 1;
+//                        post.setI_favor_post(true);
+//                    }
+//
+//                }
+//                break;
+//
+//            case FOLLOW:
+//
+//                if (!post.getI_follow_post_owner()) {
+//                    follow.setVisibility(View.GONE);
+//                    post.setI_follow_post_owner(true);
+//                }
+//                break;
+//        }
+//
+//
+//    }
 
     private void animate(View button, View text) {
         Animation anim = new ScaleAnimation(

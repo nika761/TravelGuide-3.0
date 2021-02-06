@@ -60,7 +60,6 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
             e.printStackTrace();
         }
 
-
         initUI();
     }
 

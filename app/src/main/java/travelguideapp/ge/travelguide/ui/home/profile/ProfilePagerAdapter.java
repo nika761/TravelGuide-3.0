@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
-import travelguideapp.ge.travelguide.enums.GetPostsFrom;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.ui.home.profile.favorites.FavoritePostFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
 import travelguideapp.ge.travelguide.ui.home.profile.tours.UserToursFragment;
@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
 
+    private final ArrayList<Fragment> fragments = new ArrayList<>();
+    private PostDataLoad.Source loadSource;
     private OnPostChooseCallback callback;
-    private ArrayList<Fragment> fragments = new ArrayList<>();
-    private GetPostsFrom getPostsFrom;
     private int customerUserId;
 
     public ProfilePagerAdapter(@NonNull FragmentManager fm) {
@@ -29,10 +29,10 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        if (getPostsFrom == GetPostsFrom.CUSTOMER_POSTS) {
+        if (loadSource == PostDataLoad.Source.CUSTOMER_POSTS) {
             Bundle data = new Bundle();
             data.putInt("customer_user_id", customerUserId);
-            data.putSerializable("request_type", getPostsFrom);
+            data.putSerializable("request_type", loadSource);
             switch (position) {
                 case 0:
                     UserPostsFragment userPostsFragment = UserPostsFragment.getInstance(callback);
@@ -65,8 +65,8 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
         fragments.add(fragment);
     }
 
-    public void setGetPostsFrom(GetPostsFrom getPostsFrom) {
-        this.getPostsFrom = getPostsFrom;
+    public void setLoadSource(PostDataLoad.Source loadSource) {
+        this.loadSource = loadSource;
     }
 
     public void setCustomerUserId(int customerUserId) {

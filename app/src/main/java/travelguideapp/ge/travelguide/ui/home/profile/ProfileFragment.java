@@ -172,56 +172,10 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
-    private void setStringsByLanguage() {
-
-        GlobalLanguages currentLanguage = GlobalPreferences.getCurrentLanguage(context);
-
-        try {
-            if (currentLanguage.getEdit_profile() != null) {
-                editProfileText = currentLanguage.getEdit_profile();
-                editProfile.setText(editProfileText);
-            }
-        } catch (Exception e) {
-            editProfileText = getString(R.string.edit_profile);
-            editProfile.setText(editProfileText);
-        }
-
-        try {
-            if (currentLanguage.getFollowing() != null) {
-                followingText = currentLanguage.getFollowing();
-                following.setText(followingText);
-            }
-        } catch (Exception e) {
-            followingText = getString(R.string.following);
-            following.setText(followingText);
-        }
-
-        try {
-            if (currentLanguage.getFollowers() != null) {
-                followersText = currentLanguage.getFollowers();
-                follower.setText(followersText);
-            }
-        } catch (Exception e) {
-            followersText = getString(R.string.followers);
-            follower.setText(followersText);
-        }
-
-        try {
-            if (currentLanguage.getBio() != null) {
-                bioText = currentLanguage.getBio();
-                bioHead.setText(bioText);
-            }
-        } catch (Exception e) {
-            bioText = getString(R.string.bio);
-            bioHead.setText(bioText);
-        }
-
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setStringsByLanguage();
+//        setStringsByLanguage();
         getProfileInfo();
     }
 
@@ -286,6 +240,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
     @Override
     public void onGetProfile(ProfileResponse.Userinfo userInfo) {
+        GlobalPreferences.saveUserProfileInfo(context, userInfo);
+
         this.userInfo = userInfo;
 
         HelperMedia.loadCirclePhoto(context, userInfo.getProfile_pic(), userPrfImage);
@@ -299,12 +255,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         followingCount.setText(String.valueOf(userInfo.getFollowing()));
         reactionCount.setText(String.valueOf(userInfo.getReactions()));
         setBiography(userInfo.getBiography());
-
-//        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(bioHead.getContext());
-//        Bundle params = new Bundle();
-//        params.putString("user_profile_page", "this user is" + " " + userInfo.getName() + userInfo.getLastname());
-//        firebaseAnalytics.logEvent("profile_page_event", params);
-
         showLoader(false);
     }
 

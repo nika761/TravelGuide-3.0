@@ -25,9 +25,9 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.model.request.UploadPostRequest;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.HashtagAdapter;
@@ -46,7 +46,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.network.ApiEndPoint;
-import travelguideapp.ge.travelguide.ui.editPost.EditPostActivity;
 
 import static travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity.MUSIC_ID;
 
@@ -60,7 +59,8 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     public static final String TAG_TYPE_HASHTAGS = "tag_hashtags";
 
     private File fileForUpload;
-    private List<ItemMedia> itemMedia = new ArrayList<>();
+    //    private List<ItemMedia> itemMedia = new ArrayList<>();
+    private List<MediaFileData> mediaFiles = new ArrayList<>();
     private List<Integer> users = new ArrayList<>();
     private List<String> hashtags = new ArrayList<>();
     private List<String> hashs = new ArrayList<>();
@@ -93,8 +93,8 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     private void getExtras() {
         try {
             this.musicId = getIntent().getIntExtra(MUSIC_ID, 0);
-            this.itemMedia = (List<ItemMedia>) getIntent().getSerializableExtra(EditPostActivity.STORIES_PATHS);
-
+//            this.itemMedia = (List<ItemMedia>) getIntent().getSerializableExtra(EditPostActivity.STORIES_PATHS);
+            this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);
         } catch (Exception e) {
             onBackPressed();
             e.printStackTrace();
@@ -124,7 +124,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         choosedLocation = findViewById(R.id.choosed_location);
 
         ImageView imageView = findViewById(R.id.describe_story_photo);
-        HelperMedia.loadPhoto(this, itemMedia.get(0).getPath(), imageView);
+        HelperMedia.loadPhoto(this, mediaFiles.get(0).getMediaPath(), imageView);
 
         TextView location = findViewById(R.id.location);
         location.setOnClickListener(v -> onStartAddLocation());
@@ -138,10 +138,14 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     }
 
     private void clearLocation() {
-        YoYo.with(Techniques.FadeOut).duration(150).onEnd(animator -> {
-            choosedLocation.setVisibility(View.GONE);
-            removeLocation.setVisibility(View.GONE);
-        }).playOn(choosedLocation);
+        YoYo.with(Techniques.FadeOut)
+                .duration(150)
+                .onEnd(animator -> {
+                    choosedLocation.setVisibility(View.GONE);
+                    removeLocation.setVisibility(View.GONE);
+                })
+                .playOn(choosedLocation);
+
         latLng = null;
         choosedLocation.setText("");
     }
@@ -180,7 +184,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     private void getReadyForUpload() {
         getLoader(true);
         try {
-            if (itemMedia.get(0).getType() == 0 && !SystemManager.isWriteStoragePermission(this)) {
+            if (mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.PHOTO && !SystemManager.isWriteStoragePermission(this)) {
                 getLoader(false);
                 SystemManager.requestWriteStoragePermission(this);
             } else {
@@ -218,11 +222,12 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
 
     public void startUpload() {
         try {
-            if (itemMedia.get(0).getType() == 0) {
-                List<ItemMedia> convertedImages = HelperMedia.convertImagesToPng(itemMedia);
-                fileForUpload = new File(convertedImages.get(0).getPath());
+            if (mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.PHOTO) {
+//                List<ItemMedia> convertedImages = HelperMedia.convertImagesToPng(itemMedia);
+                List<MediaFileData> convertedImages = HelperMedia.convertMediaToPng(mediaFiles);
+                fileForUpload = new File(convertedImages.get(0).getMediaPath());
             } else {
-                fileForUpload = new File(itemMedia.get(0).getPath());
+                fileForUpload = new File(mediaFiles.get(0).getMediaPath());
 //            try {
 //                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 //                retriever.setDataSource(itemMedia.get(0).getPath());
@@ -289,6 +294,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         if (data != null) {
             switch (resultCode) {
                 case RESULT_OK:
+
                     try {
                         String hashtag = data.getStringExtra("hashtags");
                         this.hashtags.add(hashtag);
@@ -303,6 +309,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                     break;
                 case RESULT_CANCELED:
                     break;
@@ -327,6 +334,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                         } else {
                             setTagRecycler(false);
                         }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -379,7 +387,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
             String url = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, fileForUpload.getName());
 
             if (url.endsWith(".mp4")) {
-                String videoDuration = String.valueOf(HelperMedia.getVideoDurationInt(itemMedia.get(0).getPath()));
+                String videoDuration = String.valueOf(HelperMedia.getVideoDurationLong(mediaFiles.get(0).getMediaPath()));
                 stories.add(new UploadPostRequest.Post_stories(url, videoDuration, 1, 1));
             } else {
                 stories.add(new UploadPostRequest.Post_stories(url, "10", 1, 0));

@@ -1,8 +1,9 @@
 package travelguideapp.ge.travelguide.model.customModel;
 
 public class Report {
-    String reportReason;
-    int reportReasonId;
+
+    private String reportReason;
+    private int reportReasonId;
 
     public Report(String reportReason, int reportReasonId) {
         this.reportReason = reportReason;
@@ -24,4 +25,5 @@ public class Report {
     public void setReportReasonId(int reportReasonId) {
         this.reportReasonId = reportReasonId;
     }
+
 }

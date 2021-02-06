@@ -165,7 +165,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
                 <Button
                     android:id="@+id/sign_in_button_main"
                     android:layout_width="282dp"
@@ -267,8 +266,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="30dp"
                     android:gravity="center_horizontal|center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/terms_of_services"
@@ -310,7 +309,6 @@
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view_sign"

@@ -30,9 +30,6 @@ import travelguideapp.ge.travelguide.ui.gallery.GalleryActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import travelguideapp.ge.travelguide.enums.GetPostsFrom;
-
-
 public class HomePageActivity extends BaseActivity implements HomePageListener, OnPostChooseCallback,
         ProfileFragment.ProfileFragmentCallBacks {
 
@@ -65,12 +62,13 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
             if (BaseApplication.APP_VERSION > 0) {
                 int appVersion = BaseApplication.APP_VERSION;
                 if (GlobalPreferences.getAppVersion(this) < appVersion) {
-                    GlobalPreferences.saveAppVersion(getApplicationContext(), appVersion);
                     final String appPackageName = getPackageName();
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                        finish();
                     } catch (android.content.ActivityNotFoundException anfe) {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                        finish();
                     }
                 }
             }
@@ -131,7 +129,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
                         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
                         if (!(fragment instanceof HomeFragment)) {
                             PostDataLoad postDataLoad = new PostDataLoad();
-                            postDataLoad.setGetPostsFrom(GetPostsFrom.FEED);
+                            postDataLoad.setLoadSource(PostDataLoad.Source.FEED);
                             Bundle data = new Bundle();
                             data.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
                             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, false, true, HomePageActivity.this);
@@ -267,4 +265,10 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
         super.onConnectionError();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (homePagePresenter != null)
+            homePagePresenter = null;
+        super.onDestroy();
+    }
 }

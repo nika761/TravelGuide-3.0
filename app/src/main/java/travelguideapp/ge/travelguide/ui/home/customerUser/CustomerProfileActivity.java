@@ -18,10 +18,11 @@ import com.airbnb.lottie.LottieAnimationView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
-import travelguideapp.ge.travelguide.enums.GetPostsFrom;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.customModel.ReportData;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
@@ -97,7 +98,7 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
         profilePagerAdapter.setCustomerUserId(customerUserId);
         profilePagerAdapter.setCallback(this);
-        profilePagerAdapter.setGetPostsFrom(GetPostsFrom.CUSTOMER_POSTS);
+        profilePagerAdapter.setLoadSource(PostDataLoad.Source.CUSTOMER_POSTS);
         profilePagerAdapter.addFragment(new UserPostsFragment());
         profilePagerAdapter.addFragment(new UserToursFragment());
         viewPager.setAdapter(profilePagerAdapter);
@@ -200,7 +201,7 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
                 break;
 
             case R.id.customer_profile_report:
-                openReportDialog();
+                openReportDialog(ReportData.getInstance(ReportData.Type.USER, customerUserId));
                 break;
 
             case R.id.customer_profile_follow_btn:

@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.ui.search.go;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,5 +22,17 @@ public class GoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onStop() {
+        Log.e("asdzxc", "go fragmenti stopi");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("asdzxc", "go fragmenti destroy");
+        super.onDestroy();
     }
 }

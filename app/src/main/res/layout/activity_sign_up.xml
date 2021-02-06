@@ -97,6 +97,7 @@
                     android:layout_height="38dp"
                     android:background="@drawable/selector_input_field"
                     android:inputType="text"
+                    android:maxEms="12"
                     android:maxLines="1"
                     android:padding="10dp"
                     android:textSize="14sp" />
@@ -115,6 +116,7 @@
                     android:layout_width="282dp"
                     android:layout_height="38dp"
                     android:background="@drawable/selector_input_field"
+                    android:maxEms="12"
                     android:maxLines="1"
                     android:padding="10dp"
                     android:textSize="14sp" />

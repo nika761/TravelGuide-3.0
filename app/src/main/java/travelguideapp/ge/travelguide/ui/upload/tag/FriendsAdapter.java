@@ -16,6 +16,7 @@ import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
 import travelguideapp.ge.travelguide.ui.search.user.UsersFragmentListener;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsHolder> {
@@ -68,8 +69,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
             try {
                 if (tagPostListener != null)
                     container.setOnClickListener(v -> tagPostListener.onChooseFollower(followers.get(getLayoutPosition()).getUser_id(), followers.get(getLayoutPosition()).getNickname()));
-                else
-                    container.setOnClickListener(v -> usersFragmentListener.onUserChoose(followers.get(getLayoutPosition())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -83,7 +82,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsH
         void bindView(int position) {
             HelperMedia.loadCirclePhoto(nickName.getContext(), followers.get(position).getProfile_pic(), profileImage);
             userName.setText(followers.get(position).getName());
-            nickName.setText(followers.get(position).getNickname( ));
+            nickName.setText(followers.get(position).getNickname());
         }
     }
 }

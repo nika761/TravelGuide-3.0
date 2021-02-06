@@ -3,6 +3,8 @@ package travelguideapp.ge.travelguide.ui.home.report;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -16,8 +18,8 @@ import travelguideapp.ge.travelguide.model.customModel.Report;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportHolder> {
 
-    private List<Report> reports;
-    private OnReportChooseCallback callback;
+    private final List<Report> reports;
+    private final OnReportChooseCallback callback;
 
     public ReportAdapter(List<Report> reports, OnReportChooseCallback callback) {
         this.reports = reports;
@@ -44,6 +46,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportHold
 
         TextView reportText;
         CheckBox reportBox;
+        Animation animation;
 
         public ReportHolder(@NonNull View itemView) {
             super(itemView);
@@ -53,17 +56,21 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportHold
             reportBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 try {
                     if (isChecked) {
-                        callback.onReportsChoose(reports.get(getLayoutPosition()).getReportReasonId());
+                        callback.onReportAdd(reports.get(getLayoutPosition()));
+                    } else {
+                        callback.onReportRemove(reports.get(getLayoutPosition()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
 
+            animation = AnimationUtils.loadAnimation(reportBox.getContext(), R.anim.anim_activity_slide_in_right);
         }
 
         void bindUI(int position) {
             try {
+                itemView.startAnimation(animation);
                 reportText.setText(reports.get(position).getReportReason());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -72,6 +79,10 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportHold
     }
 
     public interface OnReportChooseCallback {
-        void onReportsChoose(int reportId);
+
+        void onReportAdd(Report report);
+
+        void onReportRemove(Report report);
+
     }
 }
