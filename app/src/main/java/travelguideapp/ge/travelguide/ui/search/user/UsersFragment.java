@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,12 +27,14 @@ import travelguideapp.ge.travelguide.ui.upload.tag.FriendsAdapter;
 public class UsersFragment extends Fragment implements UsersFragmentListener {
 
     private RecyclerView usersRecycler;
+    private LinearLayout nothingFound;
     private UserAdapter userAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_s_users, container, false);
+        nothingFound = view.findViewById(R.id.nothing_found_users);
         usersRecycler = view.findViewById(R.id.search_user_recycler);
         usersRecycler.setLayoutManager(new LinearLayoutManager(usersRecycler.getContext()));
         usersRecycler.setHasFixedSize(true);
@@ -41,8 +44,19 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
 
     public void setUsers(List<FullSearchResponse.Users> users) {
         try {
+            nothingFound.setVisibility(View.GONE);
+            usersRecycler.setVisibility(View.VISIBLE);
             userAdapter.setUsers(users);
             usersRecycler.setAdapter(userAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setNothingFound() {
+        try {
+            usersRecycler.setVisibility(View.GONE);
+            nothingFound.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,6 +87,8 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
             List<FullSearchResponse.Users> users = ((SearchActivity) usersRecycler.getContext()).getUsers();
             if (users != null) {
                 setUsers(users);
+            } else {
+                setNothingFound();
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -270,6 +270,17 @@
                     android:padding="10dp">
 
                     <TextView
+                        android:id="@+id/privacy_head"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autoSizeTextType="uniform"
+                        android:padding="2dp"
+                        android:text="@string/privacy_head"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
                         android:id="@+id/terms_of_services"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

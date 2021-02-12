@@ -48,6 +48,7 @@ import travelguideapp.ge.travelguide.ui.login.signUp.SignUpActivity;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -81,7 +82,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     private Button signInBtn;
 
     private final static int GOOGLE_SIGN_IN = 0;
-    private boolean passwordState;
+    private boolean passwordHidden = true;
     private int platformId;
     private String key, name;
 
@@ -102,8 +103,6 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
         initUI();
 
-        checkAppVersion();
-
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo("travelguideapp.ge.travelguide", PackageManager.GET_SIGNATURES);
 //            for (Signature signature : info.signatures) {
@@ -119,24 +118,25 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
     }
 
-    private void checkAppVersion() {
-        try {
-            if (BaseApplication.APP_VERSION > 0) {
-                int appVersion = BaseApplication.APP_VERSION;
-                if (GlobalPreferences.getAppVersion(this) < appVersion) {
-                    GlobalPreferences.saveAppVersion(getApplicationContext(), appVersion);
-                    final String appPackageName = getPackageName();
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                    } catch (android.content.ActivityNotFoundException anfe) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void checkAppVersion() {
+//        try {
+//            if (BaseApplication.APP_VERSION > 0) {
+//                int appVersion = BaseApplication.APP_VERSION;
+//                if (GlobalPreferences.getAppVersion(this) < appVersion) {
+//                    final String appPackageName = getPackageName();
+//                    try {
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+//                        finish();
+//                    } catch (android.content.ActivityNotFoundException anfe) {
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+//                        finish();
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void verifyEmail() {
         try {
@@ -234,7 +234,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
             passwordStateBtn = findViewById(R.id.password_visibility);
             passwordStateBtn.setOnClickListener(this::onViewClick);
-            
+
             HelperUI.loadAnimation(enterMailHead, R.anim.anim_swipe_bottom, 0);
             HelperUI.loadAnimation(enterEmail, R.anim.anim_swipe_bottom, 50);
             HelperUI.loadAnimation(enterPasswordHead, R.anim.anim_swipe_bottom, 100);
@@ -252,9 +252,8 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
             HelperUI.loadAnimation(terms, R.anim.anim_swipe_bottom, 500);
 
         } catch (Exception e) {
-            Intent signIntent = new Intent(this, SignInActivity.class);
-            startActivity(signIntent);
             e.printStackTrace();
+            finish();
         }
 
 
@@ -272,14 +271,14 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     private void onViewClick(View v) {
         switch (v.getId()) {
             case R.id.password_visibility:
-                if (passwordState) {
+                if (passwordHidden) {
                     passwordStateBtn.setBackground(getResources().getDrawable(R.drawable.ic_password_hide, null));
                     enterPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                    passwordState = false;
+                    passwordHidden = false;
                 } else {
                     passwordStateBtn.setBackground(getResources().getDrawable(R.drawable.ic_password_show, null));
                     enterPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    passwordState = true;
+                    passwordHidden = true;
                 }
                 break;
 
@@ -324,45 +323,21 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
         String email;
         String password;
 
-        try {
-            email = HelperUI.checkEditTextData(enterEmail, enterMailHead, currentLanguage.getEmail_field_head(), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
-        } catch (Exception e) {
-            email = HelperUI.checkEditTextData(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
-        }
+        email = HelperUI.checkEditTextData(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
 
-        try {
-            password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, currentLanguage.getPassword_field_head(), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
-        } catch (Exception e) {
-            password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, getString(R.string.password), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
-        }
+        password = HelperUI.checkEditTextData(enterPassword, enterPasswordHead, getString(R.string.password), HelperUI.WHITE, HelperUI.BACKGROUND_DEF_WHITE, this);
 
         if (email != null) {
-            try {
-                HelperUI.setBackgroundDefault(enterEmail, enterMailHead, currentLanguage.getEmail_field_head(), white, HelperUI.BACKGROUND_DEF_WHITE);
-            } catch (Exception e) {
-                HelperUI.setBackgroundDefault(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), white, HelperUI.BACKGROUND_DEF_WHITE);
-            }
+            HelperUI.setBackgroundDefault(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), white, HelperUI.BACKGROUND_DEF_WHITE);
             if (password != null && HelperUI.checkPassword(password)) {
-                try {
-                    HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, currentLanguage.getPassword_field_head(), white, HelperUI.BACKGROUND_DEF_WHITE);
-                } catch (Exception e) {
-                    HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, getString(R.string.password), white, HelperUI.BACKGROUND_DEF_WHITE);
-                }
+                HelperUI.setBackgroundDefault(enterPassword, enterPasswordHead, getString(R.string.password), white, HelperUI.BACKGROUND_DEF_WHITE);
                 showLoading(true);
                 signInPresenter.singIn(new LoginRequest(email, password));
             } else {
-                try {
-                    HelperUI.setBackgroundWarning(enterPassword, enterPasswordHead, currentLanguage.getPassword_field_head(), this);
-                } catch (Exception e) {
-                    HelperUI.setBackgroundWarning(enterPassword, enterPasswordHead, getString(R.string.password), this);
-                }
+                HelperUI.setBackgroundWarning(enterPassword, enterPasswordHead, getString(R.string.password), this);
             }
         } else {
-            try {
-                HelperUI.setBackgroundWarning(enterEmail, enterMailHead, currentLanguage.getEmail_field_head(), this);
-            } catch (Exception e) {
-                HelperUI.setBackgroundWarning(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), this);
-            }
+            HelperUI.setBackgroundWarning(enterEmail, enterMailHead, getString(R.string.email_or_phone_number), this);
         }
     }
 
@@ -377,7 +352,10 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
     private void signInWithFacebook() {
         GlobalPreferences.saveLoginType(this, GlobalPreferences.FACEBOOK);
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email", "user_friends"));
+
+        LoginManager loginManager = LoginManager.getInstance();
+        loginManager.setLoginBehavior(LoginBehavior.WEB_ONLY);
+        loginManager.logInWithReadPermissions(this, Arrays.asList("public_profile", "email", "user_friends"));
 //        signBtnFacebook.performClick();
 //        signBtnFacebook.callOnClick();
         signBtnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -437,8 +415,8 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     @Override
     public void onFireBaseAuthSignIn(AuthWithFirebaseResponse authWithFirebaseResponse) {
         GlobalPreferences.saveAccessToken(this, authWithFirebaseResponse.getAccess_token());
-        GlobalPreferences.saveUserId(this, authWithFirebaseResponse.getUser().getId());
         GlobalPreferences.saveUserRole(this, authWithFirebaseResponse.getUser().getRole());
+        GlobalPreferences.saveUserId(this, authWithFirebaseResponse.getUser().getId());
 
         showLoading(false);
 

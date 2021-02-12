@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,19 +25,21 @@ import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
 public class HashtagsFragment extends Fragment implements HashtagsFragmentListener {
 
     private RecyclerView hashtagRecycler;
-    private AddTagAdapter addTagAdapter;
+    private AddTagAdapter hashtagAdapter;
+    private LinearLayout nothingFound;
     private int fromPage = 1;
 
-    private boolean isLoading;
+    private boolean isLoading = false;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_s_hashtags, container, false);
+        nothingFound = view.findViewById(R.id.nothing_found_users);
         hashtagRecycler = view.findViewById(R.id.search_hashtags_recycler);
         hashtagRecycler.setLayoutManager(new LinearLayoutManager(hashtagRecycler.getContext()));
         hashtagRecycler.setHasFixedSize(true);
-        addTagAdapter = new AddTagAdapter(this);
+        hashtagAdapter = new AddTagAdapter(this);
         return view;
     }
 
@@ -47,10 +50,13 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
 
     public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
         try {
-            isLoading = false;
-            addTagAdapter.setHashtags(hashtags);
+            nothingFound.setVisibility(View.GONE);
+            hashtagRecycler.setVisibility(View.VISIBLE);
+
+            hashtagAdapter.setHashtags(hashtags);
+
             if (hashtagRecycler.getAdapter() == null) {
-                hashtagRecycler.setAdapter(addTagAdapter);
+                hashtagRecycler.setAdapter(hashtagAdapter);
             }
 
             hashtagRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -67,12 +73,32 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
 
                     if (!isLoading) {
                         if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == hashtags.size() - 1) {
-//                            onLazyLoad();
+                            fromPage = fromPage + 1;
+                            onLazyLoad(fromPage);
                             isLoading = true;
                         }
                     }
                 }
             });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setNothingFound() {
+        try {
+            hashtagRecycler.setVisibility(View.GONE);
+            nothingFound.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void setLazyHashtags(List<HashtagResponse.Hashtags> hashtags) {
+        try {
+            isLoading = false;
+            hashtagAdapter.setHashtags(hashtags);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,9 +114,12 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     }
 
     @Override
-    public void onLazyLoad() {
-//        fromPage++;
-//        ((SearchActivity) hashtagRecycler.getContext()).getHashtagsNextPage(fromPage);
+    public void onLazyLoad(int page) {
+        try {
+            ((SearchActivity) hashtagRecycler.getContext()).getHashtagsNextPage(page);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -104,6 +133,8 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
             List<HashtagResponse.Hashtags> hashtags = ((SearchActivity) hashtagRecycler.getContext()).getHashtags();
             if (hashtags != null) {
                 setHashtags(hashtags);
+            } else {
+                setNothingFound();
             }
         } catch (Exception e) {
             e.printStackTrace();

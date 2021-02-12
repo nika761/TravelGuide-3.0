@@ -7,7 +7,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
@@ -64,12 +68,13 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
 
     class RepliesHolder extends RecyclerView.ViewHolder {
 
-        private TextView userName, commentBody, commentDate, likeCount, replyBtn;
-        private CircleImageView userImage;
-        private ImageButton like;
-
-        int countPlus = -1;
-        int countMinus = Integer.MAX_VALUE;
+        private final TextView userName;
+        private final TextView commentBody;
+        private final TextView commentDate;
+        private final TextView likeCount;
+        private final TextView replyBtn;
+        private final CircleImageView userImage;
+        private final ImageButton like;
 
         RepliesHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,8 +90,12 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
 
             like = itemView.findViewById(R.id.com_replies_like);
             like.setOnClickListener(v -> {
-                listener.onChooseLike(commentReplies.get(getLayoutPosition()).getComment_id(), commentReplies.get(getLayoutPosition()).getComment_reply_id());
-                setCommentLike(getLayoutPosition());
+                try {
+                    listener.onChooseLike(commentReplies.get(getLayoutPosition()).getComment_id(), commentReplies.get(getLayoutPosition()).getComment_reply_id());
+                    setCommentLike(getLayoutPosition());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
 
         }
@@ -116,53 +125,37 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesH
             likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
 
             if (commentReplies.get(position).isReply_liked_by_me())
-                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
+                like.setBackground(ContextCompat.getDrawable(like.getContext(), R.drawable.icon_like_liked));
             else
-                like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
-
+                like.setBackground(ContextCompat.getDrawable(like.getContext(), R.drawable.icon_like_unliked));
 
             if (commentReplies.get(position).isI_can_reply_comment_reply())
                 replyBtn.setVisibility(View.VISIBLE);
             else
                 replyBtn.setVisibility(View.GONE);
 
+            setCommentOption(commentReplies.get(position).isI_can_edit_reply(), position);
 
-            if (commentReplies.get(position).isI_can_edit_reply()) {
-                setCommentOption(true, position);
-            } else {
-                setCommentOption(false, 0);
-            }
         }
 
         void setCommentLike(int position) {
-
             if (commentReplies.get(position).isReply_liked_by_me()) {
-
-                if (countPlus > commentReplies.get(position).getReply_likes()) {
-                    like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
-                    likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
-                    commentReplies.get(position).setReply_liked_by_me(false);
-                } else {
-                    likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes() - 1));
-                    like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_unliked, null));
-                    countMinus = commentReplies.get(position).getReply_likes() - 1;
-                    commentReplies.get(position).setReply_liked_by_me(false);
-                }
-
+                commentReplies.get(position).setReply_likes(commentReplies.get(position).getReply_likes() - 1);
+                commentReplies.get(position).setReply_liked_by_me(false);
+                likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
+                YoYo.with(Techniques.RubberBand)
+                        .onEnd(animator -> like.setBackground(ContextCompat.getDrawable(like.getContext(), R.drawable.icon_like_unliked)))
+                        .duration(250)
+                        .playOn(like);
             } else {
-
-                if (countMinus < commentReplies.get(position).getReply_likes()) {
-                    like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
-                    likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
-                    commentReplies.get(position).setReply_liked_by_me(true);
-                } else {
-                    like.setBackground(like.getContext().getResources().getDrawable(R.drawable.icon_like_liked, null));
-                    likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes() + 1));
-                    countPlus = commentReplies.get(position).getReply_likes() + 1;
-                    commentReplies.get(position).setReply_liked_by_me(true);
-                }
+                commentReplies.get(position).setReply_likes(commentReplies.get(position).getReply_likes() + 1);
+                commentReplies.get(position).setReply_liked_by_me(true);
+                likeCount.setText(String.valueOf(commentReplies.get(position).getReply_likes()));
+                YoYo.with(Techniques.RubberBand)
+                        .onEnd(animator -> like.setBackground(ContextCompat.getDrawable(like.getContext(), R.drawable.icon_like_liked)))
+                        .duration(250)
+                        .playOn(like);
             }
-
         }
 
         void setCommentOption(boolean canEdit, int position) {

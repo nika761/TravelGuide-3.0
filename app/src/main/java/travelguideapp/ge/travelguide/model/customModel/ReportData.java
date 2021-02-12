@@ -16,12 +16,15 @@ public class ReportData {
         switch (reportType) {
             case COMMENT:
                 reportData.setCommentId(id);
+                reportData.setReportType(reportType);
                 break;
             case POST:
                 reportData.setPostId(id);
+                reportData.setReportType(reportType);
                 break;
             case USER:
                 reportData.setUserId(id);
+                reportData.setReportType(reportType);
                 break;
         }
         return reportData;

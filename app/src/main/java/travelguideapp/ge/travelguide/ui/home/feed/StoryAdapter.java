@@ -21,9 +21,9 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
-import travelguideapp.ge.travelguide.helper.custom.CustomFrameLayout;
-import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
-import travelguideapp.ge.travelguide.ui.search.posts.SearchPostActivity;
+import travelguideapp.ge.travelguide.custom.CustomFrameLayout;
+import travelguideapp.ge.travelguide.custom.CustomProgressBar;
+import travelguideapp.ge.travelguide.ui.search.posts.PostByLocationActivity;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 import java.util.List;
@@ -271,7 +271,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
                     break;
 
                 case R.id.post_location:
-                    Intent postHashtagIntent = new Intent(videoItem.getContext(), SearchPostActivity.class);
+                    Intent postHashtagIntent = new Intent(videoItem.getContext(), PostByLocationActivity.class);
                     postHashtagIntent.putExtra("search_type", PostDataSearch.SearchBy.LOCATION);
                     postHashtagIntent.putExtra("search_post_id", currentPost.getPost_id());
                     like.getContext().startActivity(postHashtagIntent);

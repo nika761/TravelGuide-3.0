@@ -106,4 +106,6 @@
     <string name="continue_as">Продолжить как</string>
     <string name="undo">Отмена</string>
     <string name="back">Назад</string>
+    <string name="no_notifications">У вас нет сообщений</string>
+    <string name="no_searched_data">"Результатов не найдено "</string>
 </resources>

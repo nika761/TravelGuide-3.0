@@ -30,10 +30,7 @@ public class SearchPresenter {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
-                            if (response.body() != null)
-                                searchListener.onGetSearchedData(response.body());
-                            else
-                                searchListener.onError(response.message());
+                            searchListener.onGetSearchedData(response.body());
                             break;
                         case 1:
                             searchListener.onError(response.message());
@@ -60,8 +57,6 @@ public class SearchPresenter {
                         case 0:
                             if (response.body().getHashtags().size() > 0)
                                 searchListener.onGetHashtags(response.body().getHashtags());
-                            else
-                                searchListener.onError(response.message());
                             break;
                         case 1:
                             searchListener.onError(response.message());
@@ -88,8 +83,6 @@ public class SearchPresenter {
                         case 0:
                             if (response.body().getFollowers().size() > 0)
                                 searchListener.onGetUsers(response.body().getFollowers());
-                            else
-                                searchListener.onError(response.message());
                             break;
                         case 1:
                             searchListener.onError(response.message());

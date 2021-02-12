@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,11 +22,13 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
 
     private RecyclerView postRecycler;
     private SearchPostAdapter searchPostAdapter;
+    private LinearLayout nothingFound;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_s_stories, container, false);
+        nothingFound = view.findViewById(R.id.nothing_found_users);
         postRecycler = view.findViewById(R.id.search_post_fragment_recycler);
         postRecycler.setLayoutManager(new GridLayoutManager(postRecycler.getContext(), 3));
         postRecycler.setHasFixedSize(true);
@@ -34,8 +37,19 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
         return view;
     }
 
+    public void setNothingFound() {
+        try {
+            postRecycler.setVisibility(View.GONE);
+            nothingFound.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setPosts(List<PostResponse.Posts> posts) {
         try {
+            nothingFound.setVisibility(View.GONE);
+            postRecycler.setVisibility(View.VISIBLE);
             searchPostAdapter.setPosts(posts);
             if (postRecycler.getAdapter() == null)
                 postRecycler.setAdapter(searchPostAdapter);
@@ -55,6 +69,8 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
             List<PostResponse.Posts> posts = ((SearchActivity) postRecycler.getContext()).getPosts();
             if (posts != null) {
                 setPosts(posts);
+            } else {
+                setNothingFound();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +79,11 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
 
     @Override
     public void onChoosePost(int postId) {
-
+        try {
+            ((SearchActivity) postRecycler.getContext()).onChoosePost(postId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

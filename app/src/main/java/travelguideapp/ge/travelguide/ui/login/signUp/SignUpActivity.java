@@ -271,7 +271,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
 
     @Override
     public void onPhotoUploadToS3() {
-        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, profilePhotoFile.getName());
+        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(GlobalPreferences.getAppSettings(this).getS3_BUCKET_NAME(), profilePhotoFile.getName());
     }
 
     @Override

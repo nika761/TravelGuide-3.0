@@ -90,7 +90,7 @@
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="travelguideapp.ge.travelguide.ui.home.profile.follow.FollowActivity"
+            android:name=".ui.profile.follow.FollowActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />
@@ -200,7 +200,7 @@
             android:windowSoftInputMode="adjustNothing" />
 
         <activity
-            android:name="travelguideapp.ge.travelguide.ui.search.posts.SearchPostActivity"
+            android:name="travelguideapp.ge.travelguide.ui.search.posts.PostByLocationActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme"
@@ -248,7 +248,7 @@
             android:theme="@style/SecondAppTheme" />
 
         <activity
-            android:name="travelguideapp.ge.travelguide.ui.home.profile.editProfile.ProfileEditActivity"
+            android:name=".ui.profile.editProfile.ProfileEditActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme" />

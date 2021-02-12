@@ -1,6 +1,11 @@
 package travelguideapp.ge.travelguide.ui.language;
 
+import org.jetbrains.annotations.NotNull;
+
+import travelguideapp.ge.travelguide.BuildConfig;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.model.request.LanguageStringsRequest;
+import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
 import travelguideapp.ge.travelguide.model.response.LanguageStringsResponse;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
@@ -9,6 +14,7 @@ import travelguideapp.ge.travelguide.network.RetrofitManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 public class LanguagePresenter {
     private LanguageListener languageListener;
@@ -40,6 +46,25 @@ public class LanguagePresenter {
             }
         });
     }
+
+
+    public void getAppSettings() {
+        service.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<AppSettingsResponse> call, @NotNull Response<AppSettingsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    splashListener.onGetSettings(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<AppSettingsResponse> call, @NotNull Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+    }
+
 
     void getLanguageStrings(LanguageStringsRequest languageStringsRequest) {
         service.getLanguageStrings(languageStringsRequest).enqueue(new Callback<LanguageStringsResponse>() {

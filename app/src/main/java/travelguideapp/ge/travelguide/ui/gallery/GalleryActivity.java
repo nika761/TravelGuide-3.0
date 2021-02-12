@@ -60,7 +60,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
 
         initRecycler();
 
-        Log.e("aszxcmgdfg", String.valueOf(GlobalPreferences.getAppSettings(this).get_AGE_RESTRICTION()));
+        Log.e("aszxcmgdfg", String.valueOf(GlobalPreferences.getAppSettings(this).getAGE_RESTRICTION()));
     }
 
 
@@ -108,7 +108,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
 
         GalleryFragment galleryFragment = new GalleryFragment();
         Bundle bundle = new Bundle();
-        bundle.putBoolean("is_image", true);
+        bundle.putBoolean("is_image", false);
         HelperUI.loadFragment(galleryFragment, bundle, R.id.gallery_fragment_container, false, true, this);
 
     }

@@ -105,4 +105,6 @@
     <string name="report_fraud">舞弊</string>
     <string name="report_other">其他</string>
     <string name="back">背部</string>
+    <string name="no_notifications">您沒有留言</string>
+    <string name="no_searched_data">No results found</string>
 </resources>

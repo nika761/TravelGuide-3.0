@@ -27,10 +27,10 @@ import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.custom.CustomTimer;
-import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostAdapter;
-import travelguideapp.ge.travelguide.helper.custom.customPost.CustomPostRecycler;
-import travelguideapp.ge.travelguide.helper.custom.CustomProgressBar;
+import travelguideapp.ge.travelguide.custom.CustomTimer;
+import travelguideapp.ge.travelguide.custom.customPost.CustomPostAdapter;
+import travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler;
+import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.model.customModel.ReportData;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.customModel.PostView;
@@ -39,6 +39,7 @@ import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
+import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostFavoriteRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostViewRequest;
@@ -131,41 +132,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
-//            try {
-//                getPostsFrom = (GetPostsFrom) getArguments().getSerializable("PostShowType");
-//                int scrollPosition = getArguments().getInt("postPosition");
-//                if (getPostsFrom != null) {
-//                    switch (getPostsFrom) {
-//                        case FAVORITES:
-//                            List<PostResponse.Posts> favoritePosts = (List<PostResponse.Posts>) getArguments().getSerializable("favoritePosts");
-//                            initRecyclerView(favoritePosts, true, scrollPosition);
-//                            break;
-//
-//                        case MY_POSTS:
-//                            List<PostResponse.Posts> myPosts = (List<PostResponse.Posts>) getArguments().getSerializable("my_posts");
-//                            initRecyclerView(myPosts, true, scrollPosition);
-//                            break;
-//
-//                        case CUSTOMER_POSTS:
-//                            this.customerUserId = getArguments().getInt("customer_user_id", 0);
-//                            List<PostResponse.Posts> customerPosts = (List<PostResponse.Posts>) getArguments().getSerializable("customer_posts");
-//                            initRecyclerView(customerPosts, true, scrollPosition);
-//                            break;
-//
-//                        case FEED:
-//                            loaderContainer.setVisibility(View.VISIBLE);
-//                            presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
-//                            break;
-//
-//                        case SEARCH:
-//                            List<PostResponse.Posts> searchedPosts = (List<PostResponse.Posts>) getArguments().getSerializable("searchedPosts");
-//                            initRecyclerView(searchedPosts, true, scrollPosition);
-//                            break;
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
             try {
                 PostDataLoad postDataLoad = getArguments().getParcelable(PostDataLoad.INTENT_KEY_LOAD);
                 this.loadSource = postDataLoad.getLoadSource();
@@ -402,20 +368,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
             data.putInt("storyId", storyId);
             data.putInt("postId", postId);
             loadCommentFragment(data, COMMENT);
-//            loadFragment(storyId, postId);
-//            commentFragmentCallback.onLoadCommentFragment(postId, storyId);
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        try {
-//            if (getContext() instanceof HomePageActivity) {
-//                ((HomePageActivity) getContext()).loadCommentFragment(storyId, postId);
-//            } else if (getContext() instanceof CustomerProfileActivity) {
-//                ((CustomerProfileActivity) getContext()).loadCommentFragment(storyId, postId);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -490,7 +445,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                 break;
 
             case SEARCH:
-//                MyToaster.getErrorToaster(postRecycler.getContext(), "Lazy Load here");
+                presenter.getPostsByLocation(accessToken, new PostByLocationRequest(fromPostId));
                 break;
         }
     }
@@ -536,14 +491,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void stopLoader() {
-
         try {
             loaderContainer.setVisibility(View.GONE);
             loader.setVisibility(View.GONE);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -570,10 +523,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     }
 
     @Override
-    public void loadCommentFragment(Bundle dataForFragment, CommentFragment.CommentFragmentType commentType) {
+    public void loadCommentFragment(Bundle dataForFragment, CommentFragment.CommentFragmentType commentFragmentType) {
         try {
             FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-            switch (commentType) {
+            switch (commentFragmentType) {
                 case COMMENT:
                     CommentFragment commentFragment = CommentFragment.getInstance(this);
                     commentFragment.setArguments(dataForFragment);

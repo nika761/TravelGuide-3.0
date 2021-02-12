@@ -317,6 +317,58 @@ public class CommentResponse implements Serializable {
             return user_id;
         }
 
+        public void setComment_id(int comment_id) {
+            this.comment_id = comment_id;
+        }
+
+        public boolean isCan_load_more_replies() {
+            return can_load_more_replies;
+        }
+
+        public void setCan_load_more_replies(boolean can_load_more_replies) {
+            this.can_load_more_replies = can_load_more_replies;
+        }
+
+        public void setI_can_reply_comment_reply(boolean i_can_reply_comment_reply) {
+            this.i_can_reply_comment_reply = i_can_reply_comment_reply;
+        }
+
+        public void setReply_time(String reply_time) {
+            this.reply_time = reply_time;
+        }
+
+        public void setReply_likes(int reply_likes) {
+            this.reply_likes = reply_likes;
+        }
+
+        public void setI_can_edit_reply(boolean i_can_edit_reply) {
+            this.i_can_edit_reply = i_can_edit_reply;
+        }
+
+        public void setProfile_pic(String profile_pic) {
+            this.profile_pic = profile_pic;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
+
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public void setComment_reply_id(int comment_reply_id) {
+            this.comment_reply_id = comment_reply_id;
+        }
+
         public String getText() {
             return text;
         }

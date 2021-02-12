@@ -268,6 +268,7 @@ public class CommentFragment extends Fragment implements CommentListener {
         }
     }
 
+
     @Override
     public void onLazyLoad(boolean visible, int commentId) {
 

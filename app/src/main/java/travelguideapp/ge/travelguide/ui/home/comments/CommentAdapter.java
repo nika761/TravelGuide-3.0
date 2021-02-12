@@ -14,6 +14,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.response.CommentResponse;
@@ -44,7 +45,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         holder.loadMoreCallback(position);
 
-        holder.bindView(position);
+        holder.bindUI(position);
 
     }
 
@@ -73,7 +74,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         return comments.size();
     }
 
-    class CommentHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class CommentHolder extends RecyclerView.ViewHolder {
 
         TextView userName, body, date, replyBtn, likeCount, bodyMore, showReplies;
         CircleImageView userImage;
@@ -89,28 +90,55 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             likeCount = itemView.findViewById(R.id.comments_like_count);
 
             userImage = itemView.findViewById(R.id.comments_user_image);
-            userImage.setOnClickListener(this);
+            userImage.setOnClickListener(v -> {
+                try {
+                    listener.onUserChoose(comments.get(getLayoutPosition()).getUser_id());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
             userName = itemView.findViewById(R.id.comments_user_name);
             date = itemView.findViewById(R.id.comments_date);
             body = itemView.findViewById(R.id.comments_body);
 
             bodyMore = itemView.findViewById(R.id.comments_see_more_body);
-            bodyMore.setOnClickListener(this);
-
-            replyBtn = itemView.findViewById(R.id.comments_reply_btn);
-            replyBtn.setOnClickListener(this);
-
-            showReplies = itemView.findViewById(R.id.comments_view_replies);
-            showReplies.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
+            bodyMore.setOnClickListener(v -> {
+                try {
+                    body.setMaxLines(10);
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             });
 
+            replyBtn = itemView.findViewById(R.id.comments_reply_btn);
+            replyBtn.setOnClickListener(v -> {
+                try {
+                    listener.onReplyChoose(comments.get(getLayoutPosition()), true, getLayoutPosition());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            showReplies = itemView.findViewById(R.id.comments_view_replies);
+            showReplies.setOnClickListener(v -> {
+                try {
+                    listener.onReplyChoose(comments.get(getLayoutPosition()), false, getLayoutPosition());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            });
+
             likeBtn = itemView.findViewById(R.id.comments_like_btn);
-            likeBtn.setOnClickListener(this);
+            likeBtn.setOnClickListener(v -> {
+                try {
+                    listener.onLikeChoose(comments.get(getLayoutPosition()).getComment_id());
+                    setCommentLike(getLayoutPosition());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
         }
 
@@ -128,7 +156,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         }
 
-        void bindView(int position) {
+        void bindUI(int position) {
 
             likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
             userName.setText(comments.get(position).getNickname());
@@ -139,7 +167,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
             if (comments.get(position).getComment_reply().size() > 0) {
                 showReplies.setVisibility(View.VISIBLE);
-                showReplies.setText(body.getContext().getString(R.string.view_replies) + " (" + comments.get(position).getComment_replies_count() + ") ");
+                showReplies.setText(MessageFormat.format("{0} ({1}) ", body.getContext().getString(R.string.view_replies), comments.get(position).getComment_replies_count()));
             } else {
                 showReplies.setVisibility(View.GONE);
             }
@@ -161,72 +189,64 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         }
 
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.comments_view_replies:
-                    listener.onReplyChoose(comments.get(getLayoutPosition()), false, getLayoutPosition());
-                    break;
-
-                case R.id.comments_reply_btn:
-                    listener.onReplyChoose(comments.get(getLayoutPosition()), true, getLayoutPosition());
-                    break;
-
-                case R.id.comments_like_btn:
-                    listener.onLikeChoose(comments.get(getLayoutPosition()).getComment_id());
-                    setCommentLike(getLayoutPosition());
-                    break;
-
-                case R.id.comments_see_more_body:
-                    body.setMaxLines(10);
-                    break;
-
-                case R.id.comments_user_image:
-                    listener.onUserChoose(comments.get(getLayoutPosition()).getUser_id());
-                    break;
-            }
-        }
-
         void setCommentLike(int position) {
 
             if (comments.get(position).getComment_liked_by_me()) {
-
-                if (countPlus > comments.get(position).getComment_likes()) {
-                    YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked)))
-                            .duration(250)
-                            .playOn(likeBtn);
-                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
-                    comments.get(position).setComment_liked_by_me(false);
-                } else {
-                    YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked)))
-                            .duration(250)
-                            .playOn(likeBtn);
-                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes() - 1));
-                    countMinus = comments.get(position).getComment_likes() - 1;
-                    comments.get(position).setComment_liked_by_me(false);
-                }
-
+                comments.get(position).setComment_likes(comments.get(position).getComment_likes() - 1);
+                comments.get(position).setComment_liked_by_me(false);
+                likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
+                YoYo.with(Techniques.RubberBand)
+                        .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked)))
+                        .duration(250)
+                        .playOn(likeBtn);
             } else {
-
-                if (countMinus < comments.get(position).getComment_likes()) {
-                    YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked)))
-                            .duration(250)
-                            .playOn(likeBtn);
-                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
-                    comments.get(position).setComment_liked_by_me(true);
-                } else {
-                    YoYo.with(Techniques.RubberBand)
-                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked)))
-                            .duration(250)
-                            .playOn(likeBtn);
-                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes() + 1));
-                    countPlus = comments.get(position).getComment_likes() + 1;
-                    comments.get(position).setComment_liked_by_me(true);
-                }
+                comments.get(position).setComment_likes(comments.get(position).getComment_likes() + 1);
+                comments.get(position).setComment_liked_by_me(true);
+                likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
+                YoYo.with(Techniques.RubberBand)
+                        .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked)))
+                        .duration(250)
+                        .playOn(likeBtn);
             }
+
+//            if (comments.get(position).getComment_liked_by_me()) {
+//
+//                if (countPlus > comments.get(position).getComment_likes()) {
+//                    YoYo.with(Techniques.RubberBand)
+//                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked)))
+//                            .duration(250)
+//                            .playOn(likeBtn);
+//                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
+//                    comments.get(position).setComment_liked_by_me(false);
+//                } else {
+//                    YoYo.with(Techniques.RubberBand)
+//                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_unliked)))
+//                            .duration(250)
+//                            .playOn(likeBtn);
+//                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes() - 1));
+//                    countMinus = comments.get(position).getComment_likes() - 1;
+//                    comments.get(position).setComment_liked_by_me(false);
+//                }
+//
+//            } else {
+//
+//                if (countMinus < comments.get(position).getComment_likes()) {
+//                    YoYo.with(Techniques.RubberBand)
+//                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked)))
+//                            .duration(250)
+//                            .playOn(likeBtn);
+//                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
+//                    comments.get(position).setComment_liked_by_me(true);
+//                } else {
+//                    YoYo.with(Techniques.RubberBand)
+//                            .onEnd(animator -> likeBtn.setBackground(ContextCompat.getDrawable(body.getContext(), R.drawable.icon_like_liked)))
+//                            .duration(250)
+//                            .playOn(likeBtn);
+//                    likeCount.setText(String.valueOf(comments.get(position).getComment_likes() + 1));
+//                    countPlus = comments.get(position).getComment_likes() + 1;
+//                    comments.get(position).setComment_liked_by_me(true);
+//                }
+//            }
 
 
         }

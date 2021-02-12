@@ -85,9 +85,9 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:visibility="gone"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/icon_change_photo_black" />
+                    android:src="@drawable/icon_change_photo_black"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="70dp"
@@ -160,6 +160,7 @@
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
                 android:maxEms="12"
+                android:maxLength="16"
                 android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"

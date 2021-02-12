@@ -18,10 +18,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import travelguideapp.ge.travelguide.BuildConfig;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
+import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.language.LanguageActivity;
@@ -50,9 +52,22 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        try {
+            if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        try {
+            if (GlobalPreferences.getAppVersion(getApplicationContext()) < BuildConfig.VERSION_CODE) {
+                GlobalPreferences.saveAppVersion(getApplicationContext(), BuildConfig.VERSION_CODE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         setLanguage();
         calculateScreenWidth();
         initUI();
@@ -79,14 +94,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
 
     private void checkNetwork() {
         if (SystemManager.checkNetworkConnection(this)) {
-            if (GlobalPreferences.getLanguageId(this) != 0) {
-                if (GlobalPreferences.getAccessToken(this) != null)
-                    openHome();
-                else
-                    openSign();
-            } else {
-                languagePresenter.sentLanguageRequest();
-            }
+            languagePresenter.getAppSettings();
         } else {
             MyToaster.getErrorToaster(this, getString(R.string.no_internet_connection));
         }
@@ -161,6 +169,45 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
             List<LanguagesResponse.Language> languages = languagesResponse.getLanguage();
             startApplication(languages);
         }
+    }
+
+    @Override
+    public void onGetSettings(AppSettingsResponse appSettingsResponse) {
+        try {
+            if (appSettingsResponse.getStatus() == 0) {
+
+                GlobalPreferences.saveAppSettings(this, appSettingsResponse.getApp_settings());
+                BaseApplication.AGE_RESTRICTION = appSettingsResponse.getApp_settings().getAGE_RESTRICTION();
+
+                if (appSettingsResponse.getApp_settings().getAPP_VERSION() > GlobalPreferences.getAppVersion(this)) {
+                    final String appPackageName = getPackageName();
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                        finish();
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                        finish();
+                    }
+                } else {
+                    if (GlobalPreferences.getLanguageId(this) != 0) {
+                        if (GlobalPreferences.getAccessToken(this) != null)
+                            openHome();
+                        else
+                            openSign();
+                    } else {
+                        languagePresenter.sentLanguageRequest();
+                    }
+                }
+            } else {
+                MyToaster.getUnknownErrorToast(this);
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            MyToaster.getUnknownErrorToast(this);
+            finish();
+        }
+
     }
 
     @Override

@@ -40,6 +40,7 @@
     <string name="describe_post">Describe Post</string>
     <string name="female">Female</string>
     <string name="other">Other</string>
+    <string name="no_notifications">You have no notifications</string>
     <string name="cancel">Cancel</string>
     <string name="age_restriction_warning">The age limit is 13+</string>
     <string name="gender_restriction_warning">Please select gender</string>
@@ -112,6 +113,7 @@
     <string name="users_tab">USERS</string>
     <string name="go_tab">GO !</string>
     <string name="posts_tab">POSTS</string>
+    <string name="no_searched_data">No results found</string>
 
 
     <string name="settings">Settings</string>

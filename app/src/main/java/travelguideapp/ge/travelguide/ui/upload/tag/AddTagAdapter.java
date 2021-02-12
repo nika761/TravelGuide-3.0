@@ -41,7 +41,7 @@ public class AddTagAdapter extends RecyclerView.Adapter<AddTagAdapter.AddTagHold
         } catch (Exception e) {
             e.printStackTrace();
         }
-        holder.lazyLoadCallback(position);
+//        holder.lazyLoadCallback(position);
     }
 
     public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
@@ -71,15 +71,15 @@ public class AddTagAdapter extends RecyclerView.Adapter<AddTagAdapter.AddTagHold
             }
         }
 
-        void lazyLoadCallback(int position) {
-            try {
-                if (position == hashtags.size() - 1) {
-                    hashtagsFragmentListener.onLazyLoad();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
+//        void lazyLoadCallback(int position) {
+//            try {
+//                if (position == hashtags.size() - 1) {
+//                    hashtagsFragmentListener.onLazyLoad();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
     }
 }

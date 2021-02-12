@@ -78,8 +78,8 @@
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/customer_profile_image"
-                            android:layout_width="@dimen/user_profile_pic_width"
-                            android:layout_height="@dimen/user_profile_pic_height"
+                            android:layout_width="95dp"
+                            android:layout_height="88dp"
                             android:background="@drawable/image_account"
                             app:layout_constraintBottom_toTopOf="@id/customer_profile_follow_container"
                             app:layout_constraintStart_toStartOf="parent"
@@ -104,6 +104,7 @@
                             android:layout_height="36dp"
                             android:background="@drawable/bg_agree"
                             android:gravity="center"
+                            android:minWidth="80dp"
                             android:padding="5dp"
                             android:text="@string/follow"
                             android:textColor="@color/white"
@@ -130,7 +131,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:background="@drawable/bg_content"
-                            android:minWidth="150dp"
+                            android:minWidth="200dp"
                             android:paddingStart="10dp"
                             android:paddingTop="3dp"
                             android:paddingEnd="10dp"
@@ -263,11 +264,11 @@
                         android:layout_height="wrap_content"
                         android:icon="@drawable/profile_photos" />
 
-                    <com.google.android.material.tabs.TabItem
-                        android:id="@+id/customer_profile_tab_tours"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:icon="@drawable/profile_tour" />
+<!--                    <com.google.android.material.tabs.TabItem-->
+<!--                        android:id="@+id/customer_profile_tab_tours"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:icon="@drawable/profile_tour" />-->
 
                 </com.google.android.material.tabs.TabLayout>
 

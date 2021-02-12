@@ -19,6 +19,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
+import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -28,11 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientManager {
-
-    private static final String S3_KEY = "AKIAVWUTGVROTZGHURQ4";
-    private static final String S3_SECRET = "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";
-    private static final String AMAZONS3_END_POINT = "https://travel-guide-3.s3.eu-central-1.amazonaws.com";
-    public static final String S3_BUCKET = "travel-guide-3/temp";
 
     public static GoogleSignInClient googleSignInClient(Context context) {
 
@@ -52,10 +49,9 @@ public class ClientManager {
     public static AmazonS3Client amazonS3Client(Context context) {
 
         AmazonS3Client s3Client;
-        BasicAWSCredentials credentials;
 
         AWSMobileClient.getInstance().initialize(context).execute();
-        credentials = new BasicAWSCredentials(S3_KEY, S3_SECRET);
+        BasicAWSCredentials credentials = new BasicAWSCredentials(GlobalPreferences.getAppSettings(context).getS3_1(), GlobalPreferences.getAppSettings(context).getS3_2());
 
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.setProtocol(Protocol.HTTPS);
@@ -64,7 +60,7 @@ public class ClientManager {
         options.setPathStyleAccess(true);
 
         s3Client = new AmazonS3Client(credentials, clientConfig);
-        s3Client.setEndpoint(AMAZONS3_END_POINT);
+        s3Client.setEndpoint(GlobalPreferences.getAppSettings(context).getS3_END_POINT());
         s3Client.setS3ClientOptions(options);
 
         return s3Client;
@@ -73,56 +69,55 @@ public class ClientManager {
     static TransferUtility transferUtility(Context context, AmazonS3Client amazonS3Client) {
         return TransferUtility.builder()
                 .context(context)
-                .defaultBucket(S3_BUCKET)
+                .defaultBucket(GlobalPreferences.getAppSettings(context).getS3_BUCKET_NAME())
                 .s3Client(amazonS3Client)
                 .build();
     }
 
     public static TransferObserver transferObserver(Context context, File file) {
-        return ClientManager
-                .transferUtility(context, amazonS3Client(context))
-                .upload(ClientManager.S3_BUCKET, file.getName(), file, CannedAccessControlList.PublicRead);
+        return ClientManager.transferUtility(context, amazonS3Client(context))
+                .upload(GlobalPreferences.getAppSettings(context).getS3_BUCKET_NAME(), file.getName(), file, CannedAccessControlList.PublicRead);
     }
 
-    public static void uploadMultipleS3(AmazonS3Client s3Client, List<ItemMedia> paths) {
-        ArrayList<File> files = new ArrayList<>();
-        for (ItemMedia list : paths) {
-            if (list.getType() == 0) {
-                files.add(new File(list.getPath()));
-            }
-        }
-
-//        TransferManager tm = new TransferManager(s3Client);
+//    public static void uploadMultipleS3(AmazonS3Client s3Client, List<ItemMedia> paths) {
+//        ArrayList<File> files = new ArrayList<>();
+//        for (ItemMedia list : paths) {
+//            if (list.getType() == 0) {
+//                files.add(new File(list.getPath()));
+//            }
+//        }
 //
-//        ObjectMetadataProvider metadataProvider = (file, metadata) -> metadata.addUserMetadata("original-image-date", file.getAbsolutePath());
+////        TransferManager tm = new TransferManager(s3Client);
+////
+////        ObjectMetadataProvider metadataProvider = (file, metadata) -> metadata.addUserMetadata("original-image-date", file.getAbsolutePath());
+////
+////        MultipleFileUpload upload = tm.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files, metadataProvider);
+////        upload.addProgressListener((ProgressListener) progressEvent ->
+////                Log.e("taggssg", String.valueOf(progressEvent.getEventCode())));
+////
+////        tm.shutdownNow();
+////
+//        TransferManager transferManager = new TransferManager(s3Client);
+//        try {
+//            MultipleFileUpload transferCallback = transferManager.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files);
+//            try {
+//                transferCallback.waitForCompletion();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            transferCallback.addProgressListener((ProgressListener) progressEvent -> Log.e("ssss", String.valueOf(progressEvent.getEventCode())));
 //
-//        MultipleFileUpload upload = tm.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files, metadataProvider);
-//        upload.addProgressListener((ProgressListener) progressEvent ->
-//                Log.e("taggssg", String.valueOf(progressEvent.getEventCode())));
+//            if (transferCallback.isDone()) {
+//                Log.e("ssss", String.valueOf(transferCallback.getProgress().getPercentTransferred()));
+//            } else {
+//                Log.e("ssss", String.valueOf(transferCallback.getProgress().getPercentTransferred()));
+//            }
 //
-//        tm.shutdownNow();
-//
-        TransferManager transferManager = new TransferManager(s3Client);
-        try {
-            MultipleFileUpload transferCallback = transferManager.uploadFileList(S3_BUCKET, S3_KEY, new File("."), files);
-            try {
-                transferCallback.waitForCompletion();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            transferCallback.addProgressListener((ProgressListener) progressEvent -> Log.e("ssss", String.valueOf(progressEvent.getEventCode())));
-
-            if (transferCallback.isDone()) {
-                Log.e("ssss", String.valueOf(transferCallback.getProgress().getPercentTransferred()));
-            } else {
-                Log.e("ssss", String.valueOf(transferCallback.getProgress().getPercentTransferred()));
-            }
-
-        } catch (AmazonS3Exception s3Exception) {
-            s3Exception.printStackTrace();
-        }
-        transferManager.shutdownNow();
-    }
+//        } catch (AmazonS3Exception s3Exception) {
+//            s3Exception.printStackTrace();
+//        }
+//        transferManager.shutdownNow();
+//    }
 
 
 }

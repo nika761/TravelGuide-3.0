@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.ui.search;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -11,13 +12,16 @@ import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.request.FullSearchRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
+import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.search.go.GoFragment;
 import travelguideapp.ge.travelguide.ui.search.hashtag.HashtagsFragment;
 import travelguideapp.ge.travelguide.ui.search.posts.SearchPostFragment;
@@ -119,8 +123,6 @@ public class SearchActivity extends BaseActivity implements SearchListener {
                 getKeyboard(false, searchField);
                 getLoader(true);
                 searchField.clearFocus();
-//                searchPresenter.getHashtags(accessToken, new SearchHashtagRequest(requestText));
-//                searchPresenter.getFollowers(accessToken, new SearchFollowersRequest(requestText));
                 searchPresenter.fullSearch(accessToken, new FullSearchRequest(requestText));
                 this.searchedText = requestText;
                 isLazyLoad = false;
@@ -135,20 +137,18 @@ public class SearchActivity extends BaseActivity implements SearchListener {
         searchHashtagsFragment = new HashtagsFragment();
         searchUsersFragment = new UsersFragment();
         searchPostsFragment = new SearchPostFragment();
-//        searchGoFragment = new GoFragment();
 
         SearchPagerAdapter searchPagerAdapter = new SearchPagerAdapter(getSupportFragmentManager());
-        searchPagerAdapter.addFragment(searchPostsFragment, getString(R.string.posts_tab));
         searchPagerAdapter.addFragment(searchUsersFragment, getString(R.string.users_tab));
+        searchPagerAdapter.addFragment(searchPostsFragment, getString(R.string.location));
         searchPagerAdapter.addFragment(searchHashtagsFragment, getString(R.string.hashtags_tab));
-//        searchPagerAdapter.addFragment(searchGoFragment, getString(R.string.go_tab));
         viewPager.setAdapter(searchPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
+//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                switch (tab.getPosition()) {
 //                    case 0:
 //                        Log.e("asdzxc", String.valueOf(tab.getId()));
 //                        break;
@@ -161,30 +161,33 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 //                    case 3:
 //                        Log.e("asdzxc", String.valueOf(tab.getId()));
 //                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-
-        });
+//                }
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//        });
 
     }
 
     @Override
     public void onGetHashtags(List<HashtagResponse.Hashtags> hashtags) {
-        try {
-            this.hashtags.addAll(hashtags);
-            searchHashtagsFragment.setHashtags(this.hashtags);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isLazyLoad) {
+            try {
+                isLazyLoad = false;
+                this.hashtags.addAll(hashtags);
+                searchHashtagsFragment.setLazyHashtags(this.hashtags);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -220,6 +223,9 @@ public class SearchActivity extends BaseActivity implements SearchListener {
             if (fullSearchResponse.getUsers() != null && fullSearchResponse.getUsers().size() > 0) {
                 this.users = fullSearchResponse.getUsers();
                 searchUsersFragment.setUsers(this.users);
+            } else {
+                this.users = null;
+                searchUsersFragment.setNothingFound();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -229,6 +235,9 @@ public class SearchActivity extends BaseActivity implements SearchListener {
             if (fullSearchResponse.getHashtags() != null && fullSearchResponse.getHashtags().size() > 0) {
                 this.hashtags = fullSearchResponse.getHashtags();
                 searchHashtagsFragment.setHashtags(this.hashtags);
+            } else {
+                this.hashtags = null;
+                searchHashtagsFragment.setNothingFound();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -238,6 +247,9 @@ public class SearchActivity extends BaseActivity implements SearchListener {
             if (fullSearchResponse.getPosts() != null && fullSearchResponse.getPosts().size() > 0) {
                 this.posts = fullSearchResponse.getPosts();
                 searchPostsFragment.setPosts(this.posts);
+            } else {
+                this.posts = null;
+                searchPostsFragment.setNothingFound();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -247,8 +259,8 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 
     public void getHashtagsNextPage(int page) {
         try {
-            searchPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchedText, page));
             isLazyLoad = true;
+            searchPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchedText, page));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -273,6 +285,34 @@ public class SearchActivity extends BaseActivity implements SearchListener {
             return null;
         else
             return posts;
+    }
+
+    public void onChoosePost(int postId) {
+        try {
+            int position = getPositionById(postId);
+
+            PostDataLoad postDataLoad = new PostDataLoad();
+            postDataLoad.setLoadSource(PostDataLoad.Source.SEARCH);
+            postDataLoad.setScrollPosition(position);
+            postDataLoad.setPosts(posts);
+
+            Bundle data = new Bundle();
+            data.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+
+            HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, true, true, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getPositionById(int postId) {
+        for (int i = 0; i < posts.size(); i++) {
+            if (posts.get(i).getPost_id() == postId) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override

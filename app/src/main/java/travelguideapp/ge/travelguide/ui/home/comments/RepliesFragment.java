@@ -170,7 +170,6 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -191,7 +190,6 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -263,7 +261,6 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                             imageButton.setBackground(ContextCompat.getDrawable(likeBtn.getContext(), R.drawable.icon_add_comment));
                         }
                     });
-
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             bottomSheetDialog.show();

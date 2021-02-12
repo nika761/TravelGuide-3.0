@@ -32,10 +32,9 @@ import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 
 import com.google.android.material.tabs.TabLayout;
 
-import travelguideapp.ge.travelguide.ui.home.profile.ProfilePagerAdapter;
-import travelguideapp.ge.travelguide.ui.home.profile.follow.FollowActivity;
-import travelguideapp.ge.travelguide.ui.home.profile.posts.UserPostsFragment;
-import travelguideapp.ge.travelguide.ui.home.profile.tours.UserToursFragment;
+import travelguideapp.ge.travelguide.ui.profile.ProfilePagerAdapter;
+import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
+import travelguideapp.ge.travelguide.ui.profile.posts.UserPostsFragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -100,12 +99,12 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
         profilePagerAdapter.setCallback(this);
         profilePagerAdapter.setLoadSource(PostDataLoad.Source.CUSTOMER_POSTS);
         profilePagerAdapter.addFragment(new UserPostsFragment());
-        profilePagerAdapter.addFragment(new UserToursFragment());
+//        profilePagerAdapter.addFragment(new UserToursFragment());
         viewPager.setAdapter(profilePagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.profile_photos);
-        tabLayout.getTabAt(1).setIcon(R.drawable.profile_tour);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.profile_tour);
 
         ConstraintLayout followersContainer = findViewById(R.id.customer_profile_follow_container);
         followersContainer.setOnClickListener(this);

@@ -133,18 +133,18 @@ public class ChangePasswordFragment extends Fragment {
                 HelperUI.setBackgroundWarning(currentField, currentHead, getString(R.string.current_password), currentField.getContext());
 
 
-            password = HelperUI.checkEditTextData(passwordField, passwordHead, textPasswordHead, HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            password = HelperUI.checkEditTextData(passwordField, passwordHead, getString(R.string.password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
             if (password != null && HelperUI.checkPassword(password))
-                HelperUI.setBackgroundDefault(passwordField, passwordHead, textPasswordHead, HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(passwordField, passwordHead, getString(R.string.password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             else
-                HelperUI.setBackgroundWarning(passwordField, passwordHead, textPasswordHead, currentField.getContext());
+                HelperUI.setBackgroundWarning(passwordField, passwordHead, getString(R.string.password), currentField.getContext());
 
 
-            passwordConfirm = HelperUI.checkEditTextData(confirmField, confirmHead, textConfirmHead, HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
+            passwordConfirm = HelperUI.checkEditTextData(confirmField, confirmHead, getString(R.string.confirm_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
             if (passwordConfirm != null && HelperUI.checkConfirmPassword(password, passwordConfirm))
-                HelperUI.setBackgroundDefault(confirmField, confirmHead, textConfirmHead, HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
+                HelperUI.setBackgroundDefault(confirmField, confirmHead, getString(R.string.confirm_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             else
-                HelperUI.setBackgroundWarning(confirmField, confirmHead, textConfirmHead, currentField.getContext());
+                HelperUI.setBackgroundWarning(confirmField, confirmHead, getString(R.string.confirm_password), currentField.getContext());
 
             if (currentPassword != null && password != null && passwordConfirm != null)
                 if (HelperUI.checkPassword(currentPassword) && HelperUI.checkPassword(password) && HelperUI.checkConfirmPassword(password, passwordConfirm)) {

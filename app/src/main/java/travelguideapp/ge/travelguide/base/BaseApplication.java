@@ -7,6 +7,9 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 
+import org.jetbrains.annotations.NotNull;
+
+import travelguideapp.ge.travelguide.BuildConfig;
 import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
@@ -33,14 +36,14 @@ public class BaseApplication extends Application {
     public static final String CHANNEL_ID = "uploading";
     public static final String CHANNEL_NAME = "upload_post";
 
-    public static long POST_VIEW_TIME;
+//    public static long POST_VIEW_TIME;
 
-    public static int CROP_OPTION_X;
-    public static int CROP_OPTION_Y;
+//    public static int CROP_OPTION_X;
+//    public static int CROP_OPTION_Y;
     public static int AGE_RESTRICTION;
-    public static int POST_PER_PAGE_SIZE;
+//    public static int POST_PER_PAGE_SIZE;
     public static int ITEM_WIDTH_FOR_POSTS;
-    public static int APP_VERSION = 0;
+//    public static int APP_VERSION = 0;
 
     @Override
     public void onCreate() {
@@ -50,7 +53,6 @@ public class BaseApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getAppSettings();
     }
 
     private void setFirstUse() {
@@ -86,44 +88,46 @@ public class BaseApplication extends Application {
     }
 
 
-    public void getAppSettings() {
-        try {
-            ApiService apiService = RetrofitManager.getApiService();
-            apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
-                @Override
-                public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-
-                        CROP_OPTION_X = response.body().getApp_settings().get_CROP_OPTION_X();
-                        CROP_OPTION_Y = response.body().getApp_settings().get_CROP_OPTION_Y();
-                        AGE_RESTRICTION = response.body().getApp_settings().get_AGE_RESTRICTION();
-                        POST_PER_PAGE_SIZE = response.body().getApp_settings().get_POST_PER_PAGE_SIZE();
-
-                        try {
-                            POST_VIEW_TIME = (long) response.body().getApp_settings().get_POST_VIEW_TIME();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        if (GlobalPreferences.getAppVersion(getApplicationContext()) == 0) {
-                            GlobalPreferences.saveAppVersion(getApplicationContext(), 1);
-                        }
-
-                        APP_VERSION = response.body().getApp_settings().get_APP_VERSION();
-
-                        GlobalPreferences.saveAppSettings(BaseApplication.this, response.body().getApp_settings());
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<AppSettingsResponse> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public void getAppSettings() {
+//        try {
+//            ApiService apiService = RetrofitManager.getApiService();
+//            apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
+//                @Override
+//                public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//
+//                        CROP_OPTION_X = response.body().getApp_settings().getCROP_OPTION_X();
+//                        CROP_OPTION_Y = response.body().getApp_settings().getCROP_OPTION_Y();
+//                        AGE_RESTRICTION = response.body().getApp_settings().getAGE_RESTRICTION();
+//                        POST_PER_PAGE_SIZE = response.body().getApp_settings().getPOST_PER_PAGE_SIZE();
+//
+//                        try {
+//                            POST_VIEW_TIME = (long) response.body().getApp_settings().getPOST_VIEW_TIME();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                        int versionCode = BuildConfig.VERSION_CODE;
+//
+//                        if (GlobalPreferences.getAppVersion(getApplicationContext()) < versionCode) {
+//                            GlobalPreferences.saveAppVersion(getApplicationContext(), versionCode);
+//                        }
+//
+//                        APP_VERSION = response.body().getApp_settings().getAPP_VERSION();
+//
+//                        GlobalPreferences.saveAppSettings(BaseApplication.this, response.body().getApp_settings());
+//
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(@NotNull Call<AppSettingsResponse> call, @NotNull Throwable t) {
+//                    t.printStackTrace();
+//                }
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

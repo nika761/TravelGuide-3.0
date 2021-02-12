@@ -18,6 +18,22 @@ public class AppSettings {
     private int POST_VIEW_TIME;
 
     @Expose
+    @SerializedName("s3_link")
+    private String S3_END_POINT;
+
+    @Expose
+    @SerializedName("s3_bucket")
+    private String S3_BUCKET_NAME;
+
+    @Expose
+    @SerializedName("s3_1")
+    private String S3_1;
+
+    @Expose
+    @SerializedName("s3_2")
+    private String S3_2;
+
+    @Expose
     @SerializedName("story_video_template_for_photo")
     private String story_video_template_for_photo;
 
@@ -97,7 +113,8 @@ public class AppSettings {
     @SerializedName("post_videos_duration")
     private int post_videos_duration;
 
-    public int get_APP_VERSION() {
+
+    public int getAPP_VERSION() {
         return APP_VERSION;
     }
 
@@ -105,23 +122,39 @@ public class AppSettings {
         return ios_version;
     }
 
-    public int get_POST_VIEW_TIME() {
+    public int getPOST_VIEW_TIME() {
         return POST_VIEW_TIME;
+    }
+
+    public String getS3_END_POINT() {
+        return S3_END_POINT;
+    }
+
+    public String getS3_BUCKET_NAME() {
+        return S3_BUCKET_NAME;
+    }
+
+    public String getS3_1() {
+        return S3_1;
+    }
+
+    public String getS3_2() {
+        return S3_2;
     }
 
     public String getStory_video_template_for_photo() {
         return story_video_template_for_photo;
     }
 
-    public int get_CROP_OPTION_Y() {
+    public int getCROP_OPTION_Y() {
         return CROP_OPTION_Y;
     }
 
-    public int get_CROP_OPTION_X() {
+    public int getCROP_OPTION_X() {
         return CROP_OPTION_X;
     }
 
-    public int get_AGE_RESTRICTION() {
+    public int getAGE_RESTRICTION() {
         return AGE_RESTRICTION;
     }
 
@@ -133,7 +166,7 @@ public class AppSettings {
         return output_video_bitrate;
     }
 
-    public int get_POST_PER_PAGE_SIZE() {
+    public int getPOST_PER_PAGE_SIZE() {
         return POST_PER_PAGE_SIZE;
     }
 

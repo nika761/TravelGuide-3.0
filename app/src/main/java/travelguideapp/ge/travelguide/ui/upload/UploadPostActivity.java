@@ -384,7 +384,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
             List<UploadPostRequest.Post_stories> stories = new ArrayList<>();
 
             //Get uploaded content url from S3 server
-            String url = ClientManager.amazonS3Client(this).getResourceUrl(ClientManager.S3_BUCKET, fileForUpload.getName());
+            String url = ClientManager.amazonS3Client(this).getResourceUrl(GlobalPreferences.getAppSettings(this).getS3_BUCKET_NAME(), fileForUpload.getName());
 
             if (url.endsWith(".mp4")) {
                 String videoDuration = String.valueOf(HelperMedia.getVideoDurationLong(mediaFiles.get(0).getMediaPath()));

@@ -6,6 +6,6 @@ public interface HashtagsFragmentListener {
 
     void onHashtagChoose(HashtagResponse.Hashtags hashtag);
 
-    void onLazyLoad();
+    void onLazyLoad(int page);
 
 }

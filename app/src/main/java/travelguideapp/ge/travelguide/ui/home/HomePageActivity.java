@@ -18,11 +18,11 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
-import travelguideapp.ge.travelguide.ui.home.profile.editProfile.ProfileEditActivity;
-import travelguideapp.ge.travelguide.ui.home.profile.follow.FollowActivity;
+import travelguideapp.ge.travelguide.ui.profile.editProfile.ProfileEditActivity;
+import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
-import travelguideapp.ge.travelguide.ui.home.profile.ProfileFragment;
+import travelguideapp.ge.travelguide.ui.profile.ProfileFragment;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
@@ -49,7 +49,6 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
         homePagePresenter = HomePagePresenter.getInstance(this);
         getUserProfileInfo();
         initBtmNav();
-        checkAppVersion();
         try {
             isFromLanguageChanged = getIntent().getBooleanExtra("IS_LANGUAGE_CHANGED", false);
         } catch (Exception e) {
@@ -57,25 +56,26 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
         }
     }
 
-    private void checkAppVersion() {
-        try {
-            if (BaseApplication.APP_VERSION > 0) {
-                int appVersion = BaseApplication.APP_VERSION;
-                if (GlobalPreferences.getAppVersion(this) < appVersion) {
-                    final String appPackageName = getPackageName();
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                        finish();
-                    } catch (android.content.ActivityNotFoundException anfe) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                        finish();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void checkAppVersion() {
+//        try {
+//            if (BaseApplication.APP_VERSION > 0) {
+//                int appVersion = BaseApplication.APP_VERSION;
+//                if (GlobalPreferences.getAppVersion(this) < appVersion) {
+//                    final String appPackageName = getPackageName();
+//                    try {
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+//                        finish();
+//                    } catch (android.content.ActivityNotFoundException anfe) {
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+//                        finish();
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            finish();
+//        }
+//    }
 
     private void getUserProfileInfo() {
         try {
@@ -153,6 +153,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
                     break;
 
                 case R.id.bot_nav_ntf:
+                    MyToaster.getErrorToaster(this,getString(R.string.no_notifications));
                     break;
 
                 case R.id.bot_nav_profile:

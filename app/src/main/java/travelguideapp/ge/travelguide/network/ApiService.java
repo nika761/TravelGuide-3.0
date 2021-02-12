@@ -33,6 +33,7 @@ import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.ResetPasswordRequest;
 import travelguideapp.ge.travelguide.model.request.SearchMusicRequest;
+import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostFavoriteRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostViewRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
@@ -254,6 +255,11 @@ public interface ApiService {
     @POST("set/user_report")
     Call<SetReportResponse> setUserReport(@Header("Authorization") String token,
                                       @Body SetUserReportRequest setUserReportRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("set/comment_report")
+    Call<SetReportResponse> setCommentReport(@Header("Authorization") String token,
+                                          @Body SetCommentReportRequest setCommentReportRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/post_favourite")

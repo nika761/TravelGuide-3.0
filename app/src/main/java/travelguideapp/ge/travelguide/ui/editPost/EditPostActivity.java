@@ -151,11 +151,11 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
     public void onCropChoose(String path, int position) {
         this.adapterPosition = position;
 
-        if (BaseApplication.CROP_OPTION_X != 0 && BaseApplication.CROP_OPTION_Y != 0) {
+        if (GlobalPreferences.getAppSettings(this).getCROP_OPTION_X() != 0 && GlobalPreferences.getAppSettings(this).getCROP_OPTION_Y() != 0) {
             try {
                 CropImage.activity(Uri.fromFile(new File(path)))
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(BaseApplication.CROP_OPTION_X, BaseApplication.CROP_OPTION_Y)
+                        .setAspectRatio(GlobalPreferences.getAppSettings(this).getCROP_OPTION_X(), GlobalPreferences.getAppSettings(this).getCROP_OPTION_Y())
                         .setMultiTouchEnabled(true)
                         .start(this);
             } catch (Exception e) {
@@ -258,7 +258,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
                         String trimmedVideoPath = data.getStringExtra(TrimmerConstants.TRIMMED_VIDEO_PATH);
                         long duration = HelperMedia.getVideoDurationLong(trimmedVideoPath);
                         if (duration > GlobalPreferences.getAppSettings(this).getStory_video_duration_max()) {
-                            MyToaster.getErrorToaster(this, "Video should be smaller then " + GlobalPreferences.getAppSettings(this).getStory_video_duration_max());
+//                            MyToaster.getErrorToaster(this, "Video should be smaller then " + GlobalPreferences.getAppSettings(this).getStory_video_duration_max());
                             finish();
                         } else
                             editPostAdapter.onTrimFinish(trimmedVideoPath, adapterPosition);
@@ -270,7 +270,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
 
             case RESULT_CANCELED:
                 if (isMustTrim) {
-                    MyToaster.getErrorToaster(this, "Video should be smaller then " + GlobalPreferences.getAppSettings(this).getStory_video_duration_max());
+//                    MyToaster.getErrorToaster(this, "Video should be smaller then " + GlobalPreferences.getAppSettings(this).getStory_video_duration_max());
                     isMustTrim = false;
                     finish();
                 }

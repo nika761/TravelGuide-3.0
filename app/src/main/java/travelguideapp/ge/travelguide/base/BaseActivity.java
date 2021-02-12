@@ -27,13 +27,14 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.Report;
 import travelguideapp.ge.travelguide.model.customModel.ReportData;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
+import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.home.report.ReportAdapter;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
-import travelguideapp.ge.travelguide.ui.search.posts.SearchPostActivity;
+import travelguideapp.ge.travelguide.ui.search.posts.PostByLocationActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
@@ -149,11 +150,10 @@ public class BaseActivity extends AppCompatActivity {
                         basePresenter.setPostReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetPostReportRequest(reportData.getPostId(), reportsId));
                         break;
                     case COMMENT:
+                        basePresenter.setCommentReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetCommentReportRequest(reportData.getCommentId(), reportsId));
                         break;
                 }
-
                 bottomSheetDialog.dismiss();
-
             });
 
             RecyclerView recyclerView = bottomSheetLayout.findViewById(R.id.report_recycler);
@@ -243,10 +243,12 @@ public class BaseActivity extends AppCompatActivity {
 
     public void startCustomerActivity(int userId) {
         try {
-            Intent intent = new Intent(this, CustomerProfileActivity.class);
-            intent.putExtra("id", userId);
-            startActivity(intent);
-            overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+            if (GlobalPreferences.getUserId(this) != userId) {
+                Intent intent = new Intent(this, CustomerProfileActivity.class);
+                intent.putExtra("id", userId);
+                startActivity(intent);
+                overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -254,9 +256,9 @@ public class BaseActivity extends AppCompatActivity {
 
     public void startSearchPostActivity(Parcelable data) {
         try {
-            Intent postHashtagIntent = new Intent(this, SearchPostActivity.class);
-            postHashtagIntent.putExtra(PostDataSearch.INTENT_KEY_SEARCH, data);
-            startActivity(postHashtagIntent);
+            Intent intent = new Intent(this, PostByLocationActivity.class);
+            intent.putExtra(PostDataSearch.INTENT_KEY_SEARCH, data);
+            startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }

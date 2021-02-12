@@ -107,4 +107,6 @@
     <string name="undo">დაბრუნება</string>
     <string name="back">უკან</string>
     <string name="describe_post">პოსტის აღწერა</string>
+    <string name="no_notifications">არ გაქვთ შეტყობინებები</string>
+    <string name="no_searched_data">"შედეგი ვერ მოიძებნა "</string>
 </resources>

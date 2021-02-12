@@ -8,6 +8,7 @@ import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
+import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostFavoriteRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostViewRequest;
@@ -38,7 +39,6 @@ public class HomeFragmentPresenter {
     }
 
     void getPosts(String accessToken, PostRequest postRequest) {
-        Log.e("postascxvx", "aq shemovida ");
         apiService.getPosts(accessToken, postRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
@@ -102,6 +102,30 @@ public class HomeFragmentPresenter {
                             homeFragmentCallback.onGetPosts(response.body().getPosts());
                     } else
                         homeFragmentCallback.onError(response.message() + response.body().getStatus());
+                } else {
+                    homeFragmentCallback.onError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
+                homeFragmentCallback.onError(t.getMessage());
+            }
+        });
+    }
+
+    void getPostsByLocation(String accessToken, PostByLocationRequest postByLocationRequest) {
+        apiService.getPostsByLocation(accessToken, postByLocationRequest).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null && response.body().getStatus() == 0) {
+                        if (response.body().getPosts().size() > 0) {
+                            homeFragmentCallback.onGetPosts(response.body().getPosts());
+                        }
+                    } else {
+                        homeFragmentCallback.onError(response.message());
+                    }
                 } else {
                     homeFragmentCallback.onError(response.message());
                 }
