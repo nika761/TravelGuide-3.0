@@ -1,6 +1,5 @@
 package travelguideapp.ge.travelguide.ui.gallery;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,6 +48,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_picker);
+        SystemManager.setLanguage(this);
         iniUI();
 
         if (SystemManager.isReadStoragePermission((this))) {
@@ -83,11 +82,11 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 intent.putStringArrayListExtra(EditPostActivity.STORIES_PATHS, pickedItems);
                 startActivity(intent);
             } else {
-                MyToaster.getErrorToaster(this, "Please choose item");
+                MyToaster.getToast(this, "Please choose item");
             }
         });
 
-        ImageButton closeBtn = findViewById(R.id.close_btn);
+        ImageButton closeBtn = findViewById(R.id.close_btn_toolbar);
         closeBtn.setOnClickListener(v -> finish());
 
         fragmentContainer = findViewById(R.id.gallery_fragment_container);
@@ -148,7 +147,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
             if (pickedItems.size() <= 2) {
                 nextBtn.setClickable(true);
                 nextBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_agree));
-                nextBtn.setText(MessageFormat.format("{0}({1})", getString(R.string.next), pickedItems.size()));
+                nextBtn.setText(MessageFormat.format("{0} ({1})", getString(R.string.next), pickedItems.size()));
 //                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
                 galleryAdapterMin.setItemsPath(pickedItems);
             }
@@ -163,11 +162,11 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                     pickedItems.add(path);
                     choosedItemRecyclerVisibility(true);
 //                    nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
-                    nextBtn.setText(MessageFormat.format("{0}({1})", getString(R.string.next), pickedItems.size()));
+                    nextBtn.setText(MessageFormat.format("{0} ({1})", getString(R.string.next), pickedItems.size()));
                     galleryAdapterMin.setItemsPath(pickedItems);
                     isVideo = false;
                 } else {
-                    MyToaster.getErrorToaster(this, "You can choose only one video");
+                    MyToaster.getToast(this, "You can choose only one video");
                 }
 
             } else {
@@ -178,11 +177,11 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
                 } else {
                     nextBtn.setClickable(false);
                     nextBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_next_btn_grey));
-                    MyToaster.getErrorToaster(this, "You can choose only one photo");
+                    MyToaster.getToast(this, "You can choose only one photo");
                 }
                 choosedItemRecyclerVisibility(true);
 //                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
-                nextBtn.setText(MessageFormat.format("{0}({1})", getString(R.string.next), pickedItems.size()));
+                nextBtn.setText(MessageFormat.format("{0} ({1})", getString(R.string.next), pickedItems.size()));
                 galleryAdapterMin.setItemsPath(pickedItems);
             }
         }
@@ -193,7 +192,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
         if (list.size() == 0) {
             choosedItemRecyclerVisibility(false);
         } else {
-            nextBtn.setText(MessageFormat.format("Next ({0})", list.size()));
+            nextBtn.setText(MessageFormat.format("{0} ({1})", getString(R.string.next), list.size()));
         }
     }
 
@@ -204,7 +203,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getMediaFilesByRole();
             } else {
-                MyToaster.getErrorToaster(this, "No permission granted");
+                MyToaster.getToast(this, "No permission granted");
             }
         }
 

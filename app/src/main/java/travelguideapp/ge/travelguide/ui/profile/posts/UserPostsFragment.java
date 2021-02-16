@@ -126,7 +126,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     @Override
     public void onError(String message) {
-        MyToaster.getErrorToaster(getContext(), message);
+        MyToaster.getToast(getContext(), message);
     }
 
     @Override
@@ -164,6 +164,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
                 postDataLoad.setUserId(customerUserId);
             } else {
                 postDataLoad.setLoadSource(PostDataLoad.Source.MY_POSTS);
+                bundle.putBoolean("back_to_profile", true);
             }
             bundle.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
             callback.onPostChoose(bundle);

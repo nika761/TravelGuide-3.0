@@ -150,7 +150,7 @@ public class PostByLocationActivity extends BaseActivity implements PostByLocati
 
     @Override
     public void onGetPostError(String message) {
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
     }
 
     @Override

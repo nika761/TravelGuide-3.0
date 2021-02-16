@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat;
 import java.util.Calendar;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.callback.AskingDialogResultCallback;
+import travelguideapp.ge.travelguide.callback.AskingDialogCallback;
 
 public class DialogManager {
 
@@ -22,21 +22,21 @@ public class DialogManager {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        View customLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
+        View dialogLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
 
         TextView verifyTitle, verifyMessage;
 
-        verifyTitle = customLayout.findViewById(R.id.confirm_title);
-        verifyMessage = customLayout.findViewById(R.id.confirm_message);
+        verifyTitle = dialogLayout.findViewById(R.id.confirm_title);
+        verifyMessage = dialogLayout.findViewById(R.id.confirm_message);
 
         verifyTitle.setText(title);
         verifyMessage.setText(message);
 
-        builder.setView(customLayout);
+        builder.setView(dialogLayout);
 
         AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.bg_transparent, null));
+            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.bg_transparent));
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
 
@@ -44,24 +44,22 @@ public class DialogManager {
     }
 
 
-    public static AlertDialog profileInfoUpdatedDialog(Activity activity) {
+    public static AlertDialog profileInfoUpdatedDialog(Activity activity, String title, String body) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        View customLayout = activity.getLayoutInflater().inflate(R.layout.dialog_profile_updated, null);
+        View dialogLayout = activity.getLayoutInflater().inflate(R.layout.dialog_profile_updated, null);
 
-        TextView verifyTitle, verifyMessage;
+        TextView titleTxt = dialogLayout.findViewById(R.id.dialog_profile_updated_title);
+        titleTxt.setText(title);
 
-        verifyTitle = customLayout.findViewById(R.id.confirm_title);
-        verifyMessage = customLayout.findViewById(R.id.confirm_message);
+        TextView bodyTxt = dialogLayout.findViewById(R.id.dialog_profile_updated_body);
+        bodyTxt.setText(body);
 
-//        verifyTitle.setText(title);
-//        verifyMessage.setText(message);
-
-        builder.setView(customLayout);
+        builder.setView(dialogLayout);
 
         AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.bg_transparent, null));
+            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.bg_transparent));
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
         }
 
@@ -87,7 +85,7 @@ public class DialogManager {
 
     }
 
-    public static void getAskingDialog(Context context, String question, AskingDialogResultCallback callback) {
+    public static void getAskingDialog(Context context, String question, AskingDialogCallback callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(question)
                 .setPositiveButton(context.getString(R.string.yes), (dialog, which) -> callback.onYes())

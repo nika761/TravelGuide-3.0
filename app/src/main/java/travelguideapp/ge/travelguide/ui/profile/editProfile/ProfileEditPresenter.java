@@ -116,7 +116,7 @@ class ProfileEditPresenter {
 
         if (checkForNullOrEmpty(body.getEmail()))
             fields.put(UserInfoFields.EMAIL, false);
-        else if (!HelperUI.checkEmail(body.getEmail()))
+        else if (!HelperUI.isEmailValid(body.getEmail()))
             fields.put(UserInfoFields.EMAIL, false);
         else
             fields.put(UserInfoFields.EMAIL, true);

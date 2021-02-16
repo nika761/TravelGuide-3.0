@@ -3,6 +3,9 @@ package travelguideapp.ge.travelguide.ui.upload;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.UploadPostRequest;
 import travelguideapp.ge.travelguide.model.response.UploadPostResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
@@ -13,8 +16,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UploadPostPresenter {
-    private UploadPostListener uploadPostListener;
-    private ApiService apiService;
+    private final UploadPostListener uploadPostListener;
+    private final ApiService apiService;
 
     UploadPostPresenter(UploadPostListener uploadPostListener) {
         this.uploadPostListener = uploadPostListener;
@@ -25,7 +28,7 @@ public class UploadPostPresenter {
         String unc = "application/x-www-form-urlencoded";
         apiService.uploadPost(accessToken, unc, uploadPostRequest).enqueue(new Callback<UploadPostResponse>() {
             @Override
-            public void onResponse(Call<UploadPostResponse> call, Response<UploadPostResponse> response) {
+            public void onResponse(@NotNull Call<UploadPostResponse> call, @NotNull Response<UploadPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
                         uploadPostListener.onPostUploaded();
@@ -38,7 +41,7 @@ public class UploadPostPresenter {
             }
 
             @Override
-            public void onFailure(Call<UploadPostResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<UploadPostResponse> call, @NotNull Throwable t) {
                 uploadPostListener.onPostUploadError(t.getMessage());
             }
         });

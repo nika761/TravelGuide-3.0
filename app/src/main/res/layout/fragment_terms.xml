@@ -76,7 +76,7 @@
         android:layout_height="36dp"
         android:layout_marginBottom="25dp"
         android:background="@drawable/bg_cancel_btn"
-        android:text="@string/back"
+        android:text="@string/back_btn"
         android:textAllCaps="false"
         android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"

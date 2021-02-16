@@ -127,7 +127,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
     @Override
     public void onGetPostsError(String message) {
-        MyToaster.getErrorToaster(context, message);
+        MyToaster.getToast(context, message);
     }
 
     @Override
@@ -148,6 +148,7 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+            bundle.putBoolean("back_to_profile", true);
             callback.onPostChoose(bundle);
         } catch (Exception e) {
             e.printStackTrace();

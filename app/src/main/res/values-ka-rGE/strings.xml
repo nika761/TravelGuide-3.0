@@ -77,7 +77,7 @@
     <string name="music_new">ახალი</string>
     <string name="post">ატვირთვა</string>
     <string name="hashtags">#ჰეშთაგები</string>
-    <string name="friends">#მეგობრები</string>
+    <string name="friends">\@მეგობრები</string>
     <string name="location">ლოკაცია</string>
     <string name="settings">პარამეტრები</string>
     <string name="share_profile">პროფილის გაზიარება</string>
@@ -109,4 +109,5 @@
     <string name="describe_post">პოსტის აღწერა</string>
     <string name="no_notifications">არ გაქვთ შეტყობინებები</string>
     <string name="no_searched_data">"შედეგი ვერ მოიძებნა "</string>
+    <string name="back_btn">უკან</string>
 </resources>

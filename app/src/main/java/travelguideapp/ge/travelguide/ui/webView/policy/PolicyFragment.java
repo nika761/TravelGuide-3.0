@@ -16,7 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.response.TermsPolicyResponse;
 import travelguideapp.ge.travelguide.model.request.TermsPolicyRequest;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -37,6 +40,7 @@ public class PolicyFragment extends Fragment implements PolicyListener {
         View v = inflater.inflate(R.layout.fragment_policy, container, false);
 
         cancelBtn = v.findViewById(R.id.cancel_btn_policy);
+        cancelBtn.setText(getString(R.string.back_btn));
         cancelBtn.setOnClickListener(view -> Objects.requireNonNull(getActivity()).onBackPressed());
 
         animationView = v.findViewById(R.id.animation_view_policy);
@@ -51,6 +55,16 @@ public class PolicyFragment extends Fragment implements PolicyListener {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            SystemManager.setLanguage(getContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -58,11 +72,6 @@ public class PolicyFragment extends Fragment implements PolicyListener {
 
         policyPresenter.sendPolicyResponse(new TermsPolicyRequest(GlobalPreferences.getLanguageId(cancelBtn.getContext())));
 
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -93,6 +102,6 @@ public class PolicyFragment extends Fragment implements PolicyListener {
 
     @Override
     public void onGetError(String message) {
-        Toast.makeText(cancelBtn.getContext(), message, Toast.LENGTH_SHORT).show();
+        MyToaster.getToast(cancelBtn.getContext(), message);
     }
 }

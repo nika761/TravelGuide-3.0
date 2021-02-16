@@ -17,8 +17,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 class SignUpPresenter {
-    private SignUpListener signUpListener;
-    private ApiService apiService;
+    private final SignUpListener signUpListener;
+    private final ApiService apiService;
 
     SignUpPresenter(SignUpListener signUpListener) {
         this.signUpListener = signUpListener;

@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,6 +26,8 @@ import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
 import travelguideapp.ge.travelguide.ui.webView.WebActivity;
 
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HelperUI {
 
@@ -38,11 +41,11 @@ public class HelperUI {
     public static final String TYPE = "type";
     public static final String GO_URL = "URL";
 
-    public static void startWebActivity(Context context, LoadWebViewBy requestFor, String url) {
-        Intent termsIntent = new Intent(context, WebActivity.class);
+    public static void startWebActivity(Activity activity, LoadWebViewBy requestFor, String url) {
+        Intent termsIntent = new Intent(activity, WebActivity.class);
         termsIntent.putExtra(GO_URL, url);
         termsIntent.putExtra(TYPE, requestFor);
-        context.startActivity(termsIntent);
+        activity.startActivity(termsIntent);
     }
 
     public static void loadFragment(Fragment currentFragment, Bundle data, int fragmentID,
@@ -75,6 +78,13 @@ public class HelperUI {
             emailValidate = true;
         }
         return emailValidate;
+    }
+
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     public static boolean checkPassword(String enteredPassword) {
@@ -136,18 +146,18 @@ public class HelperUI {
     }
 
     public static void inputWarning(Activity activity, View view, TextView textView) {
-        view.setBackground(activity.getResources().getDrawable(R.drawable.bg_fields_warning, null));
+        view.setBackground(ContextCompat.getDrawable(activity, R.drawable.bg_fields_warning));
         if (view instanceof EditText)
             ((EditText) view).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_edit_red, 0);
-        textView.setTextColor(activity.getResources().getColor(R.color.red, null));
+        textView.setTextColor(ContextCompat.getColor(activity, R.color.red));
         YoYo.with(Techniques.Shake).duration(300).playOn(view);
     }
 
     public static void inputDefault(Activity activity, View view, TextView textView) {
-        view.setBackground(activity.getResources().getDrawable(R.drawable.selector_input_field, null));
+        view.setBackground(ContextCompat.getDrawable(activity, R.drawable.selector_input_field));
         if (view instanceof EditText)
             ((EditText) view).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.selector_input_field_icon, 0);
-        textView.setTextColor(activity.getResources().getColor(R.color.black, null));
+        textView.setTextColor(ContextCompat.getColor(activity, R.color.black));
     }
 
 }

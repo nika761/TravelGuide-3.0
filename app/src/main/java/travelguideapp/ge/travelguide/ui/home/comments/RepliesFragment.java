@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,9 +24,8 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.model.customModel.ReportData;
-import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
-import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
+import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentReplyRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteReplyRequest;
@@ -51,6 +49,9 @@ import io.reactivex.rxjava3.functions.Consumer;
 
 
 public class RepliesFragment extends Fragment implements RepliesListener, View.OnClickListener {
+
+    public final static String TAG = "REPLIES_FRAGMENT_TAG";
+    public final static String STACK = "REPLIES_FRAGMENT_STACK";
 
     private TextView userName, commentBody, replyBtn, date, likeCount, viewMore;
     private TextView addField;
@@ -211,7 +212,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     @Override
     public void onChooseReport(int replyId) {
         try {
-            ((BaseActivity) getActivity()).openReportDialog(ReportData.getInstance(ReportData.Type.COMMENT, replyId));
+            ((BaseActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, replyId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -220,7 +221,6 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     @Override
     public void onDeleted(DeleteReplyResponse deleteReplyResponse) {
         try {
-
             if (deleteReplyResponse.getComment_reply().size() > 0)
                 repliesAdapter.onRepliesChanged(deleteReplyResponse.getComment_reply());
             else
@@ -229,6 +229,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
             this.replies = deleteReplyResponse.getComment_reply();
             this.repliesCount = deleteReplyResponse.getCount();
 
+            MyToaster.getToast(repliesRecycler.getContext(), deleteReplyResponse.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

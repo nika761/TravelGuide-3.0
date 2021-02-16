@@ -105,6 +105,8 @@ public class CustomPostRecycler extends RecyclerView {
     public static int ownerUserId;
 
     private CustomTimer customTimer;
+    private CustomPostHolder customPostHolder;
+    private PostResponse.Post_stories story;
 
     public CustomPostRecycler(@NonNull Context context) {
         super(context);
@@ -392,7 +394,6 @@ public class CustomPostRecycler extends RecyclerView {
         }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private void bindItem(CustomPostHolder holder, PostResponse.Posts post) {
 
         PostResponse.Post_stories story = post.getPost_stories().get(0);
@@ -541,6 +542,8 @@ public class CustomPostRecycler extends RecyclerView {
                 return true;
             });
 
+            this.customPostHolder = holder;
+            this.story = story;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -706,6 +709,17 @@ public class CustomPostRecycler extends RecyclerView {
         viewHolderParent = null;
     }
 
+    public void setComments(int count) {
+        try {
+            if (count != 0) {
+                customPostHolder.storyComments.setText(String.valueOf(count));
+                story.setStory_comments(count);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void setVolume(VolumeState state) {
         if (videoPlayer != null) {
@@ -723,7 +737,6 @@ public class CustomPostRecycler extends RecyclerView {
     }
 
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private void animateVideoPlyIcon(boolean videoPlaying) {
         if (videoPlayIcon != null) {
 

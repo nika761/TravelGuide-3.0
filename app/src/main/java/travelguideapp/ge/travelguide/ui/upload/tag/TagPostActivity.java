@@ -126,7 +126,7 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
 
     @Override
     public void onGetError(String message) {
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
         loader.setVisibility(View.GONE);
     }
 

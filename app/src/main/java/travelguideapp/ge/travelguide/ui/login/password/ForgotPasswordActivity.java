@@ -20,7 +20,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.request.ChangePasswordRequest;
 import travelguideapp.ge.travelguide.model.request.ForgotPasswordRequest;
 import travelguideapp.ge.travelguide.model.response.ChangePasswordResponse;
@@ -39,15 +39,17 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
     private FrameLayout loaderContainer;
     private LottieAnimationView loader;
 
-    private String forgotPasswordText, forgotPasswordBodyText, emailHeadText, sendBtnText, backBtnText;
+    private ChangePasswordFragment changePasswordFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+        SystemManager.setLanguage(this);
         try {
             if (getIntent().getStringExtra("request_for").equals("change")) {
-                HelperUI.loadFragment(ChangePasswordFragment.getInstance(this), null, R.id.change_password_container, false, true, this);
+                changePasswordFragment = ChangePasswordFragment.getInstance(this);
+                HelperUI.loadFragment(changePasswordFragment, null, R.id.change_password_container, false, true, this);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,7 +88,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
             send.setClickable(false);
             email = HelperUI.checkEditTextData(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, eEmail.getContext());
 
-            if (email != null && HelperUI.checkEmail(email)) {
+            if (email != null && HelperUI.isEmailValid(email)) {
                 HelperUI.setBackgroundDefault(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
                 presenter.forgotPassword(new ForgotPasswordRequest(email, GlobalPreferences.getLanguageId(this)));
                 eEmail.clearFocus();
@@ -111,17 +113,29 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
     public void onChangePassword(ChangePasswordResponse changePasswordResponse) {
         loadingVisibility(false);
         send.setClickable(true);
-        MyToaster.getErrorToaster(this, changePasswordResponse.getMessage());
-        if (changePasswordResponse.getStatus() == 0)
+        MyToaster.getToast(this, changePasswordResponse.getMessage());
+        if (changePasswordResponse.getStatus() == 0) {
             finish();
+        } else {
+            setChangePasswordFragmentSaveBtn();
+        }
+    }
+
+    private void setChangePasswordFragmentSaveBtn() {
+        try {
+            changePasswordFragment.setSaveBtn(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onError(String message) {
         try {
+            setChangePasswordFragmentSaveBtn();
             loadingVisibility(false);
             send.setClickable(true);
-            MyToaster.getErrorToaster(this, message);
+            MyToaster.getToast(this, message);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package travelguideapp.ge.travelguide.ui.upload;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,6 +86,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_describe_post);
+        SystemManager.setLanguage(this);
         getExtras();
         initUI();
         initHashtagRecycler();
@@ -115,7 +117,10 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         removeLocation.setOnClickListener(v -> clearLocation());
 
         uploadBtn = findViewById(R.id.describe_post_post_btn);
-        uploadBtn.setOnClickListener(v -> getReadyForUpload());
+        uploadBtn.setOnClickListener(v -> {
+            getLoader(true);
+            new Handler().postDelayed(this::getReadyForUpload, 2000);
+        });
 
         postDescription = findViewById(R.id.description_post);
         loaderContainer = findViewById(R.id.loader_upload);
@@ -182,7 +187,6 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     }
 
     private void getReadyForUpload() {
-        getLoader(true);
         try {
             if (mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.PHOTO && !SystemManager.isWriteStoragePermission(this)) {
                 getLoader(false);
@@ -247,8 +251,8 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
             e.printStackTrace();
             getLoader(false);
             try {
-                MyToaster.getErrorToaster(this, e.getMessage());
-                MyToaster.getErrorToaster(this, e.getLocalizedMessage());
+                MyToaster.getToast(this, e.getMessage());
+                MyToaster.getToast(this, e.getLocalizedMessage());
             } catch (Exception b) {
                 b.printStackTrace();
             }
@@ -284,7 +288,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                 case RESULT_CANCELED:
                 case AutocompleteActivity.RESULT_ERROR:
                     Status status = Autocomplete.getStatusFromIntent(data);
-                    MyToaster.getErrorToaster(this, status.getStatusMessage());
+                    MyToaster.getToast(this, status.getStatusMessage());
                     break;
             }
         }
@@ -371,7 +375,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                 getLoader(true);
                 startUpload();
             } else {
-                MyToaster.getErrorToaster(this, "Without Permission You Can't Upload Photo");
+                MyToaster.getToast(this, "Without Permission You Can't Upload Photo");
             }
         }
     }
@@ -404,8 +408,8 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
             e.printStackTrace();
             getLoader(false);
             try {
-                MyToaster.getErrorToaster(this, e.getMessage());
-                MyToaster.getErrorToaster(this, e.getLocalizedMessage());
+                MyToaster.getToast(this, e.getMessage());
+                MyToaster.getToast(this, e.getLocalizedMessage());
             } catch (Exception b) {
                 b.printStackTrace();
             }
@@ -425,13 +429,12 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public void onPostUploadError(String message) {
         getLoader(false);
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
     }
 
     @Override

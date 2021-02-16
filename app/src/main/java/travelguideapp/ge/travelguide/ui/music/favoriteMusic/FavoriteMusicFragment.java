@@ -80,7 +80,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
 
     @Override
     public void onError(String message) {
-        MyToaster.getErrorToaster(favoriteMusicRecycler.getContext(), message);
+        MyToaster.getToast(favoriteMusicRecycler.getContext(), message);
     }
 
 

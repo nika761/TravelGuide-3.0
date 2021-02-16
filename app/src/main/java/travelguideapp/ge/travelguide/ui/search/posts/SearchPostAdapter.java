@@ -65,7 +65,7 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Po
                 postImage.getLayoutParams().width = BaseApplication.ITEM_WIDTH_FOR_POSTS;
                 HelperMedia.loadPhoto(postImage.getContext(), posts.get(position).getCover(), postImage);
                 nickName.setText(posts.get(position).getNickname());
-                reactions.setText(String.valueOf(posts.get(position).getPost_reactions()));
+                reactions.setText(String.valueOf(posts.get(position).getPost_view()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -107,4 +107,5 @@
     <string name="back">背部</string>
     <string name="no_notifications">您沒有留言</string>
     <string name="no_searched_data">No results found</string>
+    <string name="back_btn">背部</string>
 </resources>

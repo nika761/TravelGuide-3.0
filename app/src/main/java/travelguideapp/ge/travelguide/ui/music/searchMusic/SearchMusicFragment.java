@@ -208,7 +208,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onGetError(String message) {
-        MyToaster.getErrorToaster(moodsRecycler.getContext(), message);
+        MyToaster.getToast(moodsRecycler.getContext(), message);
     }
 
     @Override

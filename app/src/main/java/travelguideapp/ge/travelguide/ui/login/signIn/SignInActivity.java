@@ -3,14 +3,10 @@ package travelguideapp.ge.travelguide.ui.login.signIn;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,9 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.LoginRequest;
@@ -57,8 +52,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.Task;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,7 +83,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
+        SystemManager.setLanguage(this);
         try {
             currentLanguage = GlobalPreferences.getCurrentLanguage(this);
         } catch (Exception e) {
@@ -367,12 +360,12 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
 
             @Override
             public void onCancel() {
-                MyToaster.getErrorToaster(SignInActivity.this, getString(R.string.cancel));
+                MyToaster.getToast(SignInActivity.this, getString(R.string.cancel));
             }
 
             @Override
             public void onError(FacebookException error) {
-                MyToaster.getErrorToaster(SignInActivity.this, error.getLocalizedMessage());
+                MyToaster.getToast(SignInActivity.this, error.getLocalizedMessage());
             }
         });
     }
@@ -406,7 +399,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     public void onError(String message) {
         try {
             showLoading(false);
-            MyToaster.getErrorToaster(this, message);
+            MyToaster.getToast(this, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -462,7 +455,7 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
                 break;
 
             case 1:
-                MyToaster.getErrorToaster(this, String.valueOf(loginResponse.getStatus()));
+                MyToaster.getToast(this, String.valueOf(loginResponse.getStatus()));
                 break;
 
         }

@@ -24,6 +24,7 @@
     <string name="open">open</string>
     <string name="close">close</string>
     <string name="undo">undo</string>
+    <string name="back_btn">Back</string>
 
     <string name="forgot_password">Forgot password?</string>
     <string name="sign_up_offer_body">Do not have a profile?</string>
@@ -107,7 +108,7 @@
 
     <string name="post">Post</string>
     <string name="hashtags">#Hashtags</string>
-    <string name="friends">#Friends</string>
+    <string name="friends">@Friends</string>
     <string name="location">Location</string>
     <string name="hashtags_tab">HASHTAGS</string>
     <string name="users_tab">USERS</string>
@@ -131,6 +132,5 @@
     <string name="report_hate_speech">harassment or hate speech</string>
     <string name="report_fraud">fraud</string>
     <string name="report_other">other</string>
-
 
 </resources>

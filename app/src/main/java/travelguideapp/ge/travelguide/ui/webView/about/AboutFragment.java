@@ -16,7 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AboutRequest;
 import travelguideapp.ge.travelguide.model.response.AboutResponse;
@@ -37,6 +40,7 @@ public class AboutFragment extends Fragment implements AboutListener {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
 
         cancelBtn = view.findViewById(R.id.cancel_btn_about);
+        cancelBtn.setText(getString(R.string.back_btn));
         cancelBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
 
         animationView = view.findViewById(R.id.animation_view_about);
@@ -48,6 +52,16 @@ public class AboutFragment extends Fragment implements AboutListener {
         aboutPresenter = new AboutPresenter(this);
 
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            SystemManager.setLanguage(getContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -78,7 +92,7 @@ public class AboutFragment extends Fragment implements AboutListener {
 
     @Override
     public void onGetError(String message) {
-        Toast.makeText(cancelBtn.getContext(), message, Toast.LENGTH_SHORT).show();
+        MyToaster.getToast(cancelBtn.getContext(), message);
     }
 
     @Override

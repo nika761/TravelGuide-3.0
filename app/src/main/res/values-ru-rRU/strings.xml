@@ -71,7 +71,7 @@
     <string name="music_new">новое</string>
     <string name="post">пост</string>
     <string name="hashtags">#Хэштеги</string>
-    <string name="friends">#Друзья</string>
+    <string name="friends">\@Друзья</string>
     <string name="location">локация</string>
     <string name="language">язык</string>
     <string name="report_head">Укажите причину, по которой вы хотите пожаловаться на этого пользователя</string>
@@ -108,4 +108,5 @@
     <string name="back">Назад</string>
     <string name="no_notifications">У вас нет сообщений</string>
     <string name="no_searched_data">"Результатов не найдено "</string>
+    <string name="back_btn">Назад</string>
 </resources>

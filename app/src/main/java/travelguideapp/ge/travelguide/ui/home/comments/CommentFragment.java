@@ -1,6 +1,5 @@
 package travelguideapp.ge.travelguide.ui.home.comments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +25,7 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.customModel.ReportData;
+import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
 import travelguideapp.ge.travelguide.model.request.CommentRequest;
@@ -50,7 +50,8 @@ import io.reactivex.rxjava3.functions.Consumer;
 
 public class CommentFragment extends Fragment implements CommentListener {
 
-    public final static String COMMENT_FRAGMENT_TAG = "comment_fragment_tag";
+    public final static String TAG = "COMMENT_FRAGMENT_TAG";
+    public final static String STACK = "COMMENT_FRAGMENT_STACK";
 
     public enum CommentFragmentType {
         COMMENT_REPLY, COMMENT;
@@ -184,11 +185,10 @@ public class CommentFragment extends Fragment implements CommentListener {
 
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private void openBottomSheetFragment() {
         try {
-            bottomSheetDialog = new BottomSheetDialog(commentRecycler.getContext());
-            View bottomSheetView = View.inflate(commentRecycler.getContext(), R.layout.dialog_comment, null);
+            bottomSheetDialog = new BottomSheetDialog(context);
+            View bottomSheetView = View.inflate(context, R.layout.dialog_comment, null);
 
             EditText editText = bottomSheetView.findViewById(R.id.bottom_sheet_comment_field);
             ImageButton imageButton = bottomSheetView.findViewById(R.id.bottom_sheet_comment_add_btn);
@@ -205,10 +205,10 @@ public class CommentFragment extends Fragment implements CommentListener {
                     .subscribe((Consumer<CharSequence>) charSequence -> {
                         if (charSequence.toString().isEmpty()) {
                             imageButton.setClickable(false);
-                            imageButton.setBackground(getResources().getDrawable(R.drawable.icon_add_comment_black, null));
+                            imageButton.setBackground(ContextCompat.getDrawable(context, R.drawable.icon_add_comment_black));
                         } else {
                             imageButton.setClickable(true);
-                            imageButton.setBackground(getResources().getDrawable(R.drawable.icon_add_comment, null));
+                            imageButton.setBackground(ContextCompat.getDrawable(context, R.drawable.icon_add_comment));
                         }
                     });
 
@@ -316,7 +316,7 @@ public class CommentFragment extends Fragment implements CommentListener {
     @Override
     public void onReportChoose(int commentId) {
         try {
-            ((BaseActivity) getActivity()).openReportDialog(ReportData.getInstance(ReportData.Type.COMMENT, commentId));
+            ((BaseActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, commentId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -327,6 +327,7 @@ public class CommentFragment extends Fragment implements CommentListener {
         try {
             commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), deleteCommentResponse.getCount()));
             commentAdapter.onCommentsChanged(deleteCommentResponse.getPost_story_comments());
+            MyToaster.getToast(context, deleteCommentResponse.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -336,7 +337,7 @@ public class CommentFragment extends Fragment implements CommentListener {
     public void onError(String message) {
         loader.setVisibility(View.GONE);
         pagingLoader.setVisibility(View.GONE);
-        MyToaster.getErrorToaster(context, message);
+        MyToaster.getToast(context, message);
     }
 
     private void addComment(String comment) {
@@ -364,6 +365,15 @@ public class CommentFragment extends Fragment implements CommentListener {
             }
         }
 
+        if (callback != null) {
+            try {
+                callback.onCommentCountChanged(commentAdapter.getItemCount());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            callback = null;
+        }
+
         if (commentAdapter != null) {
             commentAdapter = null;
         }
@@ -373,6 +383,8 @@ public class CommentFragment extends Fragment implements CommentListener {
 
     public interface LoadCommentFragmentListener {
         void loadCommentFragment(Bundle dataForFragment, CommentFragmentType commentFragmentType);
+
+        void onCommentCountChanged(int count);
     }
 
 }

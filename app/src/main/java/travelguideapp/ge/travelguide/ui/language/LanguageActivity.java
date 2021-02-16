@@ -6,10 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,8 +17,7 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
-import travelguideapp.ge.travelguide.model.request.LanguageStringsRequest;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.response.LanguageStringsResponse;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
@@ -56,7 +52,6 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
             e.printStackTrace();
         }
 
-//
 //        Button crashButton = new Button(this);
 //        crashButton.setText("Crash!");
 //        crashButton.setOnClickListener(view -> {
@@ -110,14 +105,14 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
     }
 
     private void changeLanguage(String language) {
+        GlobalPreferences.saveLanguage(this, language);
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
         Resources resources = getResources();
         Configuration config = resources.getConfiguration();
         config.setLocale(locale);
         resources.updateConfiguration(config, resources.getDisplayMetrics());
-        GlobalPreferences.saveLanguage(this, language);
-
+//        SystemManager.updateCurrentLanguage(this);
         Intent signIntent = new Intent(LanguageActivity.this, SignInActivity.class);
         startActivity(signIntent);
     }
@@ -140,7 +135,7 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
     public void onGetError(String error) {
         loaderContainer.setVisibility(View.GONE);
         loader.setVisibility(View.GONE);
-        MyToaster.getErrorToaster(this, error);
+        MyToaster.getToast(this, error);
     }
 
     @Override

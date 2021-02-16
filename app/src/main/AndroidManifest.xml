@@ -123,8 +123,7 @@
             android:name="travelguideapp.ge.travelguide.ui.webView.WebActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/SecondAppTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:theme="@style/SecondAppTheme" />
 
         <activity
             android:name="travelguideapp.ge.travelguide.ui.splashScreen.SplashScreenActivity"

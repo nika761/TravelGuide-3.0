@@ -3,13 +3,12 @@ package travelguideapp.ge.travelguide.ui.login.signUp;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -19,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -29,12 +29,11 @@ import travelguideapp.ge.travelguide.model.response.CheckNickResponse;
 import travelguideapp.ge.travelguide.model.response.SignUpWithFirebaseResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 
-import java.util.Calendar;
-
 public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpFireBaseListener {
 
     private TextView dateHead, nickHead, dateOfBirth, nickError, nickOffer1, nickOffer2;
     private LottieAnimationView loader;
+    private FrameLayout loaderContainer;
     private EditText eNickName;
     private Button save;
 
@@ -42,25 +41,35 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
     private SignUpFireBasePresenter presenter;
 
     private String nick1, nick2, key, name, nickName;
-    private long startTime;
+    private long dateInMillis = 0;
     private int platformId;
-    private int gender;
+    private int gender = 4;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_firebase);
+        checkFlow();
+    }
 
+    private void checkFlow() {
+        if (getExtras()) {
+            initUI();
+        } else {
+            finish();
+        }
+    }
+
+    private boolean getExtras() {
         try {
             this.platformId = getIntent().getIntExtra("platform", 0);
             this.key = getIntent().getStringExtra("key");
             this.name = getIntent().getStringExtra("name");
+            return platformId != 0 && key != null && name != null;
         } catch (Exception e) {
-            finish();
             e.printStackTrace();
+            return false;
         }
-
-        initUI();
     }
 
     private void initUI() {
@@ -69,11 +78,13 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
         dateHead = findViewById(R.id.enter_date_of_birth_head);
 
+        loader = findViewById(R.id.firebase_loader);
+        loaderContainer = findViewById(R.id.firebase_loader_container);
+
         dateOfBirth = findViewById(R.id.enter_birth_date);
-        dateOfBirth.setOnClickListener(v -> showDatePickerDialog());
+        dateOfBirth.setOnClickListener(v -> DialogManager.datePickerDialog(this, mDateSetListener));
 
         nickHead = findViewById(R.id.enter_nickName_head);
-        loader = findViewById(R.id.fire_loading);
 
         eNickName = findViewById(R.id.enter_nickName);
         eNickName.setOnFocusChangeListener((v, hasFocus) -> {
@@ -87,49 +98,34 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
         nickError = findViewById(R.id.enter_nick_error);
 
         nickOffer1 = findViewById(R.id.enter_nick_1);
-        nickOffer1.setOnClickListener(v -> eNickName.setText(nick1));
+        nickOffer1.setOnClickListener(v -> setNickName(1));
 
         nickOffer2 = findViewById(R.id.enter_nick_2);
-        nickOffer2.setOnClickListener(v -> eNickName.setText(nick2));
+        nickOffer2.setOnClickListener(v -> setNickName(2));
 
         save = findViewById(R.id.enter_info_save);
         save.setOnClickListener(v -> {
-
-            nickName = HelperUI.checkEditTextData(eNickName, nickHead, getString(R.string.nick_name), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, this);
-
-            if (nickName != null) {
-                nickError.setVisibility(View.GONE);
-                nickOffer1.setVisibility(View.GONE);
-                nickOffer2.setVisibility(View.GONE);
-
-                loader.setVisibility(View.VISIBLE);
-
-                int languageId = GlobalPreferences.getLanguageId(SignUpFireBaseActivity.this);
-                presenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(startTime), languageId, platformId, gender));
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (inputMethodManager != null)
-                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-            }
+            onSaveAction();
+            hideKeyboard(v);
         });
 
         mDateSetListener = (datePicker, year, month, day) -> {
             try {
                 if (HelperDate.checkAgeOfUser(year, month + 1, day)) {
                     dateOfBirth.setText(HelperDate.getDateStringFormat(year, month, day));
-                    startTime = HelperDate.getDateInMilliFromDate(year, month, day);
+                    dateInMillis = HelperDate.getDateInMilliFromDate(year, month, day);
                 } else
-                    MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
+                    MyToaster.getToast(this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
-                MyToaster.getErrorToaster(this, "Try Again");
+                MyToaster.getToast(this, "Try Again");
                 e.printStackTrace();
             }
         };
 
+
         RadioGroup genderGroup = findViewById(R.id.fire_radio_group);
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
-
                 case R.id.fire_radio_male:
                     gender = 0;
                     break;
@@ -147,21 +143,79 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
     }
 
-    private void showDatePickerDialog() {
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
+    private void setNickName(int wich) {
+        switch (wich) {
+            case 1:
+                eNickName.setText(nick1);
+                eNickName.setSelection(eNickName.length());
+                break;
+            case 2:
+                eNickName.setText(nick2);
+                eNickName.setSelection(eNickName.length());
+                break;
+        }
+    }
 
-        DatePickerDialog dialog = new DatePickerDialog(this,
-                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                mDateSetListener,
-                year, month, day);
+    private void onSaveAction() {
 
-        if (dialog.getWindow() != null)
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if (eNickName.getText().toString() == null || eNickName.getText().toString().equals("")) {
+            nickName = null;
+            HelperUI.inputWarning(this, eNickName, nickHead);
+        } else {
+            nickName = eNickName.getText().toString();
+            HelperUI.inputDefault(this, eNickName, nickHead);
+        }
 
-        dialog.show();
+        if (dateInMillis == 0) {
+            HelperUI.inputWarning(this, dateOfBirth, dateHead);
+        } else {
+            HelperUI.inputDefault(this, dateOfBirth, dateHead);
+        }
+
+        if (gender == 4) {
+            MyToaster.getToast(this, getString(R.string.gender_restriction_warning));
+            return;
+        }
+
+        if (nickName != null && dateInMillis != 0) {
+            updateUI(false);
+            presenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(dateInMillis), GlobalPreferences.getLanguageId(this), platformId, gender));
+        }
+
+    }
+
+    private void updateUI(boolean enable) {
+        try {
+            if (enable) {
+                loader.setVisibility(View.GONE);
+                loaderContainer.setVisibility(View.GONE);
+                save.setClickable(true);
+                dateOfBirth.setClickable(true);
+                eNickName.setClickable(true);
+            } else {
+                loader.setVisibility(View.VISIBLE);
+                loaderContainer.setVisibility(View.VISIBLE);
+                save.setClickable(false);
+                dateOfBirth.setClickable(false);
+                eNickName.setClickable(false);
+                nickError.setVisibility(View.GONE);
+                nickOffer1.setVisibility(View.GONE);
+                nickOffer2.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    protected void hideKeyboard(View view) {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -179,9 +233,10 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
         GlobalPreferences.saveUserRole(this, signUpWithFirebaseResponse.getUser().getRole());
         GlobalPreferences.saveAccessToken(this, signUpWithFirebaseResponse.getAccess_token());
 
-        loader.setVisibility(View.GONE);
+        updateUI(true);
 
         Intent intent = new Intent(this, HomePageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 
         finish();
@@ -189,8 +244,8 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
     @Override
     public void onError(String message) {
-        loader.setVisibility(View.GONE);
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
+        updateUI(true);
     }
 
     @Override
@@ -206,7 +261,8 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
             nick2 = checkNickResponse.getNicknames_to_offer().get(1);
             nickOffer2.setText(nick2);
 
-            loader.setVisibility(View.GONE);
+            updateUI(true);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -215,7 +271,8 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
 
     @Override
     public void checkNickName() {
-        presenter.checkNick(new CheckNickRequest(nickName, name, null));
+        if (presenter != null)
+            presenter.checkNick(new CheckNickRequest(nickName, name, null));
     }
 
 

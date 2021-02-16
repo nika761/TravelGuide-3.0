@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 
 public class MediaDetailActivity extends AppCompatActivity {
 
@@ -21,7 +22,7 @@ public class MediaDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_detail);
-
+        SystemManager.setLanguage(this);
         Window window = getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 

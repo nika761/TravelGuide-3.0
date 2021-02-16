@@ -16,7 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.response.TermsPolicyResponse;
 import travelguideapp.ge.travelguide.model.request.TermsPolicyRequest;
@@ -37,6 +40,7 @@ public class TermsFragment extends Fragment implements TermsContract.View {
         View v = inflater.inflate(R.layout.fragment_terms, container, false);
 
         cancelBtn = v.findViewById(R.id.cancel_btn_terms);
+        cancelBtn.setText(getString(R.string.back_btn));
         cancelBtn.setOnClickListener(v1 -> Objects.requireNonNull(getActivity()).onBackPressed());
 
         animationView = v.findViewById(R.id.animation_view);
@@ -48,6 +52,16 @@ public class TermsFragment extends Fragment implements TermsContract.View {
         termsPresenter = new TermsPresenter(this);
 
         return v;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            SystemManager.setLanguage(getContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -80,7 +94,7 @@ public class TermsFragment extends Fragment implements TermsContract.View {
     @Override
     public void onGetError(String message) {
         animationView.setVisibility(View.GONE);
-        Toast.makeText(cancelBtn.getContext(), message, Toast.LENGTH_SHORT).show();
+        MyToaster.getToast(cancelBtn.getContext(), message);
     }
 
     @Override

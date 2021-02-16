@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -52,6 +51,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
         try {
             if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -68,7 +68,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
             e.printStackTrace();
         }
 
-        setLanguage();
+        SystemManager.setLanguage(this);
         calculateScreenWidth();
         initUI();
         setAnimation();
@@ -96,7 +96,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
         if (SystemManager.checkNetworkConnection(this)) {
             languagePresenter.getAppSettings();
         } else {
-            MyToaster.getErrorToaster(this, getString(R.string.no_internet_connection));
+            MyToaster.getToast(this, getString(R.string.no_internet_connection));
         }
     }
 

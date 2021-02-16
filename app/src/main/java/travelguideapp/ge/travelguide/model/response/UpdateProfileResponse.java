@@ -12,6 +12,14 @@ public class UpdateProfileResponse {
     private String message;
 
     @Expose
+    @SerializedName("title")
+    private String title;
+
+    @Expose
+    @SerializedName("body")
+    private String body;
+
+    @Expose
     @SerializedName("nicknames_to_offer")
     private List<String> nicknames_to_offer;
 
@@ -29,5 +37,13 @@ public class UpdateProfileResponse {
 
     public int getStatus() {
         return status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getBody() {
+        return body;
     }
 }

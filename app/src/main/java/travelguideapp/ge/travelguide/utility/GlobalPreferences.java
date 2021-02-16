@@ -257,6 +257,10 @@ public class GlobalPreferences {
         getPref(context).edit().putString(PROFILE_KEY, new Gson().toJson(userinfo)).apply();
     }
 
+    public static void removeUserProfileInfo(Context context) {
+        getPref(context).edit().remove(PROFILE_KEY).apply();
+    }
+
     public static ProfileResponse.Userinfo getUserProfileInfo(Context context) {
         SharedPreferences sharedPreferences = getPref(context);
         Gson gson = new Gson();

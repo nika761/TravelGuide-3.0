@@ -31,7 +31,6 @@ public class HelperExoPlayer {
     public static MediaSource getMediaLink(String url) {
         DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory("Travel Guide");
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
         return new ExtractorMediaSource(Uri.parse(url), factory, extractorsFactory, null, null);
     }
 

@@ -1,6 +1,5 @@
 package travelguideapp.ge.travelguide.ui.login.signUp;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,6 +72,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        SystemManager.setLanguage(this);
         initUI();
     }
 
@@ -134,9 +133,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
                     registerBirthDate.setText(HelperDate.getDateStringFormat(year, month, day));
                     timeStamp = HelperDate.getDateInMilliFromDate(year, month, day);
                 } else
-                    MyToaster.getErrorToaster(this, getString(R.string.age_restriction_warning));
+                    MyToaster.getToast(this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
-                MyToaster.getErrorToaster(this, "Try Again");
+                MyToaster.getToast(this, "Try Again");
                 e.printStackTrace();
             }
         };
@@ -233,32 +232,32 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
                 break;
 
             case 3:
-                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                MyToaster.getToast(this, signUpResponse.getMessage());
                 break;
 
             case 4:
-                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                MyToaster.getToast(this, signUpResponse.getMessage());
                 HelperUI.setBackgroundWarning(eMail, eEmailHead, getString(R.string.email), this);
                 break;
 
             case 5:
-                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                MyToaster.getToast(this, signUpResponse.getMessage());
                 break;
 
             case 6:
-                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                MyToaster.getToast(this, signUpResponse.getMessage());
                 break;
 
             case 7:
-                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                MyToaster.getToast(this, signUpResponse.getMessage());
                 break;
 
             case 8:
-                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                MyToaster.getToast(this, signUpResponse.getMessage());
                 break;
 
             case 9:
-                MyToaster.getErrorToaster(this, signUpResponse.getMessage());
+                MyToaster.getToast(this, signUpResponse.getMessage());
                 break;
         }
     }
@@ -266,7 +265,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
     @Override
     public void onError(String message) {
         loader.setVisibility(View.GONE);
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
     }
 
     @Override
@@ -305,7 +304,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     HelperMedia.startImagePicker(this);
                 } else {
-                    MyToaster.getErrorToaster(this, "No permission granted");
+                    MyToaster.getToast(this, "No permission granted");
                 }
                 break;
         }
@@ -326,7 +325,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
     private void onGetData() {
 
         if (!genderChecked) {
-            MyToaster.getErrorToaster(this, getString(R.string.gender_restriction_warning));
+            MyToaster.getToast(this, getString(R.string.gender_restriction_warning));
             return;
         }
 
@@ -337,7 +336,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
         nickName = HelperUI.checkEditTextData(eNickName, eNickNameHead, getString(R.string.nick_name), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
 
         String email = HelperUI.checkEditTextData(eMail, eEmailHead, getString(R.string.email), blackColor, HelperUI.BACKGROUND_DEF_BLACK, this);
-        if (email != null && HelperUI.checkEmail(email)) {
+        if (email != null && HelperUI.isEmailValid(email)) {
             HelperUI.setBackgroundDefault(eMail, eEmailHead, getString(R.string.email), blackColor, HelperUI.BACKGROUND_DEF_BLACK);
         } else {
             HelperUI.setBackgroundWarning(eMail, eEmailHead, getString(R.string.email), this);

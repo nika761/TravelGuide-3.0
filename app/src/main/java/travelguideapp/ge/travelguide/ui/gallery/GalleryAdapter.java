@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityOptionsCompat;
@@ -91,7 +90,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                             selectedItemPositions.remove(getLayoutPosition());
                             listener.onItemSelected(paths.get(getLayoutPosition()));
                         } else {
-                            MyToaster.getErrorToaster(context, "You can choose only one item");
+                            MyToaster.getToast(context, "You can choose only one item");
                         }
                     } else {
                         selectedItemPositions.put(getLayoutPosition(), selectedItemPositions.size() + 1);

@@ -3,12 +3,14 @@ package travelguideapp.ge.travelguide.ui.profile.editProfile;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
@@ -73,6 +75,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
+        SystemManager.setLanguage(this);
         getInfoFromExtra();
         initUI();
         getProfileInfo();
@@ -145,7 +148,10 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         changePassword.setOnClickListener(v -> startChangePassword());
 
         TextView saveBtn = findViewById(R.id.edit_save_btn);
-        saveBtn.setOnClickListener(v -> onSaveAction());
+        saveBtn.setOnClickListener(v -> {
+            onSaveAction();
+            hideKeyboard(v);
+        });
 
         TextView toolbarBackBtn = findViewById(R.id.user_prf_back_btn);
         toolbarBackBtn.setOnClickListener(v -> onBackPressed());
@@ -245,7 +251,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                     birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
                     birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
                 } else
-                    MyToaster.getErrorToaster(ProfileEditActivity.this, getString(R.string.age_restriction_warning));
+                    MyToaster.getToast(ProfileEditActivity.this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -275,10 +281,19 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     HelperMedia.startImagePicker(this);
                 } else {
-                    MyToaster.getErrorToaster(this, "No permission granted");
+                    MyToaster.getToast(this, "No permission granted");
                 }
                 break;
 
+        }
+    }
+
+    protected void hideKeyboard(View view) {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -347,7 +362,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             if (checkForNullOrEmpty(email.getText().toString()))
                 HelperUI.inputWarning(this, email, emailHead);
             else {
-                if (HelperUI.checkEmail(email.getText().toString())) {
+                if (HelperUI.isEmailValid(email.getText().toString())) {
                     HelperUI.inputDefault(this, email, emailHead);
                     modelEmail = email.getText().toString();
                 } else
@@ -365,7 +380,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             }
 
             if (!genderChecked)
-                MyToaster.getErrorToaster(this, getString(R.string.gender_restriction_warning));
+                MyToaster.getToast(this, getString(R.string.gender_restriction_warning));
             else
                 modelGender = String.valueOf(gender);
 
@@ -394,7 +409,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             getLoader(false);
         }
 
-
     }
 
     private boolean checkForNullOrEmpty(String val) {
@@ -415,7 +429,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             surName.setText(userInfo.getLastname());
             nickName.setText(userInfo.getNickname());
             email.setText(userInfo.getEmail());
-            setPhoneNumber(userInfo.getPhone_number());
+            phoneNumber.setText(userInfo.getPhone_number());
             country.setText(userInfo.getCountry());
             city.setText(userInfo.getCity());
             bio.setText(userInfo.getBiography());
@@ -425,10 +439,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void setPhoneNumber(String number) {
-        phoneNumber.setText(number);
     }
 
     private void setGender(int gender) {
@@ -469,7 +479,19 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
             }
         });
 
+    }
 
+    private void finishUpdateFlow(String title, String body) {
+        try {
+            AlertDialog dialog = DialogManager.profileInfoUpdatedDialog(this, title, body);
+            dialog.show();
+            new Handler().postDelayed(() -> {
+                dialog.dismiss();
+                onBackPressed();
+            }, 2000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -477,20 +499,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
         getLoader(false);
         switch (updateProfileResponse.getStatus()) {
             case 0:
-                try {
-                    AlertDialog dialog = DialogManager.profileInfoUpdatedDialog(this);
-                    dialog.show();
-                    new Handler().postDelayed(() -> {
-                        dialog.dismiss();
-                        onBackPressed();
-                    }, 2000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-
-            case 1:
-                MyToaster.getErrorToaster(this, updateProfileResponse.getMessage());
+                finishUpdateFlow(updateProfileResponse.getTitle(), updateProfileResponse.getBody());
                 break;
 
             case 2:
@@ -498,8 +507,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
                 break;
 
             default:
-                MyToaster.getErrorToaster(this, updateProfileResponse.getMessage());
-
+                MyToaster.getToast(this, updateProfileResponse.getMessage());
         }
     }
 
@@ -541,7 +549,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     @Override
     public void onError(String message) {
         getLoader(false);
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
     }
 
     @Override

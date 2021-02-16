@@ -23,6 +23,7 @@ import travelguideapp.ge.travelguide.model.response.FollowResponse;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FollowingResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,15 +42,15 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     private FollowFragmentCallbacks callback;
     private FollowType requestType;
 
-    private List<FollowingResponse.Followings> followingsInner;
+    private List<FollowingResponse.Followings> followingsInner = new ArrayList<>();
     private List<FollowingResponse.Followings> followingsMain;
-    private List<FollowerResponse.Followers> followersInner;
+    private List<FollowerResponse.Followers> followersInner = new ArrayList<>();
     private List<FollowerResponse.Followers> followersMain;
 
     private int customerUserId;
     private int actionPosition;
 
-    private boolean isLoading;
+    private boolean isLoading = false;
     private boolean isNeedLazyLoad;
 
     @Nullable
@@ -108,13 +109,13 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
                     if (!isLoading && isNeedLazyLoad) {
                         switch (requestType) {
                             case FOLLOWER:
-                                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == followingsInner.size() - 1) {
+                                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == followersInner.size() - 1) {
                                     lazyLoad();
                                     isLoading = true;
                                 }
                                 break;
                             case FOLLOWING:
-                                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == followersInner.size() - 1) {
+                                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == followingsInner.size() - 1) {
                                     lazyLoad();
                                     isLoading = true;
                                 }
@@ -181,7 +182,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
                     if (followings.size() > 15) {
                         isNeedLazyLoad = true;
                         for (int i = 0; i < 15; i++) {
-                            followingsInner.add(followingsMain.get(i));
+                            this.followingsInner.add(followingsMain.get(i));
                         }
                         followRecyclerAdapter.setFollowings(followingsInner);
                     } else {
@@ -196,7 +197,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
                     if (followers.size() > 15) {
                         isNeedLazyLoad = true;
                         for (int i = 0; i < 15; i++) {
-                            followersInner.add(followersMain.get(i));
+                            this.followersInner.add(followersMain.get(i));
                         }
                         followRecyclerAdapter.setFollowers(followersInner);
                     } else {
@@ -242,7 +243,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
 
     @Override
     public void onError(String message) {
-        MyToaster.getErrorToaster(followRecycler.getContext(), message);
+        MyToaster.getToast(followRecycler.getContext(), message);
     }
 
     private boolean checkRequestType() {

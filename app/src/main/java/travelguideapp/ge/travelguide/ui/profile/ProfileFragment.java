@@ -31,6 +31,7 @@ import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -38,7 +39,6 @@ import travelguideapp.ge.travelguide.ui.profile.changeLanguage.ChangeLangFragmen
 import travelguideapp.ge.travelguide.ui.profile.favorites.FavoritePostFragment;
 import travelguideapp.ge.travelguide.ui.profile.posts.UserPostsFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
-import travelguideapp.ge.travelguide.helper.HelperUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -87,6 +87,11 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
                 window.setStatusBarColor(getResources().getColor(R.color.white, null));
                 setSystemBarTheme(getActivity(), false);
+                try {
+                    SystemManager.setLanguage(getActivity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -98,7 +103,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
             toggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.open, R.string.close);
             toggle.syncState();
-
             toolbar.setNavigationOnClickListener(v -> {
                 drawerLayout.addDrawerListener(toggle);
                 drawerLayout.openDrawer(GravityCompat.START);
@@ -139,7 +143,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         followStates.setOnClickListener(v -> callBack.onChooseFollowers(userName));
 
         editProfile = mIncludedLayout.findViewById(R.id.profile_edit_profile_btn);
-        editProfile.setOnClickListener(v -> callBack.onChooseEditProfile(userInfo));
+        editProfile.setOnClickListener(v -> callBack.onChooseEditProfile(GlobalPreferences.getUserProfileInfo(context)));
 
         seeBio = mIncludedLayout.findViewById(R.id.profile_see_bio_btn);
         seeBio.setOnClickListener(v -> showBiography(true));
@@ -189,8 +193,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         this.context = context;
     }
 
-    private NavigationView.OnNavigationItemSelectedListener navListener = item -> {
-
+    private final NavigationView.OnNavigationItemSelectedListener navListener = item -> {
         switch (item.getItemId()) {
             case R.id.settings_share_profile:
                 try {
@@ -210,15 +213,15 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
                 break;
 
             case R.id.settings_about:
-                HelperUI.startWebActivity(context, LoadWebViewBy.ABOUT, "");
+                callBack.onChooseWebFlow(LoadWebViewBy.ABOUT, "");
                 break;
 
             case R.id.settings_privacy:
-                HelperUI.startWebActivity(context, LoadWebViewBy.POLICY, "");
+                callBack.onChooseWebFlow(LoadWebViewBy.POLICY, "");
                 break;
 
             case R.id.settings_terms:
-                HelperUI.startWebActivity(context, LoadWebViewBy.TERMS, "");
+                callBack.onChooseWebFlow(LoadWebViewBy.TERMS, "");
                 break;
 
             case R.id.settings_sing_out:
@@ -273,7 +276,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public void onError(String message) {
         showLoader(false);
-        MyToaster.getErrorToaster(context, message);
+        MyToaster.getToast(context, message);
     }
 
     private void showLoader(boolean show) {
@@ -337,6 +340,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         void onChooseFollowers(String userName);
 
         void onChooseEditProfile(ProfileResponse.Userinfo userInfo);
+
+        void onChooseWebFlow(LoadWebViewBy loadWebViewBy, String url);
 
         void onChooseLogOut();
 

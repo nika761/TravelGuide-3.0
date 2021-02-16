@@ -1,7 +1,6 @@
 package travelguideapp.ge.travelguide.ui.search;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,6 +15,7 @@ import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.request.FullSearchRequest;
+import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
@@ -51,7 +51,7 @@ public class SearchActivity extends BaseActivity implements SearchListener {
     private List<PostResponse.Posts> posts;
 
     private String searchedText;
-    private boolean isLazyLoad;
+    private boolean isLazyLoadHashtag, isLazyLoadPosts;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,7 +125,8 @@ public class SearchActivity extends BaseActivity implements SearchListener {
                 searchField.clearFocus();
                 searchPresenter.fullSearch(accessToken, new FullSearchRequest(requestText));
                 this.searchedText = requestText;
-                isLazyLoad = false;
+                isLazyLoadHashtag = false;
+                isLazyLoadPosts = false;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,9 +181,9 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 
     @Override
     public void onGetHashtags(List<HashtagResponse.Hashtags> hashtags) {
-        if (isLazyLoad) {
+        if (isLazyLoadHashtag) {
             try {
-                isLazyLoad = false;
+                isLazyLoadHashtag = false;
                 this.hashtags.addAll(hashtags);
                 searchHashtagsFragment.setLazyHashtags(this.hashtags);
             } catch (Exception e) {
@@ -212,6 +213,19 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+    }
+
+    @Override
+    public void onGetPosts(List<PostResponse.Posts> posts) {
+        if (isLazyLoadPosts) {
+            try {
+                isLazyLoadPosts = false;
+                this.posts.addAll(posts);
+                searchPostsFragment.setLazyPosts(this.posts);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -259,8 +273,17 @@ public class SearchActivity extends BaseActivity implements SearchListener {
 
     public void getHashtagsNextPage(int page) {
         try {
-            isLazyLoad = true;
+            isLazyLoadHashtag = true;
             searchPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchedText, page));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPostsNextPage(int postId) {
+        try {
+            isLazyLoadPosts = true;
+            searchPresenter.getPosts(GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -318,7 +341,7 @@ public class SearchActivity extends BaseActivity implements SearchListener {
     @Override
     public void onError(String message) {
         getLoader(false);
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
     }
 
     @Override

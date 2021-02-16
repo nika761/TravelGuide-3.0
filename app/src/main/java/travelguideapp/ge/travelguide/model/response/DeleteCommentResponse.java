@@ -17,8 +17,16 @@ public class DeleteCommentResponse {
     @SerializedName("status")
     private int status;
 
+    @Expose
+    @SerializedName("message")
+    private String message;
+
     public List<CommentResponse.Post_story_comments> getPost_story_comments() {
         return post_story_comments;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public int getCount() {

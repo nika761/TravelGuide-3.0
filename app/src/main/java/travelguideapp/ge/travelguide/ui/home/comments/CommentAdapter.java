@@ -27,11 +27,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
 
     private List<CommentResponse.Post_story_comments> comments;
+    private final CommentListener callback;
 
-    private CommentListener listener;
-
-    CommentAdapter(CommentListener listener) {
-        this.listener = listener;
+    CommentAdapter(CommentListener callback) {
+        this.callback = callback;
     }
 
     @NonNull
@@ -42,31 +41,22 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     @Override
     public void onBindViewHolder(@NonNull CommentHolder holder, int position) {
-
         holder.loadMoreCallback(position);
 
         holder.bindUI(position);
-
     }
 
     void setComments(List<CommentResponse.Post_story_comments> comments) {
-
         if (this.comments != null && this.comments.size() != 0)
             this.comments.addAll(comments);
-
         else
             this.comments = comments;
-
         notifyDataSetChanged();
     }
 
     void onCommentsChanged(List<CommentResponse.Post_story_comments> comments) {
         this.comments = comments;
         notifyDataSetChanged();
-    }
-
-    void onCommentChanged(CommentResponse.Post_story_comments comment, int position) {
-        notifyItemChanged(position, comment);
     }
 
     @Override
@@ -84,7 +74,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         int countMinus = Integer.MAX_VALUE;
 
         CommentHolder(@NonNull View itemView) {
-
             super(itemView);
 
             likeCount = itemView.findViewById(R.id.comments_like_count);
@@ -92,7 +81,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             userImage = itemView.findViewById(R.id.comments_user_image);
             userImage.setOnClickListener(v -> {
                 try {
-                    listener.onUserChoose(comments.get(getLayoutPosition()).getUser_id());
+                    callback.onUserChoose(comments.get(getLayoutPosition()).getUser_id());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -106,7 +95,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             bodyMore.setOnClickListener(v -> {
                 try {
                     body.setMaxLines(10);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
@@ -114,7 +103,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             replyBtn = itemView.findViewById(R.id.comments_reply_btn);
             replyBtn.setOnClickListener(v -> {
                 try {
-                    listener.onReplyChoose(comments.get(getLayoutPosition()), true, getLayoutPosition());
+                    callback.onReplyChoose(comments.get(getLayoutPosition()), true, getLayoutPosition());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -123,7 +112,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             showReplies = itemView.findViewById(R.id.comments_view_replies);
             showReplies.setOnClickListener(v -> {
                 try {
-                    listener.onReplyChoose(comments.get(getLayoutPosition()), false, getLayoutPosition());
+                    callback.onReplyChoose(comments.get(getLayoutPosition()), false, getLayoutPosition());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -133,31 +122,27 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             likeBtn = itemView.findViewById(R.id.comments_like_btn);
             likeBtn.setOnClickListener(v -> {
                 try {
-                    listener.onLikeChoose(comments.get(getLayoutPosition()).getComment_id());
+                    callback.onLikeChoose(comments.get(getLayoutPosition()).getComment_id());
                     setCommentLike(getLayoutPosition());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-
         }
 
         void loadMoreCallback(int position) {
-
             if (comments.get(position).can_load_more_comments()) {
                 if (position == comments.size() - 1) {
-                    listener.onLazyLoad(true, comments.get(position).getComment_id());
+                    callback.onLazyLoad(true, comments.get(position).getComment_id());
                 } else {
-                    listener.onLazyLoad(false, 0);
+                    callback.onLazyLoad(false, 0);
                 }
             } else {
-                listener.onLazyLoad(false, 0);
+                callback.onLazyLoad(false, 0);
             }
-
         }
 
         void bindUI(int position) {
-
             likeCount.setText(String.valueOf(comments.get(position).getComment_likes()));
             userName.setText(comments.get(position).getNickname());
             date.setText(comments.get(position).getComment_time());
@@ -185,12 +170,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 replyBtn.setVisibility(View.GONE);
                 setCommentOption(false, position);
             }
-
-
         }
 
         void setCommentLike(int position) {
-
             if (comments.get(position).getComment_liked_by_me()) {
                 comments.get(position).setComment_likes(comments.get(position).getComment_likes() - 1);
                 comments.get(position).setComment_liked_by_me(false);
@@ -208,7 +190,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                         .duration(250)
                         .playOn(likeBtn);
             }
-
 //            if (comments.get(position).getComment_liked_by_me()) {
 //
 //                if (countPlus > comments.get(position).getComment_likes()) {
@@ -247,16 +228,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 //                    comments.get(position).setComment_liked_by_me(true);
 //                }
 //            }
-
-
         }
 
         void setCommentOption(boolean canEdit, int position) {
             itemView.setOnLongClickListener(v -> {
                 if (canEdit) {
-                    listener.onDeleteChoose(comments.get(position).getComment_id());
+                    callback.onDeleteChoose(comments.get(position).getComment_id());
                 } else {
-                    listener.onReportChoose(comments.get(position).getComment_id());
+                    callback.onReportChoose(comments.get(position).getComment_id());
                 }
                 return true;
             });

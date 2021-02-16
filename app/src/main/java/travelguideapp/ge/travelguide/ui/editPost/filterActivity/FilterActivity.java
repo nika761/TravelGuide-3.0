@@ -43,7 +43,7 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
-
+        SystemManager.setLanguage(this);
         if (!SystemManager.isWriteStoragePermission(this)) {
             SystemManager.requestWriteStoragePermission(this);
         }

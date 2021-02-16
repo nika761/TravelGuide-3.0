@@ -30,6 +30,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     private int fromPage = 1;
 
     private boolean isLoading = false;
+    private List<HashtagResponse.Hashtags> hashtags;
 
     @Nullable
     @Override
@@ -48,17 +49,8 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
+    public void listenOnRecycler() {
         try {
-            nothingFound.setVisibility(View.GONE);
-            hashtagRecycler.setVisibility(View.VISIBLE);
-
-            hashtagAdapter.setHashtags(hashtags);
-
-            if (hashtagRecycler.getAdapter() == null) {
-                hashtagRecycler.setAdapter(hashtagAdapter);
-            }
-
             hashtagRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -83,6 +75,26 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
+        try {
+            nothingFound.setVisibility(View.GONE);
+            hashtagRecycler.setVisibility(View.VISIBLE);
+
+            this.hashtags = hashtags;
+            hashtagAdapter.setHashtags(this.hashtags);
+
+            if (hashtagRecycler.getAdapter() == null) {
+                hashtagRecycler.setAdapter(hashtagAdapter);
+            }
+
+//            listenOnRecycler();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setNothingFound() {
@@ -98,7 +110,8 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     public void setLazyHashtags(List<HashtagResponse.Hashtags> hashtags) {
         try {
             isLoading = false;
-            hashtagAdapter.setHashtags(hashtags);
+            this.hashtags.addAll(hashtags);
+            hashtagAdapter.setHashtags(this.hashtags);
         } catch (Exception e) {
             e.printStackTrace();
         }

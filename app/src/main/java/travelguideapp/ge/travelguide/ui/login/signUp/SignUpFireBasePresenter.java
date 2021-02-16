@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.login.signUp;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.CheckNickRequest;
 import travelguideapp.ge.travelguide.model.request.SignUpWithFirebaseRequest;
 import travelguideapp.ge.travelguide.model.response.CheckNickResponse;
@@ -13,8 +15,8 @@ import retrofit2.Response;
 
 class SignUpFireBasePresenter {
 
-    private SignUpFireBaseListener signUpFireBaseListener;
-    private ApiService apiService;
+    private final SignUpFireBaseListener signUpFireBaseListener;
+    private final ApiService apiService;
 
     SignUpFireBasePresenter(SignUpFireBaseListener signUpFireBaseListener) {
         this.signUpFireBaseListener = signUpFireBaseListener;
@@ -24,7 +26,7 @@ class SignUpFireBasePresenter {
     void signUpWithFirebase(SignUpWithFirebaseRequest signUpWithFirebaseRequest) {
         apiService.signUpWithFirebase(signUpWithFirebaseRequest).enqueue(new Callback<SignUpWithFirebaseResponse>() {
             @Override
-            public void onResponse(Call<SignUpWithFirebaseResponse> call, Response<SignUpWithFirebaseResponse> response) {
+            public void onResponse(@NotNull Call<SignUpWithFirebaseResponse> call, @NotNull Response<SignUpWithFirebaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
@@ -57,7 +59,7 @@ class SignUpFireBasePresenter {
     void checkNick(CheckNickRequest checkNickRequest) {
         apiService.checkNick(checkNickRequest).enqueue(new Callback<CheckNickResponse>() {
             @Override
-            public void onResponse(Call<CheckNickResponse> call, Response<CheckNickResponse> response) {
+            public void onResponse(@NotNull Call<CheckNickResponse> call, @NotNull Response<CheckNickResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     signUpFireBaseListener.onGetNickCheckResult(response.body());
                 } else {
@@ -66,7 +68,7 @@ class SignUpFireBasePresenter {
             }
 
             @Override
-            public void onFailure(Call<CheckNickResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<CheckNickResponse> call, @NotNull Throwable t) {
                 signUpFireBaseListener.onError(t.getMessage());
             }
         });

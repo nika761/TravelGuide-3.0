@@ -20,10 +20,10 @@ import com.airbnb.lottie.LottieAnimationView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.request.ResetPasswordRequest;
 import travelguideapp.ge.travelguide.model.response.ResetPasswordResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
-import travelguideapp.ge.travelguide.ui.upload.UploadPostActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import java.util.List;
@@ -42,6 +42,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
+        SystemManager.setLanguage(this);
         initUI();
         verifyToken();
     }
@@ -74,7 +75,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
 
             confirmPassword = HelperUI.checkEditTextData(eConfirmPassword, confirmPasswordHead, getString(R.string.confirm_password), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK, save.getContext());
 
-            if (email != null && HelperUI.checkEmail(email)) {
+            if (email != null && HelperUI.isEmailValid(email)) {
                 HelperUI.setBackgroundDefault(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
             } else {
                 HelperUI.setBackgroundWarning(eEmail, emailHead, getString(R.string.email), save.getContext());
@@ -121,7 +122,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MyToaster.getErrorToaster(this, "Try Again");
+            MyToaster.getToast(this, "Try Again");
             finish();
         }
 

@@ -2,14 +2,22 @@ package travelguideapp.ge.travelguide.helper;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 
 import androidx.core.app.ActivityCompat;
 
+import java.util.Locale;
 import java.util.Objects;
+
+import travelguideapp.ge.travelguide.base.BaseApplication;
+import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
@@ -45,7 +53,7 @@ public class SystemManager {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
     }
 
-    public static boolean isCameraPermission(Activity activity){
+    public static boolean isCameraPermission(Activity activity) {
         boolean permissionGranted = false;
         int result = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
         if (result == PackageManager.PERMISSION_GRANTED) {
@@ -71,6 +79,28 @@ public class SystemManager {
         return wifiConnected || mobileDataConnected;
     }
 
+    public static void updateCurrentLanguage(Context context) {
+        final Application app = ((Application) context.getApplicationContext());
+        updateConfig(app);
+    }
+
+    public static void updateConfig(Application app) {
+        Locale locale = new Locale(GlobalPreferences.getLanguage(app.getBaseContext()));
+        Locale.setDefault(locale);
+        Configuration config = new Configuration(app.getBaseContext().getResources().getConfiguration());
+        config.locale = locale;
+        Resources resources = app.getBaseContext().getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+    }
+
+    public static void setLanguage(Context context) {
+        Locale locale = new Locale(GlobalPreferences.getLanguage(context));
+        Locale.setDefault(locale);
+        Resources resources = context.getResources();
+        Configuration config = resources.getConfiguration();
+        config.setLocale(locale);
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+    }
 
 
 }

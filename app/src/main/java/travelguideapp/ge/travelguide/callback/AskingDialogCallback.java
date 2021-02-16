@@ -1,5 +1,5 @@
 package travelguideapp.ge.travelguide.callback;
 
-public interface AskingDialogResultCallback {
+public interface AskingDialogCallback {
     void onYes();
 }

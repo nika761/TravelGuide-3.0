@@ -25,8 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.RepliesHolder> {
 
     private List<CommentResponse.Comment_reply> commentReplies;
-
-    private RepliesListener listener;
+    private final RepliesListener listener;
 
     private int currentPosition = -1;
 

@@ -1,160 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:background="@color/white">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/firebase_loader_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="5dp">
-
-        <TextView
-            android:id="@+id/fire_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:gravity="center"
-            android:text="@string/firebase_sign_up_intro"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:background="@color/greyLight"
+        android:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/fire_loading"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/firebase_loader"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:visibility="visible"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/horizontal_loading" />
+            app:lottie_rawRes="@raw/loading_yellow" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="100dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fire_head">
+            android:padding="5dp">
 
             <TextView
-                android:id="@+id/enter_date_of_birth_head"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:text="@string/birth_date" />
-
-            <TextView
-                android:id="@+id/enter_birth_date"
-                android:layout_width="282dp"
-                android:layout_height="38dp"
-                android:background="@drawable/bg_register_field"
-                android:gravity="center_horizontal"
-                android:hint="DD -- MM -- YYYY"
-                android:padding="10dp"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/enter_nickName_head"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="15dp"
-                android:text="@string/nick_name" />
-
-            <EditText
-                android:id="@+id/enter_nickName"
-                android:layout_width="280dp"
-                android:layout_height="38dp"
-                android:background="@drawable/bg_signup_fields"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/enter_nick_error"
-                android:layout_width="282dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/nickname_busy"
-                android:textColor="@color/red"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/enter_nick_1"
+                android:id="@+id/fire_head"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/colorPrimary"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/enter_nick_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/colorPrimary"
-                android:visibility="gone" />
-
-            <RadioGroup
-                android:id="@+id/fire_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15sp"
+                android:layout_marginTop="30dp"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="3">
+                android:text="@string/firebase_sign_up_intro"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <RadioButton
-                    android:id="@+id/fire_radio_male"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical"
+                android:padding="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fire_head">
+
+                <TextView
+                    android:id="@+id/enter_date_of_birth_head"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/male" />
+                    android:layout_marginStart="2dp"
+                    android:text="@string/birth_date" />
 
-                <RadioButton
-                    android:id="@+id/fire_radio_female"
+                <TextView
+                    android:id="@+id/enter_birth_date"
+                    android:layout_width="282dp"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/bg_register_field"
+                    android:gravity="center_horizontal"
+                    android:hint="DD -- MM -- YYYY"
+                    android:padding="10dp"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/enter_nickName_head"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/female" />
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="30dp"
+                    android:text="@string/nick_name" />
 
-                <RadioButton
-                    android:id="@+id/fire_radio_other"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/enter_nickName"
+                    android:layout_width="280dp"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/bg_signup_fields"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:maxLength="16"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/enter_nick_error"
+                    android:layout_width="282dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/other" />
+                    android:layout_marginTop="2dp"
+                    android:text="@string/nickname_busy"
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
 
-            </RadioGroup>
+                <TextView
+                    android:id="@+id/enter_nick_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/enter_nick_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:visibility="gone" />
+
+                <RadioGroup
+                    android:id="@+id/fire_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <RadioButton
+                        android:id="@+id/fire_radio_male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/yellowTextView"
+                        android:text="@string/male" />
+
+                    <RadioButton
+                        android:id="@+id/fire_radio_female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/yellowTextView"
+                        android:text="@string/female" />
+
+                    <RadioButton
+                        android:id="@+id/fire_radio_other"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/yellowTextView"
+                        android:text="@string/other" />
+
+                </RadioGroup>
 
 
-            <Button
-                android:id="@+id/enter_info_save"
-                android:layout_width="160dp"
-                android:layout_height="38dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
-                android:background="@drawable/bg_btn"
-                android:text="@string/save"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                <Button
+                    android:id="@+id/enter_info_save"
+                    android:layout_width="160dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/bg_btn"
+                    android:text="@string/save"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
 
-        </LinearLayout>
+            </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

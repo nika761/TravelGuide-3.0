@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
 import travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity;
@@ -58,6 +59,7 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
+        SystemManager.setLanguage(this);
         initUI();
         sortData();
         checkVideoDuration();

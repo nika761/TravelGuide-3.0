@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.ChangeLangRequest;
 import travelguideapp.ge.travelguide.model.response.ChangeLangResponse;
@@ -75,7 +77,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
             initLanguageRecycler(languagesResponse.getLanguage());
             lottieAnimationView.setVisibility(View.GONE);
         } else {
-            MyToaster.getErrorToaster(context, "Try Again");
+            MyToaster.getToast(context, "Try Again");
         }
 
     }
@@ -135,6 +137,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
             Configuration config = resources.getConfiguration();
             config.setLocale(locale);
             resources.updateConfiguration(config, resources.getDisplayMetrics());
+//            SystemManager.updateCurrentLanguage(context);
             getActivity().getIntent().putExtra("IS_LANGUAGE_CHANGED", true);
             getActivity().recreate();
         } catch (Exception e) {
@@ -145,7 +148,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
 
     @Override
     public void onError() {
-        MyToaster.getErrorToaster(context, "Try Again");
+        MyToaster.getToast(context, "Try Again");
     }
 
 }

@@ -24,12 +24,14 @@ import java.util.List;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.Report;
-import travelguideapp.ge.travelguide.model.customModel.ReportData;
+import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
+import travelguideapp.ge.travelguide.model.response.SetReportResponse;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.home.report.ReportAdapter;
@@ -38,7 +40,7 @@ import travelguideapp.ge.travelguide.ui.search.posts.PostByLocationActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements BaseActivityListener {
 
     public static final int SHARING_INTENT_REQUEST_CODE = 500;
 
@@ -50,7 +52,8 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new BasePresenter();
+        SystemManager.setLanguage(this);
+        basePresenter = new BasePresenter(this);
     }
 
     public FragmentManager getCurrentChildFragmentManager() {
@@ -99,7 +102,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void onAuthenticateError(String message) {
-        MyToaster.getErrorToaster(this, message);
+        MyToaster.getToast(this, message);
 
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -107,7 +110,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void onConnectionError() {
-        MyToaster.getErrorToaster(this, getString(R.string.no_internet_connection));
+        MyToaster.getToast(this, getString(R.string.no_internet_connection));
     }
 
     @Override
@@ -135,22 +138,22 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void openReportDialog(ReportData reportData) {
+    public void openReportDialog(ReportParams reportParams) {
         try {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
             View bottomSheetLayout = View.inflate(this, R.layout.dialog_report, null);
 
             TextView sentBtn = bottomSheetLayout.findViewById(R.id.report_sent);
             sentBtn.setOnClickListener(v -> {
-                switch (reportData.getReportType()) {
+                switch (reportParams.getReportType()) {
                     case USER:
-                        basePresenter.setUserReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetUserReportRequest(reportData.getUserId(), reportsId));
+                        basePresenter.setUserReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetUserReportRequest(reportParams.getUserId(), reportsId));
                         break;
                     case POST:
-                        basePresenter.setPostReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetPostReportRequest(reportData.getPostId(), reportsId));
+                        basePresenter.setPostReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetPostReportRequest(reportParams.getPostId(), reportsId));
                         break;
                     case COMMENT:
-                        basePresenter.setCommentReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetCommentReportRequest(reportData.getCommentId(), reportsId));
+                        basePresenter.setCommentReport(GlobalPreferences.getAccessToken(BaseActivity.this), new SetCommentReportRequest(reportParams.getCommentId(), reportsId));
                         break;
                 }
                 bottomSheetDialog.dismiss();
@@ -206,7 +209,6 @@ public class BaseActivity extends AppCompatActivity {
                 case GlobalPreferences.TRAVEL_GUIDE:
                     onLogOutSuccess();
                     break;
-
             }
         } catch (Exception e) {
             MyToaster.getUnknownErrorToast(this);
@@ -226,8 +228,8 @@ public class BaseActivity extends AppCompatActivity {
     public void logOutFromGoogle() {
         ClientManager.googleSignInClient(this).signOut()
                 .addOnCompleteListener(this, task -> onLogOutSuccess())
-                .addOnCanceledListener(this, () -> MyToaster.getErrorToaster(this, "Canceled"))
-                .addOnFailureListener(this, e -> MyToaster.getErrorToaster(this, e.getMessage() + "Google Failed"));
+                .addOnCanceledListener(this, () -> MyToaster.getToast(this, "Canceled"))
+                .addOnFailureListener(this, e -> MyToaster.getToast(this, e.getMessage() + "Google Failed"));
     }
 
     public void onLogOutSuccess() {
@@ -235,7 +237,7 @@ public class BaseActivity extends AppCompatActivity {
         GlobalPreferences.removeLoginType(this);
         GlobalPreferences.removeUserId(this);
         GlobalPreferences.removeUserRole(this);
-
+        GlobalPreferences.removeUserProfileInfo(this);
         Intent intent = new Intent(BaseActivity.this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -264,4 +266,19 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if (basePresenter != null)
+            basePresenter = null;
+        super.onDestroy();
+    }
+
+    @Override
+    public void onReported(SetReportResponse setReportResponse) {
+        try {
+            MyToaster.getToast(this, setReportResponse.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

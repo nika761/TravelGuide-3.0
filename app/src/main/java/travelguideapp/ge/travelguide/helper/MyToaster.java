@@ -10,7 +10,7 @@ public class MyToaster {
             Toast.makeText(context, "Error Try Again", Toast.LENGTH_SHORT).show();
     }
 
-    public static void getErrorToaster(Context context, String message) {
+    public static void getToast(Context context, String message) {
         if (context != null && message != null)
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }

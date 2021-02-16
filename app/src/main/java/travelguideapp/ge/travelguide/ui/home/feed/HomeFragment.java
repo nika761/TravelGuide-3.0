@@ -23,6 +23,7 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.custom.customPost.CustomPostHolder;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
@@ -31,7 +32,7 @@ import travelguideapp.ge.travelguide.custom.CustomTimer;
 import travelguideapp.ge.travelguide.custom.customPost.CustomPostAdapter;
 import travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
-import travelguideapp.ge.travelguide.model.customModel.ReportData;
+import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.customModel.PostView;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
@@ -85,6 +86,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     private CustomPostAdapter customPostAdapter;
 
     private List<PostResponse.Posts> posts;
+
 
     @Nullable
     @Override
@@ -327,7 +329,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         } catch (Exception e) {
             e.printStackTrace();
         }
-        HelperUI.startWebActivity(postRecycler.getContext(), LoadWebViewBy.GO, url);
+        HelperUI.startWebActivity(getActivity(), LoadWebViewBy.GO, url);
     }
 
     @Override
@@ -399,7 +401,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onReportChoose(int postId) {
         try {
-            ((BaseActivity) getActivity()).openReportDialog(ReportData.getInstance(ReportData.Type.POST, postId));
+            ((BaseActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.POST, postId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -502,7 +504,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onAuthError(String message) {
         try {
-            MyToaster.getErrorToaster(getContext(), message);
+            MyToaster.getToast(getContext(), message);
             Intent intent = new Intent(getContext(), SignInActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -516,7 +518,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     public void onError(String message) {
         try {
             stopLoader();
-            MyToaster.getErrorToaster(postRecycler.getContext(), message);
+            MyToaster.getToast(postRecycler.getContext(), message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -531,19 +533,28 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                     CommentFragment commentFragment = CommentFragment.getInstance(this);
                     commentFragment.setArguments(dataForFragment);
                     fragmentTransaction.setCustomAnimations(R.anim.anim_fragment_slide_up, R.anim.anim_swipe_bottom);
-                    fragmentTransaction.addToBackStack("COMMENT_FRAGMENT_STACK");
-                    fragmentTransaction.replace(R.id.post_comment_fragment_container, commentFragment, "COMMENT_FRAGMENT_TAG");
+                    fragmentTransaction.addToBackStack(CommentFragment.STACK);
+                    fragmentTransaction.replace(R.id.post_comment_fragment_container, commentFragment, CommentFragment.TAG);
                     fragmentTransaction.commit();
                     break;
 
                 case COMMENT_REPLY:
                     RepliesFragment repliesFragment = new RepliesFragment();
                     repliesFragment.setArguments(dataForFragment);
-                    fragmentTransaction.addToBackStack("REPLIES_FRAGMENT_STACK");
-                    fragmentTransaction.replace(R.id.post_comment_fragment_container, repliesFragment, "REPLIES_FRAGMENT_TAG");
+                    fragmentTransaction.addToBackStack(RepliesFragment.STACK);
+                    fragmentTransaction.replace(R.id.post_comment_fragment_container, repliesFragment, RepliesFragment.TAG);
                     fragmentTransaction.commit();
                     break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onCommentCountChanged(int count) {
+        try {
+            customPostRecycler.setComments(count);
         } catch (Exception e) {
             e.printStackTrace();
         }

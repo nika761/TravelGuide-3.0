@@ -2,7 +2,6 @@ package travelguideapp.ge.travelguide.ui.home;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,14 +11,15 @@ import androidx.fragment.app.Fragment;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
+import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.profile.editProfile.ProfileEditActivity;
 import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
+import travelguideapp.ge.travelguide.ui.webView.WebActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.profile.ProfileFragment;
@@ -30,6 +30,9 @@ import travelguideapp.ge.travelguide.ui.gallery.GalleryActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import static travelguideapp.ge.travelguide.helper.HelperUI.GO_URL;
+import static travelguideapp.ge.travelguide.helper.HelperUI.TYPE;
+
 public class HomePageActivity extends BaseActivity implements HomePageListener, OnPostChooseCallback,
         ProfileFragment.ProfileFragmentCallBacks {
 
@@ -37,6 +40,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
     private HomePagePresenter homePagePresenter;
 
     private boolean isFromLanguageChanged = true;
+    private boolean backToProfile = false;
 
     public HomePageActivity() {
         //Required empty public constructor
@@ -111,10 +115,15 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
     }
 
     public void hideBottomNavigation(Boolean visible) {
-        if (visible)
-            bottomNavigationView.setVisibility(View.VISIBLE);
-        else
-            bottomNavigationView.setVisibility(View.GONE);
+        try {
+            if (visible)
+                bottomNavigationView.setVisibility(View.VISIBLE);
+            else
+                bottomNavigationView.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void initBtmNav() {
@@ -153,7 +162,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
                     break;
 
                 case R.id.bot_nav_ntf:
-                    MyToaster.getErrorToaster(this,getString(R.string.no_notifications));
+                    MyToaster.getToast(this, getString(R.string.no_notifications));
                     break;
 
                 case R.id.bot_nav_profile:
@@ -182,7 +191,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
                     Intent galleryIntent = new Intent(HomePageActivity.this, GalleryActivity.class);
                     startActivity(galleryIntent);
                 } else {
-                    MyToaster.getErrorToaster(this, "No permission granted");
+                    MyToaster.getToast(this, "No permission granted");
                 }
                 break;
         }
@@ -190,10 +199,15 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
 
     @Override
     public void onBackPressed() {
-        if (bottomNavigationView.getSelectedItemId() == R.id.bot_nav_home) {
-            super.onBackPressed();
+        if (backToProfile) {
+            backToProfile = false;
+            onProfileChoose();
         } else {
-            bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+            if (bottomNavigationView.getSelectedItemId() == R.id.bot_nav_home) {
+                super.onBackPressed();
+            } else {
+                bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
+            }
         }
     }
 
@@ -212,6 +226,11 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
 
     @Override
     public void onPostChoose(Bundle fragmentData) {
+        try {
+            backToProfile = fragmentData.getBoolean("back_to_profile");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         HelperUI.loadFragment(HomeFragment.getInstance(), fragmentData, R.id.home_fragment_container, false, true, this);
     }
@@ -235,6 +254,14 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
         profileIntent.putExtra("user_info", userInfo);
         startActivity(profileIntent);
         overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+    }
+
+    @Override
+    public void onChooseWebFlow(LoadWebViewBy loadWebViewBy, String url) {
+        Intent webIntent = new Intent(this, WebActivity.class);
+        webIntent.putExtra(GO_URL, url);
+        webIntent.putExtra(TYPE, loadWebViewBy);
+        startActivity(webIntent);
     }
 
     @Override
