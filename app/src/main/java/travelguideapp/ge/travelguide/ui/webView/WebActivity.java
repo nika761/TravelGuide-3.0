@@ -33,15 +33,6 @@ public class WebActivity extends BaseActivity {
 //        setLanguage();
     }
 
-    private void setLanguage() {
-        Locale locale = new Locale(GlobalPreferences.getLanguage(this));
-        Locale.setDefault(locale);
-        Resources resources = getResources();
-        Configuration config = resources.getConfiguration();
-        config.setLocale(locale);
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-    }
-
     private void checkRequestType() {
         LoadWebViewBy loadWebViewType = (LoadWebViewBy) getIntent().getSerializableExtra(HelperUI.TYPE);
         if (loadWebViewType != null) {

@@ -162,18 +162,25 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
     }
 
     private void checkPermissionAndStartPick() {
-        if (SystemManager.isReadStoragePermission(this)) {
+        if (isPermissionGranted(READ_EXTERNAL_STORAGE)) {
             HelperMedia.startImagePicker(this);
         } else {
-            SystemManager.requestReadStoragePermission(this);
+            requestPermission(READ_EXTERNAL_STORAGE);
+        }
+    }
+
+    @Override
+    public void onPermissionResult(boolean permissionGranted) {
+        if (permissionGranted) {
+            HelperMedia.startImagePicker(this);
+        } else {
+            MyToaster.getToast(this, "No permission granted");
         }
     }
 
     private boolean checkNumber(EditText enteredNumber) {
         boolean numberValidate = false;
-
         countryCodePicker.registerCarrierNumberEditText(enteredNumber);
-
         if (countryCodePicker.isValidFullNumber()) {
             numberValidate = true;
         }
@@ -229,7 +236,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                     }
                 }
             }
-            countryFragment.show(getSupportFragmentManager(), "countryChooserDialog");
+            countryFragment.show(getSupportFragmentManager(), ChooseCountryFragment.TAG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -270,21 +277,6 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 //                    MyToaster.getUnknownErrorToast(this);
                     break;
             }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case READ_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    HelperMedia.startImagePicker(this);
-                } else {
-                    MyToaster.getToast(this, "No permission granted");
-                }
-                break;
-
         }
     }
 

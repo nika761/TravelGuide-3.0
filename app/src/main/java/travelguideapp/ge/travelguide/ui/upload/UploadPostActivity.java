@@ -1,7 +1,6 @@
 package travelguideapp.ge.travelguide.ui.upload;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,9 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +27,6 @@ import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.request.UploadPostRequest;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.HashtagAdapter;
@@ -134,13 +130,13 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
         HelperMedia.loadPhoto(this, mediaFiles.get(0).getMediaPath(), imageView);
 
         TextView location = findViewById(R.id.location);
-        location.setOnClickListener(v -> onStartAddLocation());
+        location.setOnClickListener(v -> startAddLocation());
 
         TextView friends = findViewById(R.id.describe_friends);
-        friends.setOnClickListener(v -> onStartAddTags(TAG_TYPE_USERS, TAG_REQUEST_CODE_FRIENDS));
+        friends.setOnClickListener(v -> startAddTags(TAG_TYPE_USERS, TAG_REQUEST_CODE_FRIENDS));
 
         TextView hashtag = findViewById(R.id.describe_hashtags);
-        hashtag.setOnClickListener(v -> onStartAddTags(TAG_TYPE_HASHTAGS, TAG_REQUEST_CODE_HASHTAGS));
+        hashtag.setOnClickListener(v -> startAddTags(TAG_TYPE_HASHTAGS, TAG_REQUEST_CODE_HASHTAGS));
 
     }
 
@@ -164,13 +160,13 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
         hashtagRecycler.setAdapter(hashtagAdapter);
     }
 
-    private void onStartAddTags(String tagType, int requestCode) {
+    private void startAddTags(String tagType, int requestCode) {
         Intent intent = new Intent(this, TagPostActivity.class);
         intent.putExtra(TAG_REQUEST_TYPE, tagType);
         startActivityForResult(intent, requestCode);
     }
 
-    private void onStartAddLocation() {
+    private void startAddLocation() {
         List<Place.Field> locations = Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME, Place.Field.LAT_LNG);
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, locations).build(UploadPostActivity.this);
         startActivityForResult(intent, TAG_REQUEST_LOCATION__CODE);
@@ -190,9 +186,9 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     private void getReadyForUpload() {
         try {
-            if (mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.PHOTO && !SystemManager.isWriteStoragePermission(this)) {
+            if (mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.PHOTO && !isPermissionGranted(WRITE_EXTERNAL_STORAGE)) {
                 getLoader(false);
-                SystemManager.requestWriteStoragePermission(this);
+                requestPermission(WRITE_EXTERNAL_STORAGE);
             } else {
                 startUpload();
             }
@@ -373,15 +369,12 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == SystemManager.WRITE_EXTERNAL_STORAGE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLoader(true);
-                startUpload();
-            } else {
-                MyToaster.getToast(this, "Without Permission You Can't Upload Photo");
-            }
+    public void onPermissionResult(boolean permissionGranted) {
+        if (permissionGranted) {
+            getLoader(true);
+            startUpload();
+        } else {
+            MyToaster.getToast(this, "Without Permission You Can't Upload Photo");
         }
     }
 

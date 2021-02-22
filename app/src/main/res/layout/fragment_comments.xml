@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:clickable="true"
     android:fitsSystemWindows="true"
     android:focusable="true">
@@ -47,6 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="5dp"
+            tools:listitem="@layout/item_comment"
             app:layout_constraintBottom_toTopOf="@+id/comments_paging_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 
 import java.io.File;
@@ -44,10 +45,16 @@ public class FilterActivity extends BaseActivity implements IFilterListener, Vie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
-        if (!SystemManager.isWriteStoragePermission(this)) {
-            SystemManager.requestWriteStoragePermission(this);
+
+        if (isPermissionGranted(WRITE_EXTERNAL_STORAGE)) {
+            loadFilters();
+        } else {
+            requestPermission(WRITE_EXTERNAL_STORAGE);
         }
 
+    }
+
+    private void loadFilters() {
         try {
             this.position = getIntent().getIntExtra("position_for_image", 0);
             this.path = getIntent().getStringExtra("image_for_filter");
@@ -57,7 +64,6 @@ public class FilterActivity extends BaseActivity implements IFilterListener, Vie
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 
@@ -120,9 +126,10 @@ public class FilterActivity extends BaseActivity implements IFilterListener, Vie
 
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(FilterActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    MyToaster.getToast(FilterActivity.this, exception.getMessage());
                 }
             });
+
         } catch (Exception e) {
             e.printStackTrace();
             finish();
@@ -180,20 +187,13 @@ public class FilterActivity extends BaseActivity implements IFilterListener, Vie
         return originalFileParentPath;
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case SystemManager.WRITE_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "No permission", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onPermissionResult(boolean permissionGranted) {
+        if (permissionGranted) {
+            loadFilters();
+        } else {
+            MyToaster.getToast(this, "No permission");
         }
     }
+
 }

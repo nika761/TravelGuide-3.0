@@ -21,7 +21,6 @@ import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
@@ -200,7 +199,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
                 break;
 
             case R.id.customer_profile_report:
-                openReportDialog(ReportParams.getInstance(ReportParams.Type.USER, customerUserId));
+                openReportDialog(ReportParams.setParams(ReportParams.Type.USER, customerUserId));
                 break;
 
             case R.id.customer_profile_follow_btn:

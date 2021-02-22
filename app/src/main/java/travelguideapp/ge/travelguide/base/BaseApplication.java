@@ -52,12 +52,13 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
 //        updateConfig();
-        try {
-            overrideFont("SERIF", "font/roboto_thin.ttf");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            overrideFont("SERIF", "font/roboto_thin.ttf");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void setFirstUse() {
@@ -66,16 +67,6 @@ public class BaseApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    public void updateConfig() {
-        Locale locale = new Locale(GlobalPreferences.getLanguage(BaseApplication.this));
-        Locale.setDefault(locale);
-        Configuration config = new Configuration(getBaseContext().getResources().getConfiguration());
-        config.locale = locale;
-        Resources resources = getBaseContext().getResources();
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
     }
 
     private void createNotificationChannel() {
@@ -101,48 +92,5 @@ public class BaseApplication extends Application {
             e.printStackTrace();
         }
     }
-
-
-//    public void getAppSettings() {
-//        try {
-//            ApiService apiService = RetrofitManager.getApiService();
-//            apiService.getAppSettings().enqueue(new Callback<AppSettingsResponse>() {
-//                @Override
-//                public void onResponse(Call<AppSettingsResponse> call, Response<AppSettingsResponse> response) {
-//                    if (response.isSuccessful() && response.body() != null) {
-//
-//                        CROP_OPTION_X = response.body().getApp_settings().getCROP_OPTION_X();
-//                        CROP_OPTION_Y = response.body().getApp_settings().getCROP_OPTION_Y();
-//                        AGE_RESTRICTION = response.body().getApp_settings().getAGE_RESTRICTION();
-//                        POST_PER_PAGE_SIZE = response.body().getApp_settings().getPOST_PER_PAGE_SIZE();
-//
-//                        try {
-//                            POST_VIEW_TIME = (long) response.body().getApp_settings().getPOST_VIEW_TIME();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                        int versionCode = BuildConfig.VERSION_CODE;
-//
-//                        if (GlobalPreferences.getAppVersion(getApplicationContext()) < versionCode) {
-//                            GlobalPreferences.saveAppVersion(getApplicationContext(), versionCode);
-//                        }
-//
-//                        APP_VERSION = response.body().getApp_settings().getAPP_VERSION();
-//
-//                        GlobalPreferences.saveAppSettings(BaseApplication.this, response.body().getApp_settings());
-//
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(@NotNull Call<AppSettingsResponse> call, @NotNull Throwable t) {
-//                    t.printStackTrace();
-//                }
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 }

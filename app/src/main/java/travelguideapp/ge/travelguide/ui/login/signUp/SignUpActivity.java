@@ -44,8 +44,6 @@ import java.io.File;
 import de.hdodenhof.circleimageview.CircleImageView;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 
-import static travelguideapp.ge.travelguide.helper.SystemManager.READ_EXTERNAL_STORAGE;
-
 public class SignUpActivity extends BaseActivity implements SignUpListener {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -54,7 +52,6 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
     private File profilePhotoFile;
 
     private String photoUrl, userName, userSurname, nickName, birthDate, phoneIndex, phoneNumber, nickNameFirst, nickNameSecond;
-    private final static int PICK_IMAGE = 29;
     private int blackColor, gender = 3;
     private long timeStamp;
     private boolean genderChecked = false;
@@ -182,7 +179,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE) {
+        if (requestCode == HelperMedia.REQUEST_PICK_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     Uri uri = data.getData();
@@ -289,26 +286,20 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
     }
 
     private void checkPermissionAndStartPick() {
-        if (SystemManager.isReadStoragePermission(this)) {
+        if (isPermissionGranted(READ_EXTERNAL_STORAGE)) {
             HelperMedia.startImagePicker(this);
         } else {
-            SystemManager.requestReadStoragePermission(this);
+            requestPermission(READ_EXTERNAL_STORAGE);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case READ_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    HelperMedia.startImagePicker(this);
-                } else {
-                    MyToaster.getToast(this, "No permission granted");
-                }
-                break;
+    public void onPermissionResult(boolean permissionGranted) {
+        if (permissionGranted) {
+            HelperMedia.startImagePicker(this);
+        } else {
+            MyToaster.getToast(this, "No permission granted");
         }
-
     }
 
     private boolean checkNumber(EditText enteredNumber) {

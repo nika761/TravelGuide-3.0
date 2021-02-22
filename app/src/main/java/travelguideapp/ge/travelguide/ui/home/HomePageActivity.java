@@ -1,13 +1,16 @@
 package travelguideapp.ge.travelguide.ui.home;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
@@ -17,6 +20,7 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
+import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
 import travelguideapp.ge.travelguide.ui.profile.editProfile.ProfileEditActivity;
 import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
 import travelguideapp.ge.travelguide.ui.webView.WebActivity;
@@ -60,26 +64,6 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         }
     }
 
-//    private void checkAppVersion() {
-//        try {
-//            if (BaseApplication.APP_VERSION > 0) {
-//                int appVersion = BaseApplication.APP_VERSION;
-//                if (GlobalPreferences.getAppVersion(this) < appVersion) {
-//                    final String appPackageName = getPackageName();
-//                    try {
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-//                        finish();
-//                    } catch (android.content.ActivityNotFoundException anfe) {
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-//                        finish();
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            finish();
-//        }
-//    }
 
     private void getUserProfileInfo() {
         try {
@@ -126,9 +110,13 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
 
     }
 
+    private void openGallery() {
+        Intent galleryIntent = new Intent(HomePageActivity.this, GalleryActivity.class);
+        startActivity(galleryIntent);
+    }
+
     private void initBtmNav() {
         bottomNavigationView = findViewById(R.id.navigation);
-//        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         bottomNavigationView.setItemIconSize(60);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
@@ -154,11 +142,11 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
                     break;
 
                 case R.id.bot_nav_add:
-                    if (SystemManager.isReadStoragePermission(HomePageActivity.this)) {
-                        Intent galleryIntent = new Intent(HomePageActivity.this, GalleryActivity.class);
-                        startActivity(galleryIntent);
-                    } else
-                        SystemManager.requestReadStoragePermission(HomePageActivity.this);
+                    if (isPermissionGranted(READ_EXTERNAL_STORAGE)) {
+                        openGallery();
+                    } else {
+                        requestPermission(READ_EXTERNAL_STORAGE);
+                    }
                     break;
 
                 case R.id.bot_nav_ntf:
@@ -181,27 +169,27 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
 //        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case SystemManager.READ_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent galleryIntent = new Intent(HomePageActivity.this, GalleryActivity.class);
-                    startActivity(galleryIntent);
-                } else {
-                    MyToaster.getToast(this, "No permission granted");
-                }
-                break;
+    public void onPermissionResult(boolean permissionGranted) {
+        if (permissionGranted) {
+            openGallery();
+        } else {
+            MyToaster.getToast(this, "No permission");
         }
     }
 
     @Override
     public void onBackPressed() {
         if (backToProfile) {
-            backToProfile = false;
-            bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
+            FragmentManager homeFragmentChildManager = getCurrentChildFragmentManager();
+            if (homeFragmentChildManager != null) {
+                if (homeFragmentChildManager.getBackStackEntryCount() == 0) {
+                    backToProfile = false;
+                    bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
+                } else {
+                    homeFragmentChildManager.popBackStackImmediate();
+                }
+            }
         } else {
             if (bottomNavigationView.getSelectedItemId() == R.id.bot_nav_home) {
                 super.onBackPressed();
@@ -231,8 +219,8 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         } catch (Exception e) {
             e.printStackTrace();
         }
-        bottomNavigationView.setSelectedItemId(R.id.bot_nav_home);
         HelperUI.loadFragment(HomeFragment.getInstance(), fragmentData, R.id.home_fragment_container, false, true, this);
+        new Handler().postDelayed(() -> bottomNavigationView.setSelectedItemId(R.id.bot_nav_home), 1500);
     }
 
     public void onProfileChoose() {

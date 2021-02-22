@@ -107,7 +107,13 @@ public class CommentFragment extends Fragment implements CommentListener {
         pagingContainer = view.findViewById(R.id.comments_paging_container);
 
         ImageButton closeBtn = view.findViewById(R.id.comments_close_btn);
-        closeBtn.setOnClickListener(v -> Objects.requireNonNull(getActivity()).onBackPressed());
+        closeBtn.setOnClickListener(v -> {
+            try {
+                ((HomePageActivity) context).onBackPressed();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         addCommentBtn = view.findViewById(R.id.comments_add_image_btn);
 //        addCommentBtn.setOnClickListener(v -> addComment(null));
@@ -316,7 +322,7 @@ public class CommentFragment extends Fragment implements CommentListener {
     @Override
     public void onReportChoose(int commentId) {
         try {
-            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, commentId));
+            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.setParams(ReportParams.Type.COMMENT, commentId));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -212,7 +212,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     @Override
     public void onChooseReport(int replyId) {
         try {
-            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, replyId));
+            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.setParams(ReportParams.Type.COMMENT, replyId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -333,7 +333,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
             case R.id.replies_close_btn:
                 try {
-                    getActivity().onBackPressed();
+                    ((HomePageActivity) likeBtn.getContext()).onBackPressed();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

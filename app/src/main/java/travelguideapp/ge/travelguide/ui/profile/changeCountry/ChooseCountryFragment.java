@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jakewharton.rxbinding4.widget.RxTextView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.model.customModel.Country;
 
@@ -27,6 +28,8 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
 public class ChooseCountryFragment extends DialogFragment implements ChooseCountryListener {
+
+    public static final String TAG = "countryChooserDialog";
 
     public static ChooseCountryFragment getInstance(List<Country> countries, ChooseCountryListener chooseCountryListener) {
         ChooseCountryFragment chooseCountryFragment = new ChooseCountryFragment();

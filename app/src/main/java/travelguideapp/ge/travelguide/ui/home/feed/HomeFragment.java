@@ -400,7 +400,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onReportChoose(int postId) {
         try {
-            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.POST, postId));
+            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.setParams(ReportParams.Type.POST, postId));
         } catch (Exception e) {
             e.printStackTrace();
         }

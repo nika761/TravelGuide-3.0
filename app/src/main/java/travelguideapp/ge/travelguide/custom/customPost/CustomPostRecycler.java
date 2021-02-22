@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.custom.customPost;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -8,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -146,18 +149,14 @@ public class CustomPostRecycler extends RecyclerView {
         }
 
         videoSurfaceView = new PlayerView(this.context);
-//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
-//        videoSurfaceView.setKeepScreenOn(true);
-//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-//        videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-
+        videoSurfaceView.setKeepScreenOn(true);
         // 2. Create the player
         videoPlayer = ExoPlayerFactory.newSimpleInstance(context, getTrackSelector());
+        videoPlayer.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
         // Bind the player to the view.
         videoSurfaceView.setUseController(false);
-        videoSurfaceView.setKeepContentOnPlayerReset(true);
         videoSurfaceView.setPlayer(videoPlayer);
 
         addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -214,8 +213,9 @@ public class CustomPostRecycler extends RecyclerView {
         videoPlayer.addListener(new Player.EventListener() {
 
             @Override
-            public void onPlayerError(ExoPlaybackException error) {
+            public void onPlayerError(@NotNull ExoPlaybackException error) {
                 homeFragmentListener.stopLoader();
+                Log.e(TAG, "onPlayError:." + error.getMessage());
 //                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
 //
 //                }
@@ -258,6 +258,33 @@ public class CustomPostRecycler extends RecyclerView {
                 }
             }
 
+        });
+
+    }
+
+    private void setVideoSize() {
+        new Handler().post(() -> {
+            // // Get the dimensions of the video
+            int videoWidth = videoSurfaceView.getWidth();
+            int videoHeight = videoSurfaceView.getHeight();
+            float videoProportion = (float) videoWidth / (float) videoHeight;
+
+            // Get the width of the screen
+            int screenWidth = ((Activity) context).getWindowManager().getDefaultDisplay().getWidth();
+            int screenHeight = ((Activity) context).getWindowManager().getDefaultDisplay().getHeight();
+            float screenProportion = (float) screenWidth / (float) screenHeight;
+
+            // Get the SurfaceView layout parameters
+            ViewGroup.LayoutParams lp = videoSurfaceView.getLayoutParams();
+            if (videoProportion > screenProportion) {
+                lp.width = screenWidth;
+                lp.height = (int) ((float) screenWidth / videoProportion);
+            } else {
+                lp.width = (int) (videoProportion * (float) screenHeight);
+                lp.height = screenHeight;
+            }
+            // Commit the layout parameters
+            videoSurfaceView.setLayoutParams(lp);
         });
 
     }

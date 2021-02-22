@@ -49,17 +49,17 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Ite
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_picker);
+
         iniUI();
 
-        if (SystemManager.isReadStoragePermission((this))) {
+        if (isPermissionGranted(READ_EXTERNAL_STORAGE)) {
             getMediaFilesByRole();
         } else {
-            SystemManager.requestReadStoragePermission(this);
+            requestPermission(READ_EXTERNAL_STORAGE);
         }
 
         initRecycler();
 
-        Log.e("aszxcmgdfg", String.valueOf(GlobalPreferences.getAppSettings(this).getAGE_RESTRICTION()));
     }
 
 
@@ -197,16 +197,11 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Ite
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == SystemManager.READ_EXTERNAL_STORAGE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getMediaFilesByRole();
-            } else {
-                MyToaster.getToast(this, "No permission granted");
-            }
+    public void onPermissionResult(boolean permissionGranted) {
+        if (permissionGranted) {
+            getMediaFilesByRole();
+        } else {
+            MyToaster.getToast(this, "No permission granted");
         }
-
     }
-
 }

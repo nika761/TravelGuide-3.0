@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:typeface">serif</item>
-
+        <item name="android:fontFamily">@font/roboto_light</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -19,20 +19,20 @@
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:typeface">serif</item>
-
+        <item name="android:fontFamily">@font/roboto_light</item>
     </style>
 
 
     <style name="SecondAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:typeface">serif</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
 
-<!--        <item name="android:windowTranslucentStatus">true</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
 
     </style>
 

@@ -50,7 +50,6 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        SystemManager.setLanguage(this);
         homeParentPresenter = new HomeParentPresenter(this);
     }
 
@@ -74,18 +73,6 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
                 super.onBackPressed();
             } else {
                 currentChildFragmentManager.popBackStackImmediate();
-//                try {
-//                    CommentFragment commentFragment = (CommentFragment) currentChildFragmentManager.findFragmentByTag(COMMENT_FRAGMENT_TAG);
-//                    if (commentFragment != null && commentFragment.isVisible()) {
-//                        if (commentFragment.keyBoardShowing) {
-//                            commentFragment.bottomSheetDialog.dismiss();
-//                        }
-//                    } else {
-//                        currentChildFragmentManager.popBackStackImmediate();
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
             }
         } else {
             super.onBackPressed();

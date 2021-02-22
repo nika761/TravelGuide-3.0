@@ -16,7 +16,7 @@ public class ReportParams implements Serializable, Parcelable {
         USER, POST, COMMENT
     }
 
-    public static ReportParams getInstance(Type reportType, int id) {
+    public static ReportParams setParams(Type reportType, int id) {
         ReportParams reportParams = new ReportParams();
         switch (reportType) {
             case COMMENT:

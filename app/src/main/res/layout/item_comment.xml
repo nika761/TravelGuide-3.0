@@ -21,6 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/black"
         android:textSize="14sp"
@@ -34,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
+        android:ellipsize="end"
         android:maxLines="10"
         android:textSize="14sp"
         app:autoSizeTextType="uniform"
@@ -100,15 +102,15 @@
         app:layout_constraintStart_toEndOf="@id/comments_date"
         app:layout_constraintTop_toTopOf="@id/comments_date" />
 
-<!--    <ImageButton-->
-<!--        android:id="@+id/delte"-->
-<!--        android:layout_width="20dp"-->
-<!--        android:layout_height="18dp"-->
-<!--        android:layout_marginEnd="7dp"-->
-<!--        android:background="@drawable/icon_menu"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/comments_reply_btn"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@id/comments_reply_btn" />-->
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/delte"-->
+    <!--        android:layout_width="20dp"-->
+    <!--        android:layout_height="18dp"-->
+    <!--        android:layout_marginEnd="7dp"-->
+    <!--        android:background="@drawable/icon_menu"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/comments_reply_btn"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/comments_reply_btn" />-->
 
     <ImageButton
         android:id="@+id/comments_like_btn"
