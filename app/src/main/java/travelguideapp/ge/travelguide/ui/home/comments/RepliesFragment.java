@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -212,7 +212,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     @Override
     public void onChooseReport(int replyId) {
         try {
-            ((BaseActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, replyId));
+            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, replyId));
         } catch (Exception e) {
             e.printStackTrace();
         }

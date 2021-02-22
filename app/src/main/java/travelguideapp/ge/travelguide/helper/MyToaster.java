@@ -3,11 +3,13 @@ package travelguideapp.ge.travelguide.helper;
 import android.content.Context;
 import android.widget.Toast;
 
+import travelguideapp.ge.travelguide.R;
+
 public class MyToaster {
 
     public static void getUnknownErrorToast(Context context) {
         if (context != null)
-            Toast.makeText(context, "Error Try Again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.default_error_message), Toast.LENGTH_SHORT).show();
     }
 
     public static void getToast(Context context, String message) {

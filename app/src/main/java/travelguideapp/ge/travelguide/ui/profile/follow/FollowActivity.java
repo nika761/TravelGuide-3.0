@@ -10,13 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import com.google.android.material.tabs.TabLayout;
 
-public class FollowActivity extends AppCompatActivity implements FollowFragment.FollowFragmentCallbacks {
+public class FollowActivity extends BaseActivity implements FollowFragment.FollowFragmentCallbacks {
 
     private int customerUserId;
 
@@ -24,7 +25,6 @@ public class FollowActivity extends AppCompatActivity implements FollowFragment.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow);
-        SystemManager.setLanguage(this);
         if (getIntent().getIntExtra("customer_user_id", 0) != 0) {
             this.customerUserId = getIntent().getIntExtra("customer_user_id", 0);
         }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
@@ -29,7 +30,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-public class GalleryActivity extends AppCompatActivity implements GalleryFragment.ItemCountChangeListener {
+public class GalleryActivity extends BaseActivity implements GalleryFragment.ItemCountChangeListener {
 
     private ConstraintLayout fragmentContainer;
     private RecyclerView recyclerView;
@@ -48,7 +49,6 @@ public class GalleryActivity extends AppCompatActivity implements GalleryFragmen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_picker);
-        SystemManager.setLanguage(this);
         iniUI();
 
         if (SystemManager.isReadStoragePermission((this))) {

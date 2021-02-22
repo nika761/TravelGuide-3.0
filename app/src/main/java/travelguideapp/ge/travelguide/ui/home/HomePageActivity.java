@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -33,7 +33,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import static travelguideapp.ge.travelguide.helper.HelperUI.GO_URL;
 import static travelguideapp.ge.travelguide.helper.HelperUI.TYPE;
 
-public class HomePageActivity extends BaseActivity implements HomePageListener, OnPostChooseCallback,
+public class HomePageActivity extends HomeParentActivity implements HomePageListener, OnPostChooseCallback,
         ProfileFragment.ProfileFragmentCallBacks {
 
     private BottomNavigationView bottomNavigationView;
@@ -201,7 +201,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
     public void onBackPressed() {
         if (backToProfile) {
             backToProfile = false;
-            onProfileChoose();
+            bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
         } else {
             if (bottomNavigationView.getSelectedItemId() == R.id.bot_nav_home) {
                 super.onBackPressed();
@@ -237,7 +237,7 @@ public class HomePageActivity extends BaseActivity implements HomePageListener, 
 
     public void onProfileChoose() {
         bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
-        HelperUI.loadFragment(new ProfileFragment(), null, R.id.home_fragment_container, true, false, this);
+//        HelperUI.loadFragment(ProfileFragment.getInstance(this), null, R.id.home_fragment_container, true, false, this);
     }
 
     @Override

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
@@ -28,7 +29,7 @@ import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import java.util.List;
 
-public class ResetPasswordActivity extends AppCompatActivity implements ResetPasswordListener, View.OnFocusChangeListener {
+public class ResetPasswordActivity extends BaseActivity implements ResetPasswordListener, View.OnFocusChangeListener {
     private EditText eEmail, ePassword, eConfirmPassword;
     private String email, password, confirmPassword, token;
     private TextView emailHead, passwordHead, confirmPasswordHead;
@@ -42,7 +43,6 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-        SystemManager.setLanguage(this);
         initUI();
         verifyToken();
     }
@@ -122,7 +122,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements ResetPas
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MyToaster.getToast(this, "Try Again");
+            MyToaster.getUnknownErrorToast(this);
             finish();
         }
 

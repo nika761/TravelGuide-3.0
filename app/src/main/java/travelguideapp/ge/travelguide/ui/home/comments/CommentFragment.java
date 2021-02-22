@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
@@ -262,7 +262,7 @@ public class CommentFragment extends Fragment implements CommentListener {
     @Override
     public void onUserChoose(int userId) {
         try {
-            ((BaseActivity) getActivity()).startCustomerActivity(userId);
+            ((HomeParentActivity) getActivity()).startCustomerActivity(userId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -316,7 +316,7 @@ public class CommentFragment extends Fragment implements CommentListener {
     @Override
     public void onReportChoose(int commentId) {
         try {
-            ((BaseActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, commentId));
+            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.COMMENT, commentId));
         } catch (Exception e) {
             e.printStackTrace();
         }

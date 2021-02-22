@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
+import travelguideapp.ge.travelguide.ui.upload.UploadPostListener;
 
 import java.util.List;
 
@@ -18,11 +19,13 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
 
     private List<HashtagResponse.Hashtags> hashtags;
     private TagPostListener tagPostListener;
+    private UploadPostListener uploadPostListener;
     private List<String> hashs;
     private int type;
 
-    public HashtagAdapter(int type) {
+    public HashtagAdapter(int type, UploadPostListener uploadPostListener) {
         this.type = type;
+        this.uploadPostListener = uploadPostListener;
     }
 
     HashtagAdapter(TagPostListener tagPostListener, int type) {
@@ -60,6 +63,12 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
         notifyDataSetChanged();
     }
 
+    public List<String> getHashs() {
+        return this.hashs;
+    }
+
+    ;
+
     public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
         this.hashtags = hashtags;
         notifyDataSetChanged();
@@ -79,8 +88,14 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
                 hashtag.setOnClickListener(v -> tagPostListener.onChooseHashtag(hashtags.get(getLayoutPosition()).getHashtag()));
             else
                 delete.setOnClickListener(v -> {
-                    hashs.remove(getLayoutPosition());
-                    notifyDataSetChanged();
+                    try {
+                        uploadPostListener.onHashtagRemoved(hashs.get(getLayoutPosition()));
+                        hashs.remove(getLayoutPosition());
+                        if (hashs.size() > 0)
+                            notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
         }
 

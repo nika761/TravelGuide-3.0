@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
@@ -37,7 +38,7 @@ import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
-public class EditPostActivity extends AppCompatActivity implements EditPostCallback {
+public class EditPostActivity extends BaseActivity implements EditPostCallback {
 
     public static final String STORIES_PATHS = "selectedPaths";
 
@@ -59,7 +60,6 @@ public class EditPostActivity extends AppCompatActivity implements EditPostCallb
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
-        SystemManager.setLanguage(this);
         initUI();
         sortData();
         checkVideoDuration();

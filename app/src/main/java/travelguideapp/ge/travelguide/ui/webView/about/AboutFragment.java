@@ -57,11 +57,6 @@ public class AboutFragment extends Fragment implements AboutListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            SystemManager.setLanguage(getContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

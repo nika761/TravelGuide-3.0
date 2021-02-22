@@ -8,10 +8,9 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tag_post_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toTopOf="@+id/tag_post_search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="@color/black"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
         <TextView
@@ -38,7 +38,8 @@
             android:layout_marginEnd="10dp"
             android:text="@string/done"
             android:textColor="@color/yellowTextView"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:visibility="gone" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -48,11 +49,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:background="@color/whiteNone"
+        android:background="@drawable/bg_search_field"
         android:drawableStart="@drawable/icon_search_yellow"
-        android:gravity="center_vertical"
-        android:padding="5dp"
+        android:gravity="center_vertical|center_horizontal|start"
+        android:importantForAutofill="no|noExcludeDescendants"
+        android:maxLines="1"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="5dp"
         android:textColor="@color/blackStatusBar"
+        android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/tag_post_line"
         app:layout_constraintEnd_toStartOf="@+id/tag_post_search_btn"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +95,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tag_post_line" />
 
@@ -96,14 +104,36 @@
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_gravity="center"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/loading_yellow" />
 
+    <LinearLayout
+        android:id="@+id/nothing_found_tag_friends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/icon_search_yellow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/no_searched_data"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -457,7 +457,15 @@ public class CustomPostRecycler extends RecyclerView {
             } else {
                 if (post.getHashtags().size() > 0) {
                     holder.hashtagRecycler.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                    holder.hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags(), homeFragmentListener));
+                    if (post.getHashtags().size() > 8) {
+                        List<String> limitedHashtags = new ArrayList<>();
+                        for (int i = 0; i < 8; i++) {
+                            limitedHashtags.add(post.getHashtags().get(i));
+                        }
+                        holder.hashtagRecycler.setAdapter(new HashtagAdapter(limitedHashtags, homeFragmentListener));
+                    } else {
+                        holder.hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags(), homeFragmentListener));
+                    }
                     holder.hashtagRecycler.setVisibility(View.VISIBLE);
                 } else {
                     holder.hashtagRecycler.setVisibility(View.GONE);

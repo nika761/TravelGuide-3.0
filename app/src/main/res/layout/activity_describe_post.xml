@@ -62,7 +62,7 @@
             android:maxLength="300"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:textSize="14sp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@id/describe_story_photo"
             app:layout_constraintEnd_toStartOf="@id/describe_story_photo"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +136,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:gravity="center"
+        android:gravity="center|center_horizontal|center_vertical"
         android:padding="5dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
@@ -147,49 +147,59 @@
 
         <TextView
             android:id="@+id/describe_hashtags"
-            android:layout_width="85dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
             android:layout_weight="1"
             android:background="@drawable/bg_describe"
-            android:gravity="center"
+            android:ellipsize="end"
+            android:gravity="center|center_horizontal|center_vertical"
+            android:maxLines="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:text="@string/hashtags"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/describe_friends"
-            android:layout_width="85dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/bg_describe"
-            android:gravity="center"
+            android:ellipsize="end"
+            android:gravity="center|center_horizontal|center_vertical"
+            android:maxLines="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:text="@string/friends"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/location"
-            android:layout_width="85dp"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:autoSizeTextType="uniform"
             android:background="@drawable/bg_describe"
             android:drawableStart="@drawable/icon_location"
-            android:gravity="center_horizontal"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
+            android:ellipsize="end"
+            android:gravity="center|center_horizontal|center_vertical"
+            android:maxLines="1"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="@string/location"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/remove_choosed_location"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginBottom="3dp"
         android:background="@drawable/icon_close"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/choosed_location"
@@ -197,20 +207,24 @@
 
     <TextView
         android:id="@+id/choosed_location"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/bg_describe"
         android:drawableStart="@drawable/icon_location"
-        android:gravity="start|center_vertical"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical|center_horizontal"
+        android:maxLength="100"
+        android:maxLines="1"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:textColor="@color/black"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/describe_items_container"
+        app:layout_constraintStart_toStartOf="@id/describe_items_container"
         app:layout_constraintTop_toBottomOf="@id/describe_items_container" />
 
     <Button

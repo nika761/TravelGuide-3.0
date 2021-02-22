@@ -34,6 +34,10 @@ public class AppSettings {
     private String S3_2;
 
     @Expose
+    @SerializedName("hashtag_lenght")
+    private int hashtag_lenght;
+
+    @Expose
     @SerializedName("story_video_template_for_photo")
     private String story_video_template_for_photo;
 
@@ -220,5 +224,9 @@ public class AppSettings {
 
     public int getPost_videos_duration() {
         return post_videos_duration;
+    }
+
+    public int getHashtag_lenght() {
+        return hashtag_lenght;
     }
 }

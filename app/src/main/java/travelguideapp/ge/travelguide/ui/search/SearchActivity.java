@@ -10,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
@@ -32,7 +32,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 
-public class SearchActivity extends BaseActivity implements SearchListener {
+public class SearchActivity extends HomeParentActivity implements SearchListener {
 
     private ImageButton searchBtn, backBtn, clearTextBtn;
     private TabLayout tabLayout;

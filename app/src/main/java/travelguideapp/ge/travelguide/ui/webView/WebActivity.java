@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.webView;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -20,12 +23,11 @@ import travelguideapp.ge.travelguide.ui.webView.policy.PolicyFragment;
 import travelguideapp.ge.travelguide.ui.webView.terms.TermsFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
-public class WebActivity extends AppCompatActivity {
+public class WebActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SystemManager.setLanguage(this);
         setContentView(R.layout.activity_terms_policy);
         checkRequestType();
 //        setLanguage();
@@ -62,7 +64,7 @@ public class WebActivity extends AppCompatActivity {
                     break;
             }
         } else {
-            MyToaster.getToast(this, "Try Again");
+            MyToaster.getUnknownErrorToast(this);
             finish();
         }
     }

@@ -16,13 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.model.response.FollowerResponse;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
-import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
-import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
-import travelguideapp.ge.travelguide.ui.upload.tag.FriendsAdapter;
 
 public class UsersFragment extends Fragment implements UsersFragmentListener {
 
@@ -76,7 +72,7 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
     @Override
     public void onUserChoose(FullSearchResponse.Users user) {
         try {
-            ((BaseActivity) getActivity()).startCustomerActivity(user.getId());
+            ((HomeParentActivity) getActivity()).startCustomerActivity(user.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }

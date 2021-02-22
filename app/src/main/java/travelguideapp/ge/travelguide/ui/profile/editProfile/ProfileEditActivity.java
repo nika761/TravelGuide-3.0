@@ -26,6 +26,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.hbb20.CountryCodePicker;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -50,7 +51,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static travelguideapp.ge.travelguide.helper.SystemManager.READ_EXTERNAL_STORAGE;
 
-public class ProfileEditActivity extends AppCompatActivity implements ProfileEditListener, ChooseCountryListener {
+public class ProfileEditActivity extends BaseActivity implements ProfileEditListener, ChooseCountryListener {
 
     private CountryCodePicker countryCodePicker;
     private ProfileEditPresenter presenter;
@@ -75,7 +76,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ProfileEdi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
-        SystemManager.setLanguage(this);
         getInfoFromExtra();
         initUI();
         getProfileInfo();

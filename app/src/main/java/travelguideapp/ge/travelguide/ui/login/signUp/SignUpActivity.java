@@ -23,6 +23,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
@@ -45,7 +46,7 @@ import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 
 import static travelguideapp.ge.travelguide.helper.SystemManager.READ_EXTERNAL_STORAGE;
 
-public class SignUpActivity extends AppCompatActivity implements SignUpListener {
+public class SignUpActivity extends BaseActivity implements SignUpListener {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
@@ -72,7 +73,6 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        SystemManager.setLanguage(this);
         initUI();
     }
 
@@ -135,7 +135,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpListener 
                 } else
                     MyToaster.getToast(this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
-                MyToaster.getToast(this, "Try Again");
+                MyToaster.getUnknownErrorToast(this);
                 e.printStackTrace();
             }
         };

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 
 import java.io.File;
@@ -26,7 +27,7 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.PhotoFilter;
 
-public class FilterActivity extends AppCompatActivity implements IFilterListener, View.OnClickListener {
+public class FilterActivity extends BaseActivity implements IFilterListener, View.OnClickListener {
 
     private PhotoEditorView photoEditorView;
     private PhotoEditor photoEditor;
@@ -43,7 +44,6 @@ public class FilterActivity extends AppCompatActivity implements IFilterListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
-        SystemManager.setLanguage(this);
         if (!SystemManager.isWriteStoragePermission(this)) {
             SystemManager.requestWriteStoragePermission(this);
         }

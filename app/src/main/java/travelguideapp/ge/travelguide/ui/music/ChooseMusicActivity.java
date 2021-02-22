@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
@@ -29,7 +30,7 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.ui.editPost.EditPostActivity;
 
-public class ChooseMusicActivity extends AppCompatActivity implements View.OnClickListener, SearchMusicFragment.OnChooseMusic, PlayMusicListener {
+public class ChooseMusicActivity extends BaseActivity implements View.OnClickListener, SearchMusicFragment.OnChooseMusic, PlayMusicListener {
 
     public static final String MUSIC_ID = "music_id";
 
@@ -44,7 +45,6 @@ public class ChooseMusicActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_music);
-        SystemManager.setLanguage(this);
 //        this.itemMediaList = (List<ItemMedia>) getIntent().getSerializableExtra(EditPostActivity.STORIES_PATHS);
         try {
             this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);

@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
@@ -57,7 +58,7 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 
-public class SignInActivity extends AppCompatActivity implements SignInListener {
+public class SignInActivity extends BaseActivity implements SignInListener {
 
     private SignInPresenter signInPresenter;
     private CallbackManager callbackManager;
@@ -83,7 +84,6 @@ public class SignInActivity extends AppCompatActivity implements SignInListener 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        SystemManager.setLanguage(this);
         try {
             currentLanguage = GlobalPreferences.getCurrentLanguage(this);
         } catch (Exception e) {

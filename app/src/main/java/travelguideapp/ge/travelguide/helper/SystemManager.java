@@ -4,19 +4,22 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.LocaleList;
+import android.util.DisplayMetrics;
 
 import androidx.core.app.ActivityCompat;
 
 import java.util.Locale;
 import java.util.Objects;
 
-import travelguideapp.ge.travelguide.base.BaseApplication;
+import travelguideapp.ge.travelguide.utility.ContextUtils;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
@@ -93,14 +96,35 @@ public class SystemManager {
         resources.updateConfiguration(config, resources.getDisplayMetrics());
     }
 
-    public static void setLanguage(Context context) {
-        Locale locale = new Locale(GlobalPreferences.getLanguage(context));
-        Locale.setDefault(locale);
-        Resources resources = context.getResources();
-        Configuration config = resources.getConfiguration();
-        config.setLocale(locale);
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-    }
+//    public static void setLanguage(Context context) {
+//        Locale locale = new Locale(GlobalPreferences.getLanguage(context));
+//        Resources resources = context.getResources();
+//        Configuration config = resources.getConfiguration();
+//        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+//        config.locale = locale;
+//        resources.updateConfiguration(config, displayMetrics);
+//        ((Activity) context).onConfigurationChanged(config);
+//    }
 
+    public static ContextWrapper updateLocale(Context context, Locale localeToSwitchTo) {
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration(); // 1
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            LocaleList localeList = new LocaleList(localeToSwitchTo); // 2
+            LocaleList.setDefault(localeList); // 3
+            configuration.setLocales(localeList); // 4
+        } else {
+            configuration.locale = localeToSwitchTo; // 5
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            context = context.createConfigurationContext(configuration); // 6
+        } else {
+            resources.updateConfiguration(configuration, resources.getDisplayMetrics()); // 7
+        }
+
+        return new ContextUtils(context);
+    }
 
 }

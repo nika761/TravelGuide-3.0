@@ -3,9 +3,14 @@ package travelguideapp.ge.travelguide.ui.upload.tag;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -16,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.SearchFollowersRequest;
@@ -25,20 +31,25 @@ import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
+import static travelguideapp.ge.travelguide.ui.upload.UploadPostActivity.TAG_REQUEST_TYPE;
 import static travelguideapp.ge.travelguide.ui.upload.UploadPostActivity.TAG_TYPE_HASHTAGS;
 import static travelguideapp.ge.travelguide.ui.upload.UploadPostActivity.TAG_TYPE_USERS;
 
-public class TagPostActivity extends AppCompatActivity implements TagPostListener, View.OnClickListener {
+public class TagPostActivity extends BaseActivity implements TagPostListener {
 
     private EditText searchEditTxt;
-    private TextView searchBtn;
-    private RecyclerView recyclerView;
+    private TextView searchBtn, title;
+    private RecyclerView tagRecycler;
+    private LinearLayout nothingFound;
     private TagPostPresenter postPresenter;
     private LottieAnimationView loader;
 
@@ -46,38 +57,57 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_tags);
+        postPresenter = new TagPostPresenter(this);
         initUI();
     }
 
     private void initUI() {
+        ImageButton backBtn = findViewById(R.id.tag_post_back_btn);
+        backBtn.setOnClickListener(v -> finish());
 
-        postPresenter = new TagPostPresenter(this);
+        tagRecycler = findViewById(R.id.tag_post_recycler);
+        tagRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         loader = findViewById(R.id.loader_tags);
-
-        ImageButton backBtn = findViewById(R.id.tag_post_back_btn);
-        backBtn.setOnClickListener(this);
+        title = findViewById(R.id.tag_post_title);
+        nothingFound = findViewById(R.id.nothing_found_tag_friends);
 
         searchBtn = findViewById(R.id.tag_post_search_btn);
-        searchBtn.setOnClickListener(this);
-
-        TextView doneBtn = findViewById(R.id.tag_post_done_btn);
-        doneBtn.setOnClickListener(this);
-        doneBtn.setVisibility(View.INVISIBLE);
+        searchBtn.setOnClickListener(v -> searchBtnClickAction());
 
         searchEditTxt = findViewById(R.id.tag_post_search);
-        TextView title = findViewById(R.id.tag_post_title);
+        setSearchFieldOptions();
 
-        recyclerView = findViewById(R.id.tag_post_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        getTagType();
+    }
 
-        String type = getIntent().getStringExtra("tag_type");
+    private void setSearchFieldOptions() {
+        try {
+            InputFilter[] inputFilters = new InputFilter[1];
+            inputFilters[0] = new InputFilter.LengthFilter(GlobalPreferences.getAppSettings(this).getHashtag_lenght());
+            searchEditTxt.setFilters(inputFilters);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        searchEditTxt.setLongClickable(false);
+        searchEditTxt.setTextIsSelectable(false);
+    }
+
+    public void setNothingFound() {
+        tagRecycler.setVisibility(View.GONE);
+        nothingFound.setVisibility(View.VISIBLE);
+    }
+
+    private void getTagType() {
+
+        String type = getIntent().getStringExtra(TAG_REQUEST_TYPE);
+
         if (type != null)
             switch (type) {
                 case TAG_TYPE_USERS:
-                    title.setText("Tag Friends");
+                    title.setText(getString(R.string.tag_friends));
                     RxTextView.textChanges(searchEditTxt)
-                            .debounce(1200, TimeUnit.MILLISECONDS)
+                            .debounce(600, TimeUnit.MILLISECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
                             .map(CharSequence::toString)
                             .subscribe((Consumer<CharSequence>) charSequence -> {
@@ -89,9 +119,9 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
                     break;
 
                 case TAG_TYPE_HASHTAGS:
-                    title.setText("Hashtags");
+                    title.setText(getString(R.string.hashtags));
                     RxTextView.textChanges(searchEditTxt)
-                            .debounce(1200, TimeUnit.MILLISECONDS)
+                            .debounce(600, TimeUnit.MILLISECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
                             .map(CharSequence::toString)
                             .subscribe((Consumer<CharSequence>) charSequence -> {
@@ -105,17 +135,45 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
 
     }
 
+    private void searchBtnClickAction() {
+        try {
+            if (searchEditTxt.getText().toString() == null || searchEditTxt.getText().toString().isEmpty()) {
+                return;
+            }
+
+            if (searchEditTxt.getText().toString().length() > GlobalPreferences.getAppSettings(this).getHashtag_lenght()) {
+                searchEditTxt.getText().clear();
+                return;
+            }
+
+            String created;
+            if (!searchEditTxt.getText().toString().startsWith("#")) {
+                created = "#" + searchEditTxt.getText().toString();
+            } else {
+                created = searchEditTxt.getText().toString();
+            }
+            Intent mIntent = new Intent();
+            mIntent.putExtra("hashtags", created);
+            setResult(Activity.RESULT_OK, mIntent);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+    }
+
     @Override
     public void onGetHashtags(List<HashtagResponse.Hashtags> hashtags) {
         try {
             loader.setVisibility(View.GONE);
             if (hashtags == null || hashtags.size() == 0) {
-                searchBtn.setText("Add Hashtag");
+                searchBtn.setText(getString(R.string.add_hashtag));
             } else {
                 searchBtn.setText(getString(R.string.search));
                 AddTagAdapter addTagAdapter = new AddTagAdapter(this);
                 addTagAdapter.setHashtags(hashtags);
-                recyclerView.setAdapter(addTagAdapter);
+                tagRecycler.setAdapter(addTagAdapter);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,8 +184,8 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
 
     @Override
     public void onGetError(String message) {
-        MyToaster.getToast(this, message);
         loader.setVisibility(View.GONE);
+        MyToaster.getToast(this, message);
     }
 
     @Override
@@ -141,10 +199,17 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
     @Override
     public void onGetFollowers(List<FollowerResponse.Followers> followers) {
         try {
-            FriendsAdapter friendsAdapter = new FriendsAdapter(this);
-            recyclerView.setAdapter(friendsAdapter);
-            friendsAdapter.setFollowers(followers);
             loader.setVisibility(View.GONE);
+            if (followers.size() == 0) {
+                setNothingFound();
+                return;
+            }
+
+            FriendsAdapter friendsAdapter = new FriendsAdapter(this);
+            nothingFound.setVisibility(View.GONE);
+            tagRecycler.setVisibility(View.VISIBLE);
+            tagRecycler.setAdapter(friendsAdapter);
+            friendsAdapter.setFollowers(followers);
         } catch (Exception e) {
             e.printStackTrace();
             setResult(Activity.RESULT_CANCELED);
@@ -161,37 +226,19 @@ public class TagPostActivity extends AppCompatActivity implements TagPostListene
         finish();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tag_post_back_btn:
-                finish();
-                break;
-
-//            case R.id.tag_post_search_btn:
-//                postPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchEditTxt.getText().toString()));
-//                break;
-
-            case R.id.tag_post_search_btn:
-                try {
-                    Intent m = new Intent();
-                    String created = "#" + searchEditTxt.getText().toString();
-                    m.putExtra("hashtags", created);
-                    setResult(Activity.RESULT_OK, m);
-                    finish();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    setResult(Activity.RESULT_CANCELED);
-                    finish();
-                }
-                break;
-
-//            case R.id.tag_post_done_btn:
-//                Intent resultIntent = new Intent();
-//                resultIntent.putExtra("hashtags", (Serializable) hashtags);
-//                setResult(Activity.RESULT_OK, resultIntent);
-//                finish();
-//                break;
+    public static void isHashtag(String hashtag) {
+        String input = "My name is #George and I like #Java.";
+        Pattern patt = Pattern.compile("(#\\w+)\\b");
+        Matcher match = patt.matcher(input);
+        List<String> matStr = new ArrayList<>();
+        while (match.find()) {
+            matStr.add(match.group(1));
         }
+    }
+
+    private boolean checkHashtag(String hashtag) {
+        Pattern patt = Pattern.compile("(#\\w+)\\b");
+        Matcher match = patt.matcher(hashtag);
+        return match.matches();
     }
 }

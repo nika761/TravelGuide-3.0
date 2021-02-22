@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.profile;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
@@ -21,7 +23,7 @@ class ProfileFragmentPresenter {
     void getProfile(String accessToken, ProfileRequest profileRequest) {
         apiService.getProfile(accessToken, profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
-            public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+            public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
                         switch (response.body().getStatus()) {
@@ -42,7 +44,7 @@ class ProfileFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<ProfileResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileResponse> call, @NotNull Throwable t) {
 //                if (t instanceof UnknownHostException) {
 //                    profileFragmentListener.onConnectionError();
 //                } else {

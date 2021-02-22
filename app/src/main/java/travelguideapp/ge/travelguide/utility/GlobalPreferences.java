@@ -42,7 +42,6 @@ public class GlobalPreferences {
     private static final String FIRST_USE = "first_use";
     private static final String APP_SETTINGS_KEY = "app_settings_key";
 
-
     private static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences(TRAVEL_GUIDE_PREFERENCES, Context.MODE_PRIVATE);
     }
@@ -127,8 +126,9 @@ public class GlobalPreferences {
         String language = "en";
         if (getPref(context).getString(LANGUAGE_LOCALE_KEY, null) != null) {
             return getPref(context).getString(LANGUAGE_LOCALE_KEY, null);
-        } else
+        } else {
             return language;
+        }
     }
 
     ///AccessToken

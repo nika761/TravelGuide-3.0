@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
@@ -26,7 +27,7 @@ import java.util.List;
 
 import static travelguideapp.ge.travelguide.ui.editPost.EditPostActivity.STORIES_PATHS;
 
-public class SortStoriesActivity extends AppCompatActivity {
+public class SortStoriesActivity extends BaseActivity {
 
     private List<ItemMedia> itemMedia = new ArrayList<>();
     private List<MediaFileData> mediaFiles = new ArrayList<>();
@@ -35,7 +36,6 @@ public class SortStoriesActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sort_stories);
-        SystemManager.setLanguage(this);
 //        this.itemMedia = (List<ItemMedia>) getIntent().getSerializableExtra(STORIES_PATHS);
         try {
             this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);

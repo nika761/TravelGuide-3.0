@@ -71,7 +71,7 @@
     <string name="music_new">новое</string>
     <string name="post">пост</string>
     <string name="hashtags">#Хэштеги</string>
-    <string name="friends">\@Друзья</string>
+    <string name="friends">@Друзья</string>
     <string name="location">локация</string>
     <string name="language">язык</string>
     <string name="report_head">Укажите причину, по которой вы хотите пожаловаться на этого пользователя</string>
@@ -109,4 +109,9 @@
     <string name="no_notifications">У вас нет сообщений</string>
     <string name="no_searched_data">"Результатов не найдено "</string>
     <string name="back_btn">Назад</string>
+    <string name="add_hashtag">Добавлять</string>
+    <string name="tag_friends">Отметить друзей</string>
+    <string name="describe_post">Описание</string>
+    <string name="go_tab">GO !</string>
+    <string name="default_error_message">Ошибка, попробуйте еще раз</string>
 </resources>

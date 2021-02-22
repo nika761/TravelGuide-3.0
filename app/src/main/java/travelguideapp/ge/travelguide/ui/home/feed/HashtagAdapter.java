@@ -39,15 +39,7 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
 
     @Override
     public int getItemCount() {
-        if (hashtags.size() < 8) {
-            return hashtags.size();
-        } else {
-            List<String> limitedHashtags = new ArrayList<>();
-            for (int i = 0; i < 8; i++) {
-                limitedHashtags.add(hashtags.get(i));
-            }
-            return limitedHashtags.size();
-        }
+        return hashtags.size();
     }
 
     class HashtagHolder extends RecyclerView.ViewHolder {

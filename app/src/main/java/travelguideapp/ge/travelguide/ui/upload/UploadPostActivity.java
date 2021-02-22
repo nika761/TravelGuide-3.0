@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
@@ -50,14 +52,15 @@ import travelguideapp.ge.travelguide.network.ApiEndPoint;
 
 import static travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity.MUSIC_ID;
 
-public class UploadPostActivity extends AppCompatActivity implements UploadPostListener {
+public class UploadPostActivity extends BaseActivity implements UploadPostListener {
 
-    private static final int TAG_LOCATION_REQUEST_CODE = 444;
+    private static final int TAG_REQUEST_LOCATION__CODE = 444;
     private static final int TAG_REQUEST_CODE_HASHTAGS = 48;
     private static final int TAG_REQUEST_CODE_FRIENDS = 49;
 
     public static final String TAG_TYPE_USERS = "tag_users";
     public static final String TAG_TYPE_HASHTAGS = "tag_hashtags";
+    public static final String TAG_REQUEST_TYPE = "tag_request_type";
 
     private File fileForUpload;
     //    private List<ItemMedia> itemMedia = new ArrayList<>();
@@ -86,7 +89,6 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_describe_post);
-        SystemManager.setLanguage(this);
         getExtras();
         initUI();
         initHashtagRecycler();
@@ -146,32 +148,32 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
         YoYo.with(Techniques.FadeOut)
                 .duration(150)
                 .onEnd(animator -> {
+                    choosedLocation.setText("");
                     choosedLocation.setVisibility(View.GONE);
                     removeLocation.setVisibility(View.GONE);
                 })
                 .playOn(choosedLocation);
 
         latLng = null;
-        choosedLocation.setText("");
     }
 
     private void initHashtagRecycler() {
         hashtagRecycler = findViewById(R.id.hashtag_upload_recycler);
         hashtagRecycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        hashtagAdapter = new HashtagAdapter(1);
+        hashtagAdapter = new HashtagAdapter(1, this);
         hashtagRecycler.setAdapter(hashtagAdapter);
     }
 
     private void onStartAddTags(String tagType, int requestCode) {
         Intent intent = new Intent(this, TagPostActivity.class);
-        intent.putExtra("tag_type", tagType);
+        intent.putExtra(TAG_REQUEST_TYPE, tagType);
         startActivityForResult(intent, requestCode);
     }
 
     private void onStartAddLocation() {
         List<Place.Field> locations = Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME, Place.Field.LAT_LNG);
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, locations).build(UploadPostActivity.this);
-        startActivityForResult(intent, TAG_LOCATION_REQUEST_CODE);
+        startActivityForResult(intent, TAG_REQUEST_LOCATION__CODE);
     }
 
     private void getLoader(boolean show) {
@@ -269,11 +271,14 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                         Place place = Autocomplete.getPlaceFromIntent(data);
                         address = place.getAddress();
                         addressName = place.getName();
-                        YoYo.with(Techniques.FadeIn).duration(600).onEnd(animator -> {
-                            choosedLocation.setVisibility(View.VISIBLE);
-                            removeLocation.setVisibility(View.VISIBLE);
-                            choosedLocation.setText(addressName);
-                        }).playOn(choosedLocation);
+                        YoYo.with(Techniques.FadeIn)
+                                .duration(600)
+                                .onEnd(animator -> {
+                                    choosedLocation.setVisibility(View.VISIBLE);
+                                    removeLocation.setVisibility(View.VISIBLE);
+                                    choosedLocation.setText(addressName);
+                                })
+                                .playOn(choosedLocation);
 
                         if (place.getLatLng() != null) {
                             String lat = String.valueOf(place.getLatLng().latitude);
@@ -302,7 +307,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                     try {
                         String hashtag = data.getStringExtra("hashtags");
                         this.hashtags.add(hashtag);
-
+                        Log.e("HASHTAG_CHECKING", hashtags.toString());
                         this.hashs.add(hashtag);
                         if (hashs.size() > 0) {
                             setTagRecycler(true);
@@ -328,17 +333,17 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
                     try {
                         int friendsId = data.getIntExtra("friend_id", 0);
                         String friendName = data.getStringExtra("friend_name");
+                        if (friendsId != 0) {
+                            this.users.add(friendsId);
+                            this.hashs.add(friendName);
 
-                        this.users.add(friendsId);
-                        this.hashs.add(friendName);
-
-                        if (hashs.size() > 0) {
-                            setTagRecycler(true);
-                            hashtagAdapter.setHashs(hashs);
-                        } else {
-                            setTagRecycler(false);
+                            if (hashs.size() > 0) {
+                                setTagRecycler(true);
+                                hashtagAdapter.setHashs(hashs);
+                            } else {
+                                setTagRecycler(false);
+                            }
                         }
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -353,7 +358,7 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case TAG_LOCATION_REQUEST_CODE:
+            case TAG_REQUEST_LOCATION__CODE:
                 onGetAddLocationResult(data, resultCode);
                 break;
 
@@ -377,6 +382,19 @@ public class UploadPostActivity extends AppCompatActivity implements UploadPostL
             } else {
                 MyToaster.getToast(this, "Without Permission You Can't Upload Photo");
             }
+        }
+    }
+
+    @Override
+    public void onHashtagRemoved(String item) {
+        try {
+            hashtags.remove(item);
+            if (hashtags.size() == 0)
+                setTagRecycler(false);
+            Log.e("HASHTAG_CHECKING" + "hah", hashs.toString());
+            Log.e("HASHTAG_CHECKING", hashtags.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

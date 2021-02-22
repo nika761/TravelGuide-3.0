@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -29,7 +30,7 @@ import travelguideapp.ge.travelguide.model.response.CheckNickResponse;
 import travelguideapp.ge.travelguide.model.response.SignUpWithFirebaseResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 
-public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpFireBaseListener {
+public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBaseListener {
 
     private TextView dateHead, nickHead, dateOfBirth, nickError, nickOffer1, nickOffer2;
     private LottieAnimationView loader;
@@ -117,7 +118,7 @@ public class SignUpFireBaseActivity extends AppCompatActivity implements SignUpF
                 } else
                     MyToaster.getToast(this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
-                MyToaster.getToast(this, "Try Again");
+                MyToaster.getUnknownErrorToast(this);
                 e.printStackTrace();
             }
         };

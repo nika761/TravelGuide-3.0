@@ -108,4 +108,10 @@
     <string name="no_notifications">您沒有留言</string>
     <string name="no_searched_data">No results found</string>
     <string name="back_btn">背部</string>
+    <string name="add_hashtag">添加</string>
+    <string name="tag_friends">標記朋友</string>
+    <string name="describe_post">職位描述</string>
+    <string name="go_tab">GO !</string>
+    <string name="undo">撤消</string>
+    <string name="default_error_message">錯誤，請重試</string>
 </resources>

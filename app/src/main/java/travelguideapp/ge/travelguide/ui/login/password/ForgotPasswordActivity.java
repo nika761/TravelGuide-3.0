@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
@@ -28,7 +29,7 @@ import travelguideapp.ge.travelguide.model.response.ForgotPasswordResponse;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
-public class ForgotPasswordActivity extends AppCompatActivity implements ForgotPasswordListener, ChangePasswordFragment.ChangePasswordListener {
+public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswordListener, ChangePasswordFragment.ChangePasswordListener {
     private EditText eEmail;
     private TextView emailHead, forgotPassword, forgotPasswordBody, backBtn;
     private Button send;
@@ -45,7 +46,6 @@ public class ForgotPasswordActivity extends AppCompatActivity implements ForgotP
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-        SystemManager.setLanguage(this);
         try {
             if (getIntent().getStringExtra("request_for").equals("change")) {
                 changePasswordFragment = ChangePasswordFragment.getInstance(this);

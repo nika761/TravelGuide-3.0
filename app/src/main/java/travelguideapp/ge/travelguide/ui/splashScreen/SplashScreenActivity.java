@@ -68,7 +68,6 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
             e.printStackTrace();
         }
 
-        SystemManager.setLanguage(this);
         calculateScreenWidth();
         initUI();
         setAnimation();

@@ -16,7 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
@@ -40,7 +40,7 @@ import travelguideapp.ge.travelguide.ui.profile.posts.UserPostsFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CustomerProfileActivity extends BaseActivity implements CustomerProfileListener, OnPostChooseCallback,
+public class CustomerProfileActivity extends HomeParentActivity implements CustomerProfileListener, OnPostChooseCallback,
         View.OnClickListener {
 
     private CustomerProfilePresenter customerProfilePresenter;
@@ -59,7 +59,6 @@ public class CustomerProfileActivity extends BaseActivity implements CustomerPro
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_profile);
-        SystemManager.setLanguage(this);
         try {
             this.customerUserId = getIntent().getIntExtra("id", 0);
         } catch (Exception e) {

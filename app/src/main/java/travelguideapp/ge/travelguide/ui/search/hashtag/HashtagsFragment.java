@@ -1,7 +1,6 @@
 package travelguideapp.ge.travelguide.ui.search.hashtag;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
@@ -120,7 +119,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     @Override
     public void onHashtagChoose(HashtagResponse.Hashtags hashtag) {
         try {
-            ((BaseActivity) getActivity()).startSearchPostActivity(new PostDataSearch(hashtag.getHashtag(), PostDataSearch.SearchBy.HASHTAG));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostDataSearch(hashtag.getHashtag(), PostDataSearch.SearchBy.HASHTAG));
         } catch (Exception e) {
             e.printStackTrace();
         }

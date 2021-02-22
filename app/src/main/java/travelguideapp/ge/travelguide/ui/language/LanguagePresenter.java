@@ -34,14 +34,14 @@ public class LanguagePresenter {
     public void sentLanguageRequest() {
         service.getLanguages().enqueue(new Callback<LanguagesResponse>() {
             @Override
-            public void onResponse(Call<LanguagesResponse> call, Response<LanguagesResponse> response) {
+            public void onResponse(@NotNull Call<LanguagesResponse> call, @NotNull Response<LanguagesResponse> response) {
                 if (response.isSuccessful()) {
                     splashListener.onGetLanguages(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<LanguagesResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<LanguagesResponse> call, @NotNull Throwable t) {
 
             }
         });
@@ -69,7 +69,7 @@ public class LanguagePresenter {
     void getLanguageStrings(LanguageStringsRequest languageStringsRequest) {
         service.getLanguageStrings(languageStringsRequest).enqueue(new Callback<LanguageStringsResponse>() {
             @Override
-            public void onResponse(Call<LanguageStringsResponse> call, Response<LanguageStringsResponse> response) {
+            public void onResponse(@NotNull Call<LanguageStringsResponse> call, @NotNull Response<LanguageStringsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         if (response.body().getStatus() == 0)
@@ -83,7 +83,7 @@ public class LanguagePresenter {
             }
 
             @Override
-            public void onFailure(Call<LanguageStringsResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<LanguageStringsResponse> call, @NotNull Throwable t) {
                 languageListener.onGetError(t.getMessage());
             }
         });

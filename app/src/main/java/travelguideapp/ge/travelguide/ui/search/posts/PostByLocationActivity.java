@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
@@ -22,7 +22,7 @@ import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
-public class PostByLocationActivity extends BaseActivity implements PostByLocationListener, SearchPostAdapter.ChoosePostCallback {
+public class PostByLocationActivity extends HomeParentActivity implements PostByLocationListener, SearchPostAdapter.ChoosePostCallback {
 
     private PostByLocationPresenter searchPostPresenter;
     private TextView head;

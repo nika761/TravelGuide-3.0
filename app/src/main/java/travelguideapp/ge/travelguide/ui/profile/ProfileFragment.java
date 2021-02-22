@@ -26,12 +26,11 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -80,37 +79,27 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
-        if (getActivity() != null) {
-            try {
-                Window window = getActivity().getWindow();
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-                window.setStatusBarColor(getResources().getColor(R.color.white, null));
-                setSystemBarTheme(getActivity(), false);
-                try {
-                    SystemManager.setLanguage(getActivity());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            Toolbar toolbar = view.findViewById(R.id.toolbar);
-            toolbar.setTitle("");
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-            DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
-            toggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.open, R.string.close);
-            toggle.syncState();
-            toolbar.setNavigationOnClickListener(v -> {
-                drawerLayout.addDrawerListener(toggle);
-                drawerLayout.openDrawer(GravityCompat.START);
-            });
-
-            NavigationView navigationView = view.findViewById(R.id.burger_navigation_view);
-            navigationView.setNavigationItemSelectedListener(navListener);
+        try {
+            Window window = ((Activity) context).getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            window.setStatusBarColor(getResources().getColor(R.color.white, null));
+            setSystemBarTheme(((Activity) context), false);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        ((AppCompatActivity) context).setSupportActionBar(toolbar);
+        DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.open, R.string.close);
+        toggle.syncState();
+        toolbar.setNavigationOnClickListener(v -> {
+            drawerLayout.addDrawerListener(toggle);
+            drawerLayout.openDrawer(GravityCompat.START);
+        });
+
+        NavigationView navigationView = view.findViewById(R.id.burger_navigation_view);
+        navigationView.setNavigationItemSelectedListener(navListener);
 
         presenter = new ProfileFragmentPresenter(this);
 
@@ -165,9 +154,9 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         return view;
     }
 
-    private void setSystemBarTheme(final Activity activity, final boolean pIsDark) {
+    private void setSystemBarTheme(final Activity activity, final boolean isDark) {
         final int lFlags = activity.getWindow().getDecorView().getSystemUiVisibility();
-        activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
+        activity.getWindow().getDecorView().setSystemUiVisibility(isDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
     }
 
     @Override
@@ -197,7 +186,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         switch (item.getItemId()) {
             case R.id.settings_share_profile:
                 try {
-                    ((BaseActivity) context).shareContent(userInfo.getShare_profile());
+                    ((HomeParentActivity) context).shareContent(userInfo.getShare_profile());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

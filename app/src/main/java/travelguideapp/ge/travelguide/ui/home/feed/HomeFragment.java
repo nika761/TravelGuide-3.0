@@ -22,8 +22,7 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.custom.customPost.CustomPostHolder;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
@@ -276,7 +275,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onLocationChoose(int postId, PostDataSearch.SearchBy searchBy) {
         try {
-            ((BaseActivity) getActivity()).startSearchPostActivity(new PostDataSearch(postId, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostDataSearch(postId, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -286,7 +285,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onHashtagChoose(String hashtag, PostDataSearch.SearchBy searchBy) {
         try {
-            ((BaseActivity) getActivity()).startSearchPostActivity(new PostDataSearch(hashtag, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostDataSearch(hashtag, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -336,7 +335,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     public void onShareChoose(String postLink, int post_id) {
         try {
             presenter.setPostShare(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(post_id));
-            ((BaseActivity) postRecycler.getContext()).shareContent(postLink);
+            ((HomeParentActivity) postRecycler.getContext()).shareContent(postLink);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -391,7 +390,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
             }
         } else {
             try {
-                ((BaseActivity) getActivity()).startCustomerActivity(userId);
+                ((HomeParentActivity) getActivity()).startCustomerActivity(userId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -401,7 +400,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onReportChoose(int postId) {
         try {
-            ((BaseActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.POST, postId));
+            ((HomeParentActivity) getActivity()).openReportDialog(ReportParams.getInstance(ReportParams.Type.POST, postId));
         } catch (Exception e) {
             e.printStackTrace();
         }

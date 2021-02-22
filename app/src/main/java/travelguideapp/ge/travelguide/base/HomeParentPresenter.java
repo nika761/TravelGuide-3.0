@@ -1,7 +1,5 @@
 package travelguideapp.ge.travelguide.base;
 
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
@@ -14,13 +12,13 @@ import travelguideapp.ge.travelguide.model.response.SetReportResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
-public class BasePresenter {
+public class HomeParentPresenter {
 
     private final ApiService apiService;
-    private final BaseActivityListener baseActivityListener;
+    private final HomeParentListener homeParentListener;
 
-    public BasePresenter(BaseActivityListener baseActivityListener) {
-        this.baseActivityListener = baseActivityListener;
+    public HomeParentPresenter(HomeParentListener homeParentListener) {
+        this.homeParentListener = homeParentListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
@@ -33,7 +31,7 @@ public class BasePresenter {
                     switch (response.body().getStatus()) {
                         case 0:
                         case 1:
-                            baseActivityListener.onReported(response.body());
+                            homeParentListener.onReported(response.body());
                             break;
                     }
                 }
@@ -53,7 +51,7 @@ public class BasePresenter {
                     switch (response.body().getStatus()) {
                         case 0:
                         case 1:
-                            baseActivityListener.onReported(response.body());
+                            homeParentListener.onReported(response.body());
                             break;
                     }
                 }
@@ -73,7 +71,7 @@ public class BasePresenter {
                     switch (response.body().getStatus()) {
                         case 0:
                         case 1:
-                            baseActivityListener.onReported(response.body());
+                            homeParentListener.onReported(response.body());
                             break;
                     }
                 }
