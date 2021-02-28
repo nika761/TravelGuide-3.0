@@ -25,7 +25,7 @@ import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.Report;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
@@ -37,6 +37,14 @@ import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.search.posts.PostByLocationActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
+/**
+ * Created by n.butskhrikidze on 15/11/2020.
+ * <p>
+ * ეს ჯიგარი ექთივითი იყოს მშობელი ყველა ექთივითისა სადაც ვხსნით პოსტებს სიმონ.
+ *
+ * თუ ასე არ იზამ, ღმერთმა ხელი მოგიმართოს :D :D
+ * <p>
+ */
 
 public class HomeParentActivity extends BaseActivity implements HomeParentListener {
 
@@ -244,7 +252,7 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     public void startSearchPostActivity(Parcelable data) {
         try {
             Intent intent = new Intent(this, PostByLocationActivity.class);
-            intent.putExtra(PostDataSearch.INTENT_KEY_SEARCH, data);
+            intent.putExtra(SearchPostParams.INTENT_KEY_SEARCH, data);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

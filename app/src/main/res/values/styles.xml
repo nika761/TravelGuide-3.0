@@ -36,6 +36,11 @@
 
     </style>
 
+    <style name="alertDialogTransparentBg" parent="android:Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowBackground">@drawable/bg_transparent</item>
+        <item name="android:windowAnimationStyle">@style/SlidingDialogAnimation</item>
+    </style>
+
     <style name="GalleryTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/yellowTextView</item>
         <item name="colorPrimaryDark">@color/yellowTextView</item>
@@ -54,6 +59,11 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="TransparentDialogTheme" parent="android:Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/SlidingDialogAnimation</item>
     </style>
 
     <style name="SlidingDialogAnimation">

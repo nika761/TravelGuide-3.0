@@ -16,7 +16,7 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
@@ -29,6 +29,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     private int fromPage = 1;
 
     private boolean isLoading = false;
+    private boolean isFirstOpen = true;
     private List<HashtagResponse.Hashtags> hashtags;
 
     @Nullable
@@ -119,7 +120,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     @Override
     public void onHashtagChoose(HashtagResponse.Hashtags hashtag) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostDataSearch(hashtag.getHashtag(), PostDataSearch.SearchBy.HASHTAG));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(hashtag.getHashtag(), SearchPostParams.SearchBy.HASHTAG));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,6 +139,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     public void onStart() {
         super.onStart();
         getCachedHashtags();
+
     }
 
     private void getCachedHashtags() {
@@ -145,9 +147,14 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
             List<HashtagResponse.Hashtags> hashtags = ((SearchActivity) hashtagRecycler.getContext()).getHashtags();
             if (hashtags != null) {
                 setHashtags(hashtags);
+                if (isFirstOpen)
+                    isFirstOpen = false;
             } else {
-                setNothingFound();
+                if (!isFirstOpen) {
+                    setNothingFound();
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

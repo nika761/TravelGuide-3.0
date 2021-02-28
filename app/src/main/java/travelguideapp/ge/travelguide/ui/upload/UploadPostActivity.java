@@ -280,7 +280,6 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
                             String lat = String.valueOf(place.getLatLng().latitude);
                             String lon = String.valueOf(place.getLatLng().longitude);
                             latLng = lat + "," + lon;
-//                            Toast.makeText(this, addressName + " " + "added to post", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -384,8 +383,6 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
             hashtags.remove(item);
             if (hashtags.size() == 0)
                 setTagRecycler(false);
-            Log.e("HASHTAG_CHECKING" + "hah", hashs.toString());
-            Log.e("HASHTAG_CHECKING", hashtags.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -444,8 +441,13 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     @Override
     public void onPostUploadError(String message) {
-        getLoader(false);
-        MyToaster.getToast(this, message);
+        try {
+            getLoader(false);
+            MyToaster.getToast(this, message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

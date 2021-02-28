@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.profile.follow;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.FollowersRequest;
 import travelguideapp.ge.travelguide.model.request.FollowingRequest;
@@ -15,8 +17,8 @@ import retrofit2.Response;
 
 class FollowFragmentPresenter {
 
-    private FollowFragmentListener listener;
-    private ApiService apiService;
+    private final FollowFragmentListener listener;
+    private final ApiService apiService;
 
     FollowFragmentPresenter(FollowFragmentListener listener) {
         this.listener = listener;
@@ -26,7 +28,7 @@ class FollowFragmentPresenter {
     void getFollowing(String accessToken, FollowingRequest followingRequest) {
         apiService.getFollowing(accessToken, followingRequest).enqueue(new Callback<FollowingResponse>() {
             @Override
-            public void onResponse(Call<FollowingResponse> call, Response<FollowingResponse> response) {
+            public void onResponse(@NotNull Call<FollowingResponse> call, @NotNull Response<FollowingResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getFollowings().size() > 0)
@@ -40,7 +42,7 @@ class FollowFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<FollowingResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<FollowingResponse> call, @NotNull Throwable t) {
                 listener.onError(t.getMessage());
             }
         });
@@ -50,7 +52,7 @@ class FollowFragmentPresenter {
     void getFollowers(String accessToken, FollowersRequest followersRequest) {
         apiService.getFollowers(accessToken, followersRequest).enqueue(new Callback<FollowerResponse>() {
             @Override
-            public void onResponse(Call<FollowerResponse> call, Response<FollowerResponse> response) {
+            public void onResponse(@NotNull Call<FollowerResponse> call, @NotNull Response<FollowerResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getFollowers().size() > 0)
@@ -63,7 +65,7 @@ class FollowFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<FollowerResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<FollowerResponse> call, @NotNull Throwable t) {
                 listener.onError(t.getMessage());
             }
         });
@@ -73,7 +75,7 @@ class FollowFragmentPresenter {
     void startAction(String accessToken, FollowRequest followRequest) {
         apiService.follow(accessToken, followRequest).enqueue(new Callback<FollowResponse>() {
             @Override
-            public void onResponse(Call<FollowResponse> call, Response<FollowResponse> response) {
+            public void onResponse(@NotNull Call<FollowResponse> call, @NotNull Response<FollowResponse> response) {
                 if (response.isSuccessful() && response.body() != null)
                     listener.onFollowActionDone(response.body());
                 else
@@ -81,7 +83,7 @@ class FollowFragmentPresenter {
             }
 
             @Override
-            public void onFailure(Call<FollowResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<FollowResponse> call, @NotNull Throwable t) {
                 listener.onError(t.getMessage());
             }
         });

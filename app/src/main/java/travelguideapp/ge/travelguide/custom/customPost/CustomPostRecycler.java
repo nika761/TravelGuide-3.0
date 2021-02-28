@@ -54,7 +54,7 @@ import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.custom.CustomTimer;
 import travelguideapp.ge.travelguide.model.customModel.PostView;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.ui.home.feed.HashtagAdapter;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
@@ -64,8 +64,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import travelguideapp.ge.travelguide.base.BaseApplication;
 
 public class CustomPostRecycler extends RecyclerView {
 
@@ -97,6 +95,8 @@ public class CustomPostRecycler extends RecyclerView {
     private boolean soundOn = true;
     private boolean videoPlaying = true;
     private boolean isVideoViewAdded;
+
+    public static boolean feedLive = false;
 
     private HomeFragmentListener homeFragmentListener;
     private CustomProgressBar customProgressBar;
@@ -248,6 +248,9 @@ public class CustomPostRecycler extends RecyclerView {
 //                            countDownTimer.cancel();
 //                            countDownTimer.start();
 //                        }
+                        if (!feedLive) {
+                            pausePlayer();
+                        }
                         homeFragmentListener.stopLoader();
 //                        customProgressBar.start(0, posts.get(playingPosition).getPost_stories().get(0).getSecond());
                         Log.d(TAG, "onPlayerStateChanged: Ready to play.");
@@ -260,6 +263,15 @@ public class CustomPostRecycler extends RecyclerView {
 
         });
 
+    }
+
+    public boolean isVideoPlaying() {
+        try {
+            return videoPlayer.isPlaying();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void setVideoSize() {
@@ -357,12 +369,12 @@ public class CustomPostRecycler extends RecyclerView {
         videoSurfaceView.setPlayer(videoPlayer);
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "TravelGuide"));
 
-        try {
-            thumb = ThumbnailUtils.createVideoThumbnail(posts.get(targetPosition).getPost_stories().get(0).getUrl(), MediaStore.Images.Thumbnails.MINI_KIND);
-            drawable = new BitmapDrawable(getResources(), thumb);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            thumb = ThumbnailUtils.createVideoThumbnail(posts.get(targetPosition).getPost_stories().get(0).getUrl(), MediaStore.Images.Thumbnails.MINI_KIND);
+//            drawable = new BitmapDrawable(getResources(), thumb);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         if (!isVideoViewAdded) {
             addVideoView();
@@ -535,7 +547,7 @@ public class CustomPostRecycler extends RecyclerView {
 
             holder.comment.setOnClickListener(v -> homeFragmentListener.onCommentChoose(story.getStory_id(), post.getPost_id()));
 
-            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), PostDataSearch.SearchBy.LOCATION));
+            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), SearchPostParams.SearchBy.LOCATION));
 
             holder.share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
 
@@ -629,8 +641,6 @@ public class CustomPostRecycler extends RecyclerView {
 
     }
 
-
-    @SuppressLint("UseCompatLoadingForDrawables")
     private void animateBtn(View view, EmotionType emotionType, EmotionState emotionState) {
         switch (emotionType) {
             case LIKE:
@@ -679,7 +689,6 @@ public class CustomPostRecycler extends RecyclerView {
 
     }
 
-
     public void showMenu(View view, int postId, int storyId) {
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
         popupMenu.inflate(R.menu.post_option_menu);
@@ -694,15 +703,14 @@ public class CustomPostRecycler extends RecyclerView {
         popupMenu.show();
     }
 
-
     private void addVideoView() {
         frameLayout.addView(videoSurfaceView);
         isVideoViewAdded = true;
-        try {
-            videoSurfaceView.setBackground(drawable);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            videoSurfaceView.setBackground(drawable);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         videoSurfaceView.requestFocus();
         videoSurfaceView.setVisibility(VISIBLE);
         videoSurfaceView.setAlpha(1);
@@ -755,7 +763,6 @@ public class CustomPostRecycler extends RecyclerView {
         }
     }
 
-
     private void setVolume(VolumeState state) {
         if (videoPlayer != null) {
             switch (state) {
@@ -770,7 +777,6 @@ public class CustomPostRecycler extends RecyclerView {
             }
         }
     }
-
 
     private void animateVideoPlyIcon(boolean videoPlaying) {
         if (videoPlayIcon != null) {

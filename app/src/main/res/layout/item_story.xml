@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <View
+        android:id="@+id/gradient_for_post"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_story_gradient"
+        android:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/pl_container"
         android:layout_width="match_parent"
@@ -125,13 +132,6 @@
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/gradient_for_post"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_story_gradient"
-        android:visibility="visible" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/story_describe_container"
         android:layout_width="0dp"
@@ -236,7 +236,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <ImageButton
         android:id="@+id/story_menu"

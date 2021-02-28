@@ -137,6 +137,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
 
     private void searchBtnClickAction() {
         try {
+
             if (searchEditTxt.getText().toString() == null || searchEditTxt.getText().toString().isEmpty()) {
                 return;
             }
@@ -147,15 +148,29 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
             }
 
             String created;
-            if (!searchEditTxt.getText().toString().startsWith("#")) {
-                created = "#" + searchEditTxt.getText().toString();
-            } else {
+            if (searchEditTxt.getText().toString().startsWith("#")) {
                 created = searchEditTxt.getText().toString();
+            } else {
+                created = "#" + searchEditTxt.getText().toString();
             }
-            Intent mIntent = new Intent();
-            mIntent.putExtra("hashtags", created);
-            setResult(Activity.RESULT_OK, mIntent);
+
+            if (checkHashtag(created)) {
+                Intent mIntent = new Intent();
+                mIntent.putExtra("hashtags", created);
+                setResult(Activity.RESULT_OK, mIntent);
+            } else {
+                String current = created.replace("#", "");
+                if (current.length() > 0) {
+                    String ready = "#" + current;
+                    Intent mIntent = new Intent();
+                    mIntent.putExtra("hashtags", ready);
+                    setResult(Activity.RESULT_OK, mIntent);
+                } else {
+                    setResult(Activity.RESULT_CANCELED);
+                }
+            }
             finish();
+
         } catch (Exception e) {
             e.printStackTrace();
             setResult(Activity.RESULT_CANCELED);
@@ -200,6 +215,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
     public void onGetFollowers(List<FollowerResponse.Followers> followers) {
         try {
             loader.setVisibility(View.GONE);
+
             if (followers.size() == 0) {
                 setNothingFound();
                 return;
@@ -241,4 +257,5 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
         Matcher match = patt.matcher(hashtag);
         return match.matches();
     }
+
 }

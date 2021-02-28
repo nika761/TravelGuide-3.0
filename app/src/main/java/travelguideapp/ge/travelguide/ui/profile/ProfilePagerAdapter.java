@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
 import travelguideapp.ge.travelguide.ui.profile.favorites.FavoritePostFragment;
 import travelguideapp.ge.travelguide.ui.profile.posts.UserPostsFragment;
 
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
 
     private final ArrayList<Fragment> fragments = new ArrayList<>();
-    private PostDataLoad.Source loadSource;
+    private LoadPostParams.Source loadSource;
     private OnPostChooseCallback callback;
     private int customerUserId;
 
@@ -28,7 +28,7 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        if (loadSource == PostDataLoad.Source.CUSTOMER_POSTS) {
+        if (loadSource == LoadPostParams.Source.CUSTOMER_POSTS) {
             Bundle data = new Bundle();
             data.putInt("customer_user_id", customerUserId);
             data.putSerializable("request_type", loadSource);
@@ -64,7 +64,7 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
         fragments.add(fragment);
     }
 
-    public void setLoadSource(PostDataLoad.Source loadSource) {
+    public void setLoadSource(LoadPostParams.Source loadSource) {
         this.loadSource = loadSource;
     }
 

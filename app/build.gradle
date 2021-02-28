@@ -10,8 +10,8 @@ android {
         applicationId "travelguideapp.ge.travelguide"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 26
-        versionName "3.0.1"
+        versionCode 29
+        versionName "3.0.3"
         testInstrumentationRunner "androidx.fragment_profile_included.runner.AndroidJUnitRunner"
     }
 
@@ -107,6 +107,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.5.1'
     implementation 'com.google.firebase:firebase-core:18.0.0'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     testImplementation 'junit:junit:4.13.1'

@@ -28,7 +28,7 @@ import retrofit2.Response;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 /**
- * Created by n.butskhrikidze on 01/07/2020.
+ * Created by n.butskhrikidze on 01/06/2020.
  * <p>
  * დასაბამიდან იყო სიტყვა, და სიტყვა იყო ღმერთთან და ღმერთი იყო სიტყვა.
  * In the beginning was the Word, and the Word was with God, and the Word was God.
@@ -39,15 +39,10 @@ public class BaseApplication extends Application {
 
     public static final String CHANNEL_ID = "uploading";
     public static final String CHANNEL_NAME = "upload_post";
-
-//    public static long POST_VIEW_TIME;
-
-    //    public static int CROP_OPTION_X;
-//    public static int CROP_OPTION_Y;
     public static int AGE_RESTRICTION;
-    //    public static int POST_PER_PAGE_SIZE;
     public static int ITEM_WIDTH_FOR_POSTS;
-//    public static int APP_VERSION = 0;
+
+    public static boolean isHomeValid = true;
 
     @Override
     public void onCreate() {
@@ -59,14 +54,6 @@ public class BaseApplication extends Application {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-    }
-
-    private void setFirstUse() {
-        try {
-            GlobalPreferences.saveIsFirstUse(getApplicationContext(), false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void createNotificationChannel() {

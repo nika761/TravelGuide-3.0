@@ -17,7 +17,7 @@ public class ChooseCountryAdapter extends RecyclerView.Adapter<ChooseCountryAdap
 
     private List<Country> countries;
 
-    private ChooseCountryListener chooseCountryListener;
+    private final ChooseCountryListener chooseCountryListener;
 
     ChooseCountryAdapter(ChooseCountryListener chooseCountryListener) {
         this.chooseCountryListener = chooseCountryListener;
@@ -32,7 +32,7 @@ public class ChooseCountryAdapter extends RecyclerView.Adapter<ChooseCountryAdap
 
     @Override
     public void onBindViewHolder(@NonNull CountryHolder holder, int position) {
-        holder.bindView(position);
+        holder.onBind(position);
     }
 
 
@@ -63,7 +63,7 @@ public class ChooseCountryAdapter extends RecyclerView.Adapter<ChooseCountryAdap
             });
         }
 
-        void bindView(int position) {
+        void onBind(int position) {
             try {
                 countryName.setText(countries.get(position).getName());
             } catch (Exception e) {

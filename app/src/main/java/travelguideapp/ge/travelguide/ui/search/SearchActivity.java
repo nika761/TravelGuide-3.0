@@ -13,7 +13,7 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
 import travelguideapp.ge.travelguide.model.request.FullSearchRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
@@ -314,13 +314,13 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
         try {
             int position = getPositionById(postId);
 
-            PostDataLoad postDataLoad = new PostDataLoad();
-            postDataLoad.setLoadSource(PostDataLoad.Source.SEARCH);
+            LoadPostParams postDataLoad = new LoadPostParams();
+            postDataLoad.setLoadSource(LoadPostParams.Source.SEARCH);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 
             Bundle data = new Bundle();
-            data.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+            data.putParcelable(LoadPostParams.INTENT_KEY_LOAD, postDataLoad);
 
             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, true, true, this);
 

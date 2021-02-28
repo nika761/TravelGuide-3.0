@@ -325,7 +325,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
             case R.id.replies_back_btn:
                 try {
-                    ((HomePageActivity) likeBtn.getContext()).onBackPressed();
+                    ((HomeParentActivity) likeBtn.getContext()).onBackPressed();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -333,7 +333,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
             case R.id.replies_close_btn:
                 try {
-                    ((HomePageActivity) likeBtn.getContext()).onBackPressed();
+                    ((HomeParentActivity) likeBtn.getContext()).onBackPressed();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

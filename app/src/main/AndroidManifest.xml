@@ -106,7 +106,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/SecondAppTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustNothing" />
 
         <activity
             android:name="travelguideapp.ge.travelguide.ui.login.loggedUsers.SavedUserActivity"
@@ -177,7 +177,8 @@
             android:name="travelguideapp.ge.travelguide.ui.upload.UploadPostActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/SecondAppTheme" />
+            android:theme="@style/SecondAppTheme"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name="travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity"

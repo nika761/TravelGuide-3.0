@@ -29,6 +29,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.math.BigInteger;
@@ -60,7 +61,7 @@ class SignInPresenter {
     void verify(String accessToken, VerifyEmailRequest verifyEmailRequest) {
         apiService.verifyEmail(accessToken, verifyEmailRequest).enqueue(new Callback<VerifyEmailResponse>() {
             @Override
-            public void onResponse(Call<VerifyEmailResponse> call, Response<VerifyEmailResponse> response) {
+            public void onResponse(@NotNull Call<VerifyEmailResponse> call, @NotNull Response<VerifyEmailResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
@@ -80,7 +81,7 @@ class SignInPresenter {
             }
 
             @Override
-            public void onFailure(Call<VerifyEmailResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<VerifyEmailResponse> call, @NotNull Throwable t) {
                 signInListener.onError(t.getMessage());
             }
         });
@@ -183,7 +184,7 @@ class SignInPresenter {
     void singIn(LoginRequest loginRequest) {
         apiService.signIn(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(@NotNull Call<LoginResponse> call, @NotNull Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
@@ -201,7 +202,7 @@ class SignInPresenter {
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<LoginResponse> call, @NotNull Throwable t) {
                 signInListener.onError(t.getMessage());
             }
         });
@@ -210,7 +211,7 @@ class SignInPresenter {
     private void authWithFireBase(AuthWitFirebaseRequest authWitFirebaseRequest) {
         apiService.authWithFirebase(authWitFirebaseRequest).enqueue(new Callback<AuthWithFirebaseResponse>() {
             @Override
-            public void onResponse(Call<AuthWithFirebaseResponse> call, Response<AuthWithFirebaseResponse> response) {
+            public void onResponse(@NotNull Call<AuthWithFirebaseResponse> call, @NotNull Response<AuthWithFirebaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
@@ -230,7 +231,7 @@ class SignInPresenter {
             }
 
             @Override
-            public void onFailure(Call<AuthWithFirebaseResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<AuthWithFirebaseResponse> call, @NotNull Throwable t) {
                 signInListener.onError(t.getMessage());
             }
         });

@@ -75,8 +75,7 @@ public class ClientManager {
     }
 
     public static TransferObserver transferObserver(Context context, File file) {
-        return ClientManager.transferUtility(context, amazonS3Client(context))
-                .upload(GlobalPreferences.getAppSettings(context).getS3_BUCKET_NAME(), file.getName(), file, CannedAccessControlList.PublicRead);
+        return ClientManager.transferUtility(context, amazonS3Client(context)).upload(GlobalPreferences.getAppSettings(context).getS3_BUCKET_NAME(), file.getName(), file, CannedAccessControlList.PublicRead);
     }
 
 //    public static void uploadMultipleS3(AmazonS3Client s3Client, List<ItemMedia> paths) {

@@ -27,6 +27,7 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
     private LinearLayout nothingFound;
 
     private boolean isLoading;
+    private boolean isFirstOpen = true;
 
     private List<PostResponse.Posts> posts;
 
@@ -108,6 +109,7 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
     public void onStart() {
         super.onStart();
         getCachedPosts();
+
     }
 
     public void setLazyPosts(List<PostResponse.Posts> posts) {
@@ -125,9 +127,14 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
             List<PostResponse.Posts> posts = ((SearchActivity) postRecycler.getContext()).getPosts();
             if (posts != null) {
                 setPosts(posts);
+                if (isFirstOpen)
+                    isFirstOpen = false;
             } else {
-                setNothingFound();
+                if (!isFirstOpen) {
+                    setNothingFound();
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

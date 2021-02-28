@@ -67,12 +67,22 @@ public class DialogManager {
         return dialog;
     }
 
-    public static void datePickerDialog(Context context, DatePickerDialog.OnDateSetListener onDateSetListener) {
-
+    public static void datePickerDialog(Context context, DatePickerDialog.OnDateSetListener onDateSetListener, long timeMillis) {
         Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int year;
+        int month;
+        int day;
+
+        if (timeMillis == 0) {
+            year = cal.get(Calendar.YEAR);
+            month = cal.get(Calendar.MONTH);
+            day = cal.get(Calendar.DAY_OF_MONTH);
+        } else {
+            cal.setTimeInMillis(timeMillis);
+            year = cal.get(Calendar.YEAR);
+            month = cal.get(Calendar.MONTH);
+            day = cal.get(Calendar.DAY_OF_MONTH);
+        }
 
         DatePickerDialog dialog = new DatePickerDialog(context, android.R.style.Theme_Holo_Light_Dialog_MinWidth, onDateSetListener, year, month, day);
 

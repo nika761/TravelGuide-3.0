@@ -100,12 +100,9 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
                     changeLanguage("zh");
                     break;
             }
-//            Toast.makeText(context, "Language Changed", Toast.LENGTH_SHORT).show();
             if (getDialog() != null)
                 getDialog().dismiss();
         }
-//            Toast.makeText(context, "Error Language Change", Toast.LENGTH_SHORT).show();
-
     }
 
     private void initLanguageRecycler(List<LanguagesResponse.Language> updatedLanguagesList) {
@@ -131,13 +128,12 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
     private void changeLanguage(String language) {
         try {
             GlobalPreferences.saveLanguage(context, language);
-            Locale locale = new Locale(language);
-            Locale.setDefault(locale);
-            Resources resources = getActivity().getResources();
-            Configuration config = resources.getConfiguration();
-            config.setLocale(locale);
-            resources.updateConfiguration(config, resources.getDisplayMetrics());
-//            SystemManager.updateCurrentLanguage(context);
+//            Locale locale = new Locale(language);
+//            Locale.setDefault(locale);
+//            Resources resources = getActivity().getResources();
+//            Configuration config = resources.getConfiguration();
+//            config.setLocale(locale);
+//            resources.updateConfiguration(config, resources.getDisplayMetrics());
             getActivity().getIntent().putExtra("IS_LANGUAGE_CHANGED", true);
             getActivity().recreate();
         } catch (Exception e) {

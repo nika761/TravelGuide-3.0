@@ -9,7 +9,7 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
-public class PostDataLoad implements Serializable, Parcelable {
+public class LoadPostParams implements Serializable, Parcelable {
 
     /**
      * Created by n.butskhrikidze on 01/07/2020.
@@ -34,10 +34,10 @@ public class PostDataLoad implements Serializable, Parcelable {
     private Source loadSource;
     private List<PostResponse.Posts> posts;
 
-    public PostDataLoad() {
+    public LoadPostParams() {
     }
 
-    public PostDataLoad(int userId, int scrollPosition, Source loadSource, List<PostResponse.Posts> posts) {
+    public LoadPostParams(int userId, int scrollPosition, Source loadSource, List<PostResponse.Posts> posts) {
         this.userId = userId;
         this.scrollPosition = scrollPosition;
         this.loadSource = loadSource;
@@ -76,7 +76,7 @@ public class PostDataLoad implements Serializable, Parcelable {
         this.posts = posts;
     }
 
-    protected PostDataLoad(Parcel in) {
+    protected LoadPostParams(Parcel in) {
         userId = in.readInt();
         scrollPosition = in.readInt();
         loadSource = (Source) in.readValue(Source.class.getClassLoader());
@@ -106,15 +106,15 @@ public class PostDataLoad implements Serializable, Parcelable {
         return 0;
     }
 
-    public static final Creator<PostDataLoad> CREATOR = new Creator<PostDataLoad>() {
+    public static final Creator<LoadPostParams> CREATOR = new Creator<LoadPostParams>() {
         @Override
-        public PostDataLoad createFromParcel(Parcel in) {
-            return new PostDataLoad(in);
+        public LoadPostParams createFromParcel(Parcel in) {
+            return new LoadPostParams(in);
         }
 
         @Override
-        public PostDataLoad[] newArray(int size) {
-            return new PostDataLoad[size];
+        public LoadPostParams[] newArray(int size) {
+            return new LoadPostParams[size];
         }
     };
 }

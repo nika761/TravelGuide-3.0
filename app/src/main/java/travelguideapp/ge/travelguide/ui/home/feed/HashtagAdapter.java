@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static travelguideapp.ge.travelguide.model.parcelable.PostDataSearch.SearchBy.HASHTAG;
+import static travelguideapp.ge.travelguide.model.parcelable.SearchPostParams.SearchBy.HASHTAG;
 
 
 public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagHolder> {

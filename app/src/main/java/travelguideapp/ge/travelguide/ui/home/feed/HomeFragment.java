@@ -3,6 +3,7 @@ package travelguideapp.ge.travelguide.ui.home.feed;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.DialogManager;
@@ -32,9 +34,9 @@ import travelguideapp.ge.travelguide.custom.customPost.CustomPostAdapter;
 import travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
 import travelguideapp.ge.travelguide.model.customModel.PostView;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataSearch;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
@@ -80,7 +82,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private int customerUserId;
 
-    private PostDataLoad.Source loadSource;
+    private LoadPostParams.Source loadSource;
     private CustomPostRecycler customPostRecycler;
     private CustomPostAdapter customPostAdapter;
 
@@ -134,7 +136,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
             try {
-                PostDataLoad postDataLoad = getArguments().getParcelable(PostDataLoad.INTENT_KEY_LOAD);
+                LoadPostParams postDataLoad = getArguments().getParcelable(LoadPostParams.INTENT_KEY_LOAD);
                 this.loadSource = postDataLoad.getLoadSource();
                 switch (loadSource) {
                     case FAVORITES:
@@ -158,10 +160,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
-
 
     private void initRecyclerView(List<PostResponse.Posts> posts, boolean scrollToPosition, int scrollPosition) {
         customPostRecycler.setPosts(posts);
@@ -273,19 +273,18 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
 
     @Override
-    public void onLocationChoose(int postId, PostDataSearch.SearchBy searchBy) {
+    public void onLocationChoose(int postId, SearchPostParams.SearchBy searchBy) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostDataSearch(postId, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(postId, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
-    public void onHashtagChoose(String hashtag, PostDataSearch.SearchBy searchBy) {
+    public void onHashtagChoose(String hashtag, SearchPostParams.SearchBy searchBy) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostDataSearch(hashtag, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(hashtag, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -454,6 +453,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("VideoPlayerRecyclerView", "onResume");
+        CustomPostRecycler.feedLive = true;
         try {
             customPostRecycler.startPlayer();
         } catch (Exception e) {
@@ -462,7 +463,37 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("VideoPlayerRecyclerView", "onStart");
+    }
+
+    @Override
+    public void onPause() {
+//        try {
+//            customPostRecycler.pausePlayer();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        super.onPause();
+        Log.e("VideoPlayerRecyclerView", "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        CustomPostRecycler.feedLive = false;
+        try {
+            customPostRecycler.pausePlayer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.e("VideoPlayerRecyclerView", "onStop");
+    }
+
+    @Override
     public void onDestroy() {
+        Log.e("VideoPlayerRecyclerView", "onDestroy");
         try {
             List<PostView> views = CustomTimer.getPostViews();
             if (views.size() != 0)
@@ -480,15 +511,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         super.onDestroy();
     }
 
-    @Override
-    public void onStop() {
-        try {
-            customPostRecycler.pausePlayer();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        super.onStop();
-    }
 
     @Override
     public void stopLoader() {

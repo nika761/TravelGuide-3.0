@@ -18,7 +18,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
@@ -141,13 +141,13 @@ public class FavoritePostFragment extends Fragment implements FavoritePostListen
         try {
             int position = getPositionById(postId);
 
-            PostDataLoad postDataLoad = new PostDataLoad();
-            postDataLoad.setLoadSource(PostDataLoad.Source.FAVORITES);
+            LoadPostParams postDataLoad = new LoadPostParams();
+            postDataLoad.setLoadSource(LoadPostParams.Source.FAVORITES);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 
             Bundle bundle = new Bundle();
-            bundle.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+            bundle.putParcelable(LoadPostParams.INTENT_KEY_LOAD, postDataLoad);
             bundle.putBoolean("back_to_profile", true);
             callback.onPostChoose(bundle);
         } catch (Exception e) {

@@ -22,7 +22,7 @@ import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
@@ -96,7 +96,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
         ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
         profilePagerAdapter.setCustomerUserId(customerUserId);
         profilePagerAdapter.setCallback(this);
-        profilePagerAdapter.setLoadSource(PostDataLoad.Source.CUSTOMER_POSTS);
+        profilePagerAdapter.setLoadSource(LoadPostParams.Source.CUSTOMER_POSTS);
         profilePagerAdapter.addFragment(new UserPostsFragment());
 //        profilePagerAdapter.addFragment(new UserToursFragment());
         viewPager.setAdapter(profilePagerAdapter);

@@ -19,7 +19,7 @@ import travelguideapp.ge.travelguide.base.BaseApplication;
 
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;
-    private UserPostListener userPostListener;
+    private final UserPostListener userPostListener;
     private boolean canLazyLoad;
     private int itemWidth;
 

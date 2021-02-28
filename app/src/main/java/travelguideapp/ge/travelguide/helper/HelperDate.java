@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import travelguideapp.ge.travelguide.base.BaseApplication;
 
@@ -47,17 +49,13 @@ public class HelperDate {
         return getCalFromDate(year, month, dayOfMonth).getTimeInMillis();
     }
 
-    public static long getTimeInMillisFromServerDateString(String dateStr) {
+    public static long getTimeInMillisFromServerDateString(String dateStr) throws ParseException {
         if (dateStr == null || dateStr.isEmpty()) {
             return -1;
         } else {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                return format.parse(dateStr).getTime();
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return -1;
-            }
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date date = format.parse(dateStr);
+            return date.getTime();
         }
     }
 

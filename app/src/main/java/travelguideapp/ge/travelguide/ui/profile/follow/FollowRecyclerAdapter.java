@@ -24,7 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private FollowType requestType;
-    private FollowFragmentListener listener;
+    private final FollowFragmentListener listener;
 
     private boolean isCustomer;
 

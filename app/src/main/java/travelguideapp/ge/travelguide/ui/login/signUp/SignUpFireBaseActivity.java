@@ -83,7 +83,7 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
         loaderContainer = findViewById(R.id.firebase_loader_container);
 
         dateOfBirth = findViewById(R.id.enter_birth_date);
-        dateOfBirth.setOnClickListener(v -> DialogManager.datePickerDialog(this, mDateSetListener));
+        dateOfBirth.setOnClickListener(v -> DialogManager.datePickerDialog(this, mDateSetListener, 0));
 
         nickHead = findViewById(R.id.enter_nickName_head);
 

@@ -339,7 +339,6 @@ public interface ApiService {
     Call<LikeCommentReplyResponse> likeCommentReply(@Header("Authorization") String token,
                                                     @Body LikeCommentReplyRequest likeCommentReplyRequest);
 
-
     @Headers({"Accept: application/json"})
     @POST("login/by_outer_account")
     Call<AuthWithFirebaseResponse> authWithFirebase(@Body AuthWitFirebaseRequest authWitFirebaseRequest);

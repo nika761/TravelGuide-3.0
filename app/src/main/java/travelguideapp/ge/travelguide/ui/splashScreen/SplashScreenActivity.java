@@ -72,6 +72,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
         initUI();
         setAnimation();
         checkNetwork();
+
     }
 
     private void setLanguage() {

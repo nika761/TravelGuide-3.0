@@ -101,7 +101,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
         profileImage = findViewById(R.id.register_photo);
 
         registerBirthDate = findViewById(R.id.register_birth_date);
-        registerBirthDate.setOnClickListener(v -> DialogManager.datePickerDialog(SignUpActivity.this, mDateSetListener));
+        registerBirthDate.setOnClickListener(v -> DialogManager.datePickerDialog(SignUpActivity.this, mDateSetListener, 0));
 
         registerNickOfferOne = findViewById(R.id.nickName_offer_1);
         registerNickOfferOne.setOnClickListener(v -> setNickName(1));

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -66,6 +67,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
     private ConstraintLayout phoneCodeContainer;
 
     private boolean genderChecked;
+    private boolean dateChanged;
     private long timeStamp;
     private int gender, countryId;
     private long birthDateTimeStamp;
@@ -142,7 +144,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
         });
 
         birthDate = findViewById(R.id.edit_birth_date);
-        birthDate.setOnClickListener(v -> DialogManager.datePickerDialog(this, getOnDateSetListener()));
+        birthDate.setOnClickListener(v -> DialogManager.datePickerDialog(this, getOnDateSetListener(), birthDateTimeStamp));
 
         TextView changePassword = findViewById(R.id.edit_change_password);
         changePassword.setOnClickListener(v -> startChangePassword());
@@ -257,6 +259,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                 if (HelperDate.checkAgeOfUser(year, monthRight, dayOfMonth)) {
                     birthDate.setText(HelperDate.getDateStringFormat(year, month, dayOfMonth));
                     birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
+                    dateChanged = true;
                 } else
                     MyToaster.getToast(ProfileEditActivity.this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
@@ -381,7 +384,10 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                 updateProfileRequest.setName(modelName);
                 updateProfileRequest.setLastname(modelSurname);
                 updateProfileRequest.setNickname(modelNick);
-                updateProfileRequest.setDate_of_birth(String.valueOf(birthDateTimeStamp));
+                if (dateChanged)
+                    updateProfileRequest.setDate_of_birth(String.valueOf(birthDateTimeStamp));
+                else
+                    updateProfileRequest.setDate_of_birth(null);
                 updateProfileRequest.setEmail(modelEmail);
                 updateProfileRequest.setPhone_index(modelPhoneIndex);
                 updateProfileRequest.setPhone_num(modelNumber);
@@ -427,6 +433,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
             bio.setText(userInfo.getBiography());
             birthDate.setText(userInfo.getDate_of_birth());
             birthDateTimeStamp = HelperDate.getTimeInMillisFromServerDateString(userInfo.getDate_of_birth());
+            Log.e("aczxczxczxczxc", String.valueOf(birthDateTimeStamp));
             setGender(userInfo.getGender());
         } catch (Exception e) {
             e.printStackTrace();

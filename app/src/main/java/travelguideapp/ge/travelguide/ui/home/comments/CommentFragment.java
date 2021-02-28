@@ -109,7 +109,7 @@ public class CommentFragment extends Fragment implements CommentListener {
         ImageButton closeBtn = view.findViewById(R.id.comments_close_btn);
         closeBtn.setOnClickListener(v -> {
             try {
-                ((HomePageActivity) context).onBackPressed();
+                ((HomeParentActivity) context).onBackPressed();
             } catch (Exception e) {
                 e.printStackTrace();
             }

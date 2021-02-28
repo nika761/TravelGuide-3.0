@@ -26,7 +26,7 @@
         android:gravity="center_horizontal|center_vertical"
         android:orientation="vertical"
         android:paddingBottom="50dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="80dp"

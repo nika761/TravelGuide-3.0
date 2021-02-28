@@ -1,13 +1,10 @@
 package travelguideapp.ge.travelguide.ui.home;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -17,17 +14,15 @@ import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
-import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
 import travelguideapp.ge.travelguide.ui.profile.editProfile.ProfileEditActivity;
 import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
 import travelguideapp.ge.travelguide.ui.webView.WebActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.profile.ProfileFragment;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 import travelguideapp.ge.travelguide.ui.gallery.GalleryActivity;
@@ -125,10 +120,10 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
                     try {
                         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
                         if (!(fragment instanceof HomeFragment)) {
-                            PostDataLoad postDataLoad = new PostDataLoad();
-                            postDataLoad.setLoadSource(PostDataLoad.Source.FEED);
+                            LoadPostParams postDataLoad = new LoadPostParams();
+                            postDataLoad.setLoadSource(LoadPostParams.Source.FEED);
                             Bundle data = new Bundle();
-                            data.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+                            data.putParcelable(LoadPostParams.INTENT_KEY_LOAD, postDataLoad);
                             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, false, true, HomePageActivity.this);
                         }
                     } catch (Exception e) {

@@ -26,6 +26,8 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
     private LinearLayout nothingFound;
     private UserAdapter userAdapter;
 
+    private boolean isFirstOpen = true;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
     public void onStart() {
         super.onStart();
         getCachedUsers();
+
     }
 
     @Override
@@ -83,8 +86,12 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
             List<FullSearchResponse.Users> users = ((SearchActivity) usersRecycler.getContext()).getUsers();
             if (users != null) {
                 setUsers(users);
+                if (isFirstOpen)
+                    isFirstOpen = false;
             } else {
-                setNothingFound();
+                if (!isFirstOpen) {
+                    setNothingFound();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.PostDataLoad;
+import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
@@ -42,7 +42,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     private UserPostAdapter postAdapter;
 
-    private PostDataLoad.Source loadSource;
+    private LoadPostParams.Source loadSource;
     private int customerUserId;
 
     private int pastVisibleItems;
@@ -73,8 +73,8 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
                 isCustomer = false;
                 userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
             } else {
-                this.loadSource = (PostDataLoad.Source) getArguments().getSerializable("request_type");
-                if (loadSource == PostDataLoad.Source.CUSTOMER_POSTS) {
+                this.loadSource = (LoadPostParams.Source) getArguments().getSerializable("request_type");
+                if (loadSource == LoadPostParams.Source.CUSTOMER_POSTS) {
                     isCustomer = true;
                     this.customerUserId = getArguments().getInt("customer_user_id");
                     userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
@@ -154,19 +154,19 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         try {
             int position = getPositionById(postId);
 
-            PostDataLoad postDataLoad = new PostDataLoad();
+            LoadPostParams postDataLoad = new LoadPostParams();
 
             Bundle bundle = new Bundle();
             postDataLoad.setPosts(posts);
             postDataLoad.setScrollPosition(position);
-            if (loadSource == PostDataLoad.Source.CUSTOMER_POSTS) {
-                postDataLoad.setLoadSource(PostDataLoad.Source.CUSTOMER_POSTS);
+            if (loadSource == LoadPostParams.Source.CUSTOMER_POSTS) {
+                postDataLoad.setLoadSource(LoadPostParams.Source.CUSTOMER_POSTS);
                 postDataLoad.setUserId(customerUserId);
             } else {
-                postDataLoad.setLoadSource(PostDataLoad.Source.MY_POSTS);
+                postDataLoad.setLoadSource(LoadPostParams.Source.MY_POSTS);
                 bundle.putBoolean("back_to_profile", true);
             }
-            bundle.putParcelable(PostDataLoad.INTENT_KEY_LOAD, postDataLoad);
+            bundle.putParcelable(LoadPostParams.INTENT_KEY_LOAD, postDataLoad);
             callback.onPostChoose(bundle);
         } catch (Exception e) {
             e.printStackTrace();

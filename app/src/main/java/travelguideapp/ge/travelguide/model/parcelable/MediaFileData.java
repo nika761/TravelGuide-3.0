@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class MediaFileData implements Parcelable, Serializable {
 
     /**
-     * Created by n.butskhrikidze on 01/07/2020.
+     * Created by n.butskhrikidze on 16/28/2020.
      * Use this key for intents
      */
     public static final String INTENT_KEY_MEDIA = "media_files";
