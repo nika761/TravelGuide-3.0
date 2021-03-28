@@ -25,6 +25,7 @@ import travelguideapp.ge.travelguide.model.response.AddFavoriteMusicResponse;
 import travelguideapp.ge.travelguide.model.response.MoodResponse;
 import travelguideapp.ge.travelguide.model.response.MusicResponse;
 import travelguideapp.ge.travelguide.ui.music.MusicMoodsAdapter;
+
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import java.util.List;
@@ -127,11 +128,12 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(CharSequence::toString)
                 .subscribe((Consumer<CharSequence>) charSequence -> {
-                    if (!charSequence.toString().isEmpty()) {
-                        searchMusicPresenter.searchMusic(GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
-                    } else {
-                        searchMusicPresenter.getMusics(GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
-                    }
+                    if (searchMusicPresenter != null)
+                        if (!charSequence.toString().isEmpty()) {
+                            searchMusicPresenter.searchMusic(GlobalPreferences.getAccessToken(moodsRecycler.getContext()), new SearchMusicRequest(charSequence.toString()));
+                        } else {
+                            searchMusicPresenter.getMusics(GlobalPreferences.getAccessToken(searchMusicRecycler.getContext()));
+                        }
                 });
     }
 

@@ -1,6 +1,4 @@
 package travelguideapp.ge.travelguide.model.request;
-
-
 import java.util.List;
 
 public class UploadPostRequest {

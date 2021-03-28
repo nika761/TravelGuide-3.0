@@ -158,7 +158,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
             Bundle bundle = new Bundle();
             postDataLoad.setPosts(posts);
-            postDataLoad.setScrollPosition(position);
+            postDataLoad.setScrollPosition(postId);
             if (loadSource == LoadPostParams.Source.CUSTOMER_POSTS) {
                 postDataLoad.setLoadSource(LoadPostParams.Source.CUSTOMER_POSTS);
                 postDataLoad.setUserId(customerUserId);

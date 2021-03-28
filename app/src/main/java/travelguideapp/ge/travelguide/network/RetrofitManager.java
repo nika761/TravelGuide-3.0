@@ -2,12 +2,20 @@ package travelguideapp.ge.travelguide.network;
 
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import travelguideapp.ge.travelguide.base.BaseApplication;
+import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 public class RetrofitManager {
 
@@ -20,6 +28,18 @@ public class RetrofitManager {
         if (retrofit == null) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.level(HttpLoggingInterceptor.Level.BODY);
+
+            Interceptor chain = chain1 -> {
+                Request request = chain1.request().newBuilder().addHeader("Authorization", BaseApplication.getAccessToken()).build();
+                return chain1.proceed(request);
+            };
+//
+//            try {
+//                interceptor.intercept((Interceptor.Chain) chain);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
                     .connectTimeout(200, TimeUnit.SECONDS)

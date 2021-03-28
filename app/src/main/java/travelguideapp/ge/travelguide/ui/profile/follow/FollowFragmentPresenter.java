@@ -33,6 +33,8 @@ class FollowFragmentPresenter {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getFollowings().size() > 0)
                             listener.onGetFollowData(response.body());
+                        else
+                            listener.onError(null);
                     } else {
                         listener.onError(response.message());
                     }
@@ -57,6 +59,8 @@ class FollowFragmentPresenter {
                     if (response.body() != null && response.body().getStatus() == 0) {
                         if (response.body().getFollowers().size() > 0)
                             listener.onGetFollowData(response.body());
+                        else
+                            listener.onError(null);
                     } else {
                         listener.onError(response.message());
                     }

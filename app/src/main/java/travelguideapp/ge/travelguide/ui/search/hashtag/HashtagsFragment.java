@@ -53,11 +53,6 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
         try {
             hashtagRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                }
-
-                @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
@@ -65,7 +60,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
 
                     if (!isLoading) {
                         if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == hashtags.size() - 1) {
-                            fromPage = fromPage + 1;
+                            fromPage++;
                             onLazyLoad(fromPage);
                             isLoading = true;
                         }
@@ -154,7 +149,6 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
                     setNothingFound();
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

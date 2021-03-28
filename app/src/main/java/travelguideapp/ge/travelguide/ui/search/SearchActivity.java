@@ -1,9 +1,12 @@
 package travelguideapp.ge.travelguide.ui.search;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -69,6 +72,14 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
         loader = findViewById(R.id.search_loader);
 
         searchField = findViewById(R.id.search_edit_text_second);
+        searchField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchField.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                startSearch();
+                return true;
+            }
+            return false;
+        });
 
         backBtn = findViewById(R.id.search_back_btn_second);
         backBtn.setOnClickListener(v -> finish());

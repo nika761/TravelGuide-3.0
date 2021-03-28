@@ -65,15 +65,15 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     private GlobalLanguages currentLanguage;
 
-    private TextView enterMailHead, enterPasswordHead, registerTxt, privacyPolicy, and, connectWith, notHaveAccount,
-            forgotPassword, termsOfServices;
+    private TextView enterMailHead;
+    private TextView enterPasswordHead;
+    private TextView and;
 
     private LottieAnimationView animationView;
     private FrameLayout frameLayout;
     private EditText enterEmail, enterPassword;
     private LoginButton signBtnFacebook;
     private ImageButton passwordStateBtn;
-    private Button signInBtn;
 
     private final static int GOOGLE_SIGN_IN = 0;
     private boolean passwordHidden = true;
@@ -84,15 +84,8 @@ public class SignInActivity extends BaseActivity implements SignInListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        try {
-            currentLanguage = GlobalPreferences.getCurrentLanguage(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         signInPresenter = new SignInPresenter(this);
-
-        verifyEmail();
 
         initUI();
 
@@ -131,9 +124,16 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 //        }
 //    }
 
-    private void verifyEmail() {
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        verifyEmail(intent);
+    }
+
+    private void verifyEmail(Intent intent) {
         try {
-            Uri uri = getIntent().getData();
+            Uri uri = intent.getData();
             if (uri != null) {
                 List<String> params = uri.getPathSegments();
 
@@ -145,24 +145,6 @@ public class SignInActivity extends BaseActivity implements SignInListener {
                     Log.e("email", signature + " " + id);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void setTextsByLanguage() {
-        try {
-            signInBtn.setText(currentLanguage.getSign_in());
-            registerTxt.setText(currentLanguage.getSign_up());
-            connectWith.setText(currentLanguage.getConnect_with_offer_body());
-            privacyPolicy.setText(currentLanguage.getPrivacy_policy());
-//            notHaveAccount.setText(currentLanguage.getPrivacy_policy());
-            forgotPassword.setText(currentLanguage.getForgot_password());
-            enterMailHead.setText(currentLanguage.getEmail_field_head());
-            termsOfServices.setText(currentLanguage.getTerms_of_services());
-            enterPasswordHead.setText(currentLanguage.getPassword_field_head());
-            and.setText(currentLanguage.getAnd());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -192,25 +174,25 @@ public class SignInActivity extends BaseActivity implements SignInListener {
                 enterPassword.setFocusedByDefault(false);
             }
 
-            notHaveAccount = findViewById(R.id.not_have_account);
-            connectWith = findViewById(R.id.connect_with);
+            TextView notHaveAccount = findViewById(R.id.not_have_account);
+            TextView connectWith = findViewById(R.id.connect_with);
 
             ImageView lineLeft = findViewById(R.id.line_left);
             ImageView lineRight = findViewById(R.id.line_right);
             LinearLayout terms = findViewById(R.id.linear_terms);
 
-            registerTxt = findViewById(R.id.register_now);
+            TextView registerTxt = findViewById(R.id.register_now);
             registerTxt.setOnClickListener(this::onViewClick);
 
-            forgotPassword = findViewById(R.id.forgot_password_sign_in);
+            TextView forgotPassword = findViewById(R.id.forgot_password_sign_in);
             forgotPassword.setOnClickListener(this::onViewClick);
 
             and = findViewById(R.id.and);
 
-            termsOfServices = findViewById(R.id.terms_of_services);
+            TextView termsOfServices = findViewById(R.id.terms_of_services);
             termsOfServices.setOnClickListener(this::onViewClick);
 
-            privacyPolicy = findViewById(R.id.privacy_policy);
+            TextView privacyPolicy = findViewById(R.id.privacy_policy);
             privacyPolicy.setOnClickListener(this::onViewClick);
 
             SignInButton signBtnGoogle = findViewById(R.id.sign_in_button_google);
@@ -219,7 +201,7 @@ public class SignInActivity extends BaseActivity implements SignInListener {
             Button googleBtn = findViewById(R.id.google);
             googleBtn.setOnClickListener(this::onViewClick);
 
-            signInBtn = findViewById(R.id.sign_in_button_main);
+            Button signInBtn = findViewById(R.id.sign_in_button_main);
             signInBtn.setOnClickListener(this::onViewClick);
 
             Button facebookBtn = findViewById(R.id.facebook);
@@ -440,18 +422,23 @@ public class SignInActivity extends BaseActivity implements SignInListener {
         switch (loginResponse.getStatus()) {
             case 0:
 
-                GlobalPreferences.saveUser(this, loginResponse.getUser());
-                GlobalPreferences.saveAccessToken(this, loginResponse.getAccess_token());
-                GlobalPreferences.saveUserId(this, loginResponse.getUser().getId());
-                GlobalPreferences.saveUserRole(this, loginResponse.getUser().getRole());
-                GlobalPreferences.saveLoginType(this, GlobalPreferences.TRAVEL_GUIDE);
+                try {
+                    GlobalPreferences.saveUser(this, loginResponse.getUser());
+                    GlobalPreferences.saveAccessToken(this, loginResponse.getAccess_token());
+                    GlobalPreferences.saveUserId(this, loginResponse.getUser().getId());
+                    GlobalPreferences.saveUserRole(this, loginResponse.getUser().getRole());
+                    GlobalPreferences.saveLoginType(this, GlobalPreferences.TRAVEL_GUIDE);
 
-                showLoading(false);
+                    showLoading(false);
 
-                Intent intent = new Intent(this, HomePageActivity.class);
-                startActivity(intent);
-                finish();
+                    Intent intent = new Intent(this, HomePageActivity.class);
+                    startActivity(intent);
+                    finish();
 
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    finish();
+                }
                 break;
 
             case 1:

@@ -101,30 +101,39 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
+    @Headers({"Accept: application/json"})
     @POST("register")
     Call<SignUpResponse> signUp(@Body SignUpRequest signUpRequest);
 
+    @Headers({"Accept: application/json"})
     @POST("check_email")
     Call<CheckMailResponse> checkEmail(@Body CheckMailRequest checkMailRequest);
 
+    @Headers({"Accept: application/json"})
     @POST("check_nick")
     Call<CheckNickResponse> checkNick(@Body CheckNickRequest checkNickRequest);
 
+    @Headers({"Accept: application/json"})
     @GET("get_languages")
     Call<LanguagesResponse> getLanguages();
 
+    @Headers({"Accept: application/json"})
     @POST("get/texts")
     Call<LanguageStringsResponse> getLanguageStrings(@Body LanguageStringsRequest languageStringsRequest);
 
+    @Headers({"Accept: application/json"})
     @GET("get/app_settings")
     Call<AppSettingsResponse> getAppSettings();
 
+    @Headers({"Accept: application/json"})
     @POST("get_terms_policy")
     Call<TermsPolicyResponse> getTerms(@Body TermsPolicyRequest termsPolicyRequest);
 
+    @Headers({"Accept: application/json"})
     @POST("login")
     Call<LoginResponse> signIn(@Body LoginRequest loginRequest);
 
+    @Headers({"Accept: application/json"})
     @POST("get/about")
     Call<AboutResponse> getAbout(@Body AboutRequest aboutRequest);
 
@@ -249,17 +258,17 @@ public interface ApiService {
     @Headers({"Accept: application/json"})
     @POST("set/post_report")
     Call<SetReportResponse> setPostReport(@Header("Authorization") String token,
-                                      @Body SetPostReportRequest setReportRequest);
+                                          @Body SetPostReportRequest setReportRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/user_report")
     Call<SetReportResponse> setUserReport(@Header("Authorization") String token,
-                                      @Body SetUserReportRequest setUserReportRequest);
+                                          @Body SetUserReportRequest setUserReportRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/comment_report")
     Call<SetReportResponse> setCommentReport(@Header("Authorization") String token,
-                                          @Body SetCommentReportRequest setCommentReportRequest);
+                                             @Body SetCommentReportRequest setCommentReportRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/post_favourite")

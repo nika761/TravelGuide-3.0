@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,8 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.callback.AskingDialogCallback;
 import travelguideapp.ge.travelguide.enums.FollowType;
+import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
@@ -42,31 +47,27 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     private FollowFragmentCallbacks callback;
     private FollowType requestType;
 
-    private List<FollowingResponse.Followings> followingsInner = new ArrayList<>();
+    private List<FollowingResponse.Followings> followingsInner;
     private List<FollowingResponse.Followings> followingsMain;
-    private List<FollowerResponse.Followers> followersInner = new ArrayList<>();
+
+    private List<FollowerResponse.Followers> followersInner;
     private List<FollowerResponse.Followers> followersMain;
 
     private int customerUserId;
     private int actionPosition;
 
     private boolean isLoading = false;
+    private boolean isFirstTime = true;
     private boolean isNeedLazyLoad;
+
+    private LottieAnimationView loaderAnimation;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_follow, container, false);
 
-        try {
-
-            this.requestType = (FollowType) getArguments().getSerializable("request_type");
-
-            this.customerUserId = getArguments().getInt("customer_user_id");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        initData();
 
         followRecyclerAdapter = new FollowRecyclerAdapter(this);
         if (customerUserId != 0)
@@ -77,9 +78,12 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
         followRecycler.setHasFixedSize(true);
         presenter = new FollowFragmentPresenter(this);
 
+        loaderAnimation = view.findViewById(R.id.item_follow_loading);
+
         return view;
 
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -90,17 +94,11 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null)
-            getFollowData();
+        getFollowData();
     }
 
     private void listenToLazyLoad() {
         followRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -110,14 +108,14 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
                         switch (requestType) {
                             case FOLLOWER:
                                 if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == followersInner.size() - 1) {
-                                    lazyLoad();
                                     isLoading = true;
+                                    lazyLoad();
                                 }
                                 break;
                             case FOLLOWING:
                                 if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == followingsInner.size() - 1) {
-                                    lazyLoad();
                                     isLoading = true;
+                                    lazyLoad();
                                 }
                                 break;
                         }
@@ -129,41 +127,100 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
         });
     }
 
+    private void initData() {
+        try {
+            this.requestType = (FollowType) getArguments().getSerializable("request_type");
+            this.customerUserId = getArguments().getInt("customer_user_id");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (requestType == null) {
+            getActivity().finish();
+        }
+
+        switch (requestType) {
+            case FOLLOWING:
+                followingsInner = new ArrayList<>();
+                break;
+            case FOLLOWER:
+                followersInner = new ArrayList<>();
+                break;
+        }
+    }
+
     private void lazyLoad() {
         try {
             switch (requestType) {
                 case FOLLOWER:
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(() -> {
-                        int currentSize = followersInner.size();
-                        int nextLimit = currentSize + 15;
+                    try {
+                        followersInner.add(null);
+                        followRecyclerAdapter.notifyItemInserted(followersInner.size() - 1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                        while (currentSize - 1 < nextLimit && currentSize < followersMain.size()) {
-                            followersInner.add(followersMain.get(currentSize));
-                            currentSize++;
+                    new Handler().postDelayed(() -> {
+                        try {
+                            followersInner.remove(followersInner.size() - 1);
+                            followRecyclerAdapter.notifyItemRemoved(followersInner.size());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                    }, 800);
 
-                        followRecyclerAdapter.notifyDataSetChanged();
+                    new Handler().postDelayed(() -> {
+                        try {
+                            int currentSize = followersInner.size();
+                            int nextLimit = currentSize + 15;
 
-                        isLoading = false;
-                    }, 300);
+                            while (currentSize - 1 < nextLimit && currentSize < followersMain.size()) {
+                                followersInner.add(followersMain.get(currentSize));
+                                currentSize++;
+                            }
+
+                            followRecyclerAdapter.notifyDataSetChanged();
+
+                            isLoading = false;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }, 1000);
                     break;
 
                 case FOLLOWING:
-                    Handler handler = new Handler();
-                    handler.postDelayed(() -> {
-                        int currentSize = followingsInner.size();
-                        int nextLimit = currentSize + 15;
+                    try {
+                        followingsInner.add(null);
+                        followRecyclerAdapter.notifyItemInserted(followingsInner.size() - 1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                        while (currentSize - 1 < nextLimit && currentSize < followingsMain.size()) {
-                            followingsInner.add(followingsMain.get(currentSize));
-                            currentSize++;
+                    new Handler().postDelayed(() -> {
+                        try {
+                            followingsInner.remove(followingsInner.size() - 1);
+                            followRecyclerAdapter.notifyItemRemoved(followingsInner.size());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                    }, 800);
 
-                        followRecyclerAdapter.notifyDataSetChanged();
+                    new Handler().postDelayed(() -> {
+                        try {
+                            int currentSize = followingsInner.size();
+                            int nextLimit = currentSize + 15;
 
-                        isLoading = false;
-                    }, 300);
+                            while (currentSize - 1 < nextLimit && currentSize < followingsMain.size()) {
+                                followingsInner.add(followingsMain.get(currentSize));
+                                currentSize++;
+                            }
+
+                            followRecyclerAdapter.notifyDataSetChanged();
+
+                            isLoading = false;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }, 1000);
                     break;
             }
         } catch (Exception e) {
@@ -178,34 +235,35 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
             switch (requestType) {
                 case FOLLOWING:
                     List<FollowingResponse.Followings> followings = ((FollowingResponse) object).getFollowings();
-                    this.followingsMain = followings;
                     if (followings.size() > 15) {
                         isNeedLazyLoad = true;
+                        this.followingsMain = followings;
                         for (int i = 0; i < 15; i++) {
                             this.followingsInner.add(followingsMain.get(i));
                         }
                         followRecyclerAdapter.setFollowings(followingsInner);
                     } else {
                         isNeedLazyLoad = false;
-                        followRecyclerAdapter.setFollowings(followingsMain);
+                        followRecyclerAdapter.setFollowings(followings);
                     }
                     break;
 
                 case FOLLOWER:
                     List<FollowerResponse.Followers> followers = ((FollowerResponse) object).getFollowers();
-                    this.followersMain = followers;
                     if (followers.size() > 15) {
                         isNeedLazyLoad = true;
+                        this.followersMain = followers;
                         for (int i = 0; i < 15; i++) {
                             this.followersInner.add(followersMain.get(i));
                         }
                         followRecyclerAdapter.setFollowers(followersInner);
                     } else {
                         isNeedLazyLoad = false;
-                        followRecyclerAdapter.setFollowers(followersMain);
+                        followRecyclerAdapter.setFollowers(followers);
                     }
                     break;
             }
+            loaderAnimation.setVisibility(View.GONE);
             followRecycler.setAdapter(followRecyclerAdapter);
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,7 +280,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onFollowAction(int userId, int position) {
         this.actionPosition = position;
-        presenter.startAction(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowRequest(userId));
+        DialogManager.getAskingDialog(followRecycler.getContext(), getString(R.string.unfollow) + "?", () -> presenter.startAction(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowRequest(userId)));
     }
 
     @Override
@@ -243,6 +301,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
 
     @Override
     public void onError(String message) {
+        loaderAnimation.setVisibility(View.GONE);
         MyToaster.getToast(followRecycler.getContext(), message);
     }
 
@@ -251,26 +310,31 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     }
 
     private void getFollowData() {
-        try {
-            if (checkRequestType()) {
-                switch (requestType) {
-                    case FOLLOWER:
-                        if (customerUserId > 0)
-                            presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
-                        else
-                            presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
-                        break;
+        if (presenter != null) {
+            if (isFirstTime) {
+                isFirstTime = false;
+                try {
+                    if (checkRequestType()) {
+                        switch (requestType) {
+                            case FOLLOWER:
+                                if (customerUserId > 0)
+                                    presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
+                                else
+                                    presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                                break;
 
-                    case FOLLOWING:
-                        if (customerUserId > 0)
-                            presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
-                        else
-                            presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
-                        break;
+                            case FOLLOWING:
+                                if (customerUserId > 0)
+                                    presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
+                                else
+                                    presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                                break;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

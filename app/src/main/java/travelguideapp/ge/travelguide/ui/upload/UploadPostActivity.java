@@ -3,7 +3,8 @@ package travelguideapp.ge.travelguide.ui.upload;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,20 +51,20 @@ import static travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity.MUSIC_I
 
 public class UploadPostActivity extends BaseActivity implements UploadPostListener {
 
-    private static final int TAG_REQUEST_LOCATION__CODE = 444;
+    private static final int TAG_REQUEST_CODE_LOCATION = 444;
     private static final int TAG_REQUEST_CODE_HASHTAGS = 48;
     private static final int TAG_REQUEST_CODE_FRIENDS = 49;
 
     public static final String TAG_TYPE_USERS = "tag_users";
     public static final String TAG_TYPE_HASHTAGS = "tag_hashtags";
-    public static final String TAG_REQUEST_TYPE = "tag_request_type";
+    public static final String TAG_TYPE_REQUEST = "tag_request_type";
 
     private File fileForUpload;
     //    private List<ItemMedia> itemMedia = new ArrayList<>();
     private List<MediaFileData> mediaFiles = new ArrayList<>();
-    private List<Integer> users = new ArrayList<>();
-    private List<String> hashtags = new ArrayList<>();
-    private List<String> hashs = new ArrayList<>();
+    private final List<Integer> users = new ArrayList<>();
+    private final List<String> hashtags = new ArrayList<>();
+    private final List<String> hashs = new ArrayList<>();
 
     private LottieAnimationView loader;
     private FrameLayout loaderContainer;
@@ -77,9 +78,6 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     private String address, addressName, latLng, description, videoHeight, videoWidht;
     private int musicId;
-
-    private boolean hasPermisPsion = false;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -162,14 +160,14 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     private void startAddTags(String tagType, int requestCode) {
         Intent intent = new Intent(this, TagPostActivity.class);
-        intent.putExtra(TAG_REQUEST_TYPE, tagType);
+        intent.putExtra(TAG_TYPE_REQUEST, tagType);
         startActivityForResult(intent, requestCode);
     }
 
     private void startAddLocation() {
         List<Place.Field> locations = Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME, Place.Field.LAT_LNG);
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, locations).build(UploadPostActivity.this);
-        startActivityForResult(intent, TAG_REQUEST_LOCATION__CODE);
+        startActivityForResult(intent, TAG_REQUEST_CODE_LOCATION);
     }
 
     private void getLoader(boolean show) {
@@ -302,7 +300,6 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
                     try {
                         String hashtag = data.getStringExtra("hashtags");
                         this.hashtags.add(hashtag);
-                        Log.e("HASHTAG_CHECKING", hashtags.toString());
                         this.hashs.add(hashtag);
                         if (hashs.size() > 0) {
                             setTagRecycler(true);
@@ -353,7 +350,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case TAG_REQUEST_LOCATION__CODE:
+            case TAG_REQUEST_CODE_LOCATION:
                 onGetAddLocationResult(data, resultCode);
                 break;
 

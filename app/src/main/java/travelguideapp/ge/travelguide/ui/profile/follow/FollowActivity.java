@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.ui.profile.follow;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -60,7 +61,7 @@ public class FollowActivity extends BaseActivity implements FollowFragment.Follo
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
+//        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class FollowActivity extends BaseActivity implements FollowFragment.Follo
                 Intent intent = new Intent(this, CustomerProfileActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
-                overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+//                overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
             }
         } catch (Exception e) {
             e.printStackTrace();

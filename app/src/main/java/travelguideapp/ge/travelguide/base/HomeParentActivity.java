@@ -41,7 +41,7 @@ import travelguideapp.ge.travelguide.utility.GlobalPreferences;
  * Created by n.butskhrikidze on 15/11/2020.
  * <p>
  * ეს ჯიგარი ექთივითი იყოს მშობელი ყველა ექთივითისა სადაც ვხსნით პოსტებს სიმონ.
- *
+ * <p>
  * თუ ასე არ იზამ, ღმერთმა ხელი მოგიმართოს :D :D
  * <p>
  */
@@ -95,11 +95,22 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     }
 
     protected void onAuthenticateError(String message) {
-        MyToaster.getToast(this, message);
+        new Thread(() -> {
+            try {
+                GlobalPreferences.saveAccessToken(HomeParentActivity.this, null);
+                GlobalPreferences.saveUserId(HomeParentActivity.this, 0);
+                GlobalPreferences.saveUserRole(HomeParentActivity.this, 20);
+                GlobalPreferences.saveLoginType(HomeParentActivity.this, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
 
+        MyToaster.getToast(this, message);
         Intent intent = new Intent(this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+
     }
 
     protected void onConnectionError() {
@@ -242,7 +253,7 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
                 Intent intent = new Intent(this, CustomerProfileActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
-                overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+//                overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
             }
         } catch (Exception e) {
             e.printStackTrace();

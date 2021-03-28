@@ -228,7 +228,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         Intent followIntent = new Intent(this, FollowActivity.class);
         followIntent.putExtra("user_name", userName);
         startActivity(followIntent);
-        overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
+//        overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
     }
 
     @Override

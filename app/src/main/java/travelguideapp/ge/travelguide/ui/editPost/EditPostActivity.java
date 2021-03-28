@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,6 +63,9 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
+//        Transition mFadeTransition = TransitionInflater.from(this).inflateTransition(R.transition.toolbar_trans);
+//        getWindow().setEnterTransition(mFadeTransition);
+//        getWindow().setExitTransition(mFadeTransition);
         initUI();
         sortData();
         checkVideoDuration();

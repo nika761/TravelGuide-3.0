@@ -96,7 +96,7 @@ public class CustomPostRecycler extends RecyclerView {
     private boolean videoPlaying = true;
     private boolean isVideoViewAdded;
 
-    public static boolean feedLive = false;
+    public boolean feedLive = true;
 
     private HomeFragmentListener homeFragmentListener;
     private CustomProgressBar customProgressBar;
@@ -136,7 +136,9 @@ public class CustomPostRecycler extends RecyclerView {
         }
 
         try {
+
             long time = GlobalPreferences.getAppSettings(context).getPOST_VIEW_TIME();
+
             if (time != 0)
                 customTimer = new CustomTimer(time, 1000);
             else

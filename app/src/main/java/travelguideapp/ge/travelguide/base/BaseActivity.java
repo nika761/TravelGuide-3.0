@@ -23,10 +23,10 @@ import static travelguideapp.ge.travelguide.helper.SystemManager.READ_EXTERNAL_S
 
 /**
  * Created by n.butskhrikidze on 01/07/2020.
- * <p>
+ *
  * დასაბამიდან იყო სიტყვა, და სიტყვა იყო ღმერთთან და ღმერთი იყო სიტყვა.
  * In the beginning was the Word, and the Word was with God, and the Word was God.
- * <p>
+ *
  */
 
 public class BaseActivity extends AppCompatActivity {

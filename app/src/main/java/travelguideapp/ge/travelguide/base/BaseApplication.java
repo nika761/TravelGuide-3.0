@@ -42,18 +42,21 @@ public class BaseApplication extends Application {
     public static int AGE_RESTRICTION;
     public static int ITEM_WIDTH_FOR_POSTS;
 
-    public static boolean isHomeValid = true;
+    private static String accessToken;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        if (GlobalPreferences.getAccessToken(this) != null) {
+            accessToken = GlobalPreferences.getAccessToken(this);
+        }
+    }
 
-//        updateConfig();
-//        try {
-//            overrideFont("SERIF", "font/roboto_thin.ttf");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    public static String getAccessToken() {
+        if (accessToken != null)
+            return accessToken;
+        else
+            return "";
     }
 
     private void createNotificationChannel() {

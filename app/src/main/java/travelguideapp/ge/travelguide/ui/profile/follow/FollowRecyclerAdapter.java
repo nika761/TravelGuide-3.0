@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.FollowType;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
@@ -31,6 +33,12 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<FollowerResponse.Followers> followers;
     private List<FollowingResponse.Followings> followings;
 
+    private List<Object> list;
+
+    private final int VIEW_TYPE_FOLLOWER = 0;
+    private final int VIEW_TYPE_FOLLOWING = 1;
+    private final int VIEW_TYPE_LOADING = 2;
+
     FollowRecyclerAdapter(FollowFragmentListener listener) {
         this.listener = listener;
     }
@@ -38,21 +46,27 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (requestType == FollowType.FOLLOWING)
-            return new FollowRecyclerAdapter.FollowingHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following, parent, false));
-        else
-            return new FollowRecyclerAdapter.FollowerHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_followers, parent, false));
+        switch (viewType) {
+            case VIEW_TYPE_FOLLOWER:
+                return new FollowRecyclerAdapter.FollowerHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_followers, parent, false));
+
+            case VIEW_TYPE_FOLLOWING:
+                return new FollowRecyclerAdapter.FollowingHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following, parent, false));
+
+            case VIEW_TYPE_LOADING:
+                return new FollowRecyclerAdapter.LazyLoaderHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lazy_loading, parent, false));
+        }
+        return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        switch (requestType) {
-            case FOLLOWING:
-                ((FollowRecyclerAdapter.FollowingHolder) holder).bindView(position);
-                break;
-            case FOLLOWER:
-                ((FollowRecyclerAdapter.FollowerHolder) holder).bindView(position);
-                break;
+        if (holder instanceof FollowerHolder) {
+            ((FollowRecyclerAdapter.FollowerHolder) holder).bindUI(position);
+        } else if (holder instanceof FollowingHolder) {
+            ((FollowRecyclerAdapter.FollowingHolder) holder).bindUI(position);
+        } else {
+            ((FollowRecyclerAdapter.LazyLoaderHolder) holder).bindUI();
         }
     }
 
@@ -62,6 +76,26 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return followings.size();
         else
             return followers.size();
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+        switch (requestType) {
+            case FOLLOWER:
+                if (followers.get(position) == null) {
+                    return VIEW_TYPE_LOADING;
+                } else {
+                    return VIEW_TYPE_FOLLOWER;
+                }
+            case FOLLOWING:
+                if (followings.get(position) == null) {
+                    return VIEW_TYPE_LOADING;
+                } else {
+                    return VIEW_TYPE_FOLLOWING;
+                }
+        }
+        return 2;
     }
 
     void setFollowers(List<FollowerResponse.Followers> followers) {
@@ -130,7 +164,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         }
 
-        void bindView(int position) {
+        void bindUI(int position) {
             try {
                 if (position == followers.size() - 1) {
 
@@ -187,7 +221,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
 
-        void bindView(int position) {
+        void bindUI(int position) {
             try {
 //                itemView.startAnimation(animation);
                 if (followings.get(position).getUser_id() == GlobalPreferences.getUserId(userImage.getContext()))
@@ -201,6 +235,21 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
 
         }
+    }
+
+    class LazyLoaderHolder extends RecyclerView.ViewHolder {
+
+        LottieAnimationView animation;
+
+        LazyLoaderHolder(@NonNull View itemView) {
+            super(itemView);
+            animation = itemView.findViewById(R.id.item_lazy_loader);
+        }
+
+        void bindUI() {
+            animation.setVisibility(View.VISIBLE);
+        }
+
     }
 
 }

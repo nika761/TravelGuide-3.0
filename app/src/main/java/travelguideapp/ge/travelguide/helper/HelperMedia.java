@@ -129,7 +129,6 @@ public class HelperMedia {
 //            String sortOrder = MediaStore.Images.Media.DISPLAY_NAME + " DESC";
             String sorting = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
-
             try (Cursor cursor = context.getContentResolver().query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     projection,

@@ -3,6 +3,9 @@ package travelguideapp.ge.travelguide.ui.home.feed;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Trace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,7 +91,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private List<PostResponse.Posts> posts;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -168,19 +170,23 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         customPostAdapter = new CustomPostAdapter(this);
         customPostAdapter.setPosts(posts);
         customPostRecycler.setAdapter(customPostAdapter);
-        try {
-            if (scrollToPosition) {
-                if (scrollPosition == 0)
-                    customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
-                else {
-                    customPostRecycler.post(() -> customPostRecycler.smoothScrollToPosition(scrollPosition));
+
+        if (scrollToPosition) {
+            new Thread(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                try {
+                    if (scrollPosition == 0)
+                        customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
+                    else {
+                        customPostRecycler.post(() -> customPostRecycler.smoothScrollToPosition(scrollPosition));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } else {
-                customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            }, 100)).start();
+        } else {
+            new Handler().postDelayed(() -> customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1)), 50);
         }
+
 
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 //        postRecycler.setLayoutManager(layoutManager);
@@ -414,7 +420,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     public void onStoryDeleted(DeleteStoryResponse deleteStoryResponse) {
         try {
             Intent intent = new Intent(getContext(), HomePageActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -454,8 +460,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     public void onResume() {
         super.onResume();
         Log.e("VideoPlayerRecyclerView", "onResume");
-        CustomPostRecycler.feedLive = true;
         try {
+            customPostRecycler.feedLive = true;
             customPostRecycler.startPlayer();
         } catch (Exception e) {
             e.printStackTrace();
@@ -482,8 +488,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onStop() {
         super.onStop();
-        CustomPostRecycler.feedLive = false;
         try {
+            customPostRecycler.feedLive = false;
             customPostRecycler.pausePlayer();
         } catch (Exception e) {
             e.printStackTrace();
@@ -525,14 +531,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onAuthError(String message) {
         try {
-            MyToaster.getToast(getContext(), message);
-            Intent intent = new Intent(getContext(), SignInActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            ((HomePageActivity) getActivity()).onAuthenticationError(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

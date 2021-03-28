@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -25,12 +27,12 @@ import java.util.ArrayList;
 public class GalleryFragment extends Fragment {
 
     private Context context;
-    private int widthDiff;
 
     private ArrayList<String> photosAll;
-    private ArrayList<String> photosInner = new ArrayList<>();
+    private final ArrayList<String> photosInner = new ArrayList<>();
+
     private ArrayList<String> videosAll;
-    private ArrayList<String> videosInner = new ArrayList<>();
+    private final ArrayList<String> videosInner = new ArrayList<>();
 
     private boolean isNeedLazyLoad;
     private boolean isLoading;
@@ -39,11 +41,15 @@ public class GalleryFragment extends Fragment {
     private GalleryAdapter galleryAdapter;
     private RecyclerView galleryRecycler;
 
+    private LottieAnimationView lottieAnimationView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_media, container, false);
         galleryRecycler = layout.findViewById(R.id.media_recyclerview);
+        lottieAnimationView = layout.findViewById(R.id.item_gallery_loading);
+
         try {
             if (getArguments() != null) {
                 is_image = getArguments().getBoolean("is_image");
@@ -75,11 +81,6 @@ public class GalleryFragment extends Fragment {
             case 1:
                 galleryRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
-                    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                    }
-
-                    @Override
                     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                         super.onScrolled(recyclerView, dx, dy);
 
@@ -98,11 +99,6 @@ public class GalleryFragment extends Fragment {
 
             case 2:
                 galleryRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                    }
-
                     @Override
                     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                         super.onScrolled(recyclerView, dx, dy);
@@ -127,8 +123,7 @@ public class GalleryFragment extends Fragment {
     private void loadMore(int type) {
         switch (type) {
             case 1:
-                Handler handler = new Handler();
-                handler.postDelayed(() -> {
+                new Handler().postDelayed(() -> {
                     int currentSize = photosInner.size();
                     int nextLimit = currentSize + 15;
 
@@ -144,8 +139,7 @@ public class GalleryFragment extends Fragment {
                 break;
 
             case 2:
-                Handler handler1 = new Handler();
-                handler1.postDelayed(() -> {
+                new Handler().postDelayed(() -> {
                     int currentSize = videosInner.size();
                     int nextLimit = currentSize + 15;
 
@@ -165,9 +159,18 @@ public class GalleryFragment extends Fragment {
     private void getLazyPaths(int type) {
         switch (type) {
             case 1:
-                photosAll = HelperMedia.getImagesPathByDate(context);
-                Handler handler = new Handler();
-                handler.postDelayed(() -> {
+                new Thread(() -> {
+                    try {
+                        photosAll = HelperMedia.getImagesPathByDate(context);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
+                new Handler().postDelayed(() -> {
+                    if (photosAll == null)
+                        return;
+
                     if (photosAll.size() > 15) {
                         isNeedLazyLoad = true;
                         for (int i = 0; i < 15; i++) {
@@ -178,14 +181,26 @@ public class GalleryFragment extends Fragment {
                         isNeedLazyLoad = false;
                         galleryAdapter.setItems(photosAll);
                     }
+
+                    lottieAnimationView.setVisibility(View.GONE);
                     galleryRecycler.setAdapter(galleryAdapter);
-                }, 1500);
+
+                }, 2000);
                 break;
 
             case 2:
-                videosAll = HelperMedia.getVideosPathByDate(context);
-                Handler handler1 = new Handler();
-                handler1.postDelayed(() -> {
+                new Thread(() -> {
+                    try {
+                        videosAll = HelperMedia.getVideosPathByDate(context);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
+                new Handler().postDelayed(() -> {
+                    if (videosAll == null)
+                        return;
+
                     if (videosAll.size() > 15) {
                         isNeedLazyLoad = true;
                         for (int i = 0; i < 15; i++) {
@@ -196,8 +211,11 @@ public class GalleryFragment extends Fragment {
                         isNeedLazyLoad = false;
                         galleryAdapter.setItems(videosAll);
                     }
+
+                    lottieAnimationView.setVisibility(View.GONE);
                     galleryRecycler.setAdapter(galleryAdapter);
-                }, 1500);
+
+                }, 2000);
                 break;
 
         }

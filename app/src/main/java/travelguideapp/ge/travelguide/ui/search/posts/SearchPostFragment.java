@@ -134,7 +134,6 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
                     setNothingFound();
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

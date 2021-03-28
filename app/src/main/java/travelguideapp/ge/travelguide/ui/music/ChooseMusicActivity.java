@@ -5,6 +5,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;

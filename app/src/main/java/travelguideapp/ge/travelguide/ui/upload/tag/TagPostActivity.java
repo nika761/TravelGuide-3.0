@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -14,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,7 +36,7 @@ import java.util.regex.Pattern;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
-import static travelguideapp.ge.travelguide.ui.upload.UploadPostActivity.TAG_REQUEST_TYPE;
+import static travelguideapp.ge.travelguide.ui.upload.UploadPostActivity.TAG_TYPE_REQUEST;
 import static travelguideapp.ge.travelguide.ui.upload.UploadPostActivity.TAG_TYPE_HASHTAGS;
 import static travelguideapp.ge.travelguide.ui.upload.UploadPostActivity.TAG_TYPE_USERS;
 
@@ -100,7 +96,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
 
     private void getTagType() {
 
-        String type = getIntent().getStringExtra(TAG_REQUEST_TYPE);
+        String type = getIntent().getStringExtra(TAG_TYPE_REQUEST);
 
         if (type != null)
             switch (type) {

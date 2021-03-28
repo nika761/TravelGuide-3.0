@@ -28,7 +28,6 @@ import java.util.Locale;
 
 import travelguideapp.ge.travelguide.ui.splashScreen.SplashScreenActivity;
 
-
 public class LanguageActivity extends AppCompatActivity implements LanguageListener {
     private LanguagePresenter languagePresenter;
     private FrameLayout loaderContainer;

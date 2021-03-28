@@ -157,12 +157,12 @@
             android:exported="true">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="@string/fb_login_protocol_scheme" />
+
             </intent-filter>
 
         </activity>
@@ -230,7 +230,6 @@
                     android:host="justgo.ge"
                     android:pathPrefix="/password/reset"
                     android:scheme="https" />
-
             </intent-filter>
 
         </activity>

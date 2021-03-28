@@ -39,8 +39,7 @@ import travelguideapp.ge.travelguide.ui.profile.posts.UserPostsFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CustomerProfileActivity extends HomeParentActivity implements CustomerProfileListener, OnPostChooseCallback,
-        View.OnClickListener {
+public class CustomerProfileActivity extends HomeParentActivity implements CustomerProfileListener, OnPostChooseCallback {
 
     private CustomerProfilePresenter customerProfilePresenter;
 
@@ -53,11 +52,13 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
 
     private String customerUserName;
     private int customerUserId;
+    private boolean isFollowing;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_profile);
+
         try {
             this.customerUserId = getIntent().getIntExtra("id", 0);
         } catch (Exception e) {
@@ -106,16 +107,19 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
 //        tabLayout.getTabAt(1).setIcon(R.drawable.profile_tour);
 
         ConstraintLayout followersContainer = findViewById(R.id.customer_profile_follow_container);
-        followersContainer.setOnClickListener(this);
+        followersContainer.setOnClickListener(v -> startFollowersActivity());
 
         ImageButton backBtn = findViewById(R.id.customer_profile_back_btn);
-        backBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(v -> {
+            onBackPressed();
+            finish();
+        });
 
         TextView report = findViewById(R.id.customer_profile_report);
-        report.setOnClickListener(this);
+        report.setOnClickListener(v -> openReportDialog(ReportParams.setParams(ReportParams.Type.USER, customerUserId)));
 
         followBtn = findViewById(R.id.customer_profile_follow_btn);
-        followBtn.setOnClickListener(this);
+        followBtn.setOnClickListener(v -> followBtnAction());
 
         userName = findViewById(R.id.customer_profile_name);
         nickName = findViewById(R.id.customer_profile_nickName);
@@ -148,10 +152,13 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
             if (userInfo.getProfile_pic() != null)
                 HelperMedia.loadCirclePhoto(this, userInfo.getProfile_pic(), image);
 
-            if (userInfo.getFollow() == 1)
+            if (userInfo.getFollow() == 1) {
                 followBtn.setText(getResources().getString(R.string.following));
-            else
+                isFollowing = true;
+            } else {
                 followBtn.setText(getResources().getString(R.string.follow));
+                isFollowing = false;
+            }
 
             if (userInfo.getBiography() != null) {
                 bioContainer.setVisibility(View.VISIBLE);
@@ -178,41 +185,38 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
 
     @Override
     public void onFollowSuccess(FollowResponse followResponse) {
-        switch (followResponse.getStatus()) {
-            case 0:
-                followBtn.setText(getResources().getString(R.string.following));
-                break;
-
-            case 1:
-                followBtn.setText(getResources().getString(R.string.follow));
-                break;
-        }
-
+//        switch (followResponse.getStatus()) {
+        //ლოკალურად ვააფდეითებ იუაის , შედარებით სწრაფია.
+//            case 0:
+//                followBtn.setText(getResources().getString(R.string.following));
+//                break;
+//
+//            case 1:
+//                followBtn.setText(getResources().getString(R.string.follow));
+//                break;
+//        }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.customer_profile_back_btn:
-                onBackPressed();
-                finish();
-                break;
-
-            case R.id.customer_profile_report:
-                openReportDialog(ReportParams.setParams(ReportParams.Type.USER, customerUserId));
-                break;
-
-            case R.id.customer_profile_follow_btn:
-                customerProfilePresenter.follow(GlobalPreferences.getAccessToken(this), new FollowRequest(customerUserId));
-                break;
-
-            case R.id.customer_profile_follow_container:
-                Intent intent = new Intent(this, FollowActivity.class);
-                intent.putExtra("user_name", customerUserName);
-                intent.putExtra("customer_user_id", customerUserId);
-                startActivity(intent);
-                break;
+    private void followBtnAction() {
+        try {
+            if (isFollowing) {
+                followBtn.setText(getResources().getString(R.string.follow));
+                isFollowing = false;
+            } else {
+                followBtn.setText(getResources().getString(R.string.following));
+                isFollowing = true;
+            }
+            customerProfilePresenter.follow(GlobalPreferences.getAccessToken(CustomerProfileActivity.this), new FollowRequest(customerUserId));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    private void startFollowersActivity() {
+        Intent intent = new Intent(CustomerProfileActivity.this, FollowActivity.class);
+        intent.putExtra("user_name", customerUserName);
+        intent.putExtra("customer_user_id", customerUserId);
+        startActivity(intent);
     }
 
     @Override
@@ -232,7 +236,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
+//        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
     }
 
     @Override
