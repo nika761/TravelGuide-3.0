@@ -12,17 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
-import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
 
 import java.util.List;
 
 public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<ItemMedia> itemMedias;
-    private List<MediaFileData> mediaFiles;
+    private List<MediaFileParams> mediaFiles;
     private final EditPostCallback editPostCallback;
 
     EditPostAdapter(EditPostCallback editPostCallback) {
@@ -54,7 +52,7 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if (mediaFiles.get(position).getMediaType() == MediaFileData.MediaType.PHOTO)
+        if (mediaFiles.get(position).getMediaType() == MediaFileParams.MediaType.PHOTO)
             return 0;
         else
             return 1;
@@ -65,23 +63,23 @@ public class EditPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return mediaFiles.size();
     }
 
-    void setItemMedias(List<MediaFileData> mediaFiles) {
+    void setItemMedias(List<MediaFileParams> mediaFiles) {
         this.mediaFiles = mediaFiles;
         notifyDataSetChanged();
     }
 
     void onCropFinish(String croppedPhoto, int itemPosition) {
-        mediaFiles.set(itemPosition, new MediaFileData(croppedPhoto, MediaFileData.MediaType.PHOTO));
+        mediaFiles.set(itemPosition, new MediaFileParams(croppedPhoto, MediaFileParams.MediaType.PHOTO));
         notifyDataSetChanged();
     }
 
     void onFilterFinish(String filteredPhoto, int itemPosition) {
-        mediaFiles.set(itemPosition, new MediaFileData(filteredPhoto, MediaFileData.MediaType.PHOTO));
+        mediaFiles.set(itemPosition, new MediaFileParams(filteredPhoto, MediaFileParams.MediaType.PHOTO));
         notifyDataSetChanged();
     }
 
     void onTrimFinish(String trimmedVideo, int itemPosition) {
-        mediaFiles.set(itemPosition, new MediaFileData(trimmedVideo, MediaFileData.MediaType.VIDEO));
+        mediaFiles.set(itemPosition, new MediaFileParams(trimmedVideo, MediaFileParams.MediaType.VIDEO));
         notifyDataSetChanged();
     }
 

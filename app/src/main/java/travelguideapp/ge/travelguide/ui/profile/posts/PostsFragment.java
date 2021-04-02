@@ -1,6 +1,5 @@
 package travelguideapp.ge.travelguide.ui.profile.posts;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,41 +14,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
-import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
+import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 import java.util.List;
 
+public class PostsFragment extends Fragment implements PostListener {
 
-public class UserPostsFragment extends Fragment implements UserPostListener {
-
-    public static UserPostsFragment getInstance(OnPostChooseCallback callback) {
-        UserPostsFragment userPostsFragment = new UserPostsFragment();
+    public static PostsFragment getInstance(OnPostChooseCallback callback) {
+        PostsFragment userPostsFragment = new PostsFragment();
         userPostsFragment.callback = callback;
         return userPostsFragment;
     }
 
-    private static final int sColumnWidth = 120; // assume cell width of 120dp
-
     private RecyclerView postsRecycler;
 
     private OnPostChooseCallback callback;
-    private UserPostPresenter userPostPresenter;
+    private PostPresenter postPresenter;
     private List<PostResponse.Posts> posts;
-
-    private UserPostAdapter postAdapter;
-
-    private LoadPostParams.Source loadSource;
+    private PostAdapter postAdapter;
+    private PostHomeParams.PageType loadPageType;
     private int customerUserId;
-
-    private int pastVisibleItems;
-    private int visibleItemCount;
-    private int totalItemCount;
-
-    private boolean isCustomer = false;
+    private String accessToken;
 
     @Nullable
     @Override
@@ -61,34 +50,47 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
         postsRecycler.setLayoutManager(gridLayoutManager);
         postsRecycler.setHasFixedSize(true);
 
-        userPostPresenter = new UserPostPresenter(this);
+        postPresenter = new PostPresenter(this);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        accessToken = GlobalPreferences.getAccessToken(postsRecycler.getContext());
+        getExtras();
+    }
+
+    private void getExtras() {
         try {
-            if (getArguments() == null) {
-                isCustomer = false;
-                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0));
-            } else {
-                this.loadSource = (LoadPostParams.Source) getArguments().getSerializable("request_type");
-                if (loadSource == LoadPostParams.Source.CUSTOMER_POSTS) {
-                    isCustomer = true;
-                    this.customerUserId = getArguments().getInt("customer_user_id");
-                    userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, 0));
+            this.loadPageType = (PostHomeParams.PageType) getArguments().getSerializable("request_type");
+            if (loadPageType != null) {
+                switch (loadPageType) {
+                    case MY_POSTS:
+                        postPresenter.getPosts(accessToken, new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0), PostHomeParams.PageType.MY_POSTS);
+                        break;
+
+                    case CUSTOMER_POSTS:
+                        this.customerUserId = getArguments().getInt("customer_user_id");
+                        postPresenter.getPosts(accessToken, new PostByUserRequest(customerUserId, 0), PostHomeParams.PageType.CUSTOMER_POSTS);
+                        break;
+
+                    case FAVORITES:
+                        postPresenter.getPosts(accessToken, new FavoritePostRequest(0), PostHomeParams.PageType.FAVORITES);
+                        break;
+
+                    case SEARCH:
+                        break;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void initRecycler(List<PostResponse.Posts> posts, boolean canLazyLoad) {
         try {
-            postAdapter = new UserPostAdapter(this);
+            postAdapter = new PostAdapter(this);
             postAdapter.setPosts(posts);
             postAdapter.setCanLazyLoad(canLazyLoad);
             postsRecycler.setAdapter(postAdapter);
@@ -113,15 +115,7 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            try {
-                Intent intent = new Intent(getContext(), HomePageActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            } catch (Exception b) {
-                b.printStackTrace();
-            }
         }
-
     }
 
     @Override
@@ -141,32 +135,54 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     @Override
     public void onLazyLoad(int postId) {
-        if (userPostPresenter != null)
-            if (isCustomer) {
-                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(customerUserId, postId));
-            } else {
-                userPostPresenter.getUserPosts(GlobalPreferences.getAccessToken(postsRecycler.getContext()), new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId));
+        if (postPresenter != null)
+            switch (loadPageType) {
+                case SEARCH:
+                    break;
+
+                case FAVORITES:
+                    postPresenter.getPosts(accessToken, new FavoritePostRequest(postId), PostHomeParams.PageType.FAVORITES);
+                    break;
+
+                case MY_POSTS:
+                    postPresenter.getPosts(accessToken, new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId), PostHomeParams.PageType.MY_POSTS);
+                    break;
+
+                case CUSTOMER_POSTS:
+                    postPresenter.getPosts(accessToken, new PostByUserRequest(customerUserId, postId), PostHomeParams.PageType.CUSTOMER_POSTS);
+                    break;
             }
     }
 
     @Override
-    public void onPostChoose(int postId) {
+    public void onPostChoose(int position) {
         try {
-            int position = getPositionById(postId);
-
-            LoadPostParams postDataLoad = new LoadPostParams();
-
+//            int position = getPositionById(postId);
+            PostHomeParams loadPostParams = new PostHomeParams();
             Bundle bundle = new Bundle();
-            postDataLoad.setPosts(posts);
-            postDataLoad.setScrollPosition(postId);
-            if (loadSource == LoadPostParams.Source.CUSTOMER_POSTS) {
-                postDataLoad.setLoadSource(LoadPostParams.Source.CUSTOMER_POSTS);
-                postDataLoad.setUserId(customerUserId);
-            } else {
-                postDataLoad.setLoadSource(LoadPostParams.Source.MY_POSTS);
-                bundle.putBoolean("back_to_profile", true);
+            loadPostParams.setPosts(posts);
+            loadPostParams.setScrollPosition(position);
+            switch (loadPageType) {
+                case SEARCH:
+                    break;
+
+                case FAVORITES:
+                    loadPostParams.setPageType(PostHomeParams.PageType.FAVORITES);
+                    bundle.putBoolean("back_to_profile", true);
+                    break;
+
+                case MY_POSTS:
+                    loadPostParams.setPageType(PostHomeParams.PageType.MY_POSTS);
+                    bundle.putBoolean("back_to_profile", true);
+                    break;
+
+                case CUSTOMER_POSTS:
+                    loadPostParams.setPageType(PostHomeParams.PageType.CUSTOMER_POSTS);
+                    loadPostParams.setUserId(customerUserId);
+                    break;
             }
-            bundle.putParcelable(LoadPostParams.INTENT_KEY_LOAD, postDataLoad);
+
+            bundle.putParcelable(PostHomeParams.POST_HOME_PARAMS, loadPostParams);
             callback.onPostChoose(bundle);
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,8 +200,8 @@ public class UserPostsFragment extends Fragment implements UserPostListener {
 
     @Override
     public void onStop() {
-        if (userPostPresenter != null) {
-            userPostPresenter = null;
+        if (postPresenter != null) {
+            postPresenter = null;
         }
         super.onStop();
     }

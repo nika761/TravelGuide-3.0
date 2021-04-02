@@ -38,8 +38,8 @@ public class HomeFragmentPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getPosts(String accessToken, PostRequest postRequest) {
-        apiService.getPosts(accessToken, postRequest).enqueue(new Callback<PostResponse>() {
+    void getPosts(PostRequest postRequest) {
+        apiService.getPosts(postRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -319,7 +319,6 @@ public class HomeFragmentPresenter {
             }
         });
     }
-
 
 
 }

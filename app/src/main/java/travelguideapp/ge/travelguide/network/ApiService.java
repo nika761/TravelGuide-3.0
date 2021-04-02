@@ -154,8 +154,7 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("get/get_posts")
-    Call<PostResponse> getPosts(@Header("Authorization") String token,
-                                @Body PostRequest postRequest);
+    Call<PostResponse> getPosts(@Body PostRequest postRequest);
 
     @Headers({"Accept: application/json"})
     @POST("get/posts_by_user")
@@ -164,8 +163,7 @@ public interface ApiService {
 
     @Headers({"Accept: application/json"})
     @POST("get/profile")
-    Call<ProfileResponse> getProfile(@Header("Authorization") String token,
-                                     @Body ProfileRequest profileRequest);
+    Call<ProfileResponse> getProfile(@Body ProfileRequest profileRequest);
 
     @Headers({"Accept: application/json"})
     @POST("set/profile")

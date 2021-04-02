@@ -9,38 +9,39 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
-public class LoadPostParams implements Serializable, Parcelable {
+public class PostHomeParams implements Serializable, Parcelable {
 
     /**
      * Created by n.butskhrikidze on 01/07/2020.
-     *
+     * <p>
      * Use this key for intents
      */
-    public static final String INTENT_KEY_LOAD = "post_data_load";
+    public static final String POST_HOME_PARAMS = "post_home_params";
 
     /**
      * FAVORITES - get posts by user favorites.
      * MY_POSTS - get current user own posts.
      * CUSTOMER_POSTS  - get posts by selected user.
      * FEED - get posts random.
+     * SEARCH - get posts by search.
      */
-    public enum Source {
+    public enum PageType {
         FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED, SEARCH
     }
 
 
     private int userId;
     private int scrollPosition;
-    private Source loadSource;
+    private PageType pageType;
     private List<PostResponse.Posts> posts;
 
-    public LoadPostParams() {
+    public PostHomeParams() {
     }
 
-    public LoadPostParams(int userId, int scrollPosition, Source loadSource, List<PostResponse.Posts> posts) {
+    public PostHomeParams(int userId, int scrollPosition, PageType pageType, List<PostResponse.Posts> posts) {
         this.userId = userId;
         this.scrollPosition = scrollPosition;
-        this.loadSource = loadSource;
+        this.pageType = pageType;
         this.posts = posts;
     }
 
@@ -60,12 +61,12 @@ public class LoadPostParams implements Serializable, Parcelable {
         this.scrollPosition = scrollPosition;
     }
 
-    public Source getLoadSource() {
-        return loadSource;
+    public PageType getPageType() {
+        return pageType;
     }
 
-    public void setLoadSource(Source loadSource) {
-        this.loadSource = loadSource;
+    public void setPageType(PageType pageType) {
+        this.pageType = pageType;
     }
 
     public List<PostResponse.Posts> getPosts() {
@@ -76,10 +77,10 @@ public class LoadPostParams implements Serializable, Parcelable {
         this.posts = posts;
     }
 
-    protected LoadPostParams(Parcel in) {
+    protected PostHomeParams(Parcel in) {
         userId = in.readInt();
         scrollPosition = in.readInt();
-        loadSource = (Source) in.readValue(Source.class.getClassLoader());
+        pageType = (PageType) in.readValue(PageType.class.getClassLoader());
         if (in.readByte() == 0x01) {
             posts = new ArrayList<>();
             in.readList(posts, PostResponse.Posts.class.getClassLoader());
@@ -92,7 +93,7 @@ public class LoadPostParams implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(userId);
         dest.writeInt(scrollPosition);
-        dest.writeValue(loadSource);
+        dest.writeValue(pageType);
         if (posts == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -106,15 +107,15 @@ public class LoadPostParams implements Serializable, Parcelable {
         return 0;
     }
 
-    public static final Creator<LoadPostParams> CREATOR = new Creator<LoadPostParams>() {
+    public static final Creator<PostHomeParams> CREATOR = new Creator<PostHomeParams>() {
         @Override
-        public LoadPostParams createFromParcel(Parcel in) {
-            return new LoadPostParams(in);
+        public PostHomeParams createFromParcel(Parcel in) {
+            return new PostHomeParams(in);
         }
 
         @Override
-        public LoadPostParams[] newArray(int size) {
-            return new LoadPostParams[size];
+        public PostHomeParams[] newArray(int size) {
+            return new PostHomeParams[size];
         }
     };
 }

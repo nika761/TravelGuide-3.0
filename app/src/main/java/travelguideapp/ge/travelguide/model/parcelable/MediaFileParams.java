@@ -5,13 +5,13 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-public class MediaFileData implements Parcelable, Serializable {
+public class MediaFileParams implements Parcelable, Serializable {
 
     /**
      * Created by n.butskhrikidze on 16/28/2020.
      * Use this key for intents
      */
-    public static final String INTENT_KEY_MEDIA = "media_files";
+    public static final String MEDIA_FILE_PARAMS = "media_files_params";
 
     /**
      * Video -  Fuck , this is just video.
@@ -24,7 +24,7 @@ public class MediaFileData implements Parcelable, Serializable {
     private String mediaPath;
     private MediaType mediaType;
 
-    public MediaFileData(String mediaPath, MediaType mediaType) {
+    public MediaFileParams(String mediaPath, MediaType mediaType) {
         this.mediaPath = mediaPath;
         this.mediaType = mediaType;
     }
@@ -45,21 +45,21 @@ public class MediaFileData implements Parcelable, Serializable {
         this.mediaType = mediaType;
     }
 
-    protected MediaFileData(Parcel in) {
+    protected MediaFileParams(Parcel in) {
         mediaPath = in.readString();
         mediaType = (MediaType) in.readValue(MediaType.class.getClassLoader());
     }
 
-    public static final Creator<MediaFileData> CREATOR = new Creator<MediaFileData>() {
+    public static final Creator<MediaFileParams> CREATOR = new Creator<MediaFileParams>() {
 
         @Override
-        public MediaFileData createFromParcel(Parcel in) {
-            return new MediaFileData(in);
+        public MediaFileParams createFromParcel(Parcel in) {
+            return new MediaFileParams(in);
         }
 
         @Override
-        public MediaFileData[] newArray(int size) {
-            return new MediaFileData[size];
+        public MediaFileParams[] newArray(int size) {
+            return new MediaFileParams[size];
         }
 
     };

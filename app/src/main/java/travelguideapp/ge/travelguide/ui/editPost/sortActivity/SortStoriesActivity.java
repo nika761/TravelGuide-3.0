@@ -9,28 +9,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
-import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static travelguideapp.ge.travelguide.ui.editPost.EditPostActivity.STORIES_PATHS;
-
 public class SortStoriesActivity extends BaseActivity {
 
     private List<ItemMedia> itemMedia = new ArrayList<>();
-    private List<MediaFileData> mediaFiles = new ArrayList<>();
+    private List<MediaFileParams> mediaFiles = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +33,7 @@ public class SortStoriesActivity extends BaseActivity {
         setContentView(R.layout.activity_sort_stories);
 //        this.itemMedia = (List<ItemMedia>) getIntent().getSerializableExtra(STORIES_PATHS);
         try {
-            this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);
+            this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,7 +46,7 @@ public class SortStoriesActivity extends BaseActivity {
         TextView doneBtn = findViewById(R.id.sort_stories_done_btn);
         doneBtn.setOnClickListener(v -> {
             Intent resultIntent = new Intent();
-            resultIntent.putParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA, (ArrayList<? extends Parcelable>) mediaFiles);
+            resultIntent.putParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS, (ArrayList<? extends Parcelable>) mediaFiles);
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         });

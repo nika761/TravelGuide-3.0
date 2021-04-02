@@ -19,9 +19,11 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.helper.AuthManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
+import travelguideapp.ge.travelguide.model.customModel.AuthModel;
 import travelguideapp.ge.travelguide.model.request.ResetPasswordRequest;
 import travelguideapp.ge.travelguide.model.response.ResetPasswordResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -142,18 +144,13 @@ public class ResetPasswordActivity extends BaseActivity implements ResetPassword
     public void onPasswordReset(ResetPasswordResponse resetPasswordResponse) {
         if (resetPasswordResponse != null) {
             if (resetPasswordResponse.getStatus() == 0) {
-                GlobalPreferences.saveAccessToken(this, resetPasswordResponse.getAccess_token());
-                GlobalPreferences.saveUserId(this, resetPasswordResponse.getUser().getId());
-                GlobalPreferences.saveUserRole(this, resetPasswordResponse.getUser().getRole());
-                GlobalPreferences.saveLoginType(this, GlobalPreferences.TRAVEL_GUIDE);
-
+                AuthManager.persistAuthState(this, new AuthModel(resetPasswordResponse.getAccess_token(), resetPasswordResponse.getUser().getId(), resetPasswordResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
                 loadingVisibility(false);
-
+                Toast.makeText(this, resetPasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, HomePageActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("password_changed", "password_changed");
                 startActivity(intent);
-                Toast.makeText(this, resetPasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -58,6 +58,7 @@
         <activity
             android:name="travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity"
             android:configChanges="orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -159,8 +160,10 @@
             <intent-filter>
 
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
 
             </intent-filter>

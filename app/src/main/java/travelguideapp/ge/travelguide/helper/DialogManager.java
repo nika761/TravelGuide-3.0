@@ -3,8 +3,10 @@ package travelguideapp.ge.travelguide.helper;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,32 +17,42 @@ import java.util.Calendar;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.callback.AskingDialogCallback;
+import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 
 public class DialogManager {
 
     public static void signUpConfirmDialog(Activity activity, String title, String message) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            View dialogLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
+            TextView verifyTitle, verifyMessage;
+            verifyTitle = dialogLayout.findViewById(R.id.confirm_title);
+            verifyMessage = dialogLayout.findViewById(R.id.confirm_message);
+            verifyTitle.setText(title);
+            verifyMessage.setText(message);
+            builder.setView(dialogLayout);
+            builder.setCancelable(false);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            AlertDialog signUpDialog = builder.create();
+            if (signUpDialog.getWindow() != null) {
+                signUpDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.bg_transparent));
+                signUpDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+            }
 
-        View dialogLayout = activity.getLayoutInflater().inflate(R.layout.c_registration_confirm, null);
+            signUpDialog.setOnShowListener(dialog -> new Handler().postDelayed(() -> {
+                try {
+                    dialog.dismiss();
+                    activity.startActivity(SignInActivity.getRedirectIntent(activity));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, 3000));
 
-        TextView verifyTitle, verifyMessage;
-
-        verifyTitle = dialogLayout.findViewById(R.id.confirm_title);
-        verifyMessage = dialogLayout.findViewById(R.id.confirm_message);
-
-        verifyTitle.setText(title);
-        verifyMessage.setText(message);
-
-        builder.setView(dialogLayout);
-
-        AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.bg_transparent));
-            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+            signUpDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        dialog.show();
     }
 
 
@@ -103,6 +115,7 @@ public class DialogManager {
                 .create();
 
         AlertDialog dialog = builder.create();
+
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_sign_out_dialog));
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;

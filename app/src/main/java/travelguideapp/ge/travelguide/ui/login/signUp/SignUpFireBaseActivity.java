@@ -19,9 +19,11 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.helper.AuthManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.customModel.AuthModel;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.model.request.CheckNickRequest;
@@ -221,26 +223,26 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
 
     @Override
     public void onSuccess(SignUpWithFirebaseResponse signUpWithFirebaseResponse) {
+        AuthModel authModel = new AuthModel();
         switch (platformId) {
             case 1:
-                GlobalPreferences.saveLoginType(this, GlobalPreferences.FACEBOOK);
+                authModel.setLoginType(GlobalPreferences.FACEBOOK);
                 break;
             case 2:
-                GlobalPreferences.saveLoginType(this, GlobalPreferences.GOOGLE);
+                authModel.setLoginType(GlobalPreferences.GOOGLE);
                 break;
         }
 
-        GlobalPreferences.saveUserId(this, signUpWithFirebaseResponse.getUser().getId());
-        GlobalPreferences.saveUserRole(this, signUpWithFirebaseResponse.getUser().getRole());
-        GlobalPreferences.saveAccessToken(this, signUpWithFirebaseResponse.getAccess_token());
+        authModel.setUserId(signUpWithFirebaseResponse.getUser().getId());
+        authModel.setUserRole(signUpWithFirebaseResponse.getUser().getRole());
+        authModel.setAccessToken(signUpWithFirebaseResponse.getAccess_token());
+
+        AuthManager.persistAuthState(this, authModel);
 
         updateUI(true);
 
-        Intent intent = new Intent(this, HomePageActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        startActivity(HomePageActivity.getRedirectIntent(this));
 
-        finish();
     }
 
     @Override

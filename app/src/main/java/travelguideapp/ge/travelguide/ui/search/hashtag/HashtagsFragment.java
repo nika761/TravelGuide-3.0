@@ -16,7 +16,7 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
-import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
@@ -47,30 +47,29 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        addOnScrollListener();
     }
 
-    public void listenOnRecycler() {
-        try {
-            hashtagRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-
+    public void addOnScrollListener() {
+        hashtagRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                try {
                     LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
                     if (!isLoading) {
                         if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == hashtags.size() - 1) {
+                            isLoading = true;
                             fromPage++;
                             onLazyLoad(fromPage);
-                            isLoading = true;
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            }
+        });
     }
 
     public void setHashtags(List<HashtagResponse.Hashtags> hashtags) {
@@ -84,9 +83,6 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
             if (hashtagRecycler.getAdapter() == null) {
                 hashtagRecycler.setAdapter(hashtagAdapter);
             }
-
-//            listenOnRecycler();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,7 +101,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     public void setLazyHashtags(List<HashtagResponse.Hashtags> hashtags) {
         try {
             isLoading = false;
-            this.hashtags.addAll(hashtags);
+            this.hashtags = hashtags;
             hashtagAdapter.setHashtags(this.hashtags);
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,7 +111,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     @Override
     public void onHashtagChoose(HashtagResponse.Hashtags hashtag) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(hashtag.getHashtag(), SearchPostParams.SearchBy.HASHTAG));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostSearchParams(hashtag.getHashtag(), PostSearchParams.SearchBy.HASHTAG));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,7 +130,6 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     public void onStart() {
         super.onStart();
         getCachedHashtags();
-
     }
 
     private void getCachedHashtags() {

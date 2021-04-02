@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.ui.home;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +15,7 @@ import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.profile.editProfile.ProfileEditActivity;
@@ -34,6 +35,12 @@ import static travelguideapp.ge.travelguide.helper.HelperUI.TYPE;
 
 public class HomePageActivity extends HomeParentActivity implements HomePageListener, OnPostChooseCallback,
         ProfileFragment.ProfileFragmentCallBacks {
+
+    public static Intent getRedirectIntent(Context context) {
+        Intent intent = new Intent(context, HomePageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
 
     private BottomNavigationView bottomNavigationView;
     private HomePagePresenter homePagePresenter;
@@ -62,7 +69,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
 
     private void getUserProfileInfo() {
         try {
-            homePagePresenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
+            homePagePresenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId(this)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,10 +127,10 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
                     try {
                         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
                         if (!(fragment instanceof HomeFragment)) {
-                            LoadPostParams postDataLoad = new LoadPostParams();
-                            postDataLoad.setLoadSource(LoadPostParams.Source.FEED);
+                            PostHomeParams postDataLoad = new PostHomeParams();
+                            postDataLoad.setPageType(PostHomeParams.PageType.FEED);
                             Bundle data = new Bundle();
-                            data.putParcelable(LoadPostParams.INTENT_KEY_LOAD, postDataLoad);
+                            data.putParcelable(PostHomeParams.POST_HOME_PARAMS, postDataLoad);
                             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, false, true, HomePageActivity.this);
                         }
                     } catch (Exception e) {

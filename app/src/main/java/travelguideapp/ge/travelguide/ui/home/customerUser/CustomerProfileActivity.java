@@ -22,7 +22,7 @@ import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
@@ -32,9 +32,8 @@ import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 
 import com.google.android.material.tabs.TabLayout;
 
-import travelguideapp.ge.travelguide.ui.profile.ProfilePagerAdapter;
+import travelguideapp.ge.travelguide.ui.profile.posts.PostPagerAdapter;
 import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
-import travelguideapp.ge.travelguide.ui.profile.posts.UserPostsFragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -94,12 +93,9 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
 
         fragmentContainerMain = findViewById(R.id.customer_profile_fragment_container_main);
 
-        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getSupportFragmentManager());
+        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getSupportFragmentManager(), PostHomeParams.PageType.CUSTOMER_POSTS);
         profilePagerAdapter.setCustomerUserId(customerUserId);
         profilePagerAdapter.setCallback(this);
-        profilePagerAdapter.setLoadSource(LoadPostParams.Source.CUSTOMER_POSTS);
-        profilePagerAdapter.addFragment(new UserPostsFragment());
-//        profilePagerAdapter.addFragment(new UserToursFragment());
         viewPager.setAdapter(profilePagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);

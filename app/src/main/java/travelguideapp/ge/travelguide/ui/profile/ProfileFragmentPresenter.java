@@ -21,7 +21,7 @@ class ProfileFragmentPresenter {
     }
 
     void getProfile(String accessToken, ProfileRequest profileRequest) {
-        apiService.getProfile(accessToken, profileRequest).enqueue(new Callback<ProfileResponse>() {
+        apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

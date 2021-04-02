@@ -1,16 +1,12 @@
 package travelguideapp.ge.travelguide.custom.customPost;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -54,7 +50,7 @@ import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.custom.CustomTimer;
 import travelguideapp.ge.travelguide.model.customModel.PostView;
-import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.ui.home.feed.HashtagAdapter;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
@@ -498,15 +494,7 @@ public class CustomPostRecycler extends RecyclerView {
             } else {
                 if (post.getHashtags().size() > 0) {
                     holder.hashtagRecycler.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-                    if (post.getHashtags().size() > 8) {
-                        List<String> limitedHashtags = new ArrayList<>();
-                        for (int i = 0; i < 8; i++) {
-                            limitedHashtags.add(post.getHashtags().get(i));
-                        }
-                        holder.hashtagRecycler.setAdapter(new HashtagAdapter(limitedHashtags, homeFragmentListener));
-                    } else {
-                        holder.hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags(), homeFragmentListener));
-                    }
+                    holder.hashtagRecycler.setAdapter(new HashtagAdapter(post.getHashtags(), homeFragmentListener));
                     holder.hashtagRecycler.setVisibility(View.VISIBLE);
                 } else {
                     holder.hashtagRecycler.setVisibility(View.GONE);
@@ -549,7 +537,7 @@ public class CustomPostRecycler extends RecyclerView {
 
             holder.comment.setOnClickListener(v -> homeFragmentListener.onCommentChoose(story.getStory_id(), post.getPost_id()));
 
-            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), SearchPostParams.SearchBy.LOCATION));
+            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), PostSearchParams.SearchBy.LOCATION));
 
             holder.share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
 

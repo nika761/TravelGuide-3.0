@@ -96,6 +96,7 @@ public class HelperUI {
         return passwordValidate;
     }
 
+
     public static boolean checkConfirmPassword(String password, String confirmPassword) {
         boolean confirmPasswordValidate = false;
 

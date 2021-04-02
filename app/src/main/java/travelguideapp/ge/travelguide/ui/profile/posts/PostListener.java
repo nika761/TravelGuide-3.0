@@ -5,12 +5,12 @@ import travelguideapp.ge.travelguide.base.BaseListener;
 
 import java.util.List;
 
-public interface UserPostListener extends BaseListener {
+public interface PostListener extends BaseListener {
 
     void onGetPosts(List<PostResponse.Posts> posts);
 
     void onLazyLoad(int postId);
 
-    void onPostChoose(int postId);
+    void onPostChoose(int position);
 
 }

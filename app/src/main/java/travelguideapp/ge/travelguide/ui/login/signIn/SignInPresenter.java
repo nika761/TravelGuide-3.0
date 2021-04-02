@@ -191,6 +191,7 @@ class SignInPresenter {
                             signInListener.onSign(response.body());
                             break;
 
+                        case 1:
                         case -100:
                         case -101:
                             signInListener.onError(response.body().getMessage());

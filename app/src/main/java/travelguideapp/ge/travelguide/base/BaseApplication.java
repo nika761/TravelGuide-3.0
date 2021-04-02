@@ -47,9 +47,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (GlobalPreferences.getAccessToken(this) != null) {
-            accessToken = GlobalPreferences.getAccessToken(this);
-        }
+        setAccessToken(GlobalPreferences.getAccessToken(this));
     }
 
     public static String getAccessToken() {
@@ -57,6 +55,10 @@ public class BaseApplication extends Application {
             return accessToken;
         else
             return "";
+    }
+
+    public static void setAccessToken(String accessToken) {
+        BaseApplication.accessToken = accessToken;
     }
 
     private void createNotificationChannel() {

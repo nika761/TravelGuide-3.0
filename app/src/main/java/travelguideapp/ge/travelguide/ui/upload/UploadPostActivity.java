@@ -3,8 +3,6 @@ package travelguideapp.ge.travelguide.ui.upload;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +24,7 @@ import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.UploadPostRequest;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -61,7 +59,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     private File fileForUpload;
     //    private List<ItemMedia> itemMedia = new ArrayList<>();
-    private List<MediaFileData> mediaFiles = new ArrayList<>();
+    private List<MediaFileParams> mediaFiles = new ArrayList<>();
     private final List<Integer> users = new ArrayList<>();
     private final List<String> hashtags = new ArrayList<>();
     private final List<String> hashs = new ArrayList<>();
@@ -92,7 +90,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
         try {
             this.musicId = getIntent().getIntExtra(MUSIC_ID, 0);
 //            this.itemMedia = (List<ItemMedia>) getIntent().getSerializableExtra(EditPostActivity.STORIES_PATHS);
-            this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);
+            this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS);
         } catch (Exception e) {
             onBackPressed();
             e.printStackTrace();
@@ -184,7 +182,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     private void getReadyForUpload() {
         try {
-            if (mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.PHOTO && !isPermissionGranted(WRITE_EXTERNAL_STORAGE)) {
+            if (mediaFiles.get(0).getMediaType() == MediaFileParams.MediaType.PHOTO && !isPermissionGranted(WRITE_EXTERNAL_STORAGE)) {
                 getLoader(false);
                 requestPermission(WRITE_EXTERNAL_STORAGE);
             } else {
@@ -222,9 +220,9 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     public void startUpload() {
         try {
-            if (mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.PHOTO) {
+            if (mediaFiles.get(0).getMediaType() == MediaFileParams.MediaType.PHOTO) {
 //                List<ItemMedia> convertedImages = HelperMedia.convertImagesToPng(itemMedia);
-                List<MediaFileData> convertedImages = HelperMedia.convertMediaToPng(mediaFiles);
+                List<MediaFileParams> convertedImages = HelperMedia.convertMediaToPng(mediaFiles);
                 fileForUpload = new File(convertedImages.get(0).getMediaPath());
             } else {
                 fileForUpload = new File(mediaFiles.get(0).getMediaPath());
@@ -428,7 +426,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
         try {
             getLoader(false);
             Intent intent = new Intent(UploadPostActivity.this, HomePageActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("option", "uploaded");
             startActivity(intent);
         } catch (Exception e) {

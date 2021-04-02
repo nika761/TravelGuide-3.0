@@ -5,39 +5,31 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
-import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
 import travelguideapp.ge.travelguide.ui.music.favoriteMusic.FavoriteMusicFragment;
 import travelguideapp.ge.travelguide.ui.music.searchMusic.SearchMusicFragment;
 import travelguideapp.ge.travelguide.ui.upload.UploadPostActivity;
 
 import com.google.android.material.tabs.TabLayout;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import travelguideapp.ge.travelguide.ui.editPost.EditPostActivity;
 
 public class ChooseMusicActivity extends BaseActivity implements View.OnClickListener, SearchMusicFragment.OnChooseMusic, PlayMusicListener {
 
     public static final String MUSIC_ID = "music_id";
 
     //    private List<ItemMedia> itemMediaList = new ArrayList<>();
-    private List<MediaFileData> mediaFiles = new ArrayList<>();
+    private List<MediaFileParams> mediaFiles = new ArrayList<>();
     private int playingPosition, musicId;
 
     private MediaPlayer musicPlayer;
@@ -49,7 +41,7 @@ public class ChooseMusicActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_choose_music);
 //        this.itemMediaList = (List<ItemMedia>) getIntent().getSerializableExtra(EditPostActivity.STORIES_PATHS);
         try {
-            this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);
+            this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +73,7 @@ public class ChooseMusicActivity extends BaseActivity implements View.OnClickLis
             case R.id.music_next_btn:
                 Intent intent = new Intent(this, UploadPostActivity.class);
 //                intent.putExtra(EditPostActivity.STORIES_PATHS, (Serializable) itemMediaList);
-                intent.putParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA, (ArrayList<? extends Parcelable>) mediaFiles);
+                intent.putParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS, (ArrayList<? extends Parcelable>) mediaFiles);
                 intent.putExtra(MUSIC_ID, musicId);
                 startActivity(intent);
                 break;

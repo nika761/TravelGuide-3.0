@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.ui.login.signIn;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,15 +21,19 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.HomeParentActivity;
+import travelguideapp.ge.travelguide.helper.AuthManager;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
+import travelguideapp.ge.travelguide.model.customModel.AuthModel;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.LoginRequest;
 import travelguideapp.ge.travelguide.model.request.VerifyEmailRequest;
@@ -63,7 +68,6 @@ public class SignInActivity extends BaseActivity implements SignInListener {
     private SignInPresenter signInPresenter;
     private CallbackManager callbackManager;
 
-    private GlobalLanguages currentLanguage;
 
     private TextView enterMailHead;
     private TextView enterPasswordHead;
@@ -80,6 +84,12 @@ public class SignInActivity extends BaseActivity implements SignInListener {
     private int platformId;
     private String key, name;
 
+    public static Intent getRedirectIntent(Context context) {
+        Intent intent = new Intent(context, SignInActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +98,8 @@ public class SignInActivity extends BaseActivity implements SignInListener {
         signInPresenter = new SignInPresenter(this);
 
         initUI();
+
+        verifyEmail(getIntent());
 
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo("travelguideapp.ge.travelguide", PackageManager.GET_SIGNATURES);
@@ -104,26 +116,6 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     }
 
-//    private void checkAppVersion() {
-//        try {
-//            if (BaseApplication.APP_VERSION > 0) {
-//                int appVersion = BaseApplication.APP_VERSION;
-//                if (GlobalPreferences.getAppVersion(this) < appVersion) {
-//                    final String appPackageName = getPackageName();
-//                    try {
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-//                        finish();
-//                    } catch (android.content.ActivityNotFoundException anfe) {
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-//                        finish();
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -133,16 +125,19 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     private void verifyEmail(Intent intent) {
         try {
-            Uri uri = intent.getData();
-            if (uri != null) {
-                List<String> params = uri.getPathSegments();
+            if (!intent.hasExtra("USED_INTENT")) {
+                Uri uri = intent.getData();
+                if (uri != null) {
+                    List<String> params = uri.getPathSegments();
 
-                String id = params.get(params.size() - 2);
-                String signature = uri.getQueryParameter("signature");
+                    String id = params.get(params.size() - 2);
+                    String signature = uri.getQueryParameter("signature");
 
-                if (signature != null && id != null) {
-                    signInPresenter.verify(GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
-                    Log.e("email", signature + " " + id);
+                    if (signature != null && id != null) {
+                        signInPresenter.verify(GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
+                        intent.putExtra("USED_INTENT", true);
+//                    Log.e("email", signature + " " + id);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -182,33 +177,54 @@ public class SignInActivity extends BaseActivity implements SignInListener {
             LinearLayout terms = findViewById(R.id.linear_terms);
 
             TextView registerTxt = findViewById(R.id.register_now);
-            registerTxt.setOnClickListener(this::onViewClick);
+            registerTxt.setOnClickListener(v -> {
+                onFocusChange(v, false);
+                Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+                startActivity(intent);
+            });
 
             TextView forgotPassword = findViewById(R.id.forgot_password_sign_in);
-            forgotPassword.setOnClickListener(this::onViewClick);
+            forgotPassword.setOnClickListener(v -> {
+                onFocusChange(v, false);
+                Intent intent1 = new Intent(SignInActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent1);
+            });
 
             and = findViewById(R.id.and);
 
             TextView termsOfServices = findViewById(R.id.terms_of_services);
-            termsOfServices.setOnClickListener(this::onViewClick);
+            termsOfServices.setOnClickListener(v -> HelperUI.startWebActivity(SignInActivity.this, LoadWebViewBy.TERMS, ""));
 
             TextView privacyPolicy = findViewById(R.id.privacy_policy);
-            privacyPolicy.setOnClickListener(this::onViewClick);
+            privacyPolicy.setOnClickListener(v -> HelperUI.startWebActivity(SignInActivity.this, LoadWebViewBy.POLICY, ""));
 
             SignInButton signBtnGoogle = findViewById(R.id.sign_in_button_google);
             signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
 
             Button googleBtn = findViewById(R.id.google);
-            googleBtn.setOnClickListener(this::onViewClick);
+            googleBtn.setOnClickListener(v -> signInWithGoogle());
 
             Button signInBtn = findViewById(R.id.sign_in_button_main);
-            signInBtn.setOnClickListener(this::onViewClick);
+            signInBtn.setOnClickListener(v -> {
+                onFocusChange(v, false);
+                signInWithAccount();
+            });
 
             Button facebookBtn = findViewById(R.id.facebook);
-            facebookBtn.setOnClickListener(this::onViewClick);
+            facebookBtn.setOnClickListener(v -> signInWithFacebook());
 
             passwordStateBtn = findViewById(R.id.password_visibility);
-            passwordStateBtn.setOnClickListener(this::onViewClick);
+            passwordStateBtn.setOnClickListener(v -> {
+                if (passwordHidden) {
+                    passwordStateBtn.setBackground(ContextCompat.getDrawable(SignInActivity.this, R.drawable.ic_password_hide));
+                    enterPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                    passwordHidden = false;
+                } else {
+                    passwordStateBtn.setBackground(ContextCompat.getDrawable(SignInActivity.this, R.drawable.ic_password_show));
+                    enterPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    passwordHidden = true;
+                }
+            });
 
             HelperUI.loadAnimation(enterMailHead, R.anim.anim_swipe_bottom, 0);
             HelperUI.loadAnimation(enterEmail, R.anim.anim_swipe_bottom, 50);
@@ -239,56 +255,6 @@ public class SignInActivity extends BaseActivity implements SignInListener {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             assert inputMethodManager != null;
             inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        }
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private void onViewClick(View v) {
-        switch (v.getId()) {
-            case R.id.password_visibility:
-                if (passwordHidden) {
-                    passwordStateBtn.setBackground(getResources().getDrawable(R.drawable.ic_password_hide, null));
-                    enterPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                    passwordHidden = false;
-                } else {
-                    passwordStateBtn.setBackground(getResources().getDrawable(R.drawable.ic_password_show, null));
-                    enterPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    passwordHidden = true;
-                }
-                break;
-
-            case R.id.register_now:
-                onFocusChange(v, false);
-                Intent intent = new Intent(this, SignUpActivity.class);
-                startActivity(intent);
-                break;
-
-            case R.id.terms_of_services:
-                HelperUI.startWebActivity(this, LoadWebViewBy.TERMS, "");
-                break;
-
-            case R.id.privacy_policy:
-                HelperUI.startWebActivity(this, LoadWebViewBy.POLICY, "");
-                break;
-
-            case R.id.forgot_password_sign_in:
-                onFocusChange(v, false);
-                Intent intent1 = new Intent(this, ForgotPasswordActivity.class);
-                startActivity(intent1);
-                break;
-
-            case R.id.google:
-                signInWithGoogle();
-                break;
-
-            case R.id.facebook:
-                signInWithFacebook();
-                break;
-
-            case R.id.sign_in_button_main:
-                onFocusChange(v, false);
-                signInWithAccount();
-                break;
         }
     }
 
@@ -365,16 +331,8 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     @Override
     public void onVerify(VerifyEmailResponse verifyEmailResponse) {
-
-        GlobalPreferences.saveAccessToken(this, verifyEmailResponse.getAccess_token());
-        GlobalPreferences.saveUserId(this, verifyEmailResponse.getUser().getId());
-        GlobalPreferences.saveUserRole(this, verifyEmailResponse.getUser().getRole());
-        GlobalPreferences.saveLoginType(this, GlobalPreferences.TRAVEL_GUIDE);
-
-        Intent intent = new Intent(this, HomePageActivity.class);
-        startActivity(intent);
-        finish();
-
+        AuthManager.persistAuthState(this, new AuthModel(verifyEmailResponse.getAccess_token(), verifyEmailResponse.getUser().getId(), verifyEmailResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
+        startActivity(HomePageActivity.getRedirectIntent(this));
     }
 
     @Override
@@ -392,13 +350,8 @@ public class SignInActivity extends BaseActivity implements SignInListener {
         GlobalPreferences.saveAccessToken(this, authWithFirebaseResponse.getAccess_token());
         GlobalPreferences.saveUserRole(this, authWithFirebaseResponse.getUser().getRole());
         GlobalPreferences.saveUserId(this, authWithFirebaseResponse.getUser().getId());
-
         showLoading(false);
-
-        Intent intent = new Intent(this, HomePageActivity.class);
-        startActivity(intent);
-        finish();
-
+        startActivity(HomePageActivity.getRedirectIntent(this));
     }
 
     @Override
@@ -419,33 +372,9 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     @Override
     public void onSign(LoginResponse loginResponse) {
-        switch (loginResponse.getStatus()) {
-            case 0:
-
-                try {
-                    GlobalPreferences.saveUser(this, loginResponse.getUser());
-                    GlobalPreferences.saveAccessToken(this, loginResponse.getAccess_token());
-                    GlobalPreferences.saveUserId(this, loginResponse.getUser().getId());
-                    GlobalPreferences.saveUserRole(this, loginResponse.getUser().getRole());
-                    GlobalPreferences.saveLoginType(this, GlobalPreferences.TRAVEL_GUIDE);
-
-                    showLoading(false);
-
-                    Intent intent = new Intent(this, HomePageActivity.class);
-                    startActivity(intent);
-                    finish();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    finish();
-                }
-                break;
-
-            case 1:
-                MyToaster.getToast(this, String.valueOf(loginResponse.getStatus()));
-                break;
-
-        }
+        showLoading(false);
+        AuthManager.persistAuthState(this, new AuthModel(loginResponse.getAccess_token(), loginResponse.getUser().getId(), loginResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
+        startActivity(HomePageActivity.getRedirectIntent(this));
     }
 
     @Override

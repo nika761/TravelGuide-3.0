@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.ui.profile.favorites;
+package travelguideapp.ge.travelguide.ui.profile.posts;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,27 +17,26 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.base.BaseApplication;
 
-public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;
-    private FavoritePostListener favoritePostListener;
+    private final PostListener postListener;
     private boolean canLazyLoad;
-    private int itemWidth;
 
-    FavoritePostAdapter(FavoritePostListener favoritePostListener) {
-        this.favoritePostListener = favoritePostListener;
+    PostAdapter(PostListener postListener) {
+        this.postListener = postListener;
     }
 
     @NonNull
     @Override
-    public FavoritePostAdapter.PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new FavoritePostAdapter.PostViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_customer_photo, parent, false));
+    public PostAdapter.UserPostHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PostAdapter.UserPostHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_customer_photo, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FavoritePostAdapter.PostViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostAdapter.UserPostHolder holder, int position) {
         if (canLazyLoad)
             holder.loadMoreCallback(position);
-        holder.bindView(position);
+        holder.bindUI(position);
     }
 
     @Override
@@ -45,59 +44,44 @@ public class FavoritePostAdapter extends RecyclerView.Adapter<FavoritePostAdapte
         return posts.size();
     }
 
-    void setItemWidth(int itemWidth) {
-        this.itemWidth = itemWidth;
+    public void setPosts(List<PostResponse.Posts> posts) {
+        this.posts = posts;
+        notifyDataSetChanged();
     }
 
     public void setCanLazyLoad(boolean canLazyLoad) {
         this.canLazyLoad = canLazyLoad;
     }
 
-    void setPosts(List<PostResponse.Posts> posts) {
-        this.posts = posts;
-        notifyDataSetChanged();
-    }
-
-    class PostViewHolder extends RecyclerView.ViewHolder {
+    class UserPostHolder extends RecyclerView.ViewHolder {
 
         ImageView postImage;
-        TextView reactions;
-        TextView nickName;
+        TextView reactions, nickName;
 
-        PostViewHolder(@NonNull View itemView) {
+        UserPostHolder(@NonNull View itemView) {
             super(itemView);
-
             reactions = itemView.findViewById(R.id.favorite_post_reactions);
-
             nickName = itemView.findViewById(R.id.item_customer_post_nick);
-
             postImage = itemView.findViewById(R.id.favorite_post_cover);
-
-            setClickListeners();
+            postImage.setOnClickListener(v -> postListener.onPostChoose(getLayoutPosition()));
         }
 
         void loadMoreCallback(int position) {
             if (position == posts.size() - 1) {
-                favoritePostListener.onLazyLoad(posts.get(position).getPost_id());
+                postListener.onLazyLoad(posts.get(position).getPost_id());
             }
         }
 
-        void bindView(int position) {
+        void bindUI(int position) {
             try {
                 postImage.getLayoutParams().width = BaseApplication.ITEM_WIDTH_FOR_POSTS;
                 HelperMedia.loadPhoto(postImage.getContext(), posts.get(position).getCover(), postImage);
                 reactions.setText(String.valueOf(posts.get(position).getPost_view()));
-                nickName.setText(posts.get(position).getNickname());
+                nickName.setText(String.valueOf(posts.get(position).getNickname()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
-
-        void setClickListeners() {
-            postImage.setOnClickListener(v -> favoritePostListener.onPostChoose(posts.get(getLayoutPosition()).getPost_id()));
-        }
-
     }
 }
-

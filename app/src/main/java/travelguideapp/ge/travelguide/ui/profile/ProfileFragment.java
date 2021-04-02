@@ -31,12 +31,12 @@ import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
+import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.profile.changeLanguage.ChangeLangFragment;
-import travelguideapp.ge.travelguide.ui.profile.favorites.FavoritePostFragment;
-import travelguideapp.ge.travelguide.ui.profile.posts.UserPostsFragment;
+import travelguideapp.ge.travelguide.ui.profile.posts.PostPagerAdapter;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 import com.google.android.material.navigation.NavigationView;
@@ -112,11 +112,8 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         ViewPager viewPager = mIncludedLayout.findViewById(R.id.profile_view_pager);
         TabLayout tabLayout = mIncludedLayout.findViewById(R.id.profile_tabs);
 
-        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(getChildFragmentManager());
+        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getChildFragmentManager(), PostHomeParams.PageType.MY_POSTS);
         profilePagerAdapter.setCallback((OnPostChooseCallback) context);
-        profilePagerAdapter.addFragment(new UserPostsFragment());
-        profilePagerAdapter.addFragment(new FavoritePostFragment());
-//        profilePagerAdapter.addFragment(new UserToursFragment());
 
         viewPager.setAdapter(profilePagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

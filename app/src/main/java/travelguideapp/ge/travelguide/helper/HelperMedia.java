@@ -33,7 +33,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
 
 public class HelperMedia {
 
@@ -288,12 +288,12 @@ public class HelperMedia {
         return convertedImages;
     }
 
-    public static List<MediaFileData> convertMediaToPng(List<MediaFileData> itemMedia) {
+    public static List<MediaFileParams> convertMediaToPng(List<MediaFileParams> itemMedia) {
 
-        List<MediaFileData> convertedImages = new ArrayList<>();
+        List<MediaFileParams> convertedImages = new ArrayList<>();
 
-        for (MediaFileData item : itemMedia) {
-            if (item.getMediaType() == MediaFileData.MediaType.PHOTO) {
+        for (MediaFileParams item : itemMedia) {
+            if (item.getMediaType() == MediaFileParams.MediaType.PHOTO) {
                 try {
                     Bitmap bmp = BitmapFactory.decodeFile(item.getMediaPath());
 
@@ -305,7 +305,7 @@ public class HelperMedia {
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, out); //100-best quality
                     out.flush();
                     out.close();
-                    convertedImages.add(new MediaFileData(imageFilePNG.getAbsolutePath(), MediaFileData.MediaType.PHOTO));
+                    convertedImages.add(new MediaFileParams(imageFilePNG.getAbsolutePath(), MediaFileParams.MediaType.PHOTO));
 
                 } catch (Exception e) {
                     e.printStackTrace();

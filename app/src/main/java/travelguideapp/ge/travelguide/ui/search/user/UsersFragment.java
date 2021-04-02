@@ -18,6 +18,7 @@ import java.util.List;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
+import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 
 public class UsersFragment extends Fragment implements UsersFragmentListener {
@@ -27,6 +28,10 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
     private UserAdapter userAdapter;
 
     private boolean isFirstOpen = true;
+    private boolean isLoading;
+    private int fromPage = 1;
+
+    private List<FullSearchResponse.Users> users;
 
     @Nullable
     @Override
@@ -40,11 +45,45 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
         return view;
     }
 
+    public void listenOnRecycler() {
+        try {
+            usersRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                    if (!isLoading) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == users.size() - 1) {
+                            isLoading = true;
+                            fromPage++;
+//                            onLazyLoad(fromPage);
+                        }
+                    }
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+//    public void onLazyLoad(int page) {
+//        try {
+//            ((SearchActivity) usersRecycler.getContext()).getUsers(page);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     public void setUsers(List<FullSearchResponse.Users> users) {
         try {
+            this.users = users;
             nothingFound.setVisibility(View.GONE);
             usersRecycler.setVisibility(View.VISIBLE);
-            userAdapter.setUsers(users);
+            userAdapter.setUsers(this.users);
             usersRecycler.setAdapter(userAdapter);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +108,6 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
     public void onStart() {
         super.onStart();
         getCachedUsers();
-
     }
 
     @Override
@@ -80,6 +118,18 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
             e.printStackTrace();
         }
     }
+
+
+    public void setLazyUsers(List<FullSearchResponse.Users> users) {
+        try {
+            isLoading = false;
+            this.users = users;
+            userAdapter.setUsers(this.users);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void getCachedUsers() {
         try {
@@ -98,15 +148,4 @@ public class UsersFragment extends Fragment implements UsersFragmentListener {
         }
     }
 
-    @Override
-    public void onStop() {
-        Log.e("asdzxc", "userebis fragmenti stopi");
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.e("asdzxc", "userebis fragmenti destroy");
-        super.onDestroy();
-    }
 }

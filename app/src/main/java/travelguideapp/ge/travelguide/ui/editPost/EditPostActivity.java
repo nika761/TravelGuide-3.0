@@ -4,15 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
-import travelguideapp.ge.travelguide.model.parcelable.MediaFileData;
+import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
 import travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity;
 import travelguideapp.ge.travelguide.ui.editPost.filterActivity.FilterActivity;
 import travelguideapp.ge.travelguide.ui.editPost.sortActivity.SortStoriesActivity;
@@ -37,7 +31,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 
@@ -50,7 +43,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
     private static final int TRIM_ACTIVITY = 3;
 
     private List<ItemMedia> itemMedias = new ArrayList<>();
-    private List<MediaFileData> mediaFiles = new ArrayList<>();
+    private List<MediaFileParams> mediaFiles = new ArrayList<>();
 
     private EditPostAdapter editPostAdapter;
     private RecyclerView editPostRecycler;
@@ -78,9 +71,9 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
             try {
                 for (String currentPath : storiesPath) {
                     if (currentPath.endsWith(".mp4")) {
-                        mediaFiles.add(new MediaFileData(currentPath, MediaFileData.MediaType.VIDEO));
+                        mediaFiles.add(new MediaFileParams(currentPath, MediaFileParams.MediaType.VIDEO));
                     } else {
-                        mediaFiles.add(new MediaFileData(currentPath, MediaFileData.MediaType.PHOTO));
+                        mediaFiles.add(new MediaFileParams(currentPath, MediaFileParams.MediaType.PHOTO));
                     }
                 }
                 if (mediaFiles.size() > 0)
@@ -94,7 +87,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
 
     private void checkVideoDuration() {
         try {
-            if (mediaFiles.size() > 0 && mediaFiles.get(0).getMediaType() == MediaFileData.MediaType.VIDEO) {
+            if (mediaFiles.size() > 0 && mediaFiles.get(0).getMediaType() == MediaFileParams.MediaType.VIDEO) {
                 long duration = HelperMedia.getVideoDurationLong(mediaFiles.get(0).getMediaPath());
                 if (duration > GlobalPreferences.getAppSettings(this).getStory_video_duration_max()) {
                     isMustTrim = true;
@@ -114,7 +107,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
         TextView btnNext = findViewById(R.id.edit_post_next_btn);
         btnNext.setOnClickListener(v -> {
             Intent intent = new Intent(EditPostActivity.this, ChooseMusicActivity.class);
-            intent.putParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA, (ArrayList<? extends Parcelable>) mediaFiles);
+            intent.putParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS, (ArrayList<? extends Parcelable>) mediaFiles);
             startActivity(intent);
         });
 
@@ -150,7 +143,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
         }
     }
 
-    private void initRecycler(List<MediaFileData> mediaFiles) {
+    private void initRecycler(List<MediaFileParams> mediaFiles) {
         editPostAdapter.setItemMedias(mediaFiles);
         editPostRecycler.setAdapter(editPostAdapter);
     }
@@ -188,10 +181,10 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
     }
 
     @Override
-    public void onSortChoose(List<MediaFileData> stories) {
+    public void onSortChoose(List<MediaFileParams> stories) {
         this.mediaFiles = stories;
         Intent intent = new Intent(this, SortStoriesActivity.class);
-        intent.putParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA, (ArrayList<? extends Parcelable>) mediaFiles);
+        intent.putParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS, (ArrayList<? extends Parcelable>) mediaFiles);
         startActivityForResult(intent, SORT_ACTIVITY);
     }
 
@@ -210,7 +203,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
     }
 
     @Override
-    public void onStoryDeleted(List<MediaFileData> itemMedias) {
+    public void onStoryDeleted(List<MediaFileParams> itemMedias) {
         if (itemMedias.size() == 0) {
             finish();
         } else {
@@ -248,7 +241,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
     private void onSortFinish(int resultCode, Intent data) {
         switch (resultCode) {
             case RESULT_OK:
-                this.mediaFiles = data.getParcelableArrayListExtra(MediaFileData.INTENT_KEY_MEDIA);
+                this.mediaFiles = data.getParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS);
                 editPostAdapter.setItemMedias(mediaFiles);
                 break;
 

@@ -3,13 +3,13 @@ package travelguideapp.ge.travelguide.model.parcelable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SearchPostParams implements Parcelable {
+public class PostSearchParams implements Parcelable {
 
     /**
      * Created by n.butskhrikidze on 01/07/2020.
      * Use this key for intents
      */
-    public static final String INTENT_KEY_SEARCH = "post_data_search";
+    public static final String POST_SEARCH_PARAMS = "post_search_params";
 
     /**
      * Hahtags - Search posts by hashtags.
@@ -23,20 +23,20 @@ public class SearchPostParams implements Parcelable {
     private String hashtag;
     private SearchBy searchBy;
 
-    public SearchPostParams() {
+    public PostSearchParams() {
     }
 
-    public SearchPostParams(int postId, SearchBy searchBy) {
+    public PostSearchParams(int postId, SearchBy searchBy) {
         this.postId = postId;
         this.searchBy = searchBy;
     }
 
-    public SearchPostParams(String hashtag, SearchBy searchBy) {
+    public PostSearchParams(String hashtag, SearchBy searchBy) {
         this.hashtag = hashtag;
         this.searchBy = searchBy;
     }
 
-    public SearchPostParams(int postId, String hashtag, SearchBy searchBy) {
+    public PostSearchParams(int postId, String hashtag, SearchBy searchBy) {
         this.postId = postId;
         this.hashtag = hashtag;
         this.searchBy = searchBy;
@@ -66,21 +66,21 @@ public class SearchPostParams implements Parcelable {
         this.searchBy = searchBy;
     }
 
-    protected SearchPostParams(Parcel in) {
+    protected PostSearchParams(Parcel in) {
         postId = in.readInt();
         hashtag = in.readString();
         searchBy = (SearchBy) in.readValue(SearchBy.class.getClassLoader());
     }
 
-    public static final Creator<SearchPostParams> CREATOR = new Creator<SearchPostParams>() {
+    public static final Creator<PostSearchParams> CREATOR = new Creator<PostSearchParams>() {
         @Override
-        public SearchPostParams createFromParcel(Parcel in) {
-            return new SearchPostParams(in);
+        public PostSearchParams createFromParcel(Parcel in) {
+            return new PostSearchParams(in);
         }
 
         @Override
-        public SearchPostParams[] newArray(int size) {
-            return new SearchPostParams[size];
+        public PostSearchParams[] newArray(int size) {
+            return new PostSearchParams[size];
         }
     };
 

@@ -21,11 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.helper.AuthManager;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.Report;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
@@ -95,22 +96,8 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     }
 
     protected void onAuthenticateError(String message) {
-        new Thread(() -> {
-            try {
-                GlobalPreferences.saveAccessToken(HomeParentActivity.this, null);
-                GlobalPreferences.saveUserId(HomeParentActivity.this, 0);
-                GlobalPreferences.saveUserRole(HomeParentActivity.this, 20);
-                GlobalPreferences.saveLoginType(HomeParentActivity.this, null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-
         MyToaster.getToast(this, message);
-        Intent intent = new Intent(this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
+        logOut();
     }
 
     protected void onConnectionError() {
@@ -151,13 +138,13 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
             sentBtn.setOnClickListener(v -> {
                 switch (reportParams.getReportType()) {
                     case USER:
-                        homeParentPresenter.setUserReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetUserReportRequest(reportParams.getUserId(), reportsId));
+                        homeParentPresenter.setReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetUserReportRequest(reportParams.getUserId(), reportsId), ReportParams.Type.USER);
                         break;
                     case POST:
-                        homeParentPresenter.setPostReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetPostReportRequest(reportParams.getPostId(), reportsId));
+                        homeParentPresenter.setReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetPostReportRequest(reportParams.getPostId(), reportsId), ReportParams.Type.POST);
                         break;
                     case COMMENT:
-                        homeParentPresenter.setCommentReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetCommentReportRequest(reportParams.getCommentId(), reportsId));
+                        homeParentPresenter.setReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetCommentReportRequest(reportParams.getCommentId(), reportsId), ReportParams.Type.COMMENT);
                         break;
                 }
                 bottomSheetDialog.dismiss();
@@ -185,7 +172,6 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
         }
     }
 
-
     private List<Report> getReports() {
         List<Report> reports = new ArrayList<>();
         reports.add(new Report(getString(R.string.report_profile_picture), 1));
@@ -211,7 +197,7 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
                     break;
 
                 case GlobalPreferences.TRAVEL_GUIDE:
-                    onLogOutSuccess();
+                    logOut();
                     break;
             }
         } catch (Exception e) {
@@ -223,7 +209,7 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     public void logOutFromFacebook() {
         try {
             LoginManager.getInstance().logOut();
-            onLogOutSuccess();
+            logOut();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -231,20 +217,14 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
 
     public void logOutFromGoogle() {
         ClientManager.googleSignInClient(this).signOut()
-                .addOnCompleteListener(this, task -> onLogOutSuccess())
+                .addOnCompleteListener(this, task -> logOut())
                 .addOnCanceledListener(this, () -> MyToaster.getToast(this, "Canceled"))
                 .addOnFailureListener(this, e -> MyToaster.getToast(this, e.getMessage() + "Google Failed"));
     }
 
-    public void onLogOutSuccess() {
-        GlobalPreferences.removeAccessToken(this);
-        GlobalPreferences.removeLoginType(this);
-        GlobalPreferences.removeUserId(this);
-        GlobalPreferences.removeUserRole(this);
-        GlobalPreferences.removeUserProfileInfo(this);
-        Intent intent = new Intent(HomeParentActivity.this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+    public void logOut() {
+        AuthManager.resetAuthState(this);
+        startActivity(SignInActivity.getRedirectIntent(this));
     }
 
     public void startCustomerActivity(int userId) {
@@ -263,7 +243,7 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     public void startSearchPostActivity(Parcelable data) {
         try {
             Intent intent = new Intent(this, PostByLocationActivity.class);
-            intent.putExtra(SearchPostParams.INTENT_KEY_SEARCH, data);
+            intent.putExtra(PostSearchParams.POST_SEARCH_PARAMS, data);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

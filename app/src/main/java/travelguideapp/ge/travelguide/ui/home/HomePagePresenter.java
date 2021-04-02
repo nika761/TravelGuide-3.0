@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.home;
 
+import org.jetbrains.annotations.NotNull;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,31 +27,34 @@ public class HomePagePresenter {
 //        this.apiService = RetrofitManager.getApiService();
 //    }
 
-    void getProfile(String accessToken, ProfileRequest profileRequest) {
-        apiService.getProfile(accessToken, profileRequest).enqueue(new Callback<ProfileResponse>() {
+    void getProfile(ProfileRequest profileRequest) {
+        apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
-            public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+            public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0) {
-                        switch (response.body().getStatus()) {
-                            case -100:
-                            case -101:
-                                homePageListener.onAuthenticationError("Sign In Again");
-                                break;
+                    switch (response.body().getStatus()) {
+                        case -100:
+                        case -101:
+                            homePageListener.onAuthenticationError("Sign In Again");
+                            break;
 
-                            case 0:
-                                homePageListener.onGetProfile(response.body().getUserinfo());
-                                break;
-                        }
+                        case 0:
+                            homePageListener.onGetProfile(response.body().getUserinfo());
+                            break;
                     }
-//                        homePageListener.onGetError(String.valueOf(response.body().getStatus()));
                 } else {
+                    if (response.code() == 401) {
+                        homePageListener.onAuthenticationError("Sign In Again");
+                    }
 //                    homePageListener.onGetError(response.message());
                 }
             }
 
             @Override
-            public void onFailure(Call<ProfileResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<ProfileResponse> call, @NotNull Throwable t) {
+                if (t.getCause().getMessage().equals("Unauthorized")) {
+                    homePageListener.onAuthenticationError("Sign In Again");
+                }
 //                homePageListener.onGetError(t.getMessage());
             }
         });

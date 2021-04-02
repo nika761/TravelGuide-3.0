@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Trace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,6 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
 import travelguideapp.ge.travelguide.helper.DialogManager;
@@ -37,9 +35,9 @@ import travelguideapp.ge.travelguide.custom.customPost.CustomPostAdapter;
 import travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.model.customModel.PostView;
-import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
@@ -58,7 +56,6 @@ import travelguideapp.ge.travelguide.model.request.PostRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.model.response.SharePostResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
-import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +82,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private int customerUserId;
 
-    private LoadPostParams.Source loadSource;
+    private PostHomeParams.PageType loadPageType;
     private CustomPostRecycler customPostRecycler;
     private CustomPostAdapter customPostAdapter;
 
@@ -138,9 +135,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
             try {
-                LoadPostParams postDataLoad = getArguments().getParcelable(LoadPostParams.INTENT_KEY_LOAD);
-                this.loadSource = postDataLoad.getLoadSource();
-                switch (loadSource) {
+                PostHomeParams postDataLoad = getArguments().getParcelable(PostHomeParams.POST_HOME_PARAMS);
+                this.loadPageType = postDataLoad.getPageType();
+                switch (loadPageType) {
                     case FAVORITES:
 
                     case SEARCH:
@@ -156,7 +153,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
                     case FEED:
                         loaderContainer.setVisibility(View.VISIBLE);
-                        presenter.getPosts(GlobalPreferences.getAccessToken(postRecycler.getContext()), new PostRequest(0));
+                        presenter.getPosts(new PostRequest(0));
                         break;
                 }
             } catch (Exception e) {
@@ -279,18 +276,18 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
 
     @Override
-    public void onLocationChoose(int postId, SearchPostParams.SearchBy searchBy) {
+    public void onLocationChoose(int postId, PostSearchParams.SearchBy searchBy) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(postId, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostSearchParams(postId, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onHashtagChoose(String hashtag, SearchPostParams.SearchBy searchBy) {
+    public void onHashtagChoose(String hashtag, PostSearchParams.SearchBy searchBy) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(hashtag, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostSearchParams(hashtag, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -432,7 +429,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
         String accessToken = GlobalPreferences.getAccessToken(postRecycler.getContext());
 
-        switch (loadSource) {
+        switch (loadPageType) {
 
             case FAVORITES:
                 presenter.getFavoritePosts(accessToken, new FavoritePostRequest(fromPostId));
@@ -447,7 +444,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                 break;
 
             case FEED:
-                presenter.getPosts(accessToken, new PostRequest(fromPostId));
+                presenter.getPosts(new PostRequest(fromPostId));
                 break;
 
             case SEARCH:

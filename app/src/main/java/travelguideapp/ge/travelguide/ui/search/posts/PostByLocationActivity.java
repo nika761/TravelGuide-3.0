@@ -14,8 +14,8 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.LoadPostParams;
-import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
@@ -29,7 +29,7 @@ public class PostByLocationActivity extends HomeParentActivity implements PostBy
 
     private List<PostResponse.Posts> posts;
 
-    private SearchPostParams.SearchBy searchBy;
+    private PostSearchParams.SearchBy searchBy;
     private String hashtag;
     private int postId;
 
@@ -62,7 +62,7 @@ public class PostByLocationActivity extends HomeParentActivity implements PostBy
 
     private void getExtras() {
         try {
-            SearchPostParams postDataSearch = getIntent().getParcelableExtra(SearchPostParams.INTENT_KEY_SEARCH);
+            PostSearchParams postDataSearch = getIntent().getParcelableExtra(PostSearchParams.POST_SEARCH_PARAMS);
             this.searchBy = postDataSearch.getSearchBy();
             switch (searchBy) {
                 case HASHTAG:
@@ -123,13 +123,13 @@ public class PostByLocationActivity extends HomeParentActivity implements PostBy
         try {
             int position = getPositionById(postId);
 
-            LoadPostParams postDataLoad = new LoadPostParams();
-            postDataLoad.setLoadSource(LoadPostParams.Source.SEARCH);
+            PostHomeParams postDataLoad = new PostHomeParams();
+            postDataLoad.setPageType(PostHomeParams.PageType.SEARCH);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 
             Bundle data = new Bundle();
-            data.putParcelable(LoadPostParams.INTENT_KEY_LOAD, postDataLoad);
+            data.putParcelable(PostHomeParams.POST_HOME_PARAMS, postDataLoad);
 
             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, true, true, this);
 

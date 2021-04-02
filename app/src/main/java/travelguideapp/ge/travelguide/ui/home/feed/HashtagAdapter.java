@@ -12,7 +12,7 @@ import travelguideapp.ge.travelguide.R;
 
 import java.util.List;
 
-import static travelguideapp.ge.travelguide.model.parcelable.SearchPostParams.SearchBy.HASHTAG;
+import static travelguideapp.ge.travelguide.model.parcelable.PostSearchParams.SearchBy.HASHTAG;
 
 
 public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagHolder> {
@@ -38,7 +38,7 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagH
 
     @Override
     public int getItemCount() {
-        return hashtags.size();
+        return Math.min(hashtags.size(), 8);
     }
 
     class HashtagHolder extends RecyclerView.ViewHolder {
