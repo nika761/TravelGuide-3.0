@@ -134,7 +134,7 @@ public class SignInActivity extends BaseActivity implements SignInListener {
                     String signature = uri.getQueryParameter("signature");
 
                     if (signature != null && id != null) {
-                        signInPresenter.verify(GlobalPreferences.getAccessToken(this), new VerifyEmailRequest(id, signature));
+                        signInPresenter.verify(new VerifyEmailRequest(id, signature));
                         intent.putExtra("USED_INTENT", true);
 //                    Log.e("email", signature + " " + id);
                     }

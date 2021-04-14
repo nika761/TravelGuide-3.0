@@ -58,8 +58,8 @@ class SignInPresenter {
         this.database = FirebaseDatabase.getInstance().getReference("users");
     }
 
-    void verify(String accessToken, VerifyEmailRequest verifyEmailRequest) {
-        apiService.verifyEmail(accessToken, verifyEmailRequest).enqueue(new Callback<VerifyEmailResponse>() {
+    void verify(VerifyEmailRequest verifyEmailRequest) {
+        apiService.verifyEmail(verifyEmailRequest).enqueue(new Callback<VerifyEmailResponse>() {
             @Override
             public void onResponse(@NotNull Call<VerifyEmailResponse> call, @NotNull Response<VerifyEmailResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

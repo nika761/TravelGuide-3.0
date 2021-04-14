@@ -23,16 +23,16 @@ public class HomeParentPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    public void setReport(String accessToken, Object request, ReportParams.Type reportType) {
+    public void setReport(Object request, ReportParams.Type reportType) {
         switch (reportType) {
             case COMMENT:
-                apiService.setCommentReport(accessToken, ((SetCommentReportRequest) request)).enqueue(getCallback());
+                apiService.setCommentReport(((SetCommentReportRequest) request)).enqueue(getCallback());
                 break;
             case POST:
-                apiService.setPostReport(accessToken, ((SetPostReportRequest) request)).enqueue(getCallback());
+                apiService.setPostReport(((SetPostReportRequest) request)).enqueue(getCallback());
                 break;
             case USER:
-                apiService.setUserReport(accessToken, ((SetUserReportRequest) request)).enqueue(getCallback());
+                apiService.setUserReport(((SetUserReportRequest) request)).enqueue(getCallback());
                 break;
 
         }

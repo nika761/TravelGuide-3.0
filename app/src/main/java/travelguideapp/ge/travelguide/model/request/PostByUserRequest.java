@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.model.request;
 
 public class PostByUserRequest {
+
     private int user_id;
     private int from_post_id;
 

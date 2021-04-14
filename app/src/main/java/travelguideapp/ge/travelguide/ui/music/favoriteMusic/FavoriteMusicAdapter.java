@@ -116,14 +116,14 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
                     if (playingPosition == getLayoutPosition()) {
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
-                        playMusicListener.onChooseMusicToPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        playMusicListener.onChooseMusicForPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
                         playMusicListener.onChooseMusicForPost(0);
                         playingPosition = -1;
                         notifyDataSetChanged();
                     } else {
                         container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
                         playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-                        playMusicListener.onChooseMusicToPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        playMusicListener.onChooseMusicForPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
                         playMusicListener.onChooseMusicForPost(favoriteMusics.get(getLayoutPosition()).getMusic_id());
                         playingPosition = getLayoutPosition();
                         notifyDataSetChanged();

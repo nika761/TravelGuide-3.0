@@ -94,7 +94,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     private void getProfileInfo() {
         if (userInfo == null)
-            presenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(GlobalPreferences.getUserId(this)));
+            presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId(this)));
         else
             setProfileInfo(userInfo);
     }
@@ -399,7 +399,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                     updateProfileRequest.setProfile_pic(photoUrl);
                 if (countryId != 0)
                     updateProfileRequest.setCountry_id(countryId);
-                presenter.updateProfile(GlobalPreferences.getAccessToken(this), updateProfileRequest);
+                presenter.updateProfile(updateProfileRequest);
             } else {
                 getLoader(false);
             }

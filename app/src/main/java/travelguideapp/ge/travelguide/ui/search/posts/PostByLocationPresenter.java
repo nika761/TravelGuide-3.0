@@ -22,15 +22,22 @@ class PostByLocationPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getPostsByLocation(String accessToken, PostByLocationRequest postByLocationRequest) {
-        apiService.getPostsByLocation(accessToken, postByLocationRequest).enqueue(new Callback<PostResponse>() {
+    void getPostsByLocation(PostByLocationRequest postByLocationRequest) {
+        apiService.getPostsByLocation(postByLocationRequest).enqueue(postCallback());
+    }
+
+    void getPostsByHashtag(PostByHashtagRequest postByHashtagRequest) {
+        apiService.getPostsByHashtag(postByHashtagRequest).enqueue(postCallback());
+    }
+
+    private Callback<PostResponse> postCallback() {
+        return new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
-                        if (response.body().getPosts().size() > 0) {
+                        if (response.body().getPosts().size() > 0)
                             searchPostListener.onGetPosts(response.body().getPosts());
-                        }
                     } else {
                         searchPostListener.onGetPostError(response.message());
                     }
@@ -43,30 +50,7 @@ class PostByLocationPresenter {
             public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
                 searchPostListener.onGetPostError(t.getMessage());
             }
-        });
+        };
     }
 
-    void getPostsByHashtag(String accessToken, PostByHashtagRequest postByHashtagRequest) {
-        apiService.getPostsByHashtag(accessToken, postByHashtagRequest).enqueue(new Callback<PostResponse>() {
-            @Override
-            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().getStatus() == 0) {
-                        if (response.body().getPosts().size() > 0) {
-                            searchPostListener.onGetPosts(response.body().getPosts());
-                        }
-                    } else {
-                        searchPostListener.onGetPostError(response.message());
-                    }
-                } else {
-                    searchPostListener.onGetPostError(response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
-                searchPostListener.onGetPostError(t.getMessage());
-            }
-        });
-    }
 }

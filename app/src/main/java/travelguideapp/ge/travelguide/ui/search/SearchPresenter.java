@@ -25,8 +25,8 @@ public class SearchPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void fullSearch(String accessToken, FullSearchRequest fullSearchRequest) {
-        apiService.searchAll(accessToken, fullSearchRequest).enqueue(new Callback<FullSearchResponse>() {
+    void fullSearch(FullSearchRequest fullSearchRequest) {
+        apiService.searchAll(fullSearchRequest).enqueue(new Callback<FullSearchResponse>() {
             @Override
             public void onResponse(@NotNull Call<FullSearchResponse> call, @NotNull Response<FullSearchResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -50,8 +50,8 @@ public class SearchPresenter {
         });
     }
 
-    void getHashtags(String accessToken, SearchHashtagRequest hashtagRequest) {
-        apiService.getHashtags(accessToken, hashtagRequest).enqueue(new Callback<HashtagResponse>() {
+    void getHashtags(SearchHashtagRequest hashtagRequest) {
+        apiService.getHashtags(hashtagRequest).enqueue(new Callback<HashtagResponse>() {
             @Override
             public void onResponse(@NotNull Call<HashtagResponse> call, @NotNull Response<HashtagResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -76,8 +76,8 @@ public class SearchPresenter {
         });
     }
 
-    void getFollowers(String accessToken, SearchFollowersRequest searchFollowersRequest) {
-        apiService.searchFollowers(accessToken, searchFollowersRequest).enqueue(new Callback<FollowerResponse>() {
+    void getFollowers(SearchFollowersRequest searchFollowersRequest) {
+        apiService.searchFollowers(searchFollowersRequest).enqueue(new Callback<FollowerResponse>() {
             @Override
             public void onResponse(@NotNull Call<FollowerResponse> call, @NotNull Response<FollowerResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -103,8 +103,8 @@ public class SearchPresenter {
     }
 
 
-    void getPosts(String accessToken, PostByLocationRequest postByLocationRequest) {
-        apiService.getPostsByLocation(accessToken, postByLocationRequest).enqueue(new Callback<PostResponse>() {
+    void getPosts(PostByLocationRequest postByLocationRequest) {
+        apiService.getPostsByLocation(postByLocationRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

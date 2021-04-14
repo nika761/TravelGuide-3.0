@@ -20,7 +20,7 @@ class ProfileFragmentPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getProfile(String accessToken, ProfileRequest profileRequest) {
+    void getProfile(ProfileRequest profileRequest) {
         apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {

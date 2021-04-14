@@ -109,7 +109,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.searchFollowers(GlobalPreferences.getAccessToken(this), new SearchFollowersRequest(charSequence.toString()));
+                                    postPresenter.searchFollowers( new SearchFollowersRequest(charSequence.toString()));
                                 }
                             });
                     break;
@@ -123,7 +123,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(charSequence.toString()));
+                                    postPresenter.getHashtags( new SearchHashtagRequest(charSequence.toString()));
                                 }
                             });
                     break;

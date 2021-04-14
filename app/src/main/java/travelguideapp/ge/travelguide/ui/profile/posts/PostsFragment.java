@@ -67,16 +67,16 @@ public class PostsFragment extends Fragment implements PostListener {
             if (loadPageType != null) {
                 switch (loadPageType) {
                     case MY_POSTS:
-                        postPresenter.getPosts(accessToken, new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0), PostHomeParams.PageType.MY_POSTS);
+                        postPresenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), 0), PostHomeParams.PageType.MY_POSTS);
                         break;
 
                     case CUSTOMER_POSTS:
                         this.customerUserId = getArguments().getInt("customer_user_id");
-                        postPresenter.getPosts(accessToken, new PostByUserRequest(customerUserId, 0), PostHomeParams.PageType.CUSTOMER_POSTS);
+                        postPresenter.getPosts(new PostByUserRequest(customerUserId, 0), PostHomeParams.PageType.CUSTOMER_POSTS);
                         break;
 
                     case FAVORITES:
-                        postPresenter.getPosts(accessToken, new FavoritePostRequest(0), PostHomeParams.PageType.FAVORITES);
+                        postPresenter.getPosts(new FavoritePostRequest(0), PostHomeParams.PageType.FAVORITES);
                         break;
 
                     case SEARCH:
@@ -141,15 +141,15 @@ public class PostsFragment extends Fragment implements PostListener {
                     break;
 
                 case FAVORITES:
-                    postPresenter.getPosts(accessToken, new FavoritePostRequest(postId), PostHomeParams.PageType.FAVORITES);
+                    postPresenter.getPosts(new FavoritePostRequest(postId), PostHomeParams.PageType.FAVORITES);
                     break;
 
                 case MY_POSTS:
-                    postPresenter.getPosts(accessToken, new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId), PostHomeParams.PageType.MY_POSTS);
+                    postPresenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(postsRecycler.getContext()), postId), PostHomeParams.PageType.MY_POSTS);
                     break;
 
                 case CUSTOMER_POSTS:
-                    postPresenter.getPosts(accessToken, new PostByUserRequest(customerUserId, postId), PostHomeParams.PageType.CUSTOMER_POSTS);
+                    postPresenter.getPosts(new PostByUserRequest(customerUserId, postId), PostHomeParams.PageType.CUSTOMER_POSTS);
                     break;
             }
     }

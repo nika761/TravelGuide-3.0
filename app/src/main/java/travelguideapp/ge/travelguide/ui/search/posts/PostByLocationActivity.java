@@ -82,10 +82,10 @@ public class PostByLocationActivity extends HomeParentActivity implements PostBy
     private void getPosts() {
         switch (searchBy) {
             case LOCATION:
-                searchPostPresenter.getPostsByLocation(GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
+                searchPostPresenter.getPostsByLocation(new PostByLocationRequest(postId));
                 break;
             case HASHTAG:
-                searchPostPresenter.getPostsByHashtag(GlobalPreferences.getAccessToken(this), new PostByHashtagRequest(hashtag, 0));
+                searchPostPresenter.getPostsByHashtag(new PostByHashtagRequest(hashtag, 0));
                 break;
         }
     }

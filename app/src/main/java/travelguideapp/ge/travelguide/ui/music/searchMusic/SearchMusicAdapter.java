@@ -148,13 +148,13 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
                         if (playingPosition == getLayoutPosition()) {
                             container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
                             playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
-                            playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                            playMusicListener.onChooseMusicForPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
                             playMusicListener.onChooseMusicForPost(0);
                             playingPosition = -1;
                         } else {
                             container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
                             playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-                            playMusicListener.onChooseMusicToPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                            playMusicListener.onChooseMusicForPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
                             playMusicListener.onChooseMusicForPost(musics.get(getLayoutPosition()).getMusic_id());
                             playingPosition = getLayoutPosition();
                         }

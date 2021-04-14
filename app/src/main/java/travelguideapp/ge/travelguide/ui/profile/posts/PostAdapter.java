@@ -36,7 +36,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.UserPostHolder
     public void onBindViewHolder(@NonNull PostAdapter.UserPostHolder holder, int position) {
         if (canLazyLoad)
             holder.loadMoreCallback(position);
-        holder.bindUI(position);
+        holder.onBind(position);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.UserPostHolder
             }
         }
 
-        void bindUI(int position) {
+        void onBind(int position) {
             try {
                 postImage.getLayoutParams().width = BaseApplication.ITEM_WIDTH_FOR_POSTS;
                 HelperMedia.loadPhoto(postImage.getContext(), posts.get(position).getCover(), postImage);

@@ -129,6 +129,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
                 onCropFinish(resultCode, data);
                 break;
+
             case FILTER_ACTIVITY:
                 onFilterFinish(resultCode, data);
                 break;
@@ -349,7 +350,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
 //
 //            }
 ////            uploadPostRequest = new UploadPostRequest(17, photos, videos);
-////            uploadPostPresenter.uploadStory("Bearer" + " " + GlobalPreferences.getAccessToken(this), uploadPostRequest);
+////            uploadPostPresenter.uploadStory("Bearer" + " " +  uploadPostRequest);
 //
 //        }
 //    }

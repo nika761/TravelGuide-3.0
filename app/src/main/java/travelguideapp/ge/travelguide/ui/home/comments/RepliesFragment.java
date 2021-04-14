@@ -196,7 +196,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     @Override
     public void onChooseLike(int commentId, int commentReplyId) {
         this.commentId = commentId;
-        presenter.addCommentReplyLike(GlobalPreferences.getAccessToken(userName.getContext()), new LikeCommentReplyRequest(storyId, postId, commentId, commentReplyId));
+        presenter.addCommentReplyLike(new LikeCommentReplyRequest(storyId, postId, commentId, commentReplyId));
     }
 
     @Override
@@ -206,7 +206,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onChooseDelete(int replyId) {
-        DialogManager.getAskingDialog(likeBtn.getContext(), getString(R.string.delete_comment), () -> presenter.deleteCommentReply(GlobalPreferences.getAccessToken(commentBody.getContext()), new DeleteReplyRequest(replyId)));
+        DialogManager.getAskingDialog(likeBtn.getContext(), getString(R.string.delete_comment), () -> presenter.deleteCommentReply(new DeleteReplyRequest(replyId)));
     }
 
     @Override
@@ -281,7 +281,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
                 viewMore.setVisibility(View.VISIBLE);
                 viewMore.setOnClickListener(v -> {
                     loader.setVisibility(View.VISIBLE);
-                    presenter.getReplies(GlobalPreferences.getAccessToken(userName.getContext()), new GetMoreCommentRequest(replyCommentId));
+                    presenter.getReplies(new GetMoreCommentRequest(replyCommentId));
                 });
             }
         } catch (Exception e) {
@@ -344,7 +344,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
     private void addComment(String comment) {
         addCommentBtn.setClickable(false);
         loader.setVisibility(View.VISIBLE);
-        presenter.addCommentReply(GlobalPreferences.getAccessToken(likeBtn.getContext()), new AddCommentReplyRequest(storyId, postId, commentId, comment));
+        presenter.addCommentReply(new AddCommentReplyRequest(storyId, postId, commentId, comment));
     }
 
     @Override

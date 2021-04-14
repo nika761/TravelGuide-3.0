@@ -118,7 +118,7 @@ public class ChangeLangFragment extends DialogFragment implements ChangeLangList
         try {
             this.languageId = langId;
             ChangeLangRequest changeLangRequest = new ChangeLangRequest(String.valueOf(languageId));
-            changeLangPresenter.sentChangeLanguageRequest(changeLangRequest, GlobalPreferences.getAccessToken(context));
+            changeLangPresenter.sentChangeLanguageRequest(changeLangRequest);
         } catch (Exception e) {
             e.printStackTrace();
         }

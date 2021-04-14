@@ -55,9 +55,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
 
     private TextView nickName, name, bioBody, followingCount, following, followerCount, follower, reactionCount, reaction, bioHead, editProfile;
 
-    private String editProfileText, followingText, followersText, reactionsText, bioText, settingsText, shareProfileText,
-            languageText, aboutText, termsText, privacyText, signOutText;
-
     private ImageButton seeBio, hideBio;
     private CircleImageView userPrfImage;
     private ActionBarDrawerToggle toggle;
@@ -169,7 +166,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
             onGetProfile(this.userInfo);
         } else {
             showLoader(true);
-            presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+            presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId(context)));
         }
     }
 
@@ -280,7 +277,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentListener
         super.onStart();
         if (!isOnCreate) {
             if (presenter != null)
-                presenter.getProfile(GlobalPreferences.getAccessToken(context), new ProfileRequest(GlobalPreferences.getUserId(context)));
+                presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId(context)));
         }
         isOnCreate = false;
     }

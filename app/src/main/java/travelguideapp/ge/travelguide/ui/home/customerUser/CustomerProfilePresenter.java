@@ -22,7 +22,7 @@ public class CustomerProfilePresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getProfile(String accessToken, ProfileRequest profileRequest) {
+    void getProfile(ProfileRequest profileRequest) {
         apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
@@ -44,8 +44,8 @@ public class CustomerProfilePresenter {
         });
     }
 
-    public void follow(String accessToken, FollowRequest followRequest) {
-        apiService.follow(accessToken, followRequest).enqueue(new Callback<FollowResponse>() {
+    public void follow(FollowRequest followRequest) {
+        apiService.follow(followRequest).enqueue(new Callback<FollowResponse>() {
             @Override
             public void onResponse(@NotNull Call<FollowResponse> call, @NotNull Response<FollowResponse> response) {
                 if (response.isSuccessful()) {

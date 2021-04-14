@@ -464,17 +464,16 @@ public class CustomPostRecycler extends RecyclerView {
                 holder.like.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_heart_red));
             else
                 holder.like.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_heart));
+
             holder.storyLikes.setText(String.valueOf(story.getStory_likes()));
-
-            holder.storyComments.setText(String.valueOf(story.getStory_comments()));
             holder.storyShares.setText(String.valueOf(post.getPost_shares()));
-
+            holder.storyComments.setText(String.valueOf(story.getStory_comments()));
             holder.storyFavorites.setText(String.valueOf(post.getPost_favorites()));
+
             if (post.getI_favor_post())
                 holder.favorite.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_link_yellow));
             else
                 holder.favorite.setBackground(ContextCompat.getDrawable(context, R.drawable.emoji_link));
-
 
             holder.nickName.setText(post.getNickname());
 
@@ -529,7 +528,9 @@ public class CustomPostRecycler extends RecyclerView {
 
             ////Listeners
 
-            holder.menu.setOnClickListener(v -> showMenu(holder.menu, post.getPost_id(), post.getPost_stories().get(0).getStory_id()));
+//            holder.menu.setOnClickListener(v -> showMenu(holder.menu, post.getPost_id(), post.getPost_stories().get(0).getStory_id()));
+
+            holder.menu.setOnClickListener(v -> homeFragmentListener.onChooseEditPost(post, 0));
 
             holder.go.setOnClickListener(v -> homeFragmentListener.onGoChoose(post.getGo(), post.getPost_id()));
 
@@ -685,7 +686,7 @@ public class CustomPostRecycler extends RecyclerView {
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.post_option_delete:
-                    homeFragmentListener.onChooseDeleteStory(storyId, postId, 0);
+//                    homeFragmentListener.onChooseDeleteStory(storyId, postId, 0);
                     return true;
             }
             return false;

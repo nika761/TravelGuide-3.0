@@ -14,14 +14,12 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FullSearchResponse;
-import travelguideapp.ge.travelguide.ui.upload.tag.FriendsAdapter;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UsersHolder> {
 
     private List<FullSearchResponse.Users> users;
-    private UsersFragmentListener usersFragmentListener;
+    private final UsersFragmentListener usersFragmentListener;
 
     public UserAdapter(UsersFragmentListener usersFragmentListener) {
         this.usersFragmentListener = usersFragmentListener;
@@ -35,8 +33,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UsersHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull UsersHolder holder, int position) {
-        holder.bindView(position);
-
+        holder.onBind(position);
     }
 
     @Override
@@ -74,7 +71,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UsersHolder> {
             follow.setVisibility(View.GONE);
         }
 
-        void bindView(int position) {
+        void onBind(int position) {
             try {
                 HelperMedia.loadCirclePhoto(nickName.getContext(), users.get(position).getProfile_pic(), profileImage);
                 userName.setText(String.format("%s %s", users.get(position).getName(), users.get(position).getLastname()));

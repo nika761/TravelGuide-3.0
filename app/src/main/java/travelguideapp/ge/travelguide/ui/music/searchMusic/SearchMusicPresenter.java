@@ -16,6 +16,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 class SearchMusicPresenter {
+
     private final SearchMusicListener searchMusicListener;
     private final ApiService apiService;
 
@@ -24,9 +25,8 @@ class SearchMusicPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-
-    void getMusics(String accessToken) {
-        apiService.getMusics(accessToken).enqueue(new Callback<MusicResponse>() {
+    void getMusics() {
+        apiService.getMusics().enqueue(new Callback<MusicResponse>() {
             @Override
             public void onResponse(@NotNull Call<MusicResponse> call, @NotNull Response<MusicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -44,9 +44,8 @@ class SearchMusicPresenter {
         });
     }
 
-
-    void addFavorite(String accessToken, AddFavoriteMusic addFavoriteMusic) {
-        apiService.addFavoriteMusic(accessToken, addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
+    void addFavorite(AddFavoriteMusic addFavoriteMusic) {
+        apiService.addFavoriteMusic(addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
             @Override
             public void onResponse(@NotNull Call<AddFavoriteMusicResponse> call, @NotNull Response<AddFavoriteMusicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -64,8 +63,8 @@ class SearchMusicPresenter {
 
     }
 
-    void getMoods(String accessToken) {
-        apiService.getMoods(accessToken).enqueue(new Callback<MoodResponse>() {
+    void getMoods() {
+        apiService.getMoods().enqueue(new Callback<MoodResponse>() {
             @Override
             public void onResponse(@NotNull Call<MoodResponse> call, @NotNull Response<MoodResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -86,8 +85,8 @@ class SearchMusicPresenter {
         });
     }
 
-    void getMusicByMood(String accessToken, ByMoodRequest byMoodRequest) {
-        apiService.getMusicsByMood(accessToken, byMoodRequest).enqueue(new Callback<MusicResponse>() {
+    void getMusicByMood(ByMoodRequest byMoodRequest) {
+        apiService.getMusicsByMood(byMoodRequest).enqueue(new Callback<MusicResponse>() {
             @Override
             public void onResponse(@NotNull Call<MusicResponse> call, @NotNull Response<MusicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -108,8 +107,8 @@ class SearchMusicPresenter {
         });
     }
 
-    void searchMusic(String accessToken, SearchMusicRequest searchMusicRequest) {
-        apiService.searchMusic(accessToken, searchMusicRequest).enqueue(new Callback<MusicResponse>() {
+    void searchMusic(SearchMusicRequest searchMusicRequest) {
+        apiService.searchMusic(searchMusicRequest).enqueue(new Callback<MusicResponse>() {
             @Override
             public void onResponse(@NotNull Call<MusicResponse> call, @NotNull Response<MusicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -130,4 +129,5 @@ class SearchMusicPresenter {
             }
         });
     }
+
 }

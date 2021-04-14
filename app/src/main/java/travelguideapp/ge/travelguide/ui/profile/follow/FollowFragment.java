@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.callback.AskingDialogCallback;
 import travelguideapp.ge.travelguide.enums.FollowType;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
@@ -45,7 +43,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     private RecyclerView followRecycler;
 
     private FollowFragmentCallbacks callback;
-    private FollowType requestType;
+    private FollowType followType;
 
     private List<FollowingResponse.Followings> followingsInner;
     private List<FollowingResponse.Followings> followingsMain;
@@ -105,7 +103,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
                 try {
                     LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                     if (!isLoading && isNeedLazyLoad) {
-                        switch (requestType) {
+                        switch (followType) {
                             case FOLLOWER:
                                 if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == followersInner.size() - 1) {
                                     isLoading = true;
@@ -129,17 +127,17 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
 
     private void initData() {
         try {
-            this.requestType = (FollowType) getArguments().getSerializable("request_type");
+            this.followType = (FollowType) getArguments().getSerializable("request_type");
             this.customerUserId = getArguments().getInt("customer_user_id");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if (requestType == null) {
+        if (followType == null) {
             getActivity().finish();
         }
 
-        switch (requestType) {
+        switch (followType) {
             case FOLLOWING:
                 followingsInner = new ArrayList<>();
                 break;
@@ -151,7 +149,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
 
     private void lazyLoad() {
         try {
-            switch (requestType) {
+            switch (followType) {
                 case FOLLOWER:
                     try {
                         followersInner.add(null);
@@ -233,7 +231,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onGetFollowData(Object object) {
         try {
-            switch (requestType) {
+            switch (followType) {
                 case FOLLOWING:
                     List<FollowingResponse.Followings> followings = ((FollowingResponse) object).getFollowings();
                     if (followings.size() > 15) {
@@ -277,11 +275,10 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
             callback.onChooseUser(userId);
     }
 
-
     @Override
     public void onFollowAction(int userId, int position) {
         this.actionPosition = position;
-        DialogManager.getAskingDialog(followRecycler.getContext(), getString(R.string.unfollow) + "?", () -> presenter.startAction(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowRequest(userId)));
+        DialogManager.getAskingDialog(followRecycler.getContext(), getString(R.string.unfollow) + "?", () -> presenter.startAction(new FollowRequest(userId)));
     }
 
     @Override
@@ -311,19 +308,19 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
             if (isFirstTime) {
                 isFirstTime = false;
                 try {
-                    switch (requestType) {
+                    switch (followType) {
                         case FOLLOWER:
                             if (customerUserId > 0)
-                                presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(customerUserId));
+                                presenter.getFollowers(new FollowersRequest(customerUserId));
                             else
-                                presenter.getFollowers(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                                presenter.getFollowers(new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
                             break;
 
                         case FOLLOWING:
                             if (customerUserId > 0)
-                                presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(customerUserId));
+                                presenter.getFollowing(new FollowingRequest(customerUserId));
                             else
-                                presenter.getFollowing(GlobalPreferences.getAccessToken(followRecycler.getContext()), new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                                presenter.getFollowing(new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
                             break;
                     }
                 } catch (Exception e) {

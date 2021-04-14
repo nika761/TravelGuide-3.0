@@ -33,7 +33,7 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Po
 
     @Override
     public void onBindViewHolder(@NonNull PostLocationHolder holder, int position) {
-        holder.bindUI(position);
+        holder.onBind(position);
     }
 
     public void setPosts(List<PostResponse.Posts> posts) {
@@ -60,7 +60,7 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Po
 
         }
 
-        void bindUI(int position) {
+        void onBind(int position) {
             try {
                 postImage.getLayoutParams().width = BaseApplication.ITEM_WIDTH_FOR_POSTS;
                 HelperMedia.loadPhoto(postImage.getContext(), posts.get(position).getCover(), postImage);

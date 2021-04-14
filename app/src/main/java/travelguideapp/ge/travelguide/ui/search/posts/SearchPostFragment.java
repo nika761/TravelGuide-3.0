@@ -57,11 +57,6 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
         try {
             postRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                }
-
-                @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
@@ -73,6 +68,7 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
                             isLoading = true;
                         }
                     }
+
                 }
             });
         } catch (Exception e) {
@@ -90,7 +86,6 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
             searchPostAdapter.setPosts(this.posts);
             if (postRecycler.getAdapter() == null)
                 postRecycler.setAdapter(searchPostAdapter);
-
 //            listenOnRecycler();
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,7 +104,6 @@ public class SearchPostFragment extends Fragment implements SearchPostAdapter.Ch
     public void onStart() {
         super.onStart();
         getCachedPosts();
-
     }
 
     public void setLazyPosts(List<PostResponse.Posts> posts) {

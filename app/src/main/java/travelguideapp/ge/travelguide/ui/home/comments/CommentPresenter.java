@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.home.comments;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
 import travelguideapp.ge.travelguide.model.request.CommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
@@ -16,18 +18,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 class CommentPresenter {
-    private CommentListener commentListener;
-    private ApiService apiService;
+    private final CommentListener commentListener;
+    private final ApiService apiService;
 
     CommentPresenter(CommentListener commentListener) {
         this.commentListener = commentListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getComments(String accessToken, CommentRequest commentRequest) {
-        apiService.getStoryComments(accessToken, commentRequest).enqueue(new Callback<CommentResponse>() {
+    void getComments( CommentRequest commentRequest) {
+        apiService.getStoryComments(commentRequest).enqueue(new Callback<CommentResponse>() {
             @Override
-            public void onResponse(Call<CommentResponse> call, Response<CommentResponse> response) {
+            public void onResponse(@NotNull Call<CommentResponse> call, @NotNull Response<CommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0)
                         commentListener.onGetComments(response.body());
@@ -39,16 +41,16 @@ class CommentPresenter {
             }
 
             @Override
-            public void onFailure(Call<CommentResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<CommentResponse> call, Throwable t) {
                 commentListener.onError(t.getMessage());
             }
         });
     }
 
-    void addComment(String accessToken, AddCommentRequest addCommentRequest) {
-        apiService.addStoryComment(accessToken, addCommentRequest).enqueue(new Callback<AddCommentResponse>() {
+    void addComment( AddCommentRequest addCommentRequest) {
+        apiService.addStoryComment(addCommentRequest).enqueue(new Callback<AddCommentResponse>() {
             @Override
-            public void onResponse(Call<AddCommentResponse> call, Response<AddCommentResponse> response) {
+            public void onResponse(@NotNull Call<AddCommentResponse> call, @NotNull Response<AddCommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
                         commentListener.onAddComment(response.body());
@@ -61,16 +63,16 @@ class CommentPresenter {
             }
 
             @Override
-            public void onFailure(Call<AddCommentResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<AddCommentResponse> call, Throwable t) {
                 commentListener.onError(t.getMessage());
             }
         });
     }
 
-    void likeComment(String accessToken, LikeCommentRequest likeCommentRequest) {
-        apiService.likeStoryComment(accessToken, likeCommentRequest).enqueue(new Callback<LikeCommentResponse>() {
+    void likeComment( LikeCommentRequest likeCommentRequest) {
+        apiService.likeStoryComment(likeCommentRequest).enqueue(new Callback<LikeCommentResponse>() {
             @Override
-            public void onResponse(Call<LikeCommentResponse> call, Response<LikeCommentResponse> response) {
+            public void onResponse(@NotNull Call<LikeCommentResponse> call, @NotNull Response<LikeCommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     commentListener.onLikeSuccess(response.body());
                 } else {
@@ -79,16 +81,16 @@ class CommentPresenter {
             }
 
             @Override
-            public void onFailure(Call<LikeCommentResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<LikeCommentResponse> call, @NotNull Throwable t) {
                 commentListener.onError(t.getMessage());
             }
         });
     }
 
-    void deleteComment(String accessToken, DeleteCommentRequest deleteCommentRequest) {
-        apiService.deleteStoryComment(accessToken, deleteCommentRequest).enqueue(new Callback<DeleteCommentResponse>() {
+    void deleteComment( DeleteCommentRequest deleteCommentRequest) {
+        apiService.deleteStoryComment(deleteCommentRequest).enqueue(new Callback<DeleteCommentResponse>() {
             @Override
-            public void onResponse(Call<DeleteCommentResponse> call, Response<DeleteCommentResponse> response) {
+            public void onResponse(@NotNull Call<DeleteCommentResponse> call, @NotNull Response<DeleteCommentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0)
                         commentListener.onDeleted(response.body());
@@ -100,7 +102,7 @@ class CommentPresenter {
             }
 
             @Override
-            public void onFailure(Call<DeleteCommentResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<DeleteCommentResponse> call, @NotNull Throwable t) {
                 commentListener.onError(t.getMessage());
             }
         });

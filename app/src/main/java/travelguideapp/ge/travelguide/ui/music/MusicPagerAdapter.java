@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class MusicPagerAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<Fragment> fragments = new ArrayList<>();
-    private ArrayList<String> fragmentsTitle = new ArrayList<>();
+    private final ArrayList<Fragment> fragments = new ArrayList<>();
+    private final ArrayList<String> fragmentsTitle = new ArrayList<>();
 
     MusicPagerAdapter(@NonNull FragmentManager fm) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -28,7 +28,7 @@ public class MusicPagerAdapter extends FragmentStatePagerAdapter {
         return fragments.size();
     }
 
-    void addFragment(Fragment fragment, String title) {
+    public void addFragment(Fragment fragment, String title) {
         fragments.add(fragment);
         fragmentsTitle.add(title);
     }

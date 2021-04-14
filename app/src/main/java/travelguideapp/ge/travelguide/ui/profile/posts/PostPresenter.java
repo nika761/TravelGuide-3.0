@@ -23,15 +23,15 @@ class PostPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getPosts(String accessToken, Object request, PostHomeParams.PageType pageType) {
+    void getPosts(Object request, PostHomeParams.PageType pageType) {
         switch (pageType) {
             case CUSTOMER_POSTS:
             case MY_POSTS:
-                apiService.getPostsByUser(accessToken, ((PostByUserRequest) request)).enqueue(getCallback());
+                apiService.getPostsByUser(((PostByUserRequest) request)).enqueue(postCallback());
                 break;
 
             case FAVORITES:
-                apiService.getFavoritePosts(accessToken, ((FavoritePostRequest) request)).enqueue(getCallback());
+                apiService.getFavoritePosts(((FavoritePostRequest) request)).enqueue(postCallback());
                 break;
 
             case SEARCH:
@@ -39,7 +39,7 @@ class PostPresenter {
         }
     }
 
-    private Callback<PostResponse> getCallback() {
+    private Callback<PostResponse> postCallback() {
         return new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {

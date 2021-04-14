@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.profile.changeLanguage;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.ChangeLangRequest;
 import travelguideapp.ge.travelguide.model.response.ChangeLangResponse;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
@@ -35,10 +37,10 @@ class ChangeLangPresenter {
         });
     }
 
-    void sentChangeLanguageRequest(ChangeLangRequest changeLangRequest, String accessToken) {
-        apiService.changeLanguage(accessToken, changeLangRequest).enqueue(new Callback<ChangeLangResponse>() {
+    void sentChangeLanguageRequest(ChangeLangRequest changeLangRequest) {
+        apiService.changeLanguage(changeLangRequest).enqueue(new Callback<ChangeLangResponse>() {
             @Override
-            public void onResponse(Call<ChangeLangResponse> call, Response<ChangeLangResponse> response) {
+            public void onResponse(@NotNull Call<ChangeLangResponse> call, @NotNull Response<ChangeLangResponse> response) {
                 if (response.isSuccessful())
                     if (response.body() != null)
                         if (response.body().getStatus() == 0)
@@ -46,7 +48,7 @@ class ChangeLangPresenter {
             }
 
             @Override
-            public void onFailure(Call<ChangeLangResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<ChangeLangResponse> call, @NotNull Throwable t) {
                 iChangeLangFragment.onError();
             }
         });

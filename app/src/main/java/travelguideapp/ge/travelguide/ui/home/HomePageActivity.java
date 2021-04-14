@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
 import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
@@ -56,6 +57,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
+        BaseApplication.setAccessToken(GlobalPreferences.getAccessToken(this));
         homePagePresenter = HomePagePresenter.getInstance(this);
         getUserProfileInfo();
         initBtmNav();
@@ -126,7 +128,8 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
                 case R.id.bot_nav_home:
                     try {
                         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
-                        if (!(fragment instanceof HomeFragment)) {
+                        if (!(fragment instanceof HomeFragment) || backToProfile) {
+                            backToProfile = false;
                             PostHomeParams postDataLoad = new PostHomeParams();
                             postDataLoad.setPageType(PostHomeParams.PageType.FEED);
                             Bundle data = new Bundle();
@@ -222,7 +225,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
             e.printStackTrace();
         }
         HelperUI.loadFragment(HomeFragment.getInstance(), fragmentData, R.id.home_fragment_container, false, true, this);
-        new Handler().postDelayed(() -> bottomNavigationView.setSelectedItemId(R.id.bot_nav_home), 1500);
+//        new Handler().postDelayed(() -> bottomNavigationView.setSelectedItemId(R.id.bot_nav_home), 1500);
     }
 
     public void onProfileChoose() {

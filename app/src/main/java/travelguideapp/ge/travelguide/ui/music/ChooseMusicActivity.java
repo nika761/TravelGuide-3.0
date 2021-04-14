@@ -24,22 +24,19 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseMusicActivity extends BaseActivity implements View.OnClickListener, SearchMusicFragment.OnChooseMusic, PlayMusicListener {
+public class ChooseMusicActivity extends BaseActivity implements SearchMusicFragment.OnChooseMusic, PlayMusicListener {
 
     public static final String MUSIC_ID = "music_id";
 
-    //    private List<ItemMedia> itemMediaList = new ArrayList<>();
     private List<MediaFileParams> mediaFiles = new ArrayList<>();
     private int playingPosition, musicId;
 
     private MediaPlayer musicPlayer;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_music);
-//        this.itemMediaList = (List<ItemMedia>) getIntent().getSerializableExtra(EditPostActivity.STORIES_PATHS);
         try {
             this.mediaFiles = getIntent().getParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS);
         } catch (Exception e) {
@@ -51,10 +48,15 @@ public class ChooseMusicActivity extends BaseActivity implements View.OnClickLis
     private void initUI() {
 
         TextView nextBtn = findViewById(R.id.music_next_btn);
-        nextBtn.setOnClickListener(this);
+        nextBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(ChooseMusicActivity.this, UploadPostActivity.class);
+            intent.putParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS, (ArrayList<? extends Parcelable>) mediaFiles);
+            intent.putExtra(MUSIC_ID, musicId);
+            startActivity(intent);
+        });
 
         ImageButton backBtn = findViewById(R.id.music_back_btn);
-        backBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(v -> finish());
 
         ViewPager viewPager = findViewById(R.id.music_view_pager);
 
@@ -65,23 +67,6 @@ public class ChooseMusicActivity extends BaseActivity implements View.OnClickLis
 
         TabLayout tabLayout = findViewById(R.id.music_tab_layout);
         tabLayout.setupWithViewPager(viewPager);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.music_next_btn:
-                Intent intent = new Intent(this, UploadPostActivity.class);
-//                intent.putExtra(EditPostActivity.STORIES_PATHS, (Serializable) itemMediaList);
-                intent.putParcelableArrayListExtra(MediaFileParams.MEDIA_FILE_PARAMS, (ArrayList<? extends Parcelable>) mediaFiles);
-                intent.putExtra(MUSIC_ID, musicId);
-                startActivity(intent);
-                break;
-
-            case R.id.music_back_btn:
-                finish();
-                break;
-        }
     }
 
     @Override
@@ -106,7 +91,7 @@ public class ChooseMusicActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
-    public void onChooseMusicToPlay(String music, int position) {
+    public void onChooseMusicForPlay(String music, int position) {
         if (musicPlayer != null && musicPlayer.isPlaying()) {
             if (playingPosition == position) {
                 stopPlayer();
@@ -127,8 +112,8 @@ public class ChooseMusicActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onPause() {
-        super.onPause();
         stopPlayer();
+        super.onPause();
     }
 
     @Override

@@ -55,7 +55,7 @@ public interface HomeFragmentListener {
 
     void onReportChoose(int postId);
 
-    void onChooseDeleteStory(int storyId, int postId, int position);
+    void onChooseEditPost(PostResponse.Posts post, int position);
 
     void onStoryDeleted(DeleteStoryResponse deleteStoryResponse);
 

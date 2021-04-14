@@ -25,19 +25,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private FollowType requestType;
     private final FollowFragmentListener listener;
+    private FollowType pageType;
 
-    private boolean isCustomer;
-
-    private List<FollowerResponse.Followers> followers;
     private List<FollowingResponse.Followings> followings;
-
-    private List<Object> list;
+    private List<FollowerResponse.Followers> followers;
 
     private final int VIEW_TYPE_FOLLOWER = 0;
     private final int VIEW_TYPE_FOLLOWING = 1;
     private final int VIEW_TYPE_LOADING = 2;
+    private boolean isCustomer;
 
     FollowRecyclerAdapter(FollowFragmentListener listener) {
         this.listener = listener;
@@ -62,17 +59,17 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FollowerHolder) {
-            ((FollowRecyclerAdapter.FollowerHolder) holder).bindUI(position);
+            ((FollowRecyclerAdapter.FollowerHolder) holder).onBind(position);
         } else if (holder instanceof FollowingHolder) {
-            ((FollowRecyclerAdapter.FollowingHolder) holder).bindUI(position);
+            ((FollowRecyclerAdapter.FollowingHolder) holder).onBind(position);
         } else {
-            ((FollowRecyclerAdapter.LazyLoaderHolder) holder).bindUI();
+            ((FollowRecyclerAdapter.LazyLoaderHolder) holder).onBind();
         }
     }
 
     @Override
     public int getItemCount() {
-        if (requestType == FollowType.FOLLOWING)
+        if (pageType == FollowType.FOLLOWING)
             return followings.size();
         else
             return followers.size();
@@ -81,13 +78,14 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        switch (requestType) {
+        switch (pageType) {
             case FOLLOWER:
                 if (followers.get(position) == null) {
                     return VIEW_TYPE_LOADING;
                 } else {
                     return VIEW_TYPE_FOLLOWER;
                 }
+
             case FOLLOWING:
                 if (followings.get(position) == null) {
                     return VIEW_TYPE_LOADING;
@@ -100,31 +98,37 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     void setFollowers(List<FollowerResponse.Followers> followers) {
         this.followers = followers;
-        this.requestType = FollowType.FOLLOWER;
+        this.pageType = FollowType.FOLLOWER;
         notifyDataSetChanged();
     }
 
     void setFollowings(List<FollowingResponse.Followings> followings) {
         this.followings = followings;
-        this.requestType = FollowType.FOLLOWING;
+        this.pageType = FollowType.FOLLOWING;
         notifyDataSetChanged();
     }
 
     public void setIsCustomer(boolean customer) {
-        isCustomer = customer;
+        this.isCustomer = customer;
     }
 
     void followed(int position) {
-        if (requestType == FollowType.FOLLOWER) {
-            followers.get(position).setIs_following(1);
-            notifyItemChanged(position);
+        switch (pageType) {
+            case FOLLOWING:
+                return;
+
+            case FOLLOWER:
+                followers.get(position).setIs_following(1);
+                notifyItemChanged(position);
+                break;
         }
     }
 
     void unFollowed(int position) {
-        switch (requestType) {
+        switch (pageType) {
             case FOLLOWING:
                 followings.remove(position);
+//                notifyItemRemoved(position);
                 notifyDataSetChanged();
                 break;
 
@@ -164,7 +168,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         }
 
-        void bindUI(int position) {
+        void onBind(int position) {
             try {
                 if (position == followers.size() - 1) {
 
@@ -221,7 +225,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
 
-        void bindUI(int position) {
+        void onBind(int position) {
             try {
 //                itemView.startAnimation(animation);
                 if (followings.get(position).getUser_id() == GlobalPreferences.getUserId(userImage.getContext()))
@@ -246,7 +250,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             animation = itemView.findViewById(R.id.item_lazy_loader);
         }
 
-        void bindUI() {
+        void onBind() {
             animation.setVisibility(View.VISIBLE);
         }
 

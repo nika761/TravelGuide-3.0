@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.music.favoriteMusic;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.AddFavoriteMusic;
 import travelguideapp.ge.travelguide.model.response.AddFavoriteMusicResponse;
 import travelguideapp.ge.travelguide.model.response.FavoriteMusicResponse;
@@ -11,18 +13,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 class FavoriteMusicPresenter {
-    private FavoriteMusicListener favoriteMusicListener;
-    private ApiService apiService;
+    private final FavoriteMusicListener favoriteMusicListener;
+    private final ApiService apiService;
 
     FavoriteMusicPresenter(FavoriteMusicListener favoriteMusicListener) {
         this.favoriteMusicListener = favoriteMusicListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getFavoriteMusics(String accessToken) {
-        apiService.getFavoriteMusics(accessToken).enqueue(new Callback<FavoriteMusicResponse>() {
+    void getFavoriteMusics() {
+        apiService.getFavoriteMusics().enqueue(new Callback<FavoriteMusicResponse>() {
             @Override
-            public void onResponse(Call<FavoriteMusicResponse> call, Response<FavoriteMusicResponse> response) {
+            public void onResponse(@NotNull Call<FavoriteMusicResponse> call, @NotNull Response<FavoriteMusicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0) {
                         if (response.body().getFavotite_musics().size() > 0)
@@ -36,16 +38,16 @@ class FavoriteMusicPresenter {
             }
 
             @Override
-            public void onFailure(Call<FavoriteMusicResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<FavoriteMusicResponse> call, @NotNull Throwable t) {
                 favoriteMusicListener.onError(t.getMessage());
             }
         });
     }
 
-    void removeFavorite(String accessToken, AddFavoriteMusic addFavoriteMusic) {
-        apiService.addFavoriteMusic(accessToken, addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
+    void removeFavorite(AddFavoriteMusic addFavoriteMusic) {
+        apiService.addFavoriteMusic(addFavoriteMusic).enqueue(new Callback<AddFavoriteMusicResponse>() {
             @Override
-            public void onResponse(Call<AddFavoriteMusicResponse> call, Response<AddFavoriteMusicResponse> response) {
+            public void onResponse(@NotNull Call<AddFavoriteMusicResponse> call, @NotNull Response<AddFavoriteMusicResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     favoriteMusicListener.onFavoriteRemoved(response.body());
                 } else {
@@ -54,7 +56,7 @@ class FavoriteMusicPresenter {
             }
 
             @Override
-            public void onFailure(Call<AddFavoriteMusicResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<AddFavoriteMusicResponse> call, @NotNull Throwable t) {
                 favoriteMusicListener.onError(t.getMessage());
             }
         });

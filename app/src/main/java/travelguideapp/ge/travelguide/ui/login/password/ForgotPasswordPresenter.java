@@ -38,8 +38,8 @@ class ForgotPasswordPresenter {
         });
     }
 
-    void changePassword(String accessToken, ChangePasswordRequest changePasswordRequest) {
-        apiService.changePassword(accessToken, changePasswordRequest).enqueue(new Callback<ChangePasswordResponse>() {
+    void changePassword( ChangePasswordRequest changePasswordRequest) {
+        apiService.changePassword(changePasswordRequest).enqueue(new Callback<ChangePasswordResponse>() {
             @Override
             public void onResponse(Call<ChangePasswordResponse> call, Response<ChangePasswordResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

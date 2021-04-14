@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.upload.tag;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.SearchFollowersRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
@@ -13,18 +15,18 @@ import retrofit2.Response;
 
 class TagPostPresenter {
 
-    private TagPostListener tagPostListener;
-    private ApiService apiService;
+    private final TagPostListener tagPostListener;
+    private final ApiService apiService;
 
     TagPostPresenter(TagPostListener tagPostListener) {
         this.tagPostListener = tagPostListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getHashtags(String accessToken, SearchHashtagRequest hashtagRequest) {
-        apiService.getHashtags(accessToken, hashtagRequest).enqueue(new Callback<HashtagResponse>() {
+    void getHashtags(SearchHashtagRequest hashtagRequest) {
+        apiService.getHashtags(hashtagRequest).enqueue(new Callback<HashtagResponse>() {
             @Override
-            public void onResponse(Call<HashtagResponse> call, Response<HashtagResponse> response) {
+            public void onResponse(@NotNull Call<HashtagResponse> call, @NotNull Response<HashtagResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
@@ -41,16 +43,16 @@ class TagPostPresenter {
             }
 
             @Override
-            public void onFailure(Call<HashtagResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<HashtagResponse> call, @NotNull Throwable t) {
                 tagPostListener.onGetError(t.getMessage());
             }
         });
     }
 
-    void searchFollowers(String accessToken, SearchFollowersRequest searchFollowersRequest) {
-        apiService.searchFollowers(accessToken, searchFollowersRequest).enqueue(new Callback<FollowerResponse>() {
+    void searchFollowers(SearchFollowersRequest searchFollowersRequest) {
+        apiService.searchFollowers(searchFollowersRequest).enqueue(new Callback<FollowerResponse>() {
             @Override
-            public void onResponse(Call<FollowerResponse> call, Response<FollowerResponse> response) {
+            public void onResponse(@NotNull Call<FollowerResponse> call, @NotNull Response<FollowerResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     switch (response.body().getStatus()) {
                         case 0:
@@ -66,7 +68,7 @@ class TagPostPresenter {
             }
 
             @Override
-            public void onFailure(Call<FollowerResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<FollowerResponse> call, @NotNull Throwable t) {
                 tagPostListener.onGetError(t.getMessage());
 
             }

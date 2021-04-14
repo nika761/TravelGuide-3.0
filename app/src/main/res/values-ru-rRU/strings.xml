@@ -114,4 +114,5 @@
     <string name="describe_post">Описание</string>
     <string name="go_tab">GO !</string>
     <string name="default_error_message">Ошибка, попробуйте еще раз</string>
+    <string name="share">поделиться</string>
 </resources>

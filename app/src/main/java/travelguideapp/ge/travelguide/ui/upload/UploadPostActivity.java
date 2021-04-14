@@ -222,8 +222,9 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
         try {
             if (mediaFiles.get(0).getMediaType() == MediaFileParams.MediaType.PHOTO) {
 //                List<ItemMedia> convertedImages = HelperMedia.convertImagesToPng(itemMedia);
-                List<MediaFileParams> convertedImages = HelperMedia.convertMediaToPng(mediaFiles);
-                fileForUpload = new File(convertedImages.get(0).getMediaPath());
+//                List<MediaFileParams> convertedImages = HelperMedia.convertMediaToPng(mediaFiles);
+//                fileForUpload = new File(convertedImages.get(0).getMediaPath());
+                fileForUpload = new File(mediaFiles.get(0).getMediaPath());
             } else {
                 fileForUpload = new File(mediaFiles.get(0).getMediaPath());
 //            try {
@@ -405,7 +406,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
             UploadPostRequest uploadPostRequestModel = new UploadPostRequest(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
 
-            uploadPostPresenter.uploadStory(GlobalPreferences.getAccessToken(this), uploadPostRequestModel);
+            uploadPostPresenter.uploadStory( uploadPostRequestModel);
 
         } catch (Exception e) {
             e.printStackTrace();

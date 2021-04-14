@@ -24,9 +24,9 @@ public class UploadPostPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void uploadStory(String accessToken, UploadPostRequest uploadPostRequest) {
+    void uploadStory(UploadPostRequest uploadPostRequest) {
         String unc = "application/x-www-form-urlencoded";
-        apiService.uploadPost(accessToken, unc, uploadPostRequest).enqueue(new Callback<UploadPostResponse>() {
+        apiService.uploadPost(unc, uploadPostRequest).enqueue(new Callback<UploadPostResponse>() {
             @Override
             public void onResponse(@NotNull Call<UploadPostResponse> call, @NotNull Response<UploadPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

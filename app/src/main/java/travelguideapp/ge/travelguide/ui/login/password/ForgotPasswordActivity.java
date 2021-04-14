@@ -162,7 +162,7 @@ public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswo
     @Override
     public void onPasswordChoose(ChangePasswordRequest changePasswordRequest) {
         loadingVisibility(true);
-        presenter.changePassword(GlobalPreferences.getAccessToken(this), changePasswordRequest);
+        presenter.changePassword( changePasswordRequest);
     }
 
 }

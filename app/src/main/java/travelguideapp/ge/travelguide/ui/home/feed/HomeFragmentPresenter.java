@@ -1,9 +1,9 @@
 package travelguideapp.ge.travelguide.ui.home.feed;
 
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 
+import travelguideapp.ge.travelguide.base.ErrorHandler;
+import travelguideapp.ge.travelguide.model.request.AboutRequest;
 import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
@@ -14,6 +14,7 @@ import travelguideapp.ge.travelguide.model.request.SetPostFavoriteRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostViewRequest;
 import travelguideapp.ge.travelguide.model.request.SetStoryLikeRequest;
 import travelguideapp.ge.travelguide.model.request.SharePostRequest;
+import travelguideapp.ge.travelguide.model.response.AboutResponse;
 import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
 import travelguideapp.ge.travelguide.model.response.FollowResponse;
 import travelguideapp.ge.travelguide.model.response.SetPostFavoriteResponse;
@@ -69,8 +70,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void getUserPosts(String accessToken, PostByUserRequest postByUserRequest) {
-        apiService.getPostsByUser(accessToken, postByUserRequest).enqueue(new Callback<PostResponse>() {
+    void getUserPosts(PostByUserRequest postByUserRequest) {
+        apiService.getPostsByUser(postByUserRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful()) {
@@ -92,8 +93,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void getFavoritePosts(String accessToken, FavoritePostRequest favoritePostRequest) {
-        apiService.getFavoritePosts(accessToken, favoritePostRequest).enqueue(new Callback<PostResponse>() {
+    void getFavoritePosts(FavoritePostRequest favoritePostRequest) {
+        apiService.getFavoritePosts(favoritePostRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -114,8 +115,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void getPostsByLocation(String accessToken, PostByLocationRequest postByLocationRequest) {
-        apiService.getPostsByLocation(accessToken, postByLocationRequest).enqueue(new Callback<PostResponse>() {
+    void getPostsByLocation(PostByLocationRequest postByLocationRequest) {
+        apiService.getPostsByLocation(postByLocationRequest).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful()) {
@@ -138,8 +139,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void setStoryLike(String accessToken, SetStoryLikeRequest setStoryLikeRequest) {
-        apiService.setStoryLike(accessToken, setStoryLikeRequest).enqueue(new Callback<SetStoryLikeResponse>() {
+    void setStoryLike(SetStoryLikeRequest setStoryLikeRequest) {
+        apiService.setStoryLike(setStoryLikeRequest).enqueue(new Callback<SetStoryLikeResponse>() {
             @Override
             public void onResponse(@NotNull Call<SetStoryLikeResponse> call, @NotNull Response<SetStoryLikeResponse> response) {
                 if (response.isSuccessful()) {
@@ -169,8 +170,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void setPostFavorite(String accessToken, SetPostFavoriteRequest setPostFavoriteRequest) {
-        apiService.setPostFavorite(accessToken, setPostFavoriteRequest).enqueue(new Callback<SetPostFavoriteResponse>() {
+    void setPostFavorite(SetPostFavoriteRequest setPostFavoriteRequest) {
+        apiService.setPostFavorite(setPostFavoriteRequest).enqueue(new Callback<SetPostFavoriteResponse>() {
             @Override
             public void onResponse(@NotNull Call<SetPostFavoriteResponse> call, @NotNull Response<SetPostFavoriteResponse> response) {
                 if (response.isSuccessful()) {
@@ -199,8 +200,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void setPostShare(String accessToken, SharePostRequest sharePostRequest) {
-        apiService.setPostShare(accessToken, sharePostRequest).enqueue(new Callback<SharePostResponse>() {
+    void setPostShare(SharePostRequest sharePostRequest) {
+        apiService.setPostShare(sharePostRequest).enqueue(new Callback<SharePostResponse>() {
             @Override
             public void onResponse(@NotNull Call<SharePostResponse> call, @NotNull Response<SharePostResponse> response) {
                 if (response.isSuccessful()) {
@@ -230,24 +231,22 @@ public class HomeFragmentPresenter {
         });
     }
 
-    public void follow(String accessToken, FollowRequest followRequest) {
-        apiService.follow(accessToken, followRequest).enqueue(new Callback<FollowResponse>() {
+    public void follow(FollowRequest followRequest) {
+        apiService.follow(followRequest).enqueue(new Callback<FollowResponse>() {
             @Override
             public void onResponse(@NotNull Call<FollowResponse> call, @NotNull Response<FollowResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        try {
-                            switch (response.body().getStatus()) {
-                                case 0:
-                                    homeFragmentCallback.onFollowAdded();
-                                case 1:
-                                    homeFragmentCallback.onFollowRemoved();
-                                    break;
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        switch (response.body().getStatus()) {
+                            case 0:
+                                homeFragmentCallback.onFollowAdded();
+                            case 1:
+                                homeFragmentCallback.onFollowRemoved();
+                                break;
 
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } else {
                     homeFragmentCallback.onError(response.message());
@@ -262,8 +261,8 @@ public class HomeFragmentPresenter {
 
     }
 
-    void deleteStory(String accessToken, DeleteStoryRequest deleteStoryRequest) {
-        apiService.deleteStory(accessToken, deleteStoryRequest).enqueue(new Callback<DeleteStoryResponse>() {
+    void deleteStory(DeleteStoryRequest deleteStoryRequest) {
+        apiService.deleteStory(deleteStoryRequest).enqueue(new Callback<DeleteStoryResponse>() {
             @Override
             public void onResponse(@NotNull Call<DeleteStoryResponse> call, @NotNull Response<DeleteStoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -282,8 +281,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void setPostViews(String accessToken, SetPostViewRequest setPostViewRequest) {
-        apiService.setPostView(accessToken, setPostViewRequest).enqueue(new Callback<SetPostViewResponse>() {
+    void setPostViews(SetPostViewRequest setPostViewRequest) {
+        apiService.setPostView(setPostViewRequest).enqueue(new Callback<SetPostViewResponse>() {
             @Override
             public void onResponse(@NotNull Call<SetPostViewResponse> call, @NotNull Response<SetPostViewResponse> response) {
 //                if (response.isSuccessful()) {
@@ -301,8 +300,8 @@ public class HomeFragmentPresenter {
         });
     }
 
-    void goChoosed(String accessToken, ChooseGoRequest chooseGoRequest) {
-        apiService.chooseGo(accessToken, chooseGoRequest).enqueue(new Callback<Object>() {
+    void goChoosed(ChooseGoRequest chooseGoRequest) {
+        apiService.chooseGo(chooseGoRequest).enqueue(new Callback<Object>() {
             @Override
             public void onResponse(@NotNull Call<Object> call, @NotNull Response<Object> response) {
 //                if (response.isSuccessful()) {

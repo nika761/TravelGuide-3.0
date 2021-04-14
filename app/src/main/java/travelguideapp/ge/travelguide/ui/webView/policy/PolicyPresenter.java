@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.webView.policy;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.response.TermsPolicyResponse;
 import travelguideapp.ge.travelguide.model.request.TermsPolicyRequest;
 import travelguideapp.ge.travelguide.network.ApiService;
@@ -10,8 +12,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 class PolicyPresenter {
-    private PolicyListener iPolicyFragment;
-    private ApiService apiService;
+    private final PolicyListener iPolicyFragment;
+    private final ApiService apiService;
 
     PolicyPresenter(PolicyListener iPolicyFragment) {
         this.iPolicyFragment = iPolicyFragment;
@@ -21,7 +23,7 @@ class PolicyPresenter {
     void sendPolicyResponse(TermsPolicyRequest termsPolicyRequest) {
         apiService.getTerms(termsPolicyRequest).enqueue(new Callback<TermsPolicyResponse>() {
             @Override
-            public void onResponse(Call<TermsPolicyResponse> call, Response<TermsPolicyResponse> response) {
+            public void onResponse(@NotNull Call<TermsPolicyResponse> call, @NotNull Response<TermsPolicyResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus() == 0)
                         iPolicyFragment.onGetPolicy(response.body().getPolicy());
@@ -31,7 +33,7 @@ class PolicyPresenter {
             }
 
             @Override
-            public void onFailure(Call<TermsPolicyResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<TermsPolicyResponse> call, @NotNull Throwable t) {
                 iPolicyFragment.onGetError(t.getMessage());
             }
         });

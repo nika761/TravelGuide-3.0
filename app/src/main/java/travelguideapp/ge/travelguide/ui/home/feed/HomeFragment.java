@@ -2,6 +2,8 @@ package travelguideapp.ge.travelguide.ui.home.feed;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
@@ -65,8 +70,7 @@ import static travelguideapp.ge.travelguide.ui.home.comments.CommentFragment.Com
 public class HomeFragment extends Fragment implements HomeFragmentListener, CommentFragment.LoadCommentFragmentListener {
 
     public static HomeFragment getInstance() {
-        HomeFragment homeFragment = new HomeFragment();
-        return homeFragment;
+        return new HomeFragment();
     }
 
     private HomeFragmentPresenter presenter;
@@ -82,7 +86,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private int customerUserId;
 
-    private PostHomeParams.PageType loadPageType;
+    private PostHomeParams.PageType pageType;
     private CustomPostRecycler customPostRecycler;
     private CustomPostAdapter customPostAdapter;
 
@@ -119,12 +123,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         pagerSnapHelper.attachToRecyclerView(customPostRecycler);
 
         return view;
+
     }
 
-    private void setSystemBarTheme(final Activity activity, final boolean pIsDark) {
+    private void setSystemBarTheme(final Activity activity, final boolean dark) {
         try {
             final int lFlags = activity.getWindow().getDecorView().getSystemUiVisibility();
-            activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
+            activity.getWindow().getDecorView().setSystemUiVisibility(dark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,20 +140,20 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
             try {
-                PostHomeParams postDataLoad = getArguments().getParcelable(PostHomeParams.POST_HOME_PARAMS);
-                this.loadPageType = postDataLoad.getPageType();
-                switch (loadPageType) {
+                PostHomeParams postHomeParams = getArguments().getParcelable(PostHomeParams.POST_HOME_PARAMS);
+                this.pageType = postHomeParams.getPageType();
+                switch (pageType) {
                     case FAVORITES:
 
                     case SEARCH:
 
                     case MY_POSTS:
-                        initRecyclerView(postDataLoad.getPosts(), true, postDataLoad.getScrollPosition());
+                        initRecyclerView(postHomeParams.getPosts(), true, postHomeParams.getScrollPosition());
                         break;
 
                     case CUSTOMER_POSTS:
-                        this.customerUserId = postDataLoad.getUserId();
-                        initRecyclerView(postDataLoad.getPosts(), true, postDataLoad.getScrollPosition());
+                        this.customerUserId = postHomeParams.getUserId();
+                        initRecyclerView(postHomeParams.getPosts(), true, postHomeParams.getScrollPosition());
                         break;
 
                     case FEED:
@@ -183,7 +188,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         } else {
             new Handler().postDelayed(() -> customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1)), 50);
         }
-
 
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 //        postRecycler.setLayoutManager(layoutManager);
@@ -295,7 +299,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void onFollowChoose(int userId) {
-        presenter.follow(GlobalPreferences.getAccessToken(postRecycler.getContext()), new FollowRequest(userId));
+        presenter.follow(new FollowRequest(userId));
     }
 
     @Override
@@ -310,7 +314,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void onFavoriteChoose(int post_id) {
-        presenter.setPostFavorite(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetPostFavoriteRequest(post_id));
+        presenter.setPostFavorite(new SetPostFavoriteRequest(post_id));
     }
 
     @Override
@@ -326,7 +330,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onGoChoose(String url, int post_id) {
         try {
-            presenter.goChoosed(GlobalPreferences.getAccessToken(postRecycler.getContext()), new ChooseGoRequest(post_id));
+            presenter.goChoosed(new ChooseGoRequest(post_id));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -336,7 +340,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onShareChoose(String postLink, int post_id) {
         try {
-            presenter.setPostShare(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SharePostRequest(post_id));
+            presenter.setPostShare(new SharePostRequest(post_id));
             ((HomeParentActivity) postRecycler.getContext()).shareContent(postLink);
         } catch (Exception e) {
             e.printStackTrace();
@@ -351,7 +355,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void onStoryLikeChoose(int postId, int storyId) {
-        presenter.setStoryLike(GlobalPreferences.getAccessToken(postRecycler.getContext()), new SetStoryLikeRequest(storyId, postId));
+        presenter.setStoryLike(new SetStoryLikeRequest(storyId, postId));
     }
 
     @Override
@@ -409,8 +413,23 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     }
 
     @Override
-    public void onChooseDeleteStory(int storyId, int postId, int position) {
-        DialogManager.getAskingDialog(postRecycler.getContext(), getString(R.string.delete_story), () -> presenter.deleteStory(GlobalPreferences.getAccessToken(postRecycler.getContext()), new DeleteStoryRequest(postId, storyId)));
+    public void onChooseEditPost(PostResponse.Posts post, int position) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(postRecycler.getContext());
+        View bottomSheetLayout = View.inflate(postRecycler.getContext(), R.layout.dialog_post_edit, null);
+
+        LinearLayout delete = bottomSheetLayout.findViewById(R.id.post_edit_delete);
+        delete.setOnClickListener(v -> DialogManager.getAskingDialog(postRecycler.getContext(), getString(R.string.delete_story), () -> presenter.deleteStory(new DeleteStoryRequest(post.getPost_id(), post.getPost_stories().get(0).getStory_id()))));
+
+        LinearLayout share = bottomSheetLayout.findViewById(R.id.post_edit_share);
+        share.setOnClickListener(v -> onShareChoose(post.getPost_share_url(), post.getPost_id()));
+
+        bottomSheetDialog.setContentView(bottomSheetLayout);
+//        try {
+//            bottomSheetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        bottomSheetDialog.show();
     }
 
     @Override
@@ -427,20 +446,18 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onLazyLoad(int fromPostId) {
 
-        String accessToken = GlobalPreferences.getAccessToken(postRecycler.getContext());
-
-        switch (loadPageType) {
+        switch (pageType) {
 
             case FAVORITES:
-                presenter.getFavoritePosts(accessToken, new FavoritePostRequest(fromPostId));
+                presenter.getFavoritePosts(new FavoritePostRequest(fromPostId));
                 break;
 
             case MY_POSTS:
-                presenter.getUserPosts(accessToken, new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
+                presenter.getUserPosts(new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
                 break;
 
             case CUSTOMER_POSTS:
-                presenter.getUserPosts(accessToken, new PostByUserRequest(customerUserId, fromPostId));
+                presenter.getUserPosts(new PostByUserRequest(customerUserId, fromPostId));
                 break;
 
             case FEED:
@@ -448,7 +465,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                 break;
 
             case SEARCH:
-                presenter.getPostsByLocation(accessToken, new PostByLocationRequest(fromPostId));
+                presenter.getPostsByLocation(new PostByLocationRequest(fromPostId));
                 break;
         }
     }
@@ -456,30 +473,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("VideoPlayerRecyclerView", "onResume");
         try {
             customPostRecycler.feedLive = true;
             customPostRecycler.startPlayer();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e("VideoPlayerRecyclerView", "onStart");
-    }
-
-    @Override
-    public void onPause() {
-//        try {
-//            customPostRecycler.pausePlayer();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        super.onPause();
-        Log.e("VideoPlayerRecyclerView", "onPause");
     }
 
     @Override
@@ -491,19 +490,19 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.e("VideoPlayerRecyclerView", "onStop");
     }
 
     @Override
     public void onDestroy() {
-        Log.e("VideoPlayerRecyclerView", "onDestroy");
-        try {
-            List<PostView> views = CustomTimer.getPostViews();
-            if (views.size() != 0)
-                presenter.setPostViews(GlobalPreferences.getAccessToken(getContext()), new SetPostViewRequest(views));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                List<PostView> views = CustomTimer.getPostViews();
+                if (views.size() != 0)
+                    presenter.setPostViews(new SetPostViewRequest(views));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         if (customPostRecycler != null)
             customPostRecycler.releasePlayer();

@@ -75,7 +75,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
 
     @Override
     public void onChooseRemoveFavorite(int musicId) {
-        favoriteMusicPresenter.removeFavorite(GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()), new AddFavoriteMusic(musicId));
+        favoriteMusicPresenter.removeFavorite(new AddFavoriteMusic(musicId));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     public void onResume() {
         super.onResume();
         if (favoriteMusicPresenter != null)
-            favoriteMusicPresenter.getFavoriteMusics(GlobalPreferences.getAccessToken(favoriteMusicRecycler.getContext()));
+            favoriteMusicPresenter.getFavoriteMusics();
     }
 
     @Override

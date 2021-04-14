@@ -138,13 +138,13 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
             sentBtn.setOnClickListener(v -> {
                 switch (reportParams.getReportType()) {
                     case USER:
-                        homeParentPresenter.setReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetUserReportRequest(reportParams.getUserId(), reportsId), ReportParams.Type.USER);
+                        homeParentPresenter.setReport(new SetUserReportRequest(reportParams.getUserId(), reportsId), ReportParams.Type.USER);
                         break;
                     case POST:
-                        homeParentPresenter.setReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetPostReportRequest(reportParams.getPostId(), reportsId), ReportParams.Type.POST);
+                        homeParentPresenter.setReport(new SetPostReportRequest(reportParams.getPostId(), reportsId), ReportParams.Type.POST);
                         break;
                     case COMMENT:
-                        homeParentPresenter.setReport(GlobalPreferences.getAccessToken(HomeParentActivity.this), new SetCommentReportRequest(reportParams.getCommentId(), reportsId), ReportParams.Type.COMMENT);
+                        homeParentPresenter.setReport(new SetCommentReportRequest(reportParams.getCommentId(), reportsId), ReportParams.Type.COMMENT);
                         break;
                 }
                 bottomSheetDialog.dismiss();

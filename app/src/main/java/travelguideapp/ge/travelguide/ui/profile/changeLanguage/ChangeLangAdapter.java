@@ -17,10 +17,10 @@ import java.util.List;
 
 public class ChangeLangAdapter extends RecyclerView.Adapter<ChangeLangAdapter.ChangeLanguageViewHolder> {
 
-    private Context context;
-    private ChangeLangListener iChangeLangFragment;
+    private final Context context;
+    private final ChangeLangListener iChangeLangFragment;
     private List<LanguagesResponse.Language> languages;
-    private int currentLanguageId;
+    private final int currentLanguageId;
     private int currentLanguagePosition;
 
     ChangeLangAdapter(Context context, ChangeLangListener iChangeLangFragment) {

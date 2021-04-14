@@ -29,7 +29,7 @@ class ProfileEditPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getProfile(String accessToken, ProfileRequest profileRequest) {
+    void getProfile(ProfileRequest profileRequest) {
         apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
@@ -50,8 +50,8 @@ class ProfileEditPresenter {
         });
     }
 
-    void updateProfile(String accessToken, UpdateProfileRequest updateProfileRequest) {
-        apiService.updateProfile(accessToken, updateProfileRequest).enqueue(new Callback<UpdateProfileResponse>() {
+    void updateProfile(UpdateProfileRequest updateProfileRequest) {
+        apiService.updateProfile(updateProfileRequest).enqueue(new Callback<UpdateProfileResponse>() {
             @Override
             public void onResponse(@NotNull Call<UpdateProfileResponse> call, @NotNull Response<UpdateProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

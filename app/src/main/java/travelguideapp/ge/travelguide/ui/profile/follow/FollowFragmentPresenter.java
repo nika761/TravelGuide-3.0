@@ -25,8 +25,8 @@ class FollowFragmentPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getFollowing(String accessToken, FollowingRequest followingRequest) {
-        apiService.getFollowing(accessToken, followingRequest).enqueue(new Callback<FollowingResponse>() {
+    void getFollowing(FollowingRequest followingRequest) {
+        apiService.getFollowing(followingRequest).enqueue(new Callback<FollowingResponse>() {
             @Override
             public void onResponse(@NotNull Call<FollowingResponse> call, @NotNull Response<FollowingResponse> response) {
                 if (response.isSuccessful()) {
@@ -51,8 +51,8 @@ class FollowFragmentPresenter {
 
     }
 
-    void getFollowers(String accessToken, FollowersRequest followersRequest) {
-        apiService.getFollowers(accessToken, followersRequest).enqueue(new Callback<FollowerResponse>() {
+    void getFollowers(FollowersRequest followersRequest) {
+        apiService.getFollowers(followersRequest).enqueue(new Callback<FollowerResponse>() {
             @Override
             public void onResponse(@NotNull Call<FollowerResponse> call, @NotNull Response<FollowerResponse> response) {
                 if (response.isSuccessful()) {
@@ -76,8 +76,8 @@ class FollowFragmentPresenter {
 
     }
 
-    void startAction(String accessToken, FollowRequest followRequest) {
-        apiService.follow(accessToken, followRequest).enqueue(new Callback<FollowResponse>() {
+    void startAction(FollowRequest followRequest) {
+        apiService.follow(followRequest).enqueue(new Callback<FollowResponse>() {
             @Override
             public void onResponse(@NotNull Call<FollowResponse> call, @NotNull Response<FollowResponse> response) {
                 if (response.isSuccessful() && response.body() != null)

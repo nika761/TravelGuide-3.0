@@ -46,7 +46,7 @@ public class RetrofitManager {
                     .addInterceptor(interceptor)
                     .addNetworkInterceptor(chain -> {
                         final Request request = chain.request().newBuilder()
-//                        .addHeader("Accept", "application/json")
+                                .addHeader("Accept", "application/json")
                                 .addHeader("Authorization", BaseApplication.getAccessToken())
                                 .build();
                         return chain.proceed(request);
@@ -67,6 +67,7 @@ public class RetrofitManager {
 
         return retrofit;
     }
+
 
     public static ApiService getApiService() {
         return getRetrofit().create(ApiService.class);

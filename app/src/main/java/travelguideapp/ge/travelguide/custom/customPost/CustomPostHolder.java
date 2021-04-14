@@ -274,7 +274,7 @@ public class CustomPostHolder extends RecyclerView.ViewHolder {
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.post_option_delete:
-                    listener.onChooseDeleteStory(post.getPost_stories().get(0).getStory_id(), post.getPost_id(), getLayoutPosition());
+//                    listener.onChooseDeleteStory(post.getPost_stories().get(0).getStory_id(), post.getPost_id(), getLayoutPosition());
                     return true;
             }
             return false;

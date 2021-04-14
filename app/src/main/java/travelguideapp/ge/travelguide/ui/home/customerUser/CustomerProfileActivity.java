@@ -67,7 +67,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
         initUI();
 
         if (customerUserId != 0)
-            customerProfilePresenter.getProfile(GlobalPreferences.getAccessToken(this), new ProfileRequest(customerUserId));
+            customerProfilePresenter.getProfile(new ProfileRequest(customerUserId));
         else
             onBackPressed();
 
@@ -202,7 +202,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
                 followBtn.setText(getResources().getString(R.string.following));
                 isFollowing = true;
             }
-            customerProfilePresenter.follow(GlobalPreferences.getAccessToken(CustomerProfileActivity.this), new FollowRequest(customerUserId));
+            customerProfilePresenter.follow(new FollowRequest(customerUserId));
         } catch (Exception e) {
             e.printStackTrace();
         }

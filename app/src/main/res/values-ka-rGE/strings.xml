@@ -114,4 +114,5 @@
     <string name="tag_friends">მეგობრების მონიშვნა</string>
     <string name="go_tab">GO !</string>
     <string name="default_error_message">შეცდომაა, კიდევ სცადეთ</string>
+    <string name="share">გაზიარება</string>
 </resources>

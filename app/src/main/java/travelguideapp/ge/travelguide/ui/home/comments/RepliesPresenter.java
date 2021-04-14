@@ -25,8 +25,8 @@ class RepliesPresenter {
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getReplies(String accessToken, GetMoreCommentRequest getMoreCommentRequest) {
-        apiService.getMoreCommentReplies(accessToken, getMoreCommentRequest).enqueue(new Callback<MoreReplyResponse>() {
+    void getReplies(GetMoreCommentRequest getMoreCommentRequest) {
+        apiService.getMoreCommentReplies( getMoreCommentRequest).enqueue(new Callback<MoreReplyResponse>() {
             @Override
             public void onResponse(Call<MoreReplyResponse> call, Response<MoreReplyResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -43,8 +43,8 @@ class RepliesPresenter {
         });
     }
 
-    void addCommentReply(String accessToken, AddCommentReplyRequest addCommentReplyRequest) {
-        apiService.addStoryCommentReply(accessToken, addCommentReplyRequest).enqueue(new Callback<AddCommentReplyResponse>() {
+    void addCommentReply(AddCommentReplyRequest addCommentReplyRequest) {
+        apiService.addStoryCommentReply( addCommentReplyRequest).enqueue(new Callback<AddCommentReplyResponse>() {
             @Override
             public void onResponse(Call<AddCommentReplyResponse> call, Response<AddCommentReplyResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -65,8 +65,8 @@ class RepliesPresenter {
         });
     }
 
-    void addCommentReplyLike(String accessToken, LikeCommentReplyRequest likeCommentReplyRequest) {
-        apiService.likeCommentReply(accessToken, likeCommentReplyRequest).enqueue(new Callback<LikeCommentReplyResponse>() {
+    void addCommentReplyLike(LikeCommentReplyRequest likeCommentReplyRequest) {
+        apiService.likeCommentReply( likeCommentReplyRequest).enqueue(new Callback<LikeCommentReplyResponse>() {
             @Override
             public void onResponse(Call<LikeCommentReplyResponse> call, Response<LikeCommentReplyResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -83,8 +83,8 @@ class RepliesPresenter {
         });
     }
 
-    void deleteCommentReply(String accessToken, DeleteReplyRequest deleteReplyRequest) {
-        apiService.deleteStoryCommentReply(accessToken, deleteReplyRequest).enqueue(new Callback<DeleteReplyResponse>() {
+    void deleteCommentReply(DeleteReplyRequest deleteReplyRequest) {
+        apiService.deleteStoryCommentReply( deleteReplyRequest).enqueue(new Callback<DeleteReplyResponse>() {
             @Override
             public void onResponse(Call<DeleteReplyResponse> call, Response<DeleteReplyResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

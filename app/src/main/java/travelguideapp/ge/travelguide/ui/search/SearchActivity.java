@@ -127,12 +127,11 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
     private void startSearch() {
         try {
             if (searchField.getText().toString() != null && !searchField.getText().toString().isEmpty()) {
-                String accessToken = GlobalPreferences.getAccessToken(this);
                 String requestText = searchField.getText().toString();
                 getKeyboard(false, searchField);
                 getLoader(true);
                 searchField.clearFocus();
-                searchPresenter.fullSearch(accessToken, new FullSearchRequest(requestText));
+                searchPresenter.fullSearch(new FullSearchRequest(requestText));
                 this.searchedText = requestText;
                 isLazyLoadHashtag = false;
                 isLazyLoadPosts = false;
@@ -283,7 +282,7 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
     public void getHashtagsNextPage(int page) {
         try {
             isLazyLoadHashtag = true;
-            searchPresenter.getHashtags(GlobalPreferences.getAccessToken(this), new SearchHashtagRequest(searchedText, page));
+            searchPresenter.getHashtags(new SearchHashtagRequest(searchedText, page));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -292,7 +291,7 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
     public void getPostsNextPage(int postId) {
         try {
             isLazyLoadPosts = true;
-            searchPresenter.getPosts(GlobalPreferences.getAccessToken(this), new PostByLocationRequest(postId));
+            searchPresenter.getPosts(new PostByLocationRequest(postId));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -228,30 +228,20 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
                 signUpPresenter.checkNick(new CheckNickRequest(nickName, userName, userSurname));
                 break;
 
-            case 3:
-                MyToaster.getToast(this, signUpResponse.getMessage());
-                break;
-
             case 4:
                 MyToaster.getToast(this, signUpResponse.getMessage());
                 HelperUI.setBackgroundWarning(eMail, eEmailHead, getString(R.string.email), this);
                 break;
 
+            case 3:
+
             case 5:
-                MyToaster.getToast(this, signUpResponse.getMessage());
-                break;
 
             case 6:
-                MyToaster.getToast(this, signUpResponse.getMessage());
-                break;
 
             case 7:
-                MyToaster.getToast(this, signUpResponse.getMessage());
-                break;
 
             case 8:
-                MyToaster.getToast(this, signUpResponse.getMessage());
-                break;
 
             case 9:
                 MyToaster.getToast(this, signUpResponse.getMessage());

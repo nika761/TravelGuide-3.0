@@ -16,8 +16,8 @@ import java.util.List;
 
 public class MusicMoodsAdapter extends RecyclerView.Adapter<MusicMoodsAdapter.MoodsHolder> {
 
-    private List<MoodResponse.Moods> moods;
-    private SearchMusicListener searchMusicListener;
+    private final List<MoodResponse.Moods> moods;
+    private final SearchMusicListener searchMusicListener;
     private int currentPosition = -1;
 
     public MusicMoodsAdapter(List<MoodResponse.Moods> moods, SearchMusicListener searchMusicListener) {

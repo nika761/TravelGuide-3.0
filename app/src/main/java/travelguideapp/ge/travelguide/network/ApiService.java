@@ -101,262 +101,224 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-    @Headers({"Accept: application/json"})
+
     @POST("register")
     Call<SignUpResponse> signUp(@Body SignUpRequest signUpRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("check_email")
     Call<CheckMailResponse> checkEmail(@Body CheckMailRequest checkMailRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("check_nick")
     Call<CheckNickResponse> checkNick(@Body CheckNickRequest checkNickRequest);
 
-    @Headers({"Accept: application/json"})
+
     @GET("get_languages")
     Call<LanguagesResponse> getLanguages();
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/texts")
     Call<LanguageStringsResponse> getLanguageStrings(@Body LanguageStringsRequest languageStringsRequest);
 
-    @Headers({"Accept: application/json"})
+
     @GET("get/app_settings")
     Call<AppSettingsResponse> getAppSettings();
 
-    @Headers({"Accept: application/json"})
+
     @POST("get_terms_policy")
     Call<TermsPolicyResponse> getTerms(@Body TermsPolicyRequest termsPolicyRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("login")
     Call<LoginResponse> signIn(@Body LoginRequest loginRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/about")
     Call<AboutResponse> getAbout(@Body AboutRequest aboutRequest);
 
-    @Headers({"Accept: application/json"})
-    @POST("change_language")
-    Call<ChangeLangResponse> changeLanguage(@Header("Authorization") String token,
-                                            @Body ChangeLangRequest changeLangRequest);
 
-//    @Headers({"Accept: application/json"})
+    @POST("change_language")
+    Call<ChangeLangResponse> changeLanguage(@Body ChangeLangRequest changeLangRequest);
+
+//    
 //    @POST("upload_content")
-//    Call<UploadPostResponse> uploadPost(@Header("Authorization") String token,
+//    Call<UploadPostResponse> uploadPost(
 //                                        @Body UploadPostRequest uploadPostRequest);
 
-    @Headers({"Accept: application/json"})
-    @POST("set/post_story_view")
-    Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
-                                          @Body SetPostViewRequest setPostViewRequest);
 
-    @Headers({"Accept: application/json"})
+    @POST("set/post_story_view")
+    Call<SetPostViewResponse> setPostView(@Body SetPostViewRequest setPostViewRequest);
+
+
     @POST("get/get_posts")
     Call<PostResponse> getPosts(@Body PostRequest postRequest);
 
-    @Headers({"Accept: application/json"})
-    @POST("get/posts_by_user")
-    Call<PostResponse> getPostsByUser(@Header("Authorization") String token,
-                                      @Body PostByUserRequest customerPostRequest);
 
-    @Headers({"Accept: application/json"})
+    @POST("get/posts_by_user")
+    Call<PostResponse> getPostsByUser(@Body PostByUserRequest customerPostRequest);
+
+
     @POST("get/profile")
     Call<ProfileResponse> getProfile(@Body ProfileRequest profileRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/profile")
-    Call<UpdateProfileResponse> updateProfile(@Header("Authorization") String token,
-                                              @Body UpdateProfileRequest updateProfileRequest);
+    Call<UpdateProfileResponse> updateProfile(@Body UpdateProfileRequest updateProfileRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/musics")
-    Call<MusicResponse> getMusics(@Header("Authorization") String token);
+    Call<MusicResponse> getMusics();
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_go_click")
-    Call<Object> chooseGo(@Header("Authorization") String token,
-                          @Body ChooseGoRequest chooseGoRequest);
+    Call<Object> chooseGo(@Body ChooseGoRequest chooseGoRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/favorite_music")
-    Call<AddFavoriteMusicResponse> addFavoriteMusic(@Header("Authorization") String token,
-                                                    @Body AddFavoriteMusic addFavoriteMusic);
+    Call<AddFavoriteMusicResponse> addFavoriteMusic(@Body AddFavoriteMusic addFavoriteMusic);
 
-    @Headers({"Accept: application/json"})
+
     @POST("change/password")
-    Call<ChangePasswordResponse> changePassword(@Header("Authorization") String token,
-                                                @Body ChangePasswordRequest changePasswordRequest);
+    Call<ChangePasswordResponse> changePassword(@Body ChangePasswordRequest changePasswordRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/favorite_music")
-    Call<FavoriteMusicResponse> getFavoriteMusics(@Header("Authorization") String token);
+    Call<FavoriteMusicResponse> getFavoriteMusics();
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/follower")
-    Call<FollowResponse> follow(@Header("Authorization") String token,
-                                @Body FollowRequest followRequest);
+    Call<FollowResponse> follow(@Body FollowRequest followRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/followings")
-    Call<FollowingResponse> getFollowing(@Header("Authorization") String token,
-                                         @Body FollowingRequest followingRequest);
+    Call<FollowingResponse> getFollowing(@Body FollowingRequest followingRequest);
 
 
-    @Headers({"Accept: application/json"})
     @POST("get/followers")
-    Call<FollowerResponse> getFollowers(@Header("Authorization") String token,
-                                        @Body FollowersRequest followersRequest);
+    Call<FollowerResponse> getFollowers(@Body FollowersRequest followersRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/moods")
-    Call<MoodResponse> getMoods(@Header("Authorization") String token);
+    Call<MoodResponse> getMoods();
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/mood/musics")
-    Call<MusicResponse> getMusicsByMood(@Header("Authorization") String token,
-                                        @Body ByMoodRequest byMoodRequest);
+    Call<MusicResponse> getMusicsByMood(@Body ByMoodRequest byMoodRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("search/musics")
-    Call<MusicResponse> searchMusic(@Header("Authorization") String token,
-                                    @Body SearchMusicRequest searchMusicRequest);
+    Call<MusicResponse> searchMusic(@Body SearchMusicRequest searchMusicRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("search/all")
-    Call<FullSearchResponse> searchAll(@Header("Authorization") String token,
-                                       @Body FullSearchRequest fullSearchRequest);
+    Call<FullSearchResponse> searchAll(@Body FullSearchRequest fullSearchRequest);
 
-//    @Headers({"Accept: application/json"})
 //    @POST("set/post/view")
-//    Call<SetPostViewResponse> setPostView(@Header("Authorization") String token,
-//                                          @Body SetPostViewRequest setPostViewRequest);
+//    Call<SetPostViewResponse> setPostView(@Body SetPostViewRequest setPostViewRequest);
 
-    @Headers({"Accept: application/json"})
     @POST("get/posts_by_location")
-    Call<PostResponse> getPostsByLocation(@Header("Authorization") String token,
-                                          @Body PostByLocationRequest postByLocationRequest);
+    Call<PostResponse> getPostsByLocation(@Body PostByLocationRequest postByLocationRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/posts_by_hashtag")
-    Call<PostResponse> getPostsByHashtag(@Header("Authorization") String token,
-                                         @Body PostByHashtagRequest postByHashtagRequest);
+    Call<PostResponse> getPostsByHashtag(@Body PostByHashtagRequest postByHashtagRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("email/verify_email")
-    Call<VerifyEmailResponse> verifyEmail(@Header("Authorization") String token,
-                                          @Body VerifyEmailRequest verifyEmailRequest);
+    Call<VerifyEmailResponse> verifyEmail(@Body VerifyEmailRequest verifyEmailRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/story_like")
-    Call<SetStoryLikeResponse> setStoryLike(@Header("Authorization") String token,
-                                            @Body SetStoryLikeRequest setStoryLikeRequest);
+    Call<SetStoryLikeResponse> setStoryLike(@Body SetStoryLikeRequest setStoryLikeRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_report")
-    Call<SetReportResponse> setPostReport(@Header("Authorization") String token,
-                                          @Body SetPostReportRequest setReportRequest);
+    Call<SetReportResponse> setPostReport(@Body SetPostReportRequest setReportRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/user_report")
-    Call<SetReportResponse> setUserReport(@Header("Authorization") String token,
-                                          @Body SetUserReportRequest setUserReportRequest);
+    Call<SetReportResponse> setUserReport(@Body SetUserReportRequest setUserReportRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/comment_report")
-    Call<SetReportResponse> setCommentReport(@Header("Authorization") String token,
-                                             @Body SetCommentReportRequest setCommentReportRequest);
+    Call<SetReportResponse> setCommentReport(@Body SetCommentReportRequest setCommentReportRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_favourite")
-    Call<SetPostFavoriteResponse> setPostFavorite(@Header("Authorization") String token,
-                                                  @Body SetPostFavoriteRequest setPostFavoriteRequest);
+    Call<SetPostFavoriteResponse> setPostFavorite(@Body SetPostFavoriteRequest setPostFavoriteRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("password/email")
     Call<ForgotPasswordResponse> forgotPassword(@Body ForgotPasswordRequest forgotPasswordRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("password/reset")
     Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("delete/post")
-    Call<DeleteStoryResponse> deleteStory(@Header("Authorization") String token,
-                                          @Body DeleteStoryRequest deleteStoryRequest);
+    Call<DeleteStoryResponse> deleteStory(@Body DeleteStoryRequest deleteStoryRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/my_favourite_posts")
-    Call<PostResponse> getFavoritePosts(@Header("Authorization") String token,
-                                        @Body FavoritePostRequest favoritePostRequest);
+    Call<PostResponse> getFavoritePosts(@Body FavoritePostRequest favoritePostRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_share")
-    Call<SharePostResponse> setPostShare(@Header("Authorization") String token,
-                                         @Body SharePostRequest sharePostRequest);
+    Call<SharePostResponse> setPostShare(@Body SharePostRequest sharePostRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("search/hashtags")
-    Call<HashtagResponse> getHashtags(@Header("Authorization") String token,
-                                      @Body SearchHashtagRequest hashtagRequest);
+    Call<HashtagResponse> getHashtags(@Body SearchHashtagRequest hashtagRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("search/followers")
-    Call<FollowerResponse> searchFollowers(@Header("Authorization") String token,
-                                           @Body SearchFollowersRequest searchFollowersRequest);
+    Call<FollowerResponse> searchFollowers(@Body SearchFollowersRequest searchFollowersRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/post_story_comments")
-    Call<CommentResponse> getStoryComments(@Header("Authorization") String token,
-                                           @Body CommentRequest commentRequest);
+    Call<CommentResponse> getStoryComments(@Body CommentRequest commentRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("get/post_comment_replies")
-    Call<MoreReplyResponse> getMoreCommentReplies(@Header("Authorization") String token,
-                                                  @Body GetMoreCommentRequest moreCommentRequest);
+    Call<MoreReplyResponse> getMoreCommentReplies(@Body GetMoreCommentRequest moreCommentRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_story_comment")
-    Call<AddCommentResponse> addStoryComment(@Header("Authorization") String token,
-                                             @Body AddCommentRequest addCommentRequest);
+    Call<AddCommentResponse> addStoryComment(@Body AddCommentRequest addCommentRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("delete/post_story_comment")
-    Call<DeleteCommentResponse> deleteStoryComment(@Header("Authorization") String token,
-                                                   @Body DeleteCommentRequest deleteCommentRequest);
+    Call<DeleteCommentResponse> deleteStoryComment(@Body DeleteCommentRequest deleteCommentRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("delete/post_story_comment_reply")
-    Call<DeleteReplyResponse> deleteStoryCommentReply(@Header("Authorization") String token,
-                                                      @Body DeleteReplyRequest deleteReplyRequest);
+    Call<DeleteReplyResponse> deleteStoryCommentReply(@Body DeleteReplyRequest deleteReplyRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_story_comment_reply")
-    Call<AddCommentReplyResponse> addStoryCommentReply(@Header("Authorization") String token,
-                                                       @Body AddCommentReplyRequest replyRequest);
+    Call<AddCommentReplyResponse> addStoryCommentReply(@Body AddCommentReplyRequest replyRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_story_comment_like")
-    Call<LikeCommentResponse> likeStoryComment(@Header("Authorization") String token,
-                                               @Body LikeCommentRequest likeCommentRequest);
+    Call<LikeCommentResponse> likeStoryComment(@Body LikeCommentRequest likeCommentRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("set/post_story_comment_reply_like")
-    Call<LikeCommentReplyResponse> likeCommentReply(@Header("Authorization") String token,
-                                                    @Body LikeCommentReplyRequest likeCommentReplyRequest);
+    Call<LikeCommentReplyResponse> likeCommentReply(@Body LikeCommentReplyRequest likeCommentReplyRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("login/by_outer_account")
     Call<AuthWithFirebaseResponse> authWithFirebase(@Body AuthWitFirebaseRequest authWitFirebaseRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("register_outer_account")
     Call<SignUpWithFirebaseResponse> signUpWithFirebase(@Body SignUpWithFirebaseRequest signUpWithFirebaseRequest);
 
-    @Headers({"Accept: application/json"})
+
     @POST("create/post")
-    Call<UploadPostResponse> uploadPost(@Header("Authorization") String token,
-                                        @Header("Content-type") String unc,
-                                        @Body UploadPostRequest uploadPostRequest);
+    Call<UploadPostResponse> uploadPost(
+            @Header("Content-type") String unc,
+            @Body UploadPostRequest uploadPostRequest);
 }
