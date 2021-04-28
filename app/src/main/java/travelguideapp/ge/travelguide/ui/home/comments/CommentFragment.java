@@ -26,7 +26,6 @@ import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
 import travelguideapp.ge.travelguide.model.request.CommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
@@ -41,7 +40,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import java.text.MessageFormat;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -57,13 +55,13 @@ public class CommentFragment extends Fragment implements CommentListener {
         COMMENT_REPLY, COMMENT;
     }
 
-    public static CommentFragment getInstance(CommentFragment.LoadCommentFragmentListener callback) {
+    public static CommentFragment getInstance(CommentFragmentListener callback) {
         CommentFragment commentFragment = new CommentFragment();
         commentFragment.callback = callback;
         return commentFragment;
     }
 
-    private CommentFragment.LoadCommentFragmentListener callback;
+    private CommentFragmentListener callback;
 
     private CommentPresenter presenter;
 
@@ -387,10 +385,12 @@ public class CommentFragment extends Fragment implements CommentListener {
         super.onDestroy();
     }
 
-    public interface LoadCommentFragmentListener {
+    public interface CommentFragmentListener {
+
         void loadCommentFragment(Bundle dataForFragment, CommentFragmentType commentFragmentType);
 
         void onCommentCountChanged(int count);
+
     }
 
 }

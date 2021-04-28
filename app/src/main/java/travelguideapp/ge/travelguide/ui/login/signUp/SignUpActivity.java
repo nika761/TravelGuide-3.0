@@ -129,8 +129,9 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
                 if (HelperDate.checkAgeOfUser(year, month + 1, day)) {
                     registerBirthDate.setText(HelperDate.getDateStringFormat(year, month, day));
                     timeStamp = HelperDate.getDateInMilliFromDate(year, month, day);
-                } else
+                } else {
                     MyToaster.getToast(this, getString(R.string.age_restriction_warning));
+                }
             } catch (Exception e) {
                 MyToaster.getUnknownErrorToast(this);
                 e.printStackTrace();

@@ -28,6 +28,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
     public static FavoriteMusicFragment getInstance(PlayMusicListener playMusicListener) {
         FavoriteMusicFragment favoriteMusicFragment = new FavoriteMusicFragment();
         favoriteMusicFragment.playMusicListener = playMusicListener;
+
         return favoriteMusicFragment;
     }
 

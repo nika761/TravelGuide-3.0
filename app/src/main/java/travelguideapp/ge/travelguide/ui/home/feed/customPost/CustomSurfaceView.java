@@ -1,9 +1,8 @@
-package travelguideapp.ge.travelguide.custom.customPost;
+package travelguideapp.ge.travelguide.ui.home.feed.customPost;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
-import android.view.SurfaceView;
 
 import com.google.android.exoplayer2.ui.PlayerView;
 

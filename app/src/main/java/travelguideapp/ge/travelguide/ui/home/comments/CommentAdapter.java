@@ -14,9 +14,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.response.CommentResponse;
 
 import java.text.MessageFormat;

@@ -45,8 +45,9 @@ class PostPresenter {
             public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().getStatus() == 0) {
-                        if (response.body().getPosts().size() > 0)
+                        if (response.body().getPosts().size() > 0){
                             postListener.onGetPosts(response.body().getPosts());
+                        }
                     } else {
                         postListener.onError(response.message());
                     }

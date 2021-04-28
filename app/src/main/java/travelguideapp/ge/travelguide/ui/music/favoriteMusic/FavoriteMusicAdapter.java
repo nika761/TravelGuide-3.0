@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
@@ -22,8 +23,8 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
     private List<FavoriteMusicResponse.Favotite_musics> favoriteMusics;
     private int playingPosition = -1;
 
-    private PlayMusicListener playMusicListener;
-    private FavoriteMusicListener favoriteMusicListener;
+    private final PlayMusicListener playMusicListener;
+    private final FavoriteMusicListener favoriteMusicListener;
 
     FavoriteMusicAdapter(PlayMusicListener playMusicListener, FavoriteMusicListener favoriteMusicListener) {
         this.playMusicListener = playMusicListener;
@@ -51,7 +52,7 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
         notifyDataSetChanged();
     }
 
-    class FavoriteMusicHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class FavoriteMusicHolder extends RecyclerView.ViewHolder {
         TextView musicTitle, musicAuthor, musicCategory, musicDuration;
         ImageView musicImage;
         ImageButton favorite, playBtn;
@@ -68,10 +69,29 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
             musicDuration = itemView.findViewById(R.id.item_fav_music_duration);
 
             favorite = itemView.findViewById(R.id.item_fav_music_favorite);
-            favorite.setOnClickListener(this);
+            favorite.setOnClickListener(v -> {
+                favoriteMusicListener.onChooseRemoveFavorite(favoriteMusics.get(getLayoutPosition()).getMusic_id());
+                favoriteMusics.remove(getLayoutPosition());
+                notifyItemRemoved(getLayoutPosition());
+            });
 
             playBtn = itemView.findViewById(R.id.item_fav_play_music);
-            playBtn.setOnClickListener(this);
+            playBtn.setOnClickListener(v -> {
+                if (playingPosition == getLayoutPosition()) {
+                    container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
+                    playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_play));
+                    playMusicListener.onChooseMusicForPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                    playMusicListener.onChooseMusicForPost(0);
+                    playingPosition = -1;
+                } else {
+                    container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
+                    playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_pause));
+                    playMusicListener.onChooseMusicForPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                    playMusicListener.onChooseMusicForPost(favoriteMusics.get(getLayoutPosition()).getMusic_id());
+                    playingPosition = getLayoutPosition();
+                }
+                notifyDataSetChanged();
+            });
         }
 
         void bindView(int position) {
@@ -86,10 +106,10 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
 
             if (playingPosition == position) {
                 container.setBackgroundColor(musicImage.getContext().getResources().getColor(R.color.greyLight, null));
-                playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+                playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_pause));
             } else {
                 container.setBackgroundColor(musicImage.getContext().getResources().getColor(R.color.white, null));
-                playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+                playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_play));
             }
 
             if (favoriteMusics.get(position).getCategories().size() != 0) {
@@ -98,39 +118,10 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
 
             HelperMedia.loadPhoto(musicImage.getContext(), favoriteMusics.get(position).getImage(), musicImage);
 
-            favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+            favorite.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.emoji_link_yellow));
 
         }
 
 
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.item_fav_music_favorite:
-                    favoriteMusicListener.onChooseRemoveFavorite(favoriteMusics.get(getLayoutPosition()).getMusic_id());
-                    favoriteMusics.remove(getLayoutPosition());
-                    notifyItemRemoved(getLayoutPosition());
-                    break;
-
-                case R.id.item_fav_play_music:
-                    if (playingPosition == getLayoutPosition()) {
-                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
-                        playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
-                        playMusicListener.onChooseMusicForPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                        playMusicListener.onChooseMusicForPost(0);
-                        playingPosition = -1;
-                        notifyDataSetChanged();
-                    } else {
-                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
-                        playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-                        playMusicListener.onChooseMusicForPlay(favoriteMusics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                        playMusicListener.onChooseMusicForPost(favoriteMusics.get(getLayoutPosition()).getMusic_id());
-                        playingPosition = getLayoutPosition();
-                        notifyDataSetChanged();
-                    }
-                    break;
-
-            }
-        }
     }
 }

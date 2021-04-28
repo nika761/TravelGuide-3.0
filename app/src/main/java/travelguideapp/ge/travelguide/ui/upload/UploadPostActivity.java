@@ -295,7 +295,6 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
         if (data != null) {
             switch (resultCode) {
                 case RESULT_OK:
-
                     try {
                         String hashtag = data.getStringExtra("hashtags");
                         this.hashtags.add(hashtag);
@@ -386,7 +385,6 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
     @Override
     public void onPostUploadedToS3() {
-
         try {
 
             List<UploadPostRequest.Post_stories> stories = new ArrayList<>();

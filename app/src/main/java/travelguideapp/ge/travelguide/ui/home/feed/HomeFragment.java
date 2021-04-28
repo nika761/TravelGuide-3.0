@@ -2,12 +2,9 @@ package travelguideapp.ge.travelguide.ui.home.feed;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +15,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,8 +32,8 @@ import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.custom.CustomTimer;
-import travelguideapp.ge.travelguide.custom.customPost.CustomPostAdapter;
-import travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler;
+import travelguideapp.ge.travelguide.ui.home.feed.customPost.CustomPostAdapter;
+import travelguideapp.ge.travelguide.ui.home.feed.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
@@ -67,7 +63,7 @@ import java.util.List;
 
 import static travelguideapp.ge.travelguide.ui.home.comments.CommentFragment.CommentFragmentType.COMMENT;
 
-public class HomeFragment extends Fragment implements HomeFragmentListener, CommentFragment.LoadCommentFragmentListener {
+public class HomeFragment extends Fragment implements HomeFragmentListener, CommentFragment.CommentFragmentListener {
 
     public static HomeFragment getInstance() {
         return new HomeFragment();
@@ -176,9 +172,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         if (scrollToPosition) {
             new Thread(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 try {
-                    if (scrollPosition == 0)
+                    if (scrollPosition == 0) {
                         customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1));
-                    else {
+                    } else {
                         customPostRecycler.post(() -> customPostRecycler.smoothScrollToPosition(scrollPosition));
                     }
                 } catch (Exception e) {
@@ -188,7 +184,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         } else {
             new Handler().postDelayed(() -> customPostRecycler.post(() -> customPostRecycler.smoothScrollBy(0, 1)), 50);
         }
-
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 //        postRecycler.setLayoutManager(layoutManager);
 //
@@ -414,6 +409,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void onChooseEditPost(PostResponse.Posts post, int position) {
+        openPostEditMenu(post);
+    }
+
+    private void openPostEditMenu(PostResponse.Posts post) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(postRecycler.getContext());
         View bottomSheetLayout = View.inflate(postRecycler.getContext(), R.layout.dialog_post_edit, null);
 
@@ -424,12 +423,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         share.setOnClickListener(v -> onShareChoose(post.getPost_share_url(), post.getPost_id()));
 
         bottomSheetDialog.setContentView(bottomSheetLayout);
-//        try {
-//            bottomSheetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         bottomSheetDialog.show();
+
     }
 
     @Override

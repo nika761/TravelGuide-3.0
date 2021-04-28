@@ -2,6 +2,12 @@ package travelguideapp.ge.travelguide.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
+import androidx.security.crypto.MasterKeys;
 
 import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
 import travelguideapp.ge.travelguide.model.customModel.AppSettings;
@@ -13,7 +19,9 @@ import com.google.android.exoplayer2.C;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +51,54 @@ public class GlobalPreferences {
     private static final String APP_SETTINGS_KEY = "app_settings_key";
 
     private static SharedPreferences getPref(Context context) {
+
+//        KeyGenParameterSpec spec = new KeyGenParameterSpec.Builder("_androidx_security_master_key_", KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+//                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+//                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+//                .setKeySize(256)
+//                .build();
+//
+//        MasterKey masterKey = null;
+//        try {
+//            masterKey = new MasterKey.Builder(context).setKeyGenParameterSpec(spec).build();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        SharedPreferences sharedPreferences = null;
+//
+//        if (masterKey != null)
+//            try {
+//                sharedPreferences = EncryptedSharedPreferences.create(context,
+//                        TRAVEL_GUIDE_PREFERENCES,
+//                        masterKey,
+//                        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+//        String masterKeyAlias = null;
+//        try {
+//            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+
+//        if (masterKeyAlias != null) {
+//            try {
+//                sharedPreferences = EncryptedSharedPreferences.create(
+//                        TRAVEL_GUIDE_PREFERENCES,
+//                        masterKeyAlias,
+//                        context,
+//                        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//                );
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         return context.getSharedPreferences(TRAVEL_GUIDE_PREFERENCES, Context.MODE_PRIVATE);
     }
 

@@ -93,10 +93,11 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
     }
 
     private void getProfileInfo() {
-        if (userInfo == null)
+        if (userInfo == null) {
             presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId(this)));
-        else
+        } else {
             setProfileInfo(userInfo);
+        }
     }
 
     private void initUI() {
@@ -192,22 +193,20 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     private void onPickImageFinish(Intent data) {
         if (data != null) {
-            if (data.getData() != null)
+            if (data.getData() != null) {
                 profileImageFile = getPickedImage(data.getData());
-            else
+            } else {
                 MyToaster.getUnknownErrorToast(this);
-        } else
+            }
+        } else {
             MyToaster.getUnknownErrorToast(this);
+        }
     }
 
     private File getPickedImage(Uri uri) {
-
         String picturePath = HelperMedia.getPathFromImageUri(this, uri);
-
         HelperMedia.loadCirclePhoto(this, picturePath, userImage);
-
         photoUrl = null;
-
         return new File(picturePath);
     }
 

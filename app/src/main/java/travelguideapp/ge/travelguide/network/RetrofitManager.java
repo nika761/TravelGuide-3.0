@@ -25,7 +25,6 @@ public class RetrofitManager {
     private static Retrofit retrofit;
 
     private static Retrofit getRetrofit() {
-
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Log.e("http_interceptor", message));
 
         if (retrofit == null) {
@@ -45,7 +44,8 @@ public class RetrofitManager {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
                     .addNetworkInterceptor(chain -> {
-                        final Request request = chain.request().newBuilder()
+                        final Request request = chain.request()
+                                .newBuilder()
                                 .addHeader("Accept", "application/json")
                                 .addHeader("Authorization", BaseApplication.getAccessToken())
                                 .build();

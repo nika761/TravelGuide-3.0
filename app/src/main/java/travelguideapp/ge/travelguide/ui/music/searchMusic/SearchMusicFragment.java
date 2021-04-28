@@ -150,7 +150,6 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

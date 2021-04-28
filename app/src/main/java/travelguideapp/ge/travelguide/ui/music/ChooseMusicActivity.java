@@ -46,7 +46,6 @@ public class ChooseMusicActivity extends BaseActivity implements SearchMusicFrag
     }
 
     private void initUI() {
-
         TextView nextBtn = findViewById(R.id.music_next_btn);
         nextBtn.setOnClickListener(v -> {
             Intent intent = new Intent(ChooseMusicActivity.this, UploadPostActivity.class);

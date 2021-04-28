@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
@@ -21,9 +22,9 @@ import java.util.List;
 public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.SearchMusicHolder> {
     private List<MusicResponse.Album> musics;
 
-    private SearchMusicListener searchMusicListener;
+    private final SearchMusicListener searchMusicListener;
     //    private SearchMusicFragment.OnChooseMusic listener;
-    private PlayMusicListener playMusicListener;
+    private final PlayMusicListener playMusicListener;
 
     private int playingPosition = -1;
 
@@ -54,7 +55,7 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
         notifyDataSetChanged();
     }
 
-    public class SearchMusicHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class SearchMusicHolder extends RecyclerView.ViewHolder {
 
         TextView musicTitle, musicAuthor, musicCategory, musicDuration, musicNewLabel;
         ImageView musicImage;
@@ -72,13 +73,45 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
             musicDuration = itemView.findViewById(R.id.item_music_duration);
 
             favorite = itemView.findViewById(R.id.item_music_favorite);
-            favorite.setOnClickListener(this);
+            favorite.setOnClickListener(v -> {
+                try {
+                    if (musics.get(getLayoutPosition()).getIs_favorite() == 0) {
+                        favorite.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.emoji_link_yellow));
+                        musics.get(getLayoutPosition()).setIs_favorite(1);
+                    } else {
+                        favorite.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.emoji_link_black));
+                        musics.get(getLayoutPosition()).setIs_favorite(0);
+                    }
+                    searchMusicListener.onFavoriteChoose(musics.get(getLayoutPosition()).getMusic_id());
+                    notifyDataSetChanged();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
             container = itemView.findViewById(R.id.search_music_container);
-            container.setOnClickListener(this);
 
             playBtn = itemView.findViewById(R.id.item_play_music);
-            playBtn.setOnClickListener(this);
+            playBtn.setOnClickListener(v -> {
+                try {
+                    if (playingPosition == getLayoutPosition()) {
+                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
+                        playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_play));
+                        playMusicListener.onChooseMusicForPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        playMusicListener.onChooseMusicForPost(0);
+                        playingPosition = -1;
+                    } else {
+                        container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
+                        playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_pause));
+                        playMusicListener.onChooseMusicForPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
+                        playMusicListener.onChooseMusicForPost(musics.get(getLayoutPosition()).getMusic_id());
+                        playingPosition = getLayoutPosition();
+                    }
+                    notifyDataSetChanged();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
         }
 
@@ -102,10 +135,10 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
             if (playingPosition == position) {
                 container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
-                playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
+                playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_pause));
             } else {
                 container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
-                playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
+                playBtn.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.icon_play));
             }
 
 
@@ -117,53 +150,11 @@ public class SearchMusicAdapter extends RecyclerView.Adapter<SearchMusicAdapter.
 
 
             if (musics.get(position).getIs_favorite() == 1) {
-                favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
+                favorite.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.emoji_link_yellow));
             } else {
-                favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
+                favorite.setBackground(ContextCompat.getDrawable(musicImage.getContext(), R.drawable.emoji_link_black));
             }
 
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.item_music_favorite:
-                    try {
-                        if (musics.get(getLayoutPosition()).getIs_favorite() == 0) {
-                            favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_yellow, null));
-                            musics.get(getLayoutPosition()).setIs_favorite(1);
-                        } else {
-                            favorite.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.emoji_link_black, null));
-                            musics.get(getLayoutPosition()).setIs_favorite(0);
-                        }
-                        searchMusicListener.onFavoriteChoose(musics.get(getLayoutPosition()).getMusic_id());
-                        notifyDataSetChanged();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-
-                case R.id.item_play_music:
-                    try {
-                        if (playingPosition == getLayoutPosition()) {
-                            container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.white, null));
-                            playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_play, null));
-                            playMusicListener.onChooseMusicForPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                            playMusicListener.onChooseMusicForPost(0);
-                            playingPosition = -1;
-                        } else {
-                            container.setBackgroundColor(playBtn.getContext().getResources().getColor(R.color.greyLight, null));
-                            playBtn.setBackground(musicImage.getContext().getResources().getDrawable(R.drawable.icon_pause, null));
-                            playMusicListener.onChooseMusicForPlay(musics.get(getLayoutPosition()).getMusic(), getLayoutPosition());
-                            playMusicListener.onChooseMusicForPost(musics.get(getLayoutPosition()).getMusic_id());
-                            playingPosition = getLayoutPosition();
-                        }
-                        notifyDataSetChanged();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
         }
     }
 }

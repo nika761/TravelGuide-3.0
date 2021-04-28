@@ -17,7 +17,7 @@
             android:orientation="vertical"
             android:visibility="gone" />
 
-        <travelguideapp.ge.travelguide.custom.customPost.CustomPostRecycler
+        <travelguideapp.ge.travelguide.ui.home.feed.customPost.CustomPostRecycler
             android:id="@+id/testing_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

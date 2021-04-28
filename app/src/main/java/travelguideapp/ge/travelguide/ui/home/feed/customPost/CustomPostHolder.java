@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.custom.customPost;
+package travelguideapp.ge.travelguide.ui.home.feed.customPost;
 
 import android.view.View;
 import android.view.animation.Animation;
