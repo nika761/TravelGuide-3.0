@@ -17,7 +17,7 @@ import travelguideapp.ge.travelguide.model.response.TermsPolicyResponse;
 import travelguideapp.ge.travelguide.model.request.TermsPolicyRequest;
 import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
-public class PolicyFragment extends BaseFragment<PolicyPresenter> implements PolicyListener {
+public class PolicyFragment extends BaseFragment implements PolicyListener {
 
     private Button cancelBtn;
     private TextView policyHeader;
