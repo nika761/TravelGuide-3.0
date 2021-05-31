@@ -26,7 +26,6 @@ import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddCommentReplyRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteReplyRequest;
 import travelguideapp.ge.travelguide.model.request.GetMoreCommentRequest;
@@ -35,7 +34,6 @@ import travelguideapp.ge.travelguide.model.response.AddCommentReplyResponse;
 import travelguideapp.ge.travelguide.model.response.CommentResponse;
 import travelguideapp.ge.travelguide.model.response.DeleteReplyResponse;
 import travelguideapp.ge.travelguide.model.response.LikeCommentReplyResponse;
-import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.jakewharton.rxbinding4.widget.RxTextView;
@@ -206,7 +204,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onChooseDelete(int replyId) {
-        DialogManager.getAskingDialog(likeBtn.getContext(), getString(R.string.delete_comment), () -> presenter.deleteCommentReply(new DeleteReplyRequest(replyId)));
+        DialogManager.sureDialog(likeBtn.getContext(), getString(R.string.delete_comment), () -> presenter.deleteCommentReply(new DeleteReplyRequest(replyId)));
     }
 
     @Override
@@ -229,7 +227,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
             this.replies = deleteReplyResponse.getComment_reply();
             this.repliesCount = deleteReplyResponse.getCount();
 
-            MyToaster.getToast(repliesRecycler.getContext(), deleteReplyResponse.getMessage());
+            MyToaster.showToast(repliesRecycler.getContext(), deleteReplyResponse.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

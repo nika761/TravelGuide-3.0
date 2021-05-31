@@ -15,11 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daimajia.swipe.util.Attributes;
-
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 public class UsersSavedFragment extends Fragment {
 
@@ -71,11 +68,11 @@ public class UsersSavedFragment extends Fragment {
 //        RecyclerView.Adapter mAdapter = new SavedUsersAdapter(getContext(), GlobalPreferences.getSavedUsers(Objects.requireNonNull(getContext())));
 //        recyclerView.setAdapter(mAdapter);
 
-        SavedUserAdapter swipeAdapter = new SavedUserAdapter(context, GlobalPreferences.getSavedUsers(context));
-        swipeAdapter.setMode(Attributes.Mode.Single);
+//        SavedUserAdapter swipeAdapter = new SavedUserAdapter(context, GlobalPreferences.getSavedUsers(context));
+//        swipeAdapter.setMode(Attributes.Mode.Single);
         RecyclerView swipeRecyclerView = view.findViewById(R.id.saved_user_recycler);
         swipeRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        swipeRecyclerView.setAdapter(swipeAdapter);
+//        swipeRecyclerView.setAdapter(swipeAdapter);
 
     }
 

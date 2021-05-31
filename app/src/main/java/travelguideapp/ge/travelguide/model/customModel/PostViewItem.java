@@ -1,11 +1,11 @@
 package travelguideapp.ge.travelguide.model.customModel;
 
-public class PostView {
+public class PostViewItem {
 
     private int post_id;
     private int story_id;
 
-    public PostView(int post_id, int story_id) {
+    public PostViewItem(int post_id, int story_id) {
         this.post_id = post_id;
         this.story_id = story_id;
     }

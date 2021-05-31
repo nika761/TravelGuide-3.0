@@ -19,6 +19,7 @@
     <color name="transparent">#6F000000</color>
     <color name="storiesColor">#8F181515</color>
     <color name="mainColorTransparent">#46232324</color>
+    <color name="progress_dialog_bg_color">#4666666C</color>
     <color name="blackTone">#1A1A1A1A</color>
     <color name="colorPrimaryRipple">#423F51B5</color>
     <color name="blackStatusBar">#BA000000</color>

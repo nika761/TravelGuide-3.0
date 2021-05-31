@@ -56,7 +56,7 @@
     <string name="choose_language">აირჩიეთ ენა</string>
     <string name="choose_country">აირჩიეთ ქვეყანა</string>
     <string name="sign_out">სისტემიდან გამოსვლა?</string>
-    <string name="no_internet_connection">შეამოწმეთ ინტერნეტის კავშირი და სცადეთ ხელახლა.</string>
+    <string name="no_internet_connection">შეამოწმეთ ინტერნეტის კავშირი და სცადეთ თავიდან.</string>
     <string name="no">არა</string>
     <string name="yes">კი</string>
     <string name="video">ვიდეოები</string>

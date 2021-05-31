@@ -1,7 +1,6 @@
 package travelguideapp.ge.travelguide.ui.search;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -10,10 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.List;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
-import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.model.request.FullSearchRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
@@ -27,11 +29,6 @@ import travelguideapp.ge.travelguide.ui.search.go.GoFragment;
 import travelguideapp.ge.travelguide.ui.search.hashtag.HashtagsFragment;
 import travelguideapp.ge.travelguide.ui.search.posts.SearchPostFragment;
 import travelguideapp.ge.travelguide.ui.search.user.UsersFragment;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
-
-import com.google.android.material.tabs.TabLayout;
-
-import java.util.List;
 
 public class SearchActivity extends HomeParentActivity implements SearchListener {
 
@@ -40,7 +37,7 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
     private EditText searchField;
     private ConstraintLayout loader;
 
-    private SearchPresenter searchPresenter;
+    private SearchPresenter presenter;
 
     private SearchPostFragment searchPostsFragment;
     private HashtagsFragment searchHashtagsFragment;
@@ -58,16 +55,41 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        searchPresenter = new SearchPresenter(this);
+        attachPresenter();
         initUI();
+    }
+
+    @Override
+    public void attachPresenter() {
+        try {
+            presenter = SearchPresenter.attach(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void detachPresenter() {
+        try {
+            if (presenter != null) {
+                presenter.detachView();
+                presenter = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        detachPresenter();
     }
 
     private void initUI() {
         ViewPager viewPager = findViewById(R.id.search_view_pager);
 
         tabLayout = findViewById(R.id.search_tabs);
-
-        loader = findViewById(R.id.search_loader);
 
         searchField = findViewById(R.id.search_edit_text_second);
         searchField.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -105,33 +127,12 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
         }
     }
 
-    private void getLoader(boolean show) {
-        try {
-            if (show) {
-                loader.setVisibility(View.VISIBLE);
-                clearTextBtn.setClickable(false);
-                searchBtn.setClickable(false);
-                backBtn.setClickable(false);
-            } else {
-                clearTextBtn.setClickable(true);
-                searchBtn.setClickable(true);
-                backBtn.setClickable(true);
-                loader.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     private void startSearch() {
         try {
             if (searchField.getText().toString() != null && !searchField.getText().toString().isEmpty()) {
                 String requestText = searchField.getText().toString();
-                getKeyboard(false, searchField);
-                getLoader(true);
                 searchField.clearFocus();
-                searchPresenter.fullSearch(new FullSearchRequest(requestText));
+                presenter.fullSearch(new FullSearchRequest(requestText), true);
                 this.searchedText = requestText;
                 isLazyLoadHashtag = false;
                 isLazyLoadPosts = false;
@@ -238,9 +239,6 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
 
     @Override
     public void onGetSearchedData(FullSearchResponse fullSearchResponse) {
-
-        getLoader(false);
-
         try {
             if (fullSearchResponse.getUsers() != null && fullSearchResponse.getUsers().size() > 0) {
                 this.users = fullSearchResponse.getUsers();
@@ -282,7 +280,7 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
     public void getHashtagsNextPage(int page) {
         try {
             isLazyLoadHashtag = true;
-            searchPresenter.getHashtags(new SearchHashtagRequest(searchedText, page));
+            presenter.getHashtags(new SearchHashtagRequest(searchedText, page), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -291,7 +289,7 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
     public void getPostsNextPage(int postId) {
         try {
             isLazyLoadPosts = true;
-            searchPresenter.getPosts(new PostByLocationRequest(postId));
+            presenter.getPosts(new PostByLocationRequest(postId), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -323,7 +321,7 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
             int position = getPositionById(postId);
 
             PostHomeParams postDataLoad = new PostHomeParams();
-            postDataLoad.setPageType(PostHomeParams.PageType.SEARCH);
+            postDataLoad.setPageType(PostHomeParams.Type.SEARCH);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 
@@ -346,27 +344,5 @@ public class SearchActivity extends HomeParentActivity implements SearchListener
         return 0;
     }
 
-    @Override
-    public void onError(String message) {
-        getLoader(false);
-        MyToaster.getToast(this, message);
-    }
-
-    @Override
-    public void onAuthenticationError(String message) {
-        super.onAuthenticateError(message);
-    }
-
-    @Override
-    public void onConnectionError() {
-        super.onConnectionError();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (searchPresenter != null)
-            searchPresenter = null;
-        super.onDestroy();
-    }
 
 }

@@ -19,7 +19,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.model.customModel.AppSettings;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.SearchFollowersRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
@@ -80,7 +81,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
     private void setSearchFieldOptions() {
         try {
             InputFilter[] inputFilters = new InputFilter[1];
-            inputFilters[0] = new InputFilter.LengthFilter(GlobalPreferences.getAppSettings(this).getHashtag_lenght());
+            inputFilters[0] = new InputFilter.LengthFilter(AppSettings.create(GlobalPreferences.getAppSettings()).getHashtag_lenght());
             searchEditTxt.setFilters(inputFilters);
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,7 +110,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.searchFollowers( new SearchFollowersRequest(charSequence.toString()));
+                                    postPresenter.searchFollowers(new SearchFollowersRequest(charSequence.toString()));
                                 }
                             });
                     break;
@@ -123,7 +124,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
                             .subscribe((Consumer<CharSequence>) charSequence -> {
                                 if (!charSequence.toString().isEmpty()) {
                                     loader.setVisibility(View.VISIBLE);
-                                    postPresenter.getHashtags( new SearchHashtagRequest(charSequence.toString()));
+                                    postPresenter.getHashtags(new SearchHashtagRequest(charSequence.toString()));
                                 }
                             });
                     break;
@@ -138,7 +139,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
                 return;
             }
 
-            if (searchEditTxt.getText().toString().length() > GlobalPreferences.getAppSettings(this).getHashtag_lenght()) {
+            if (searchEditTxt.getText().toString().length() > AppSettings.create(GlobalPreferences.getAppSettings()).getHashtag_lenght()) {
                 searchEditTxt.getText().clear();
                 return;
             }
@@ -196,7 +197,7 @@ public class TagPostActivity extends BaseActivity implements TagPostListener {
     @Override
     public void onGetError(String message) {
         loader.setVisibility(View.GONE);
-        MyToaster.getToast(this, message);
+        MyToaster.showToast(this, message);
     }
 
     @Override

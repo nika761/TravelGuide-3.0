@@ -8,6 +8,6 @@ package travelguideapp.ge.travelguide.enums;
  * About - Load about fragment in WebView.
  */
 
-public enum LoadWebViewBy {
+public enum WebViewType {
     TERMS, POLICY, ABOUT, GO
 }

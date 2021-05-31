@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -21,15 +20,12 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.model.request.ChangePasswordRequest;
 import travelguideapp.ge.travelguide.model.request.ForgotPasswordRequest;
-import travelguideapp.ge.travelguide.model.response.ChangePasswordResponse;
 import travelguideapp.ge.travelguide.model.response.ForgotPasswordResponse;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 
-public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswordListener, ChangePasswordFragment.ChangePasswordListener {
+public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswordListener {
     private EditText eEmail;
     private TextView emailHead, forgotPassword, forgotPasswordBody, backBtn;
     private Button send;
@@ -40,20 +36,10 @@ public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswo
     private FrameLayout loaderContainer;
     private LottieAnimationView loader;
 
-    private ChangePasswordFragment changePasswordFragment;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-        try {
-            if (getIntent().getStringExtra("request_for").equals("change")) {
-                changePasswordFragment = ChangePasswordFragment.getInstance(this);
-                HelperUI.loadFragment(changePasswordFragment, null, R.id.change_password_container, false, true, this);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         initUI();
     }
 
@@ -90,7 +76,7 @@ public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswo
 
             if (email != null && HelperUI.isEmailValid(email)) {
                 HelperUI.setBackgroundDefault(eEmail, emailHead, getString(R.string.email), HelperUI.BLACK, HelperUI.BACKGROUND_DEF_BLACK);
-                presenter.forgotPassword(new ForgotPasswordRequest(email, GlobalPreferences.getLanguageId(this)));
+                presenter.forgotPassword(new ForgotPasswordRequest(email, GlobalPreferences.getLanguageId()));
                 eEmail.clearFocus();
                 loadingVisibility(true);
             } else {
@@ -109,33 +95,13 @@ public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswo
         }
     }
 
-    @Override
-    public void onChangePassword(ChangePasswordResponse changePasswordResponse) {
-        loadingVisibility(false);
-        send.setClickable(true);
-        MyToaster.getToast(this, changePasswordResponse.getMessage());
-        if (changePasswordResponse.getStatus() == 0) {
-            finish();
-        } else {
-            setChangePasswordFragmentSaveBtn();
-        }
-    }
-
-    private void setChangePasswordFragmentSaveBtn() {
-        try {
-            changePasswordFragment.setSaveBtn(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onError(String message) {
         try {
-            setChangePasswordFragmentSaveBtn();
             loadingVisibility(false);
             send.setClickable(true);
-            MyToaster.getToast(this, message);
+            MyToaster.showToast(this, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -158,11 +124,11 @@ public class ForgotPasswordActivity extends BaseActivity implements ForgotPasswo
         }
         super.onDestroy();
     }
-
-    @Override
-    public void onPasswordChoose(ChangePasswordRequest changePasswordRequest) {
-        loadingVisibility(true);
-        presenter.changePassword( changePasswordRequest);
-    }
+//
+//    @Override
+//    public void onPasswordChoose(ChangePasswordRequest changePasswordRequest) {
+//        loadingVisibility(true);
+//        presenter.changePassword(changePasswordRequest);
+//    }
 
 }

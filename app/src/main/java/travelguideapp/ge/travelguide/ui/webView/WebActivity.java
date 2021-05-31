@@ -1,40 +1,42 @@
 package travelguideapp.ge.travelguide.ui.webView;
 
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Locale;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
+import travelguideapp.ge.travelguide.enums.WebViewType;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.ui.webView.about.AboutFragment;
 import travelguideapp.ge.travelguide.ui.webView.go.GoFragment;
 import travelguideapp.ge.travelguide.ui.webView.policy.PolicyFragment;
 import travelguideapp.ge.travelguide.ui.webView.terms.TermsFragment;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 public class WebActivity extends BaseActivity {
+
+    private static final String WEB_VIEW_TYPE = "type";
+    private static final String WEB_VIEW_URL = "url";
+
+    public static Intent getWebViewIntent(Context context, WebViewType webViewType, String url) {
+        Intent intent = new Intent(context, WebActivity.class);
+        intent.putExtra(WEB_VIEW_TYPE, webViewType);
+        intent.putExtra(WEB_VIEW_URL, url);
+        return intent;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terms_policy);
         checkRequestType();
-//        setLanguage();
     }
 
     private void checkRequestType() {
-        LoadWebViewBy loadWebViewType = (LoadWebViewBy) getIntent().getSerializableExtra(HelperUI.TYPE);
+        WebViewType loadWebViewType = (WebViewType) getIntent().getSerializableExtra(WEB_VIEW_TYPE);
         if (loadWebViewType != null) {
             switch (loadWebViewType) {
                 case TERMS:
@@ -50,12 +52,12 @@ public class WebActivity extends BaseActivity {
                     break;
 
                 case GO:
-                    String url = getIntent().getStringExtra(HelperUI.GO_URL);
+                    String url = getIntent().getStringExtra(WEB_VIEW_URL);
                     HelperUI.loadFragment(GoFragment.getInstance(url), null, R.id.terms_policy_fragment_container, false, true, this);
                     break;
             }
         } else {
-            MyToaster.getUnknownErrorToast(this);
+            MyToaster.showUnknownErrorToast(this);
             finish();
         }
     }

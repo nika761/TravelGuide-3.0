@@ -25,7 +25,7 @@ import travelguideapp.ge.travelguide.model.response.LoginResponse;
 import travelguideapp.ge.travelguide.ui.login.password.ForgotPasswordActivity;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -147,10 +147,10 @@ public class SavedUserAdapter extends RecyclerSwipeAdapter<SavedUserAdapter.Simp
                 .setTitle("Delete User?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                    GlobalPreferences.deleteUser(mContext, userList.get(selectedUserPosition));
+//                    GlobalPreferences.deleteUser(mContext, userList.get(selectedUserPosition));
                     userList.remove(selectedUserPosition);
                     notifyItemRemoved(selectedUserPosition);
-                    userList = GlobalPreferences.getSavedUsers(mContext);
+//                    userList = GlobalPreferences.getSavedUsers(mContext);
 //                    notifyItemRangeChanged(selectedUserPosition, userList.size());
                     mItemManger.closeAllItems();
                     Toast.makeText(mContext, "User Deleted", Toast.LENGTH_SHORT).show();

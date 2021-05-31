@@ -1,6 +1,6 @@
 package travelguideapp.ge.travelguide.network;
 
-public class ApiEndPoint {
+public class ApiConstants {
 
     //        static final String BASE_URL = "http://18.156.2.129/api/";
 

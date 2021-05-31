@@ -1,5 +1,7 @@
 package travelguideapp.ge.travelguide.ui.login.password;
 
+import org.jetbrains.annotations.NotNull;
+
 import travelguideapp.ge.travelguide.model.request.ChangePasswordRequest;
 import travelguideapp.ge.travelguide.model.request.ForgotPasswordRequest;
 import travelguideapp.ge.travelguide.model.response.ChangePasswordResponse;
@@ -10,20 +12,21 @@ import travelguideapp.ge.travelguide.network.RetrofitManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.network.api.AuthorizationApi;
 
 class ForgotPasswordPresenter {
     private ForgotPasswordListener listener;
-    private ApiService apiService;
+    private AuthorizationApi authorizationApi;
 
     ForgotPasswordPresenter(ForgotPasswordListener iForgotPassowrd) {
         this.listener = iForgotPassowrd;
-        this.apiService = RetrofitManager.getApiService();
+        this.authorizationApi = RetrofitManager.getAuthorizationApi();
     }
 
     void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        apiService.forgotPassword(forgotPasswordRequest).enqueue(new Callback<ForgotPasswordResponse>() {
+        authorizationApi.forgotPassword(forgotPasswordRequest).enqueue(new Callback<ForgotPasswordResponse>() {
             @Override
-            public void onResponse(Call<ForgotPasswordResponse> call, Response<ForgotPasswordResponse> response) {
+            public void onResponse(@NotNull Call<ForgotPasswordResponse> call, @NotNull Response<ForgotPasswordResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listener.onForgetPassword(response.body());
                 } else {
@@ -32,27 +35,10 @@ class ForgotPasswordPresenter {
             }
 
             @Override
-            public void onFailure(Call<ForgotPasswordResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<ForgotPasswordResponse> call, @NotNull Throwable t) {
                 listener.onError(t.getMessage());
             }
         });
     }
 
-    void changePassword( ChangePasswordRequest changePasswordRequest) {
-        apiService.changePassword(changePasswordRequest).enqueue(new Callback<ChangePasswordResponse>() {
-            @Override
-            public void onResponse(Call<ChangePasswordResponse> call, Response<ChangePasswordResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listener.onChangePassword(response.body());
-                } else {
-                    listener.onError(response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ChangePasswordResponse> call, Throwable t) {
-                listener.onError(t.getMessage());
-            }
-        });
-    }
 }

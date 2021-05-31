@@ -1,56 +1,65 @@
 package travelguideapp.ge.travelguide.ui.profile;
 
-import org.jetbrains.annotations.NotNull;
-
+import retrofit2.Response;
+import travelguideapp.ge.travelguide.base.BasePresenter;
+import travelguideapp.ge.travelguide.base.BaseResponse;
+import travelguideapp.ge.travelguide.utility.ResponseHandler;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+class ProfileFragmentPresenter extends BasePresenter<ProfileFragmentListener> {
 
-class ProfileFragmentPresenter {
-    private final ProfileFragmentListener profileFragmentListener;
-    private final ApiService apiService;
+    private ProfileFragmentListener listener;
+    private ApiService apiService;
 
-    ProfileFragmentPresenter(ProfileFragmentListener profileFragmentListener) {
-        this.profileFragmentListener = profileFragmentListener;
+    private ProfileFragmentPresenter() {
+    }
+
+    public static ProfileFragmentPresenter getInstance() {
+        return new ProfileFragmentPresenter();
+    }
+
+    @Override
+    protected void attachView(ProfileFragmentListener profileFragmentListener) {
+        this.listener = profileFragmentListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getProfile(ProfileRequest profileRequest) {
-        apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
-            @Override
-            public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0) {
-                        switch (response.body().getStatus()) {
-                            case -100:
-                            case -101:
-                                profileFragmentListener.onAuthenticationError("Sign In Again");
-                                break;
+    @Override
+    protected void detachView() {
+        try {
+            this.listener = null;
+            this.apiService = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                            case 0:
-                                profileFragmentListener.onGetProfile(response.body().getUserinfo());
-                                break;
-                        }
-                    } else
-                        profileFragmentListener.onError(String.valueOf(response.body().getStatus()));
-                } else {
-                    profileFragmentListener.onError(response.message());
+    void getProfile(ProfileRequest profileRequest, boolean withLoader) {
+        if (withLoader && isViewAttached(listener)) {
+            listener.showLoader();
+        }
+
+        apiService.getProfile(profileRequest).enqueue(new BaseResponse<ProfileResponse>() {
+            @Override
+            protected void onSuccess(Response<ProfileResponse> response) {
+                if (isViewAttached(listener)) {
+                    listener.hideLoader();
+                    if (response.body().getStatus() == 0)
+                        listener.onGetProfileInfo(response.body().getUserinfo());
                 }
             }
 
             @Override
-            public void onFailure(@NotNull Call<ProfileResponse> call, @NotNull Throwable t) {
-//                if (t instanceof UnknownHostException) {
-//                    profileFragmentListener.onConnectionError();
-//                } else {
-//                    profileFragmentListener.onError(t.getMessage());
-//                }
-                profileFragmentListener.onError(t.getMessage());
+            protected void onError(ResponseHandler.Error responseError) {
+                onResponseError(responseError, listener);
+            }
+
+            @Override
+            protected void onFail(ResponseHandler.Fail responseFail) {
+                onRequestFailed(responseFail, listener);
             }
         });
     }

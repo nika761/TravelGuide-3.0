@@ -7,17 +7,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
+import travelguideapp.ge.travelguide.listener.PostChooseListener;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 
 
 public class PostPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final PostHomeParams.PageType loadPageType;
-    private OnPostChooseCallback callback;
+    private final PostHomeParams.Type loadPageType;
+    private PostChooseListener callback;
     private int customerUserId;
 
-    public PostPagerAdapter(@NonNull FragmentManager fragmentManager, PostHomeParams.PageType loadPageType) {
+    public PostPagerAdapter(@NonNull FragmentManager fragmentManager, PostHomeParams.Type loadPageType) {
         super(fragmentManager);
         this.loadPageType = loadPageType;
     }
@@ -34,14 +34,14 @@ public class PostPagerAdapter extends FragmentStatePagerAdapter {
             case MY_POSTS:
                 if (position == 0) {
                     data = new Bundle();
-                    data.putSerializable("request_type", PostHomeParams.PageType.MY_POSTS);
+                    data.putSerializable("request_type", PostHomeParams.Type.MY_POSTS);
                     PostsFragment userPostsFragment = PostsFragment.getInstance(callback);
                     userPostsFragment.setArguments(data);
                     return userPostsFragment;
                 }
                 if (position == 1) {
                     data = new Bundle();
-                    data.putSerializable("request_type", PostHomeParams.PageType.FAVORITES);
+                    data.putSerializable("request_type", PostHomeParams.Type.FAVORITES);
                     PostsFragment userPostsFragment = PostsFragment.getInstance(callback);
                     userPostsFragment.setArguments(data);
                     return userPostsFragment;
@@ -82,7 +82,7 @@ public class PostPagerAdapter extends FragmentStatePagerAdapter {
         this.customerUserId = customerUserId;
     }
 
-    public void setCallback(OnPostChooseCallback callback) {
+    public void setCallback(PostChooseListener callback) {
         this.callback = callback;
     }
 

@@ -1,4 +1,4 @@
-package travelguideapp.ge.travelguide.helper.broadcast;
+package travelguideapp.ge.travelguide.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

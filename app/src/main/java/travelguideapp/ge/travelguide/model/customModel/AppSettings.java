@@ -1,9 +1,15 @@
 package travelguideapp.ge.travelguide.model.customModel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class AppSettings {
+import travelguideapp.ge.travelguide.model.response.ProfileResponse;
+
+public class AppSettings implements Parcelable {
 
     @Expose
     @SerializedName("android_version")
@@ -118,7 +124,50 @@ public class AppSettings {
     private int post_videos_duration;
 
 
-    public int getAPP_VERSION() {
+    protected AppSettings(Parcel in) {
+        APP_VERSION = in.readInt();
+        ios_version = in.readInt();
+        POST_VIEW_TIME = in.readInt();
+        S3_END_POINT = in.readString();
+        S3_BUCKET_NAME = in.readString();
+        S3_1 = in.readString();
+        S3_2 = in.readString();
+        hashtag_lenght = in.readInt();
+        story_video_template_for_photo = in.readString();
+        CROP_OPTION_Y = in.readInt();
+        CROP_OPTION_X = in.readInt();
+        AGE_RESTRICTION = in.readInt();
+        output_video_from_photo_bitrate = in.readInt();
+        output_video_bitrate = in.readInt();
+        POST_PER_PAGE_SIZE = in.readInt();
+        home_posts_quntity_per_page = in.readInt();
+        openapp_redirect_link = in.readString();
+        ios_download_link = in.readString();
+        android_download_link = in.readString();
+        registration_deley = in.readInt();
+        post_location_radius = in.readInt();
+        post_view_deley = in.readInt();
+        story_video_duration_max = in.readInt();
+        post_description_lenght = in.readInt();
+        story_photo_quantity = in.readInt();
+        story_photo_duration = in.readInt();
+        story_video_duration_min = in.readInt();
+        post_videos_duration = in.readInt();
+    }
+
+    public static final Creator<AppSettings> CREATOR = new Creator<AppSettings>() {
+        @Override
+        public AppSettings createFromParcel(Parcel in) {
+            return new AppSettings(in);
+        }
+
+        @Override
+        public AppSettings[] newArray(int size) {
+            return new AppSettings[size];
+        }
+    };
+
+    public int getAppVersion() {
         return APP_VERSION;
     }
 
@@ -229,4 +278,52 @@ public class AppSettings {
     public int getHashtag_lenght() {
         return hashtag_lenght;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(APP_VERSION);
+        dest.writeInt(ios_version);
+        dest.writeInt(POST_VIEW_TIME);
+        dest.writeString(S3_END_POINT);
+        dest.writeString(S3_BUCKET_NAME);
+        dest.writeString(S3_1);
+        dest.writeString(S3_2);
+        dest.writeInt(hashtag_lenght);
+        dest.writeString(story_video_template_for_photo);
+        dest.writeInt(CROP_OPTION_Y);
+        dest.writeInt(CROP_OPTION_X);
+        dest.writeInt(AGE_RESTRICTION);
+        dest.writeInt(output_video_from_photo_bitrate);
+        dest.writeInt(output_video_bitrate);
+        dest.writeInt(POST_PER_PAGE_SIZE);
+        dest.writeInt(home_posts_quntity_per_page);
+        dest.writeString(openapp_redirect_link);
+        dest.writeString(ios_download_link);
+        dest.writeString(android_download_link);
+        dest.writeInt(registration_deley);
+        dest.writeInt(post_location_radius);
+        dest.writeInt(post_view_deley);
+        dest.writeInt(story_video_duration_max);
+        dest.writeInt(post_description_lenght);
+        dest.writeInt(story_photo_quantity);
+        dest.writeInt(story_photo_duration);
+        dest.writeInt(story_video_duration_min);
+        dest.writeInt(post_videos_duration);
+    }
+
+    public static AppSettings create(String serializedData) {
+        Gson gson = new Gson();
+        return gson.fromJson(serializedData, AppSettings.class);
+    }
+
+    public String serialize() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
 }

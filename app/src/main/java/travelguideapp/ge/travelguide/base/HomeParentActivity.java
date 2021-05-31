@@ -1,11 +1,9 @@
 package travelguideapp.ge.travelguide.base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -14,15 +12,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.login.LoginManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.helper.AuthManager;
-import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.Report;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
@@ -34,16 +29,15 @@ import travelguideapp.ge.travelguide.model.response.SetReportResponse;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.home.report.ReportAdapter;
-import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.search.posts.PostByLocationActivity;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 /**
  * Created by n.butskhrikidze on 15/11/2020.
  * <p>
  * ეს ჯიგარი ექთივითი იყოს მშობელი ყველა ექთივითისა სადაც ვხსნით პოსტებს სიმონ.
  * <p>
- * თუ ასე არ იზამ, ღმერთმა ხელი მოგიმართოს :D :D
+ * თუ ასე არ იზამ, ღმერთმა ხელი მოგიმართოს.
  * <p>
  */
 
@@ -51,7 +45,6 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
 
     public static final int SHARING_INTENT_REQUEST_CODE = 500;
 
-    private final List<Report> reports = new ArrayList<>();
     private final List<Integer> reportsId = new ArrayList<>();
 
     private HomeParentPresenter homeParentPresenter;
@@ -95,15 +88,6 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
         startActivityForResult(sharingIntent, SHARING_INTENT_REQUEST_CODE);
     }
 
-    protected void onAuthenticateError(String message) {
-        MyToaster.getToast(this, message);
-        logOut();
-    }
-
-    protected void onConnectionError() {
-        MyToaster.getToast(this, getString(R.string.no_internet_connection));
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -111,21 +95,6 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
             case SHARING_INTENT_REQUEST_CODE:
                 /*Supposedly TO-DO : handle sharing request by result **/
                 break;
-        }
-    }
-
-    protected void getKeyboard(boolean show, View view) {
-        try {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (inputMethodManager != null) {
-                if (show) {
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED);
-                } else {
-                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -183,53 +152,9 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
         return reports;
     }
 
-    public void startLogOut() {
-        try {
-            String loginType = GlobalPreferences.getLoginType(this);
-
-            switch (loginType) {
-                case GlobalPreferences.FACEBOOK:
-                    logOutFromFacebook();
-                    break;
-
-                case GlobalPreferences.GOOGLE:
-                    logOutFromGoogle();
-                    break;
-
-                case GlobalPreferences.TRAVEL_GUIDE:
-                    logOut();
-                    break;
-            }
-        } catch (Exception e) {
-            MyToaster.getUnknownErrorToast(this);
-            e.printStackTrace();
-        }
-    }
-
-    public void logOutFromFacebook() {
-        try {
-            LoginManager.getInstance().logOut();
-            logOut();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void logOutFromGoogle() {
-        ClientManager.googleSignInClient(this).signOut()
-                .addOnCompleteListener(this, task -> logOut())
-                .addOnCanceledListener(this, () -> MyToaster.getToast(this, "Canceled"))
-                .addOnFailureListener(this, e -> MyToaster.getToast(this, e.getMessage() + "Google Failed"));
-    }
-
-    public void logOut() {
-        AuthManager.resetAuthState(this);
-        startActivity(SignInActivity.getRedirectIntent(this));
-    }
-
     public void startCustomerActivity(int userId) {
         try {
-            if (GlobalPreferences.getUserId(this) != userId) {
+            if (GlobalPreferences.getUserId() != userId) {
                 Intent intent = new Intent(this, CustomerProfileActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);
@@ -260,7 +185,7 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     @Override
     public void onReported(SetReportResponse setReportResponse) {
         try {
-            MyToaster.getToast(this, setReportResponse.getMessage());
+            MyToaster.showToast(this, setReportResponse.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -17,14 +17,13 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
-import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
+import travelguideapp.ge.travelguide.listener.PostChooseListener;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.FollowResponse;
@@ -38,7 +37,7 @@ import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CustomerProfileActivity extends HomeParentActivity implements CustomerProfileListener, OnPostChooseCallback {
+public class CustomerProfileActivity extends HomeParentActivity implements CustomerProfileListener, PostChooseListener {
 
     private CustomerProfilePresenter customerProfilePresenter;
 
@@ -93,7 +92,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
 
         fragmentContainerMain = findViewById(R.id.customer_profile_fragment_container_main);
 
-        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getSupportFragmentManager(), PostHomeParams.PageType.CUSTOMER_POSTS);
+        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getSupportFragmentManager(), PostHomeParams.Type.CUSTOMER_POSTS);
         profilePagerAdapter.setCustomerUserId(customerUserId);
         profilePagerAdapter.setCallback(this);
         viewPager.setAdapter(profilePagerAdapter);
@@ -167,6 +166,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
 
             loaderContainer.setVisibility(View.GONE);
             lottieLoader.setVisibility(View.GONE);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -176,7 +176,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
     public void onError(String message) {
         loaderContainer.setVisibility(View.GONE);
         lottieLoader.setVisibility(View.GONE);
-        MyToaster.getToast(this, message);
+        MyToaster.showToast(this, message);
     }
 
     @Override
@@ -255,6 +255,8 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 
 
 }

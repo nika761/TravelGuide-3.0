@@ -27,9 +27,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
-import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
+import travelguideapp.ge.travelguide.enums.WebViewType;
 import travelguideapp.ge.travelguide.helper.DialogManager;
-import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.custom.CustomTimer;
 import travelguideapp.ge.travelguide.ui.home.feed.customPost.CustomPostAdapter;
@@ -37,7 +36,6 @@ import travelguideapp.ge.travelguide.ui.home.feed.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.model.customModel.ReportParams;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
-import travelguideapp.ge.travelguide.model.customModel.PostView;
 import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
@@ -52,7 +50,8 @@ import travelguideapp.ge.travelguide.model.request.SharePostRequest;
 import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
 import travelguideapp.ge.travelguide.ui.home.comments.CommentFragment;
 import travelguideapp.ge.travelguide.ui.home.comments.RepliesFragment;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.ui.webView.WebActivity;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.model.response.SharePostResponse;
@@ -82,7 +81,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private int customerUserId;
 
-    private PostHomeParams.PageType pageType;
+    private PostHomeParams.Type pageType;
     private CustomPostRecycler customPostRecycler;
     private CustomPostAdapter customPostAdapter;
 
@@ -329,7 +328,11 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         } catch (Exception e) {
             e.printStackTrace();
         }
-        HelperUI.startWebActivity(getActivity(), LoadWebViewBy.GO, url);
+        try {
+            getActivity().startActivity(WebActivity.getWebViewIntent(getActivity(), WebViewType.GO, url));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -377,7 +380,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void onUserChoose(int userId) {
-        if (userId == GlobalPreferences.getUserId(postRecycler.getContext())) {
+        if (userId == GlobalPreferences.getUserId()) {
             try {
                 ((HomePageActivity) getContext()).onProfileChoose();
             } catch (Exception e) {
@@ -414,17 +417,27 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private void openPostEditMenu(PostResponse.Posts post) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(postRecycler.getContext());
+
         View bottomSheetLayout = View.inflate(postRecycler.getContext(), R.layout.dialog_post_edit, null);
 
         LinearLayout delete = bottomSheetLayout.findViewById(R.id.post_edit_delete);
-        delete.setOnClickListener(v -> DialogManager.getAskingDialog(postRecycler.getContext(), getString(R.string.delete_story), () -> presenter.deleteStory(new DeleteStoryRequest(post.getPost_id(), post.getPost_stories().get(0).getStory_id()))));
+        delete.setOnClickListener(v -> DialogManager.sureDialog(postRecycler.getContext(), getString(R.string.delete_story), () -> {
+            deleteStory(post);
+            bottomSheetDialog.dismiss();
+        }));
 
         LinearLayout share = bottomSheetLayout.findViewById(R.id.post_edit_share);
-        share.setOnClickListener(v -> onShareChoose(post.getPost_share_url(), post.getPost_id()));
+        share.setOnClickListener(v -> {
+            onShareChoose(post.getPost_share_url(), post.getPost_id());
+            bottomSheetDialog.dismiss();
+        });
 
         bottomSheetDialog.setContentView(bottomSheetLayout);
         bottomSheetDialog.show();
+    }
 
+    private void deleteStory(PostResponse.Posts post) {
+        presenter.deleteStory(new DeleteStoryRequest(post.getPost_id(), post.getPost_stories().get(0).getStory_id()));
     }
 
     @Override
@@ -448,7 +461,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
                 break;
 
             case MY_POSTS:
-                presenter.getUserPosts(new PostByUserRequest(GlobalPreferences.getUserId(postRecycler.getContext()), fromPostId));
+                presenter.getUserPosts(new PostByUserRequest(GlobalPreferences.getUserId(), fromPostId));
                 break;
 
             case CUSTOMER_POSTS:
@@ -489,15 +502,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     @Override
     public void onDestroy() {
-        new Thread(() -> {
-            try {
-                List<PostView> views = CustomTimer.getPostViews();
-                if (views.size() != 0)
-                    presenter.setPostViews(new SetPostViewRequest(views));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+
+        pushViewedPosts();
 
         if (customPostRecycler != null)
             customPostRecycler.releasePlayer();
@@ -508,6 +514,17 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         super.onDestroy();
     }
 
+    private void pushViewedPosts() {
+        new Thread(() -> {
+            try {
+                if (CustomTimer.getPostViewItems().size() != 0)
+                    presenter.setPostViews(new SetPostViewRequest(CustomTimer.getPostViewItems()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+    }
 
     @Override
     public void stopLoader() {
@@ -520,19 +537,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
     }
 
     @Override
-    public void onAuthError(String message) {
-        try {
-            ((HomePageActivity) getActivity()).onAuthenticationError(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void onError(String message) {
         try {
             stopLoader();
-            MyToaster.getToast(postRecycler.getContext(), message);
+            MyToaster.showToast(postRecycler.getContext(), message);
         } catch (Exception e) {
             e.printStackTrace();
         }

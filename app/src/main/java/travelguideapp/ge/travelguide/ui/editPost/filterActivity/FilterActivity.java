@@ -2,24 +2,20 @@ package travelguideapp.ge.travelguide.ui.editPost.filterActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -126,7 +122,7 @@ public class FilterActivity extends BaseActivity implements IFilterListener, Vie
 
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    MyToaster.getToast(FilterActivity.this, exception.getMessage());
+                    MyToaster.showToast(FilterActivity.this, exception.getMessage());
                 }
             });
 
@@ -192,7 +188,7 @@ public class FilterActivity extends BaseActivity implements IFilterListener, Vie
         if (permissionGranted) {
             loadFilters();
         } else {
-            MyToaster.getToast(this, "No permission");
+            MyToaster.showToast(this, "No permission");
         }
     }
 

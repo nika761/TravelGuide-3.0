@@ -90,7 +90,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ImageVie
                             selectedItemPositions.remove(getLayoutPosition());
                             listener.onItemSelected(paths.get(getLayoutPosition()));
                         } else {
-                            MyToaster.getToast(context, "You can choose only one item");
+                            MyToaster.showToast(context, "You can choose only one item");
                         }
                     } else {
                         selectedItemPositions.put(getLayoutPosition(), selectedItemPositions.size() + 1);

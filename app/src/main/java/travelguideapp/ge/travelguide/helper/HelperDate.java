@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import travelguideapp.ge.travelguide.base.BaseApplication;
+import travelguideapp.ge.travelguide.base.MainApplication;
 
 public class HelperDate {
 
@@ -87,12 +87,12 @@ public class HelperDate {
 
             if ((birthDate != null) && (currentDate != null)) {
                 int userAge = Period.between(birthDate, currentDate).getYears();
-                return userAge < BaseApplication.AGE_RESTRICTION ? false : true;
+                return userAge < MainApplication.AGE_RESTRICTION ? false : true;
             }
 
         } else {
             int userAge = currentYear - birthYear;
-            return userAge < BaseApplication.AGE_RESTRICTION ? false : true;
+            return userAge < MainApplication.AGE_RESTRICTION ? false : true;
         }
 
         return false;

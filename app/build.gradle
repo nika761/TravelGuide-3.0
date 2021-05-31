@@ -10,8 +10,8 @@ android {
         applicationId "travelguideapp.ge.travelguide"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 29
-        versionName "3.0.3"
+        versionCode 30
+        versionName "3.0.4"
         testInstrumentationRunner "androidx.fragment_profile_included.runner.AndroidJUnitRunner"
     }
 

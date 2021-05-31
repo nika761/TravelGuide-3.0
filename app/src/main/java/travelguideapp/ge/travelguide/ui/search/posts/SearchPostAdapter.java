@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
-import travelguideapp.ge.travelguide.base.BaseApplication;
+import travelguideapp.ge.travelguide.base.MainApplication;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Po
 
         void onBind(int position) {
             try {
-                postImage.getLayoutParams().width = BaseApplication.ITEM_WIDTH_FOR_POSTS;
+                postImage.getLayoutParams().width = MainApplication.ITEM_WIDTH_FOR_POSTS;
                 HelperMedia.loadPhoto(postImage.getContext(), posts.get(position).getCover(), postImage);
                 nickName.setText(posts.get(position).getNickname());
                 reactions.setText(String.valueOf(posts.get(position).getPost_view()));

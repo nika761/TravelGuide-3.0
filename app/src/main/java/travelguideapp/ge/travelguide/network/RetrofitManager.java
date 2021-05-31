@@ -2,44 +2,29 @@ package travelguideapp.ge.travelguide.network;
 
 import android.util.Log;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.internal.Util;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Headers;
-import travelguideapp.ge.travelguide.base.BaseApplication;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.network.api.AuthorizationApi;
+import travelguideapp.ge.travelguide.network.api.ReportApi;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 public class RetrofitManager {
 
     private static Retrofit retrofit;
 
-    private static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Log.e("http_interceptor", message));
 
         if (retrofit == null) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.level(HttpLoggingInterceptor.Level.BODY);
-
-//            OkHttpClient httpClient = new OkHttpClient();
-//            httpClient.networkInterceptors().add(chain -> {
-//                final Request request = chain.request().newBuilder()
-////                        .addHeader("Accept", "application/json")
-//                        .addHeader("Authorization", BaseApplication.getAccessToken())
-//                        .build();
-//
-//                return chain.proceed(request);
-//            });
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
@@ -47,7 +32,7 @@ public class RetrofitManager {
                         final Request request = chain.request()
                                 .newBuilder()
                                 .addHeader("Accept", "application/json")
-                                .addHeader("Authorization", BaseApplication.getAccessToken())
+                                .addHeader("Authorization", GlobalPreferences.getAccessToken())
                                 .build();
                         return chain.proceed(request);
                     })
@@ -59,7 +44,7 @@ public class RetrofitManager {
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(ApiEndPoint.BASE_URL)
+                    .baseUrl(ApiConstants.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
                     .build();
@@ -71,6 +56,14 @@ public class RetrofitManager {
 
     public static ApiService getApiService() {
         return getRetrofit().create(ApiService.class);
+    }
+
+    public static ReportApi getReportApi() {
+        return getRetrofit().create(ReportApi.class);
+    }
+
+    public static AuthorizationApi getAuthorizationApi() {
+        return getRetrofit().create(AuthorizationApi.class);
     }
 
 }

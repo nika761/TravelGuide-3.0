@@ -2,10 +2,22 @@ package travelguideapp.ge.travelguide.base;
 
 public interface BaseListener {
 
-    void onError(String message);
+    void showLoader();
 
-    void onAuthenticationError(String message);
+    void hideLoader();
+
+    void attachLoader();
+
+    void detachLoader();
+
+    void attachPresenter();
+
+    void detachPresenter();
 
     void onConnectionError();
+
+    void onAuthenticationError();
+
+    void onUnknownError();
 
 }

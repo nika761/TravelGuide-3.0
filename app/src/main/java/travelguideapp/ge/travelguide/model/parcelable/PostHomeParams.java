@@ -25,20 +25,20 @@ public class PostHomeParams implements Serializable, Parcelable {
      * FEED - get posts random.
      * SEARCH - get posts by search.
      */
-    public enum PageType {
+    public enum Type {
         FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED, SEARCH
     }
 
 
     private int userId;
     private int scrollPosition;
-    private PageType pageType;
+    private Type pageType;
     private List<PostResponse.Posts> posts;
 
     public PostHomeParams() {
     }
 
-    public PostHomeParams(int userId, int scrollPosition, PageType pageType, List<PostResponse.Posts> posts) {
+    public PostHomeParams(int userId, int scrollPosition, Type pageType, List<PostResponse.Posts> posts) {
         this.userId = userId;
         this.scrollPosition = scrollPosition;
         this.pageType = pageType;
@@ -61,11 +61,11 @@ public class PostHomeParams implements Serializable, Parcelable {
         this.scrollPosition = scrollPosition;
     }
 
-    public PageType getPageType() {
+    public Type getPageType() {
         return pageType;
     }
 
-    public void setPageType(PageType pageType) {
+    public void setPageType(Type pageType) {
         this.pageType = pageType;
     }
 
@@ -80,7 +80,7 @@ public class PostHomeParams implements Serializable, Parcelable {
     protected PostHomeParams(Parcel in) {
         userId = in.readInt();
         scrollPosition = in.readInt();
-        pageType = (PageType) in.readValue(PageType.class.getClassLoader());
+        pageType = (Type) in.readValue(Type.class.getClassLoader());
         if (in.readByte() == 0x01) {
             posts = new ArrayList<>();
             in.readList(posts, PostResponse.Posts.class.getClassLoader());

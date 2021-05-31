@@ -3,29 +3,14 @@ package travelguideapp.ge.travelguide.base;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 
-import org.jetbrains.annotations.NotNull;
-
-import travelguideapp.ge.travelguide.BuildConfig;
-import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
-import travelguideapp.ge.travelguide.network.ApiService;
-import travelguideapp.ge.travelguide.network.RetrofitManager;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 /**
  * Created by n.butskhrikidze on 01/06/2020.
@@ -35,7 +20,7 @@ import travelguideapp.ge.travelguide.utility.GlobalPreferences;
  * <p>
  */
 
-public class BaseApplication extends Application {
+public class MainApplication extends Application {
 
     public static final String CHANNEL_ID = "uploading";
     public static final String CHANNEL_NAME = "upload_post";
@@ -47,18 +32,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        setAccessToken(GlobalPreferences.getAccessToken(this));
-    }
-
-    public static String getAccessToken() {
-        if (accessToken != null)
-            return accessToken;
-        else
-            return "";
-    }
-
-    public static void setAccessToken(String accessToken) {
-        BaseApplication.accessToken = accessToken;
+        GlobalPreferences.init(this);
     }
 
     private void createNotificationChannel() {

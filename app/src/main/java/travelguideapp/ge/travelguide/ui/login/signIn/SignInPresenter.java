@@ -42,24 +42,25 @@ import javax.crypto.SecretKey;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.network.api.AuthorizationApi;
 
 class SignInPresenter {
 
     private final SignInListener signInListener;
-    private final ApiService apiService;
+    private final AuthorizationApi authorizationApi;
     private final DatabaseReference database;
     private final FirebaseAuth firebaseAuth;
     private String key;
 
     SignInPresenter(SignInListener onSignListener) {
         this.signInListener = onSignListener;
-        this.apiService = RetrofitManager.getApiService();
+        this.authorizationApi = RetrofitManager.getAuthorizationApi();
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.database = FirebaseDatabase.getInstance().getReference("users");
     }
 
     void verify(VerifyEmailRequest verifyEmailRequest) {
-        apiService.verifyEmail(verifyEmailRequest).enqueue(new Callback<VerifyEmailResponse>() {
+        authorizationApi.verifyEmail(verifyEmailRequest).enqueue(new Callback<VerifyEmailResponse>() {
             @Override
             public void onResponse(@NotNull Call<VerifyEmailResponse> call, @NotNull Response<VerifyEmailResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -182,7 +183,7 @@ class SignInPresenter {
     }
 
     void singIn(LoginRequest loginRequest) {
-        apiService.signIn(loginRequest).enqueue(new Callback<LoginResponse>() {
+        authorizationApi.signIn(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NotNull Call<LoginResponse> call, @NotNull Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -210,7 +211,7 @@ class SignInPresenter {
     }
 
     private void authWithFireBase(AuthWitFirebaseRequest authWitFirebaseRequest) {
-        apiService.authWithFirebase(authWitFirebaseRequest).enqueue(new Callback<AuthWithFirebaseResponse>() {
+        authorizationApi.signInWithFirebase(authWitFirebaseRequest).enqueue(new Callback<AuthWithFirebaseResponse>() {
             @Override
             public void onResponse(@NotNull Call<AuthWithFirebaseResponse> call, @NotNull Response<AuthWithFirebaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -237,7 +238,6 @@ class SignInPresenter {
             }
         });
     }
-
 
     private String generateKey() {
         String keyToken = null;

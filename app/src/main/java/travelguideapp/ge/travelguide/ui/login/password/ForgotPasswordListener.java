@@ -7,8 +7,6 @@ public interface ForgotPasswordListener {
 
     void onForgetPassword(ForgotPasswordResponse forgotPasswordResponse);
 
-    void onChangePassword(ChangePasswordResponse changePasswordResponse);
-
     void onError(String message);
 
 }

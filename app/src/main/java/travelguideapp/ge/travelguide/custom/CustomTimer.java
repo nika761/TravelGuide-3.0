@@ -2,20 +2,21 @@ package travelguideapp.ge.travelguide.custom;
 
 import android.os.CountDownTimer;
 
-import travelguideapp.ge.travelguide.model.customModel.PostView;
+import travelguideapp.ge.travelguide.model.customModel.PostViewItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomTimer extends CountDownTimer {
 
-    private static List<PostView> postViews = new ArrayList<>();
-    private static PostView postView;
+    private static final List<PostViewItem> postViewItems = new ArrayList<>();
+    private static PostViewItem postViewItem;
 
     /**
      * @param millisInFuture    The number of millis in the future from the call
      *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
      *                          is called.
+     *
      * @param countDownInterval The interval along the way to receive
      *                          {@link #onTick(long)} callbacks.
      */
@@ -24,8 +25,8 @@ public class CustomTimer extends CountDownTimer {
         super(millisInFuture, countDownInterval);
     }
 
-    public void setPostView(PostView postView) {
-        CustomTimer.postView = postView;
+    public void setCurrentPost(PostViewItem postViewItem) {
+        CustomTimer.postViewItem = postViewItem;
     }
 
     @Override
@@ -36,15 +37,15 @@ public class CustomTimer extends CountDownTimer {
 
     @Override
     public void onFinish() {
-        postViews.add(postView);
+        postViewItems.add(postViewItem);
     }
 
-    public static List<PostView> getPostViews() {
-        return postViews;
+    public static List<PostViewItem> getPostViewItems() {
+        return postViewItems;
     }
 
     public void clearPostsViews() {
-        postViews.clear();
+        postViewItems.clear();
     }
 
 }

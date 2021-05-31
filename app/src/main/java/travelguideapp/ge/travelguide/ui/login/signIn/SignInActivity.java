@@ -1,14 +1,11 @@
 package travelguideapp.ge.travelguide.ui.login.signIn;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,21 +17,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.base.HomeParentActivity;
-import travelguideapp.ge.travelguide.helper.AuthManager;
+import travelguideapp.ge.travelguide.helper.AuthorizationManager;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.helper.language.GlobalLanguages;
 import travelguideapp.ge.travelguide.model.customModel.AuthModel;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.ui.webView.WebActivity;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.LoginRequest;
 import travelguideapp.ge.travelguide.model.request.VerifyEmailRequest;
 import travelguideapp.ge.travelguide.model.response.AuthWithFirebaseResponse;
@@ -61,7 +55,7 @@ import com.google.android.gms.tasks.Task;
 import java.util.Arrays;
 import java.util.List;
 
-import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
+import travelguideapp.ge.travelguide.enums.WebViewType;
 
 public class SignInActivity extends BaseActivity implements SignInListener {
 
@@ -193,10 +187,10 @@ public class SignInActivity extends BaseActivity implements SignInListener {
             and = findViewById(R.id.and);
 
             TextView termsOfServices = findViewById(R.id.terms_of_services);
-            termsOfServices.setOnClickListener(v -> HelperUI.startWebActivity(SignInActivity.this, LoadWebViewBy.TERMS, ""));
+            termsOfServices.setOnClickListener(v -> startActivity(WebActivity.getWebViewIntent(SignInActivity.this, WebViewType.TERMS, "")));
 
             TextView privacyPolicy = findViewById(R.id.privacy_policy);
-            privacyPolicy.setOnClickListener(v -> HelperUI.startWebActivity(SignInActivity.this, LoadWebViewBy.POLICY, ""));
+            privacyPolicy.setOnClickListener(v -> startActivity(WebActivity.getWebViewIntent(SignInActivity.this, WebViewType.POLICY, "")));
 
             SignInButton signBtnGoogle = findViewById(R.id.sign_in_button_google);
             signBtnGoogle.setSize(SignInButton.SIZE_ICON_ONLY);
@@ -284,7 +278,7 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     private void signInWithGoogle() {
 
-        GlobalPreferences.saveLoginType(this, GlobalPreferences.GOOGLE);
+        GlobalPreferences.setLoginType(GlobalPreferences.GOOGLE);
 
         Intent signInIntent = ClientManager.googleSignInClient(this).getSignInIntent();
         startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
@@ -292,7 +286,7 @@ public class SignInActivity extends BaseActivity implements SignInListener {
     }
 
     private void signInWithFacebook() {
-        GlobalPreferences.saveLoginType(this, GlobalPreferences.FACEBOOK);
+        GlobalPreferences.setLoginType(GlobalPreferences.FACEBOOK);
 
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.setLoginBehavior(LoginBehavior.WEB_ONLY);
@@ -308,12 +302,12 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
             @Override
             public void onCancel() {
-                MyToaster.getToast(SignInActivity.this, getString(R.string.cancel));
+                MyToaster.showToast(SignInActivity.this, getString(R.string.cancel));
             }
 
             @Override
             public void onError(FacebookException error) {
-                MyToaster.getToast(SignInActivity.this, error.getLocalizedMessage());
+                MyToaster.showToast(SignInActivity.this, error.getLocalizedMessage());
             }
         });
     }
@@ -331,7 +325,7 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     @Override
     public void onVerify(VerifyEmailResponse verifyEmailResponse) {
-        AuthManager.persistAuthState(this, new AuthModel(verifyEmailResponse.getAccess_token(), verifyEmailResponse.getUser().getId(), verifyEmailResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
+        AuthorizationManager.persistAuthorizationState(new AuthModel(verifyEmailResponse.getAccess_token(), verifyEmailResponse.getUser().getId(), verifyEmailResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
         startActivity(HomePageActivity.getRedirectIntent(this));
     }
 
@@ -339,7 +333,7 @@ public class SignInActivity extends BaseActivity implements SignInListener {
     public void onError(String message) {
         try {
             showLoading(false);
-            MyToaster.getToast(this, message);
+            MyToaster.showToast(this, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -347,9 +341,9 @@ public class SignInActivity extends BaseActivity implements SignInListener {
 
     @Override
     public void onFireBaseAuthSignIn(AuthWithFirebaseResponse authWithFirebaseResponse) {
-        GlobalPreferences.saveAccessToken(this, authWithFirebaseResponse.getAccess_token());
-        GlobalPreferences.saveUserRole(this, authWithFirebaseResponse.getUser().getRole());
-        GlobalPreferences.saveUserId(this, authWithFirebaseResponse.getUser().getId());
+        GlobalPreferences.setAccessToken(authWithFirebaseResponse.getAccess_token());
+        GlobalPreferences.setUserRole(authWithFirebaseResponse.getUser().getRole());
+        GlobalPreferences.setUserId(authWithFirebaseResponse.getUser().getId());
         showLoading(false);
         startActivity(HomePageActivity.getRedirectIntent(this));
     }
@@ -373,7 +367,7 @@ public class SignInActivity extends BaseActivity implements SignInListener {
     @Override
     public void onSign(LoginResponse loginResponse) {
         showLoading(false);
-        AuthManager.persistAuthState(this, new AuthModel(loginResponse.getAccess_token(), loginResponse.getUser().getId(), loginResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
+        AuthorizationManager.persistAuthorizationState(new AuthModel(loginResponse.getAccess_token(), loginResponse.getUser().getId(), loginResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
         startActivity(HomePageActivity.getRedirectIntent(this));
     }
 

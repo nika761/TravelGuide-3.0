@@ -314,7 +314,7 @@ public class CommentFragment extends Fragment implements CommentListener {
 
     @Override
     public void onDeleteChoose(int commentId) {
-        DialogManager.getAskingDialog(context, getString(R.string.delete_comment), () -> presenter.deleteComment(new DeleteCommentRequest(postId, storyId, commentId)));
+        DialogManager.sureDialog(context, getString(R.string.delete_comment), () -> presenter.deleteComment(new DeleteCommentRequest(postId, storyId, commentId)));
     }
 
     @Override
@@ -331,7 +331,7 @@ public class CommentFragment extends Fragment implements CommentListener {
         try {
             commentsHead.setText(MessageFormat.format("{0} {1}", getString(R.string.comments), deleteCommentResponse.getCount()));
             commentAdapter.onCommentsChanged(deleteCommentResponse.getPost_story_comments());
-            MyToaster.getToast(context, deleteCommentResponse.getMessage());
+            MyToaster.showToast(context, deleteCommentResponse.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -341,7 +341,7 @@ public class CommentFragment extends Fragment implements CommentListener {
     public void onError(String message) {
         loader.setVisibility(View.GONE);
         pagingLoader.setVisibility(View.GONE);
-        MyToaster.getToast(context, message);
+        MyToaster.showToast(context, message);
     }
 
     private void addComment(String comment) {

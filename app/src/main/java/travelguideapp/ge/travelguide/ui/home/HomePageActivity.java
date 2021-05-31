@@ -3,7 +3,6 @@ package travelguideapp.ge.travelguide.ui.home;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -11,10 +10,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
-import travelguideapp.ge.travelguide.callback.OnPostChooseCallback;
-import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
+import travelguideapp.ge.travelguide.helper.AuthorizationManager;
+import travelguideapp.ge.travelguide.listener.PostChooseListener;
+import travelguideapp.ge.travelguide.enums.WebViewType;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
@@ -22,7 +21,7 @@ import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.profile.editProfile.ProfileEditActivity;
 import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
 import travelguideapp.ge.travelguide.ui.webView.WebActivity;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.ui.profile.ProfileFragment;
 import travelguideapp.ge.travelguide.helper.HelperUI;
@@ -31,10 +30,7 @@ import travelguideapp.ge.travelguide.ui.gallery.GalleryActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import static travelguideapp.ge.travelguide.helper.HelperUI.GO_URL;
-import static travelguideapp.ge.travelguide.helper.HelperUI.TYPE;
-
-public class HomePageActivity extends HomeParentActivity implements HomePageListener, OnPostChooseCallback,
+public class HomePageActivity extends HomeParentActivity implements HomePageListener, PostChooseListener,
         ProfileFragment.ProfileFragmentCallBacks {
 
     public static Intent getRedirectIntent(Context context) {
@@ -44,7 +40,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
     }
 
     private BottomNavigationView bottomNavigationView;
-    private HomePagePresenter homePagePresenter;
+    private HomePagePresenter presenter;
 
     private boolean isFromLanguageChanged = true;
     private boolean backToProfile = false;
@@ -57,8 +53,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
-        BaseApplication.setAccessToken(GlobalPreferences.getAccessToken(this));
-        homePagePresenter = HomePagePresenter.getInstance(this);
+        attachPresenter();
         getUserProfileInfo();
         initBtmNav();
         try {
@@ -68,10 +63,30 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         }
     }
 
+    @Override
+    public void attachPresenter() {
+        try {
+            presenter = HomePagePresenter.attach(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void detachPresenter() {
+        try {
+            if (presenter != null) {
+                presenter.detachView();
+                presenter = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void getUserProfileInfo() {
         try {
-            homePagePresenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId(this)));
+            presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId()), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,7 +146,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
                         if (!(fragment instanceof HomeFragment) || backToProfile) {
                             backToProfile = false;
                             PostHomeParams postDataLoad = new PostHomeParams();
-                            postDataLoad.setPageType(PostHomeParams.PageType.FEED);
+                            postDataLoad.setPageType(PostHomeParams.Type.FEED);
                             Bundle data = new Bundle();
                             data.putParcelable(PostHomeParams.POST_HOME_PARAMS, postDataLoad);
                             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, false, true, HomePageActivity.this);
@@ -155,7 +170,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
                     break;
 
                 case R.id.bot_nav_ntf:
-                    MyToaster.getToast(this, getString(R.string.no_notifications));
+                    MyToaster.showToast(this, getString(R.string.no_notifications));
                     break;
 
                 case R.id.bot_nav_profile:
@@ -179,7 +194,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         if (permissionGranted) {
             openGallery();
         } else {
-            MyToaster.getToast(this, "No permission");
+            MyToaster.showToast(this, "No permission");
         }
     }
 
@@ -190,7 +205,8 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
             if (homeFragmentChildManager != null) {
                 if (homeFragmentChildManager.getBackStackEntryCount() == 0) {
                     backToProfile = false;
-                    bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
+                    super.onBackPressed();
+//                    bottomNavigationView.setSelectedItemId(R.id.bot_nav_profile);
                 } else {
                     homeFragmentChildManager.popBackStackImmediate();
                 }
@@ -224,8 +240,13 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         } catch (Exception e) {
             e.printStackTrace();
         }
-        HelperUI.loadFragment(HomeFragment.getInstance(), fragmentData, R.id.home_fragment_container, false, true, this);
-//        new Handler().postDelayed(() -> bottomNavigationView.setSelectedItemId(R.id.bot_nav_home), 1500);
+
+        if (backToProfile) {
+            HelperUI.loadFragment(HomeFragment.getInstance(), fragmentData, R.id.home_fragment_container, true, false, this);
+        } else {
+            HelperUI.loadFragment(HomeFragment.getInstance(), fragmentData, R.id.home_fragment_container, false, true, this);
+        }
+
     }
 
     public void onProfileChoose() {
@@ -250,46 +271,27 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
     }
 
     @Override
-    public void onChooseWebFlow(LoadWebViewBy loadWebViewBy, String url) {
-        Intent webIntent = new Intent(this, WebActivity.class);
-        webIntent.putExtra(GO_URL, url);
-        webIntent.putExtra(TYPE, loadWebViewBy);
-        startActivity(webIntent);
+    public void onChooseWebFlow(WebViewType webViewType, String url) {
+        startActivity(WebActivity.getWebViewIntent(this, webViewType, url));
     }
 
     @Override
     public void onChooseLogOut() {
-        startLogOut();
+        AuthorizationManager.logOut(this);
     }
 
     @Override
     public void onGetProfile(ProfileResponse.Userinfo userInfo) {
         try {
-            GlobalPreferences.saveUserProfileInfo(this, userInfo);
+            GlobalPreferences.setUserProfileInfo(userInfo.serialize());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onError(String message) {
-        /*Supposedly TO-DO : Show Error Message  **/
-    }
-
-    @Override
-    public void onAuthenticationError(String message) {
-        super.onAuthenticateError(message);
-    }
-
-    @Override
-    public void onConnectionError() {
-        super.onConnectionError();
-    }
-
-    @Override
     protected void onDestroy() {
-        if (homePagePresenter != null)
-            homePagePresenter = null;
         super.onDestroy();
+        detachPresenter();
     }
 }

@@ -1,16 +1,12 @@
 package travelguideapp.ge.travelguide.ui.gallery;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,8 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.ui.editPost.EditPostActivity;
 
@@ -64,7 +59,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Ite
 
 
     private void getMediaFilesByRole() {
-        if (GlobalPreferences.getUserRole(this) == 0)
+        if (GlobalPreferences.getUserRole() == 0)
             loadGalleryFragment();
         else
             iniViewPager(viewPager);
@@ -82,7 +77,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Ite
                 intent.putStringArrayListExtra(EditPostActivity.STORIES_PATHS, pickedItems);
                 startActivity(intent);
             } else {
-                MyToaster.getToast(this, "Please choose item");
+                MyToaster.showToast(this, "Please choose item");
             }
         });
 
@@ -166,7 +161,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Ite
                     galleryAdapterMin.setItemsPath(pickedItems);
                     isVideo = false;
                 } else {
-                    MyToaster.getToast(this, "You can choose only one video");
+                    MyToaster.showToast(this, "You can choose only one video");
                 }
 
             } else {
@@ -177,7 +172,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Ite
                 } else {
                     nextBtn.setClickable(false);
                     nextBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_next_btn_grey));
-                    MyToaster.getToast(this, "You can choose only one photo");
+                    MyToaster.showToast(this, "You can choose only one photo");
                 }
                 choosedItemRecyclerVisibility(true);
 //                nextBtn.setText(MessageFormat.format("Next ({0})", pickedItems.size()));
@@ -201,7 +196,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Ite
         if (permissionGranted) {
             getMediaFilesByRole();
         } else {
-            MyToaster.getToast(this, "No permission granted");
+            MyToaster.showToast(this, "No permission granted");
         }
     }
 }

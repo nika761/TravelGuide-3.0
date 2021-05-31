@@ -3,8 +3,10 @@ package travelguideapp.ge.travelguide.model.response;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import travelguideapp.ge.travelguide.model.customModel.Country;
 
 import java.util.ArrayList;
@@ -55,7 +57,6 @@ public class ProfileResponse implements Parcelable {
     }
 
     public static class Userinfo implements Parcelable {
-
         @Expose
         @SerializedName("reactions")
         private int reactions;
@@ -122,45 +123,16 @@ public class ProfileResponse implements Parcelable {
         @SerializedName("id")
         private int id;
 
-        Userinfo(Parcel in) {
-            reactions = in.readInt();
-            show_favourite_but = in.readInt();
-            follower = in.readInt();
-            following = in.readInt();
-            follow = in.readInt();
-            share_profile = in.readString();
-            profile_pic = in.readString();
-            biography = in.readString();
-            phone_number = in.readString();
-            phone_index = in.readString();
-            city = in.readString();
-            country = in.readString();
-            gender = in.readInt();
-            date_of_birth = in.readString();
-            nickname = in.readString();
-            email = in.readString();
-            lastname = in.readString();
-            name = in.readString();
-            id = in.readInt();
-            if (in.readByte() == 0x01) {
-                countries = new ArrayList<>();
-                in.readList(countries, Country.class.getClassLoader());
-            } else {
-                countries = null;
-            }
+
+        public static Userinfo create(String serializedData) {
+            Gson gson = new Gson();
+            return gson.fromJson(serializedData, Userinfo.class);
         }
 
-        public static final Creator<Userinfo> CREATOR = new Creator<Userinfo>() {
-            @Override
-            public Userinfo createFromParcel(Parcel in) {
-                return new Userinfo(in);
-            }
-
-            @Override
-            public Userinfo[] newArray(int size) {
-                return new Userinfo[size];
-            }
-        };
+        public String serialize() {
+            Gson gson = new Gson();
+            return gson.toJson(this);
+        }
 
         public int getReactions() {
             return reactions;
@@ -242,6 +214,34 @@ public class ProfileResponse implements Parcelable {
             return id;
         }
 
+        Userinfo(Parcel in) {
+            reactions = in.readInt();
+            show_favourite_but = in.readInt();
+            follower = in.readInt();
+            following = in.readInt();
+            follow = in.readInt();
+            share_profile = in.readString();
+            profile_pic = in.readString();
+            biography = in.readString();
+            phone_number = in.readString();
+            phone_index = in.readString();
+            city = in.readString();
+            country = in.readString();
+            gender = in.readInt();
+            date_of_birth = in.readString();
+            nickname = in.readString();
+            email = in.readString();
+            lastname = in.readString();
+            name = in.readString();
+            id = in.readInt();
+            if (in.readByte() == 0x01) {
+                countries = new ArrayList<>();
+                in.readList(countries, Country.class.getClassLoader());
+            } else {
+                countries = null;
+            }
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -275,6 +275,19 @@ public class ProfileResponse implements Parcelable {
                 dest.writeList(countries);
             }
         }
+
+        public static final Creator<Userinfo> CREATOR = new Creator<Userinfo>() {
+            @Override
+            public Userinfo createFromParcel(Parcel in) {
+                return new Userinfo(in);
+            }
+
+            @Override
+            public Userinfo[] newArray(int size) {
+                return new Userinfo[size];
+            }
+        };
+
     }
 
 }

@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:clickable="true"
     android:orientation="vertical">
 
     <TextView
@@ -43,18 +42,6 @@
             app:layout_constraintBottom_toTopOf="@+id/cancel_btn_about"
             app:layout_constraintTop_toBottomOf="@+id/about_header" />
     </LinearLayout>
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view_about"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/loading_yellow" />
 
     <!--    <Button-->
     <!--        android:id="@+id/agree_btn_terms"-->

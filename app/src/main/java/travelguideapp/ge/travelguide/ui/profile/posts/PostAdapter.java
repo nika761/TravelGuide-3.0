@@ -15,7 +15,7 @@ import travelguideapp.ge.travelguide.model.response.PostResponse;
 
 import java.util.List;
 
-import travelguideapp.ge.travelguide.base.BaseApplication;
+import travelguideapp.ge.travelguide.base.MainApplication;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.UserPostHolder> {
     private List<PostResponse.Posts> posts;
@@ -74,7 +74,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.UserPostHolder
 
         void onBind(int position) {
             try {
-                postImage.getLayoutParams().width = BaseApplication.ITEM_WIDTH_FOR_POSTS;
+                postImage.getLayoutParams().width = MainApplication.ITEM_WIDTH_FOR_POSTS;
                 HelperMedia.loadPhoto(postImage.getContext(), posts.get(position).getCover(), postImage);
                 reactions.setText(String.valueOf(posts.get(position).getPost_view()));
                 nickName.setText(String.valueOf(posts.get(position).getNickname()));

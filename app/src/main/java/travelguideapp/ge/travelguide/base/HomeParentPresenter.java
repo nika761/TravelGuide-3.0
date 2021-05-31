@@ -10,35 +10,35 @@ import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
 import travelguideapp.ge.travelguide.model.response.SetReportResponse;
-import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
+import travelguideapp.ge.travelguide.network.api.ReportApi;
 
 public class HomeParentPresenter {
 
-    private final ApiService apiService;
+    private final ReportApi reportApi;
     private final HomeParentListener homeParentListener;
 
     public HomeParentPresenter(HomeParentListener homeParentListener) {
         this.homeParentListener = homeParentListener;
-        this.apiService = RetrofitManager.getApiService();
+        this.reportApi = RetrofitManager.getReportApi();
     }
 
     public void setReport(Object request, ReportParams.Type reportType) {
         switch (reportType) {
             case COMMENT:
-                apiService.setCommentReport(((SetCommentReportRequest) request)).enqueue(getCallback());
+                reportApi.setCommentReport(((SetCommentReportRequest) request)).enqueue(reportCallback());
                 break;
             case POST:
-                apiService.setPostReport(((SetPostReportRequest) request)).enqueue(getCallback());
+                reportApi.setPostReport(((SetPostReportRequest) request)).enqueue(reportCallback());
                 break;
             case USER:
-                apiService.setUserReport(((SetUserReportRequest) request)).enqueue(getCallback());
+                reportApi.setUserReport(((SetUserReportRequest) request)).enqueue(reportCallback());
                 break;
 
         }
     }
 
-    private Callback<SetReportResponse> getCallback() {
+    private Callback<SetReportResponse> reportCallback() {
         return new Callback<SetReportResponse>() {
             @Override
             public void onResponse(@NotNull Call<SetReportResponse> call, @NotNull Response<SetReportResponse> response) {

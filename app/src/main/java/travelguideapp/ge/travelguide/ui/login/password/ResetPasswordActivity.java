@@ -13,21 +13,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.helper.AuthManager;
+import travelguideapp.ge.travelguide.helper.AuthorizationManager;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.customModel.AuthModel;
 import travelguideapp.ge.travelguide.model.request.ResetPasswordRequest;
 import travelguideapp.ge.travelguide.model.response.ResetPasswordResponse;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 import java.util.List;
 
@@ -97,7 +95,7 @@ public class ResetPasswordActivity extends BaseActivity implements ResetPassword
 
             if (email != null && password != null && confirmPassword != null) {
                 loadingVisibility(true);
-                resetPasswordPresenter.resetPassword(new ResetPasswordRequest(email, token, password, confirmPassword, GlobalPreferences.getLanguageId(this)));
+                resetPasswordPresenter.resetPassword(new ResetPasswordRequest(email, token, password, confirmPassword, GlobalPreferences.getLanguageId()));
             }
 
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -124,7 +122,7 @@ public class ResetPasswordActivity extends BaseActivity implements ResetPassword
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MyToaster.getUnknownErrorToast(this);
+            MyToaster.showUnknownErrorToast(this);
             finish();
         }
 
@@ -144,7 +142,7 @@ public class ResetPasswordActivity extends BaseActivity implements ResetPassword
     public void onPasswordReset(ResetPasswordResponse resetPasswordResponse) {
         if (resetPasswordResponse != null) {
             if (resetPasswordResponse.getStatus() == 0) {
-                AuthManager.persistAuthState(this, new AuthModel(resetPasswordResponse.getAccess_token(), resetPasswordResponse.getUser().getId(), resetPasswordResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
+                AuthorizationManager.persistAuthorizationState(new AuthModel(resetPasswordResponse.getAccess_token(), resetPasswordResponse.getUser().getId(), resetPasswordResponse.getUser().getRole(), GlobalPreferences.TRAVEL_GUIDE));
                 loadingVisibility(false);
                 Toast.makeText(this, resetPasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, HomePageActivity.class);

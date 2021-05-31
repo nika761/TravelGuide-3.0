@@ -74,35 +74,48 @@ public class ChooseCountryFragment extends DialogFragment implements ChooseCount
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        searchFilter();
+    }
 
+    private void searchFilter() {
         try {
             RxTextView.textChanges(searchCountry)
                     .debounce(50, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .map(CharSequence::toString)
                     .subscribe((Consumer<CharSequence>) charSequence -> {
-                        if (!charSequence.toString().isEmpty()) {
-                            List<Country> searchedCountries = new ArrayList<>();
-                            for (Country current : countries) {
-                                if (current.getName().toLowerCase().contains(charSequence) || current.getName().contains(charSequence)) {
-                                    if (!searchedCountries.contains(current)) {
-                                        searchedCountries.add(current);
+                        try {
+                            if (!charSequence.toString().isEmpty()) {
+
+                                List<Country> searchedCountries = new ArrayList<>();
+
+                                for (Country current : countries) {
+                                    if (current.getName().toLowerCase().contains(charSequence) || current.getName().contains(charSequence)) {
+                                        if (!searchedCountries.contains(current)) {
+                                            searchedCountries.add(current);
+                                        }
                                     }
                                 }
-                            }
-                            if (searchedCountries.size() > 0) {
-                                chooseCountryAdapter.setCountries(searchedCountries);
+
+                                if (searchedCountries.size() > 0) {
+                                    chooseCountryAdapter.setCountries(searchedCountries);
+                                } else {
+                                    chooseCountryAdapter.setCountries(countries);
+                                }
+
                             } else {
                                 chooseCountryAdapter.setCountries(countries);
                             }
-                        } else {
-                            chooseCountryAdapter.setCountries(countries);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     });
         } catch (Exception e) {
@@ -111,12 +124,13 @@ public class ChooseCountryFragment extends DialogFragment implements ChooseCount
     }
 
     @Override
-    public void onChooseCountry(Country country) {
+    public void onChoseCountry(Country country) {
         try {
             if (country != null) {
-                chooseCountryListener.onChooseCountry(country);
-                if (getDialog() != null)
+                chooseCountryListener.onChoseCountry(country);
+                if (getDialog() != null) {
                     getDialog().dismiss();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

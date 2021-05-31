@@ -1,20 +1,17 @@
 package travelguideapp.ge.travelguide.ui.profile.follow;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.ui.home.customerUser.CustomerProfileActivity;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -67,7 +64,7 @@ public class FollowActivity extends BaseActivity implements FollowFragment.Follo
     @Override
     public void onChooseUser(int userId) {
         try {
-            if (GlobalPreferences.getUserId(this) != userId) {
+            if (GlobalPreferences.getUserId() != userId) {
                 Intent intent = new Intent(this, CustomerProfileActivity.class);
                 intent.putExtra("id", userId);
                 startActivity(intent);

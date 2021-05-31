@@ -20,7 +20,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.custom.CustomFrameLayout;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.ui.search.posts.PostByLocationActivity;
@@ -190,7 +190,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
             profileImage = itemView.findViewById(R.id.user_image_post);
             profileImage.setOnClickListener(this);
 
-            ownerUserId = GlobalPreferences.getUserId(like.getContext());
+            ownerUserId = GlobalPreferences.getUserId();
 
             frameLayout = itemView.findViewById(R.id.pl_container);
 

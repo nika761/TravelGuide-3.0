@@ -15,18 +15,19 @@ import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.network.api.AuthorizationApi;
 
 class SignUpPresenter {
     private final SignUpListener signUpListener;
-    private final ApiService apiService;
+    private final AuthorizationApi authorizationApi;
 
     SignUpPresenter(SignUpListener signUpListener) {
         this.signUpListener = signUpListener;
-        this.apiService = RetrofitManager.getApiService();
+        this.authorizationApi = RetrofitManager.getAuthorizationApi();
     }
 
     void signUp(SignUpRequest signUpRequest) {
-        apiService.signUp(signUpRequest).enqueue(new Callback<SignUpResponse>() {
+        authorizationApi.signUp(signUpRequest).enqueue(new Callback<SignUpResponse>() {
             @Override
             public void onResponse(@NotNull Call<SignUpResponse> call, @NotNull Response<SignUpResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -37,7 +38,7 @@ class SignUpPresenter {
             }
 
             @Override
-            public void onFailure(Call<SignUpResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<SignUpResponse> call, @NotNull Throwable t) {
                 signUpListener.onError(t.getMessage());
             }
         });
@@ -62,9 +63,9 @@ class SignUpPresenter {
 
 
     void checkNick(CheckNickRequest checkNickRequest) {
-        apiService.checkNick(checkNickRequest).enqueue(new Callback<CheckNickResponse>() {
+        authorizationApi.checkNick(checkNickRequest).enqueue(new Callback<CheckNickResponse>() {
             @Override
-            public void onResponse(Call<CheckNickResponse> call, Response<CheckNickResponse> response) {
+            public void onResponse(@NotNull Call<CheckNickResponse> call, @NotNull Response<CheckNickResponse> response) {
                 if (response.isSuccessful()) {
                     signUpListener.onGetNickCheckResult(response.body());
                 } else {
@@ -73,7 +74,7 @@ class SignUpPresenter {
             }
 
             @Override
-            public void onFailure(Call<CheckNickResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<CheckNickResponse> call, @NotNull Throwable t) {
                 signUpListener.onError(t.getMessage());
             }
         });

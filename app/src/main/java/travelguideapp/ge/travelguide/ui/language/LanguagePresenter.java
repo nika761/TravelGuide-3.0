@@ -2,8 +2,6 @@ package travelguideapp.ge.travelguide.ui.language;
 
 import org.jetbrains.annotations.NotNull;
 
-import travelguideapp.ge.travelguide.BuildConfig;
-import travelguideapp.ge.travelguide.base.BaseApplication;
 import travelguideapp.ge.travelguide.model.request.LanguageStringsRequest;
 import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
 import travelguideapp.ge.travelguide.model.response.LanguageStringsResponse;
@@ -14,7 +12,6 @@ import travelguideapp.ge.travelguide.network.RetrofitManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 
 public class LanguagePresenter {
     private LanguageListener languageListener;

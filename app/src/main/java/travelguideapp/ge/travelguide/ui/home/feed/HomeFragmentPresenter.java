@@ -2,33 +2,29 @@ package travelguideapp.ge.travelguide.ui.home.feed;
 
 import org.jetbrains.annotations.NotNull;
 
-import travelguideapp.ge.travelguide.base.ErrorHandler;
-import travelguideapp.ge.travelguide.model.request.AboutRequest;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
+import travelguideapp.ge.travelguide.model.request.PostRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostFavoriteRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostViewRequest;
 import travelguideapp.ge.travelguide.model.request.SetStoryLikeRequest;
 import travelguideapp.ge.travelguide.model.request.SharePostRequest;
-import travelguideapp.ge.travelguide.model.response.AboutResponse;
 import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
 import travelguideapp.ge.travelguide.model.response.FollowResponse;
+import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.model.response.SetPostFavoriteResponse;
 import travelguideapp.ge.travelguide.model.response.SetPostViewResponse;
 import travelguideapp.ge.travelguide.model.response.SetStoryLikeResponse;
-import travelguideapp.ge.travelguide.model.request.PostRequest;
-import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.model.response.SharePostResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomeFragmentPresenter {
     private final HomeFragmentListener homeFragmentCallback;
@@ -47,7 +43,7 @@ public class HomeFragmentPresenter {
                     switch (response.body().getStatus()) {
                         case -100:
                         case -101:
-                            homeFragmentCallback.onAuthError("Sign In Again");
+//                            homeFragmentCallback.onAuthError("Sign In Again");
                             break;
 
                         case 0:

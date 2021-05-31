@@ -1,61 +1,70 @@
 package travelguideapp.ge.travelguide.ui.home;
 
-import org.jetbrains.annotations.NotNull;
-
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.base.BasePresenter;
+import travelguideapp.ge.travelguide.base.BaseResponse;
+import travelguideapp.ge.travelguide.utility.ResponseHandler;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
-public class HomePagePresenter {
+public class HomePagePresenter extends BasePresenter<HomePageListener> {
 
     private HomePageListener homePageListener;
     private ApiService apiService;
 
-    public static HomePagePresenter getInstance(HomePageListener homePageListener) {
+    private HomePagePresenter() {
+    }
+
+    public static HomePagePresenter attach(HomePageListener homePageListener) {
         HomePagePresenter homePagePresenter = new HomePagePresenter();
-        homePagePresenter.homePageListener = homePageListener;
-        homePagePresenter.apiService = RetrofitManager.getApiService();
+        homePagePresenter.attachView(homePageListener);
         return homePagePresenter;
     }
 
-//    HomePagePresenter(HomePageListener homePageListener) {
-//        this.homePageListener = homePageListener;
-//        this.apiService = RetrofitManager.getApiService();
-//    }
+    @Override
+    protected void attachView(HomePageListener homePageListener) {
+        this.homePageListener = homePageListener;
+        this.apiService = RetrofitManager.getApiService();
+    }
 
-    void getProfile(ProfileRequest profileRequest) {
-        apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
+    @Override
+    protected void detachView() {
+        try {
+            this.homePageListener = null;
+            this.apiService = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void getProfile(ProfileRequest profileRequest, boolean withLoader) {
+        if (withLoader && isViewAttached(homePageListener)) {
+            homePageListener.showLoader();
+        }
+
+        apiService.getProfile(profileRequest).enqueue(new BaseResponse<ProfileResponse>() {
             @Override
-            public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    switch (response.body().getStatus()) {
-                        case -100:
-                        case -101:
-                            homePageListener.onAuthenticationError("Sign In Again");
-                            break;
+            protected void onSuccess(Response<ProfileResponse> response) {
+                if (isViewAttached(homePageListener)) {
+                    homePageListener.hideLoader();
 
-                        case 0:
-                            homePageListener.onGetProfile(response.body().getUserinfo());
-                            break;
+                    if (response.body().getStatus() == 0) {
+                        homePageListener.onGetProfile(response.body().getUserinfo());
                     }
-                } else {
-                    if (response.code() == 401) {
-                        homePageListener.onAuthenticationError("Sign In Again");
-                    }
-//                    homePageListener.onGetError(response.message());
+
                 }
             }
 
             @Override
-            public void onFailure(@NotNull Call<ProfileResponse> call, @NotNull Throwable t) {
-                if (t.getCause().getMessage().equals("Unauthorized")) {
-                    homePageListener.onAuthenticationError("Sign In Again");
-                }
-//                homePageListener.onGetError(t.getMessage());
+            protected void onError(ResponseHandler.Error responseError) {
+                onResponseError(responseError, homePageListener);
+            }
+
+            @Override
+            protected void onFail(ResponseHandler.Fail responseFail) {
+                onRequestFailed(responseFail, homePageListener);
             }
         });
     }

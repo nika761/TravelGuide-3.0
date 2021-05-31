@@ -24,8 +24,9 @@ import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.model.customModel.AppSettings;
 import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.UploadPostRequest;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.HashtagAdapter;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import travelguideapp.ge.travelguide.network.ApiEndPoint;
+import travelguideapp.ge.travelguide.network.ApiConstants;
 
 import static travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity.MUSIC_ID;
 
@@ -101,7 +102,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
 
         uploadPostPresenter = new UploadPostPresenter(this);
 
-        Places.initialize(getApplicationContext(), ApiEndPoint.PLACES_API_KEY);
+        Places.initialize(getApplicationContext(), ApiConstants.PLACES_API_KEY);
 //        PlacesClient placesClient = Places.createClient(this);
 
         ImageButton backBtn = findViewById(R.id.describe_post_back_btn);
@@ -246,8 +247,8 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
             e.printStackTrace();
             getLoader(false);
             try {
-                MyToaster.getToast(this, e.getMessage());
-                MyToaster.getToast(this, e.getLocalizedMessage());
+                MyToaster.showToast(this, e.getMessage());
+                MyToaster.showToast(this, e.getLocalizedMessage());
             } catch (Exception b) {
                 b.printStackTrace();
             }
@@ -285,7 +286,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
                 case RESULT_CANCELED:
                 case AutocompleteActivity.RESULT_ERROR:
                     Status status = Autocomplete.getStatusFromIntent(data);
-                    MyToaster.getToast(this, status.getStatusMessage());
+                    MyToaster.showToast(this, status.getStatusMessage());
                     break;
             }
         }
@@ -368,7 +369,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
             getLoader(true);
             startUpload();
         } else {
-            MyToaster.getToast(this, "Without Permission You Can't Upload Photo");
+            MyToaster.showToast(this, "Without Permission You Can't Upload Photo");
         }
     }
 
@@ -390,7 +391,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
             List<UploadPostRequest.Post_stories> stories = new ArrayList<>();
 
             //Get uploaded content url from S3 server
-            String url = ClientManager.amazonS3Client(this).getResourceUrl(GlobalPreferences.getAppSettings(this).getS3_BUCKET_NAME(), fileForUpload.getName());
+            String url = ClientManager.amazonS3Client(this).getResourceUrl(AppSettings.create(GlobalPreferences.getAppSettings()).getS3_BUCKET_NAME(), fileForUpload.getName());
 
             if (url.endsWith(".mp4")) {
                 String videoDuration = String.valueOf(HelperMedia.getVideoDurationLong(mediaFiles.get(0).getMediaPath()));
@@ -403,15 +404,17 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
                 description = postDescription.getText().toString();
 
             UploadPostRequest uploadPostRequestModel = new UploadPostRequest(stories, users, hashtags, musicId, latLng, address, addressName, description, "sometitle");
-
-            uploadPostPresenter.uploadStory( uploadPostRequestModel);
+            uploadPostPresenter.uploadStory(uploadPostRequestModel);
+//            Intent intent = new Intent(this, UploadService.class);
+//            intent.putExtra("UPLOAD_DATA", uploadPostRequestModel);
+//            startService(intent);
 
         } catch (Exception e) {
             e.printStackTrace();
             getLoader(false);
             try {
-                MyToaster.getToast(this, e.getMessage());
-                MyToaster.getToast(this, e.getLocalizedMessage());
+                MyToaster.showToast(this, e.getMessage());
+                MyToaster.showToast(this, e.getLocalizedMessage());
             } catch (Exception b) {
                 b.printStackTrace();
             }
@@ -437,7 +440,7 @@ public class UploadPostActivity extends BaseActivity implements UploadPostListen
     public void onPostUploadError(String message) {
         try {
             getLoader(false);
-            MyToaster.getToast(this, message);
+            MyToaster.showToast(this, message);
         } catch (Exception e) {
             e.printStackTrace();
         }

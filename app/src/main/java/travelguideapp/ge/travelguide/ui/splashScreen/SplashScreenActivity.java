@@ -21,7 +21,7 @@ import travelguideapp.ge.travelguide.BuildConfig;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
+import travelguideapp.ge.travelguide.utility.SystemManager;
 import travelguideapp.ge.travelguide.model.response.AppSettingsResponse;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.ui.home.HomePageActivity;
@@ -30,8 +30,8 @@ import travelguideapp.ge.travelguide.ui.language.LanguageListener;
 import travelguideapp.ge.travelguide.ui.login.loggedUsers.SavedUserActivity;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
 import travelguideapp.ge.travelguide.ui.language.LanguagePresenter;
-import travelguideapp.ge.travelguide.base.BaseApplication;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.base.MainApplication;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,9 +60,17 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
             e.printStackTrace();
         }
 
+//        try {
+//            if (AppSettings.create(GlobalPreferences.getAppSettings()).getAppVersion() < BuildConfig.VERSION_CODE) {
+//                GlobalPreferences.setAppVersion(BuildConfig.VERSION_CODE);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         try {
-            if (GlobalPreferences.getAppVersion(getApplicationContext()) < BuildConfig.VERSION_CODE) {
-                GlobalPreferences.saveAppVersion(getApplicationContext(), BuildConfig.VERSION_CODE);
+            if (GlobalPreferences.getAppVersion() < BuildConfig.VERSION_CODE) {
+                GlobalPreferences.setAppVersion(BuildConfig.VERSION_CODE);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,7 +84,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
     }
 
     private void setLanguage() {
-        Locale locale = new Locale(GlobalPreferences.getLanguage(this));
+        Locale locale = new Locale(GlobalPreferences.getLanguage());
         Locale.setDefault(locale);
         Resources resources = getResources();
         Configuration config = resources.getConfiguration();
@@ -86,7 +94,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
 
     private void calculateScreenWidth() {
         try {
-            BaseApplication.ITEM_WIDTH_FOR_POSTS = HelperMedia.getScreenWidth(this);
+            MainApplication.ITEM_WIDTH_FOR_POSTS = HelperMedia.getScreenWidth(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +104,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
         if (SystemManager.checkNetworkConnection(this)) {
             languagePresenter.getAppSettings();
         } else {
-            MyToaster.getToast(this, getString(R.string.no_internet_connection));
+            MyToaster.showToast(this, getString(R.string.no_internet_connection));
         }
     }
 
@@ -176,10 +184,11 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
         try {
             if (appSettingsResponse.getStatus() == 0) {
 
-                GlobalPreferences.saveAppSettings(this, appSettingsResponse.getApp_settings());
-                BaseApplication.AGE_RESTRICTION = appSettingsResponse.getApp_settings().getAGE_RESTRICTION();
+                GlobalPreferences.setAppSettings(appSettingsResponse.getApp_settings().serialize());
 
-                if (appSettingsResponse.getApp_settings().getAPP_VERSION() > GlobalPreferences.getAppVersion(this)) {
+                MainApplication.AGE_RESTRICTION = appSettingsResponse.getApp_settings().getAGE_RESTRICTION();
+
+                if (appSettingsResponse.getApp_settings().getAppVersion() > GlobalPreferences.getAppVersion()) {
                     final String appPackageName = getPackageName();
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
@@ -189,8 +198,8 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
                         finish();
                     }
                 } else {
-                    if (GlobalPreferences.getLanguageId(this) != 0) {
-                        if (GlobalPreferences.getAccessToken(this) != null)
+                    if (GlobalPreferences.getLanguageId() != 0) {
+                        if (GlobalPreferences.getAccessToken() != null && !GlobalPreferences.getAccessToken().equals(""))
                             openHome();
                         else
                             openSign();
@@ -199,12 +208,12 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
                     }
                 }
             } else {
-                MyToaster.getUnknownErrorToast(this);
+                MyToaster.showUnknownErrorToast(this);
                 finish();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            MyToaster.getUnknownErrorToast(this);
+            MyToaster.showUnknownErrorToast(this);
             finish();
         }
 

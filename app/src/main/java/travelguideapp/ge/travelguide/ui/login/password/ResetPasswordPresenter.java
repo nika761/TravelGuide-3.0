@@ -8,18 +8,19 @@ import travelguideapp.ge.travelguide.network.RetrofitManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.network.api.AuthorizationApi;
 
 class ResetPasswordPresenter {
-    private ResetPasswordListener iResetPassword;
-    private ApiService apiService;
+    private final ResetPasswordListener iResetPassword;
+    private final AuthorizationApi authorizationApi;
 
     ResetPasswordPresenter(ResetPasswordListener iResetPassword) {
         this.iResetPassword = iResetPassword;
-        this.apiService = RetrofitManager.getApiService();
+        this.authorizationApi = RetrofitManager.getAuthorizationApi();
     }
 
     void resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        apiService.resetPassword(resetPasswordRequest).enqueue(new Callback<ResetPasswordResponse>() {
+        authorizationApi.resetPassword(resetPasswordRequest).enqueue(new Callback<ResetPasswordResponse>() {
             @Override
             public void onResponse(Call<ResetPasswordResponse> call, Response<ResetPasswordResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

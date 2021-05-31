@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/edit_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +14,6 @@
         android:layout_gravity="start"
         android:background="@color/white"
         android:elevation="2dp"
-        app:layout_constraintBottom_toTopOf="@id/linear_scroll_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -123,6 +123,8 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
@@ -145,6 +147,8 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
@@ -167,6 +171,8 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:maxEms="12"
                 android:maxLength="16"
                 android:maxLines="1"
@@ -239,6 +245,8 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:maxLines="1"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
@@ -273,12 +281,12 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
                 <EditText
                     android:id="@+id/edit_phone_number"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="3dp"
+                    android:imeOptions="actionDone"
                     android:inputType="number|phone"
                     android:padding="3dp"
                     android:textSize="14sp"
@@ -332,6 +340,8 @@
                 android:background="@drawable/selector_input_field"
                 android:drawableEnd="@drawable/selector_input_field_icon"
                 android:drawablePadding="10dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:lines="1"
                 android:maxLines="1"
                 android:padding="10dp"
@@ -358,7 +368,7 @@
                 android:drawablePadding="10dp"
                 android:gravity="start|top"
                 android:maxLength="300"
-                android:minLines="3"
+                android:minLines="5"
                 android:padding="10dp"
                 android:textCursorDrawable="@drawable/custom_cursor_yellow"
                 android:textSize="14sp"
@@ -430,6 +440,16 @@
 
     </ScrollView>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/change_password_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_edit" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/edit_loader"
         android:layout_width="100dp"
@@ -450,6 +470,5 @@
         android:background="@color/mainColorTransparent"
         android:contextClickable="true"
         android:visibility="gone" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

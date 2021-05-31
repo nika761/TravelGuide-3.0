@@ -17,7 +17,6 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.PostByHashtagRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
@@ -124,7 +123,7 @@ public class PostByLocationActivity extends HomeParentActivity implements PostBy
             int position = getPositionById(postId);
 
             PostHomeParams postDataLoad = new PostHomeParams();
-            postDataLoad.setPageType(PostHomeParams.PageType.SEARCH);
+            postDataLoad.setPageType(PostHomeParams.Type.SEARCH);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 
@@ -150,7 +149,7 @@ public class PostByLocationActivity extends HomeParentActivity implements PostBy
 
     @Override
     public void onGetPostError(String message) {
-        MyToaster.getToast(this, message);
+        MyToaster.showToast(this, message);
     }
 
     @Override

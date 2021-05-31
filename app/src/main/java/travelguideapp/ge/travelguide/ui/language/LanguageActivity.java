@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -17,11 +16,10 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 import travelguideapp.ge.travelguide.model.response.LanguageStringsResponse;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 import travelguideapp.ge.travelguide.model.response.LanguagesResponse;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 import java.util.List;
 import java.util.Locale;
@@ -76,7 +74,7 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
     public void onChooseLanguage(int languageId) {
         try {
 
-            GlobalPreferences.saveLanguageId(this, languageId);
+            GlobalPreferences.setLanguageId(languageId);
 
             switch (languageId) {
                 case 1:
@@ -104,7 +102,7 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
     }
 
     private void changeLanguage(String language) {
-        GlobalPreferences.saveLanguage(this, language);
+        GlobalPreferences.setLanguage(language);
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
         Resources resources = getResources();
@@ -118,23 +116,23 @@ public class LanguageActivity extends AppCompatActivity implements LanguageListe
 
     @Override
     public void onGetStrings(LanguageStringsResponse languageStringsResponse) {
-        if (languageStringsResponse.getGlobalLanguages() != null)
-            try {
-                new Handler().post(() -> GlobalPreferences.saveCurrentLanguage(LanguageActivity.this, languageStringsResponse.getGlobalLanguages()));
-                new Handler().postDelayed(() -> {
-                    Intent signIntent = new Intent(LanguageActivity.this, SignInActivity.class);
-                    startActivity(signIntent);
-                }, 2000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//        if (languageStringsResponse.getGlobalLanguages() != null)
+//            try {
+//                new Handler().post(() -> GlobalPreferences.saveCurrentLanguage(LanguageActivity.this, languageStringsResponse.getGlobalLanguages()));
+//                new Handler().postDelayed(() -> {
+//                    Intent signIntent = new Intent(LanguageActivity.this, SignInActivity.class);
+//                    startActivity(signIntent);
+//                }, 2000);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
     }
 
     @Override
     public void onGetError(String error) {
         loaderContainer.setVisibility(View.GONE);
         loader.setVisibility(View.GONE);
-        MyToaster.getToast(this, error);
+        MyToaster.showToast(this, error);
     }
 
     @Override

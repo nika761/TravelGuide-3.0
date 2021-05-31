@@ -1,7 +1,9 @@
 package travelguideapp.ge.travelguide.ui.profile.posts;
 
-import org.jetbrains.annotations.NotNull;
-
+import retrofit2.Response;
+import travelguideapp.ge.travelguide.base.BasePresenter;
+import travelguideapp.ge.travelguide.base.BaseResponse;
+import travelguideapp.ge.travelguide.utility.ResponseHandler;
 import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
@@ -9,21 +11,38 @@ import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+class PostPresenter extends BasePresenter<PostListener> {
 
-class PostPresenter {
+    private PostListener postListener;
+    private ApiService apiService;
 
-    private final PostListener postListener;
-    private final ApiService apiService;
+    private PostPresenter() {
+    }
 
-    PostPresenter(PostListener postListener) {
+    public static PostPresenter getInstance() {
+        return new PostPresenter();
+    }
+
+    @Override
+    protected void attachView(PostListener postListener) {
         this.postListener = postListener;
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getPosts(Object request, PostHomeParams.PageType pageType) {
+    @Override
+    protected void detachView() {
+        try {
+            this.postListener = null;
+            this.apiService = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPosts(Object request, PostHomeParams.Type pageType, boolean withLoader) {
+        if (withLoader && isViewAttached(postListener))
+            postListener.showLoader();
+
         switch (pageType) {
             case CUSTOMER_POSTS:
             case MY_POSTS:
@@ -39,27 +58,33 @@ class PostPresenter {
         }
     }
 
-    private Callback<PostResponse> postCallback() {
-        return new Callback<PostResponse>() {
+    private BaseResponse<PostResponse> postCallback() {
+        return new BaseResponse<PostResponse>() {
             @Override
-            public void onResponse(@NotNull Call<PostResponse> call, @NotNull Response<PostResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().getStatus() == 0) {
-                        if (response.body().getPosts().size() > 0){
+            protected void onSuccess(Response<PostResponse> response) {
+                if (isViewAttached(postListener)) {
+                    postListener.hideLoader();
+                    try {
+                        if (response.body().getPosts().size() > 0) {
                             postListener.onGetPosts(response.body().getPosts());
                         }
-                    } else {
-                        postListener.onError(response.message());
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } else {
-                    postListener.onError(response.message());
                 }
             }
 
             @Override
-            public void onFailure(@NotNull Call<PostResponse> call, @NotNull Throwable t) {
-                postListener.onError(t.getMessage());
+            protected void onError(ResponseHandler.Error responseError) {
+                onResponseError(responseError, postListener);
+            }
+
+            @Override
+            protected void onFail(ResponseHandler.Fail responseFail) {
+                onRequestFailed(responseFail, postListener);
             }
         };
     }
+
+
 }

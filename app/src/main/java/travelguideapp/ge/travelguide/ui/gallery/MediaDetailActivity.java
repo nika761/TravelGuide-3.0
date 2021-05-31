@@ -10,12 +10,10 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.helper.SystemManager;
 
 public class MediaDetailActivity extends BaseActivity {
 

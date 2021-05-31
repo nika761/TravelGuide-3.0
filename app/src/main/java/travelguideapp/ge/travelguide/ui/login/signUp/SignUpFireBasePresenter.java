@@ -12,19 +12,20 @@ import travelguideapp.ge.travelguide.network.RetrofitManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.network.api.AuthorizationApi;
 
 class SignUpFireBasePresenter {
 
     private final SignUpFireBaseListener signUpFireBaseListener;
-    private final ApiService apiService;
+    private final AuthorizationApi authorizationApi;
 
     SignUpFireBasePresenter(SignUpFireBaseListener signUpFireBaseListener) {
         this.signUpFireBaseListener = signUpFireBaseListener;
-        this.apiService = RetrofitManager.getApiService();
+        this.authorizationApi = RetrofitManager.getAuthorizationApi();
     }
 
     void signUpWithFirebase(SignUpWithFirebaseRequest signUpWithFirebaseRequest) {
-        apiService.signUpWithFirebase(signUpWithFirebaseRequest).enqueue(new Callback<SignUpWithFirebaseResponse>() {
+        authorizationApi.signUpWithFirebase(signUpWithFirebaseRequest).enqueue(new Callback<SignUpWithFirebaseResponse>() {
             @Override
             public void onResponse(@NotNull Call<SignUpWithFirebaseResponse> call, @NotNull Response<SignUpWithFirebaseResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -57,7 +58,7 @@ class SignUpFireBasePresenter {
     }
 
     void checkNick(CheckNickRequest checkNickRequest) {
-        apiService.checkNick(checkNickRequest).enqueue(new Callback<CheckNickResponse>() {
+        authorizationApi.checkNick(checkNickRequest).enqueue(new Callback<CheckNickResponse>() {
             @Override
             public void onResponse(@NotNull Call<CheckNickResponse> call, @NotNull Response<CheckNickResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

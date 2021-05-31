@@ -56,7 +56,7 @@ public class ChooseCountryAdapter extends RecyclerView.Adapter<ChooseCountryAdap
             countryName.setOnClickListener(v -> {
                 try {
                     countryName.setTextColor(countryName.getContext().getColor(R.color.yellowTextView));
-                    chooseCountryListener.onChooseCountry(countries.get(getLayoutPosition()));
+                    chooseCountryListener.onChoseCountry(countries.get(getLayoutPosition()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

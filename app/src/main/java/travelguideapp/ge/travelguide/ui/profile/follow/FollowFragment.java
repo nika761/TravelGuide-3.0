@@ -14,20 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.enums.FollowType;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.FollowersRequest;
 import travelguideapp.ge.travelguide.model.request.FollowingRequest;
 import travelguideapp.ge.travelguide.model.response.FollowResponse;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FollowingResponse;
-
-import java.util.ArrayList;
-import java.util.List;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 
 public class FollowFragment extends Fragment implements FollowFragmentListener {
@@ -278,7 +278,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onFollowAction(int userId, int position) {
         this.actionPosition = position;
-        DialogManager.getAskingDialog(followRecycler.getContext(), getString(R.string.unfollow) + "?", () -> presenter.startAction(new FollowRequest(userId)));
+        DialogManager.sureDialog(followRecycler.getContext(), getString(R.string.unfollow) + "?", () -> presenter.startAction(new FollowRequest(userId)));
     }
 
     @Override
@@ -300,7 +300,7 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
     @Override
     public void onError(String message) {
         loaderAnimation.setVisibility(View.GONE);
-        MyToaster.getToast(followRecycler.getContext(), message);
+        MyToaster.showToast(followRecycler.getContext(), message);
     }
 
     private void getFollowData() {
@@ -313,14 +313,14 @@ public class FollowFragment extends Fragment implements FollowFragmentListener {
                             if (customerUserId > 0)
                                 presenter.getFollowers(new FollowersRequest(customerUserId));
                             else
-                                presenter.getFollowers(new FollowersRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                                presenter.getFollowers(new FollowersRequest(GlobalPreferences.getUserId()));
                             break;
 
                         case FOLLOWING:
                             if (customerUserId > 0)
                                 presenter.getFollowing(new FollowingRequest(customerUserId));
                             else
-                                presenter.getFollowing(new FollowingRequest(GlobalPreferences.getUserId(followRecycler.getContext())));
+                                presenter.getFollowing(new FollowingRequest(GlobalPreferences.getUserId()));
                             break;
                     }
                 } catch (Exception e) {

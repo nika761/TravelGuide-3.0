@@ -4,8 +4,8 @@ import java.util.List;
 
 public class SetUserReportRequest {
 
-    private List<Integer> report_ids;
-    private int user_id;
+    private final List<Integer> report_ids;
+    private final int user_id;
 
     public SetUserReportRequest(int user_id, List<Integer> report_ids) {
         this.user_id = user_id;

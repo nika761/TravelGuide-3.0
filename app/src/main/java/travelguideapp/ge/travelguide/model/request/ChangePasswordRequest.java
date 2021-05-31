@@ -4,9 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ChangePasswordRequest implements Parcelable {
-    private String old_password;
-    private String new_password;
-    private String confirm_password;
+
+    private final String old_password;
+    private final String new_password;
+    private final String confirm_password;
 
     public ChangePasswordRequest(String currentPassword, String newPassword, String confirmPassword) {
         this.old_password = currentPassword;
@@ -55,4 +56,5 @@ public class ChangePasswordRequest implements Parcelable {
     public String getConfirmPassword() {
         return confirm_password;
     }
+
 }

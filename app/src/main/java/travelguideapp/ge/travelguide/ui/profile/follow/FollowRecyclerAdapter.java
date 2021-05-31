@@ -17,7 +17,7 @@ import travelguideapp.ge.travelguide.enums.FollowType;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FollowingResponse;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 import java.util.List;
 
@@ -186,7 +186,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 else
                     followBtn.setText(followBtn.getContext().getResources().getString(R.string.follow));
 
-                if (followers.get(position).getUser_id() == GlobalPreferences.getUserId(userImage.getContext()))
+                if (followers.get(position).getUser_id() == GlobalPreferences.getUserId())
                     followBtn.setVisibility(View.GONE);
 
                 if (isCustomer)
@@ -228,7 +228,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         void onBind(int position) {
             try {
 //                itemView.startAnimation(animation);
-                if (followings.get(position).getUser_id() == GlobalPreferences.getUserId(userImage.getContext()))
+                if (followings.get(position).getUser_id() == GlobalPreferences.getUserId())
                     unFollow.setVisibility(View.GONE);
 
                 HelperMedia.loadCirclePhoto(userName.getContext(), followings.get(position).getProfile_pic(), userImage);

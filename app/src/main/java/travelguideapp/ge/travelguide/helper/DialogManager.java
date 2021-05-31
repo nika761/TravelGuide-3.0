@@ -2,12 +2,15 @@ package travelguideapp.ge.travelguide.helper;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,7 +19,8 @@ import androidx.core.content.ContextCompat;
 import java.util.Calendar;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.callback.AskingDialogCallback;
+import travelguideapp.ge.travelguide.listener.DialogChoseListener;
+import travelguideapp.ge.travelguide.listener.DialogDismissListener;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 
 public class DialogManager {
@@ -49,14 +53,14 @@ public class DialogManager {
             }, 3000));
 
             signUpDialog.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-
-    public static AlertDialog profileInfoUpdatedDialog(Activity activity, String title, String body) {
+    public static AlertDialog profileUpdatedDialog(Activity activity, String title, String body) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         View dialogLayout = activity.getLayoutInflater().inflate(R.layout.dialog_profile_updated, null);
@@ -70,6 +74,7 @@ public class DialogManager {
         builder.setView(dialogLayout);
 
         AlertDialog dialog = builder.create();
+
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.bg_transparent));
             dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
@@ -107,7 +112,7 @@ public class DialogManager {
 
     }
 
-    public static void getAskingDialog(Context context, String question, AskingDialogCallback callback) {
+    public static void sureDialog(Context context, String question, DialogChoseListener callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(question)
                 .setPositiveButton(context.getString(R.string.yes), (dialog, which) -> callback.onYes())
@@ -122,6 +127,101 @@ public class DialogManager {
         }
 
         dialog.show();
+    }
+
+    public static void customErrorDialog(Activity activity, String message, DialogDismissListener dialogDismissListener) {
+        try {
+            if (activity == null) {
+                return;
+            }
+
+            Dialog errorDialog = new Dialog(activity);
+            View errorDialogLayout = activity.getLayoutInflater().inflate(R.layout.dialog_default_error, null);
+
+            TextView bodyTxt = errorDialogLayout.findViewById(R.id.dialog_error_body);
+
+            if (message == null) {
+                bodyTxt.setText(activity.getString(R.string.default_error_message));
+            } else {
+                bodyTxt.setText(message);
+            }
+
+            Button closeBtn = errorDialogLayout.findViewById(R.id.dialog_error_btn);
+
+            errorDialog.setContentView(errorDialogLayout);
+            errorDialog.setCancelable(false);
+
+            if (dialogDismissListener != null)
+                errorDialog.setOnDismissListener(dialog -> dialogDismissListener.onClosed());
+
+            closeBtn.setOnClickListener(v -> errorDialog.dismiss());
+
+            if (errorDialog.getWindow() != null) {
+                errorDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                errorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                errorDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+            }
+
+            errorDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static AlertDialog noInternetConnectionDialog(Activity activity) {
+        try {
+
+            if (activity == null) {
+                return null;
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            View errorDialogLayout = activity.getLayoutInflater().inflate(R.layout.dialog_no_internet_connection, null);
+
+            Button closeBtn = errorDialogLayout.findViewById(R.id.no_internet_connection_btn);
+
+            builder.setView(errorDialogLayout);
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.setCancelable(false);
+
+            closeBtn.setOnClickListener(v -> alertDialog.dismiss());
+
+            if (alertDialog.getWindow() != null) {
+                alertDialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.bg_transparent));
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+            }
+
+            return alertDialog;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Dialog progressDialog(Activity activity) {
+        try {
+
+            if (activity == null) {
+                return null;
+            }
+
+            Dialog dialog = new Dialog(activity);
+            dialog.setContentView(R.layout.dialog_progress);
+            try {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            dialog.setCancelable(false);
+            dialog.create();
+            return dialog;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

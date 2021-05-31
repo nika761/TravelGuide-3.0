@@ -3,25 +3,20 @@ package travelguideapp.ge.travelguide.ui.profile.editProfile;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -35,23 +30,21 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
-import travelguideapp.ge.travelguide.helper.SystemManager;
+import travelguideapp.ge.travelguide.model.customModel.AppSettings;
 import travelguideapp.ge.travelguide.model.customModel.Country;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.request.UpdateProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
+import travelguideapp.ge.travelguide.ui.login.password.ChangePasswordFragment;
 import travelguideapp.ge.travelguide.ui.profile.changeCountry.ChooseCountryFragment;
 import travelguideapp.ge.travelguide.ui.profile.changeCountry.ChooseCountryListener;
-import travelguideapp.ge.travelguide.ui.login.password.ForgotPasswordActivity;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.response.UpdateProfileResponse;
 
 import java.io.File;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static travelguideapp.ge.travelguide.helper.SystemManager.READ_EXTERNAL_STORAGE;
 
 public class ProfileEditActivity extends BaseActivity implements ProfileEditListener, ChooseCountryListener {
 
@@ -66,6 +59,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
     private RadioGroup genderGroup;
     private String photoUrl, nickFirst, nickSecond;
     private ConstraintLayout phoneCodeContainer;
+    private ScrollView scrollView;
 
     private boolean genderChecked;
     private boolean dateChanged;
@@ -94,7 +88,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     private void getProfileInfo() {
         if (userInfo == null) {
-            presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId(this)));
+            presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId()));
         } else {
             setProfileInfo(userInfo);
         }
@@ -113,6 +107,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
         nickNameHead = findViewById(R.id.edit_nick_name_head);
         email = findViewById(R.id.edit_email);
         emailHead = findViewById(R.id.edit_mail_head);
+        scrollView = findViewById(R.id.linear_scroll_edit);
 
         country = findViewById(R.id.edit_country);
         country.setOnClickListener(v -> getCountryChooserDialog());
@@ -127,6 +122,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
         phoneNumber = findViewById(R.id.edit_phone_number);
         phoneNumberHead = findViewById(R.id.edit_phone_number_head);
         nickNameBusy = findViewById(R.id.edit_nickName_offer);
+
         nickNameFirst = findViewById(R.id.edit_nickName_offer_1);
         nickNameFirst.setOnClickListener(v -> onChooseNick(1));
 
@@ -149,12 +145,15 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
         birthDate.setOnClickListener(v -> DialogManager.datePickerDialog(this, getOnDateSetListener(), birthDateTimeStamp));
 
         TextView changePassword = findViewById(R.id.edit_change_password);
-        changePassword.setOnClickListener(v -> startChangePassword());
+        changePassword.setOnClickListener(v -> {
+            closeKeyBoard(v);
+            loadChangePasswordFragment();
+        });
 
         TextView saveBtn = findViewById(R.id.edit_save_btn);
         saveBtn.setOnClickListener(v -> {
+            closeKeyBoard(v);
             onSaveAction();
-            hideKeyboard(v);
         });
 
         TextView toolbarBackBtn = findViewById(R.id.user_prf_back_btn);
@@ -178,7 +177,19 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
         if (permissionGranted) {
             HelperMedia.startImagePicker(this);
         } else {
-            MyToaster.getToast(this, "No permission granted");
+            MyToaster.showToast(this, "No permission granted");
+        }
+    }
+
+    public void setScrollView(boolean visible) {
+        try {
+            if (visible) {
+                scrollView.setVisibility(View.VISIBLE);
+            } else {
+                scrollView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -196,10 +207,10 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
             if (data.getData() != null) {
                 profileImageFile = getPickedImage(data.getData());
             } else {
-                MyToaster.getUnknownErrorToast(this);
+                MyToaster.showUnknownErrorToast(this);
             }
         } else {
-            MyToaster.getUnknownErrorToast(this);
+            MyToaster.showUnknownErrorToast(this);
         }
     }
 
@@ -215,13 +226,13 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
             case 1:
                 nickName.setText(nickFirst);
                 nickNameBusy.setVisibility(View.GONE);
-                HelperUI.inputDefault(this, nickName, nickNameHead);
+                HelperUI.inputDefault(this, nickName, nickNameHead, false);
                 break;
 
             case 2:
                 nickName.setText(nickSecond);
                 nickNameBusy.setVisibility(View.GONE);
-                HelperUI.inputDefault(this, nickName, nickNameHead);
+                HelperUI.inputDefault(this, nickName, nickNameHead, false);
                 break;
         }
 
@@ -230,6 +241,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
     private void getCountryChooserDialog() {
         try {
             ChooseCountryFragment countryFragment = ChooseCountryFragment.getInstance(userInfo.getCountries(), this);
+
             if (countryFragment.getDialog() != null) {
                 Dialog dialog = countryFragment.getDialog();
                 if (dialog.getWindow() != null) {
@@ -238,6 +250,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                     }
                 }
             }
+
             countryFragment.show(getSupportFragmentManager(), ChooseCountryFragment.TAG);
 
         } catch (Exception e) {
@@ -246,10 +259,8 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     }
 
-    private void startChangePassword() {
-        Intent intent = new Intent(ProfileEditActivity.this, ForgotPasswordActivity.class);
-        intent.putExtra("request_for", "change");
-        startActivity(intent);
+    private void loadChangePasswordFragment() {
+        HelperUI.loadFragment(ChangePasswordFragment.getInstance(), null, R.id.change_password_fragment_container, true, false, this);
     }
 
     private DatePickerDialog.OnDateSetListener getOnDateSetListener() {
@@ -261,7 +272,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                     birthDateTimeStamp = HelperDate.getDateInMilliFromDate(year, month, dayOfMonth);
                     dateChanged = true;
                 } else
-                    MyToaster.getToast(ProfileEditActivity.this, getString(R.string.age_restriction_warning));
+                    MyToaster.showToast(ProfileEditActivity.this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -283,14 +294,6 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
         }
     }
 
-    protected void hideKeyboard(View view) {
-        try {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void onSaveAction() {
         try {
@@ -326,79 +329,88 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
             String modelBirthDate = null;
             String modelGender = null;
 
-            if (checkForNullOrEmpty(name.getText().toString()))
-                HelperUI.inputWarning(this, name, nameHead);
-            else {
-                HelperUI.inputDefault(this, name, nameHead);
+            if (isNullOrEmpty(name.getText().toString())) {
+                HelperUI.inputWarning(this, name, nameHead, false);
+            } else {
+                HelperUI.inputDefault(this, name, nameHead, false);
                 modelName = name.getText().toString();
             }
 
-            if (checkForNullOrEmpty(surName.getText().toString()))
-                HelperUI.inputWarning(this, surName, surNameHead);
-            else {
-                HelperUI.inputDefault(this, surName, surNameHead);
+            if (isNullOrEmpty(surName.getText().toString())) {
+                HelperUI.inputWarning(this, surName, surNameHead, false);
+            } else {
+                HelperUI.inputDefault(this, surName, surNameHead, false);
                 modelSurname = surName.getText().toString();
             }
 
-            if (checkForNullOrEmpty(nickName.getText().toString()))
-                HelperUI.inputWarning(this, nickName, nickNameHead);
-            else {
-                HelperUI.inputDefault(this, nickName, nickNameHead);
+            if (isNullOrEmpty(nickName.getText().toString())) {
+                HelperUI.inputWarning(this, nickName, nickNameHead, false);
+            } else {
+                HelperUI.inputDefault(this, nickName, nickNameHead, false);
                 modelNick = nickName.getText().toString();
             }
 
-            if (checkForNullOrEmpty(birthDate.getText().toString()))
-                HelperUI.inputWarning(this, birthDate, birthDateHead);
-            else {
-                HelperUI.inputDefault(this, birthDate, birthDateHead);
+            if (isNullOrEmpty(birthDate.getText().toString())) {
+                HelperUI.inputWarning(this, birthDate, birthDateHead, false);
+            } else {
+                HelperUI.inputDefault(this, birthDate, birthDateHead, false);
                 modelBirthDate = birthDate.getText().toString();
             }
 
-            if (checkForNullOrEmpty(email.getText().toString()))
-                HelperUI.inputWarning(this, email, emailHead);
-            else {
+            if (isNullOrEmpty(email.getText().toString())) {
+                HelperUI.inputWarning(this, email, emailHead, false);
+            } else {
                 if (HelperUI.isEmailValid(email.getText().toString())) {
-                    HelperUI.inputDefault(this, email, emailHead);
+                    HelperUI.inputDefault(this, email, emailHead, false);
                     modelEmail = email.getText().toString();
                 } else
-                    HelperUI.inputWarning(this, email, emailHead);
+                    HelperUI.inputWarning(this, email, emailHead, false);
             }
 
-            if (!checkForNullOrEmpty(phoneNumber.getText().toString())) {
+            if (!isNullOrEmpty(phoneNumber.getText().toString())) {
                 if (checkNumber(phoneNumber)) {
-                    HelperUI.inputDefault(this, phoneCodeContainer, phoneNumberHead);
+                    HelperUI.inputDefault(this, phoneCodeContainer, phoneNumberHead, false);
                     modelNumber = phoneNumber.getText().toString();
                     modelPhoneIndex = countryCodePicker.getSelectedCountryCode();
                 } else {
-                    HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead);
+                    HelperUI.inputWarning(this, phoneCodeContainer, phoneNumberHead, false);
                 }
             }
 
-            if (!genderChecked)
-                MyToaster.getToast(this, getString(R.string.gender_restriction_warning));
-            else
+            if (!genderChecked) {
+                MyToaster.showToast(this, getString(R.string.gender_restriction_warning));
+            } else {
                 modelGender = String.valueOf(gender);
+            }
 
             if (modelName != null && modelSurname != null && modelNick != null && modelEmail != null && modelBirthDate != null && modelGender != null) {
                 UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
                 updateProfileRequest.setName(modelName);
                 updateProfileRequest.setLastname(modelSurname);
                 updateProfileRequest.setNickname(modelNick);
-                if (dateChanged)
-                    updateProfileRequest.setDate_of_birth(String.valueOf(birthDateTimeStamp));
-                else
-                    updateProfileRequest.setDate_of_birth(null);
                 updateProfileRequest.setEmail(modelEmail);
                 updateProfileRequest.setPhone_index(modelPhoneIndex);
                 updateProfileRequest.setPhone_num(modelNumber);
                 updateProfileRequest.setCity(city.getText().toString());
                 updateProfileRequest.setBiography(bio.getText().toString());
                 updateProfileRequest.setGender(modelGender);
-                if (photoUrl != null)
+
+                if (photoUrl != null) {
                     updateProfileRequest.setProfile_pic(photoUrl);
-                if (countryId != 0)
+                }
+
+                if (countryId != 0) {
                     updateProfileRequest.setCountry_id(countryId);
+                }
+
+                if (dateChanged) {
+                    updateProfileRequest.setDate_of_birth(String.valueOf(birthDateTimeStamp));
+                } else {
+                    updateProfileRequest.setDate_of_birth(null);
+                }
+
                 presenter.updateProfile(updateProfileRequest);
+
             } else {
                 getLoader(false);
             }
@@ -409,9 +421,6 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     }
 
-    private boolean checkForNullOrEmpty(String val) {
-        return val == null || val.isEmpty();
-    }
 
     @Override
     public void onGetProfileInfo(ProfileResponse.Userinfo userInfo) {
@@ -482,7 +491,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     private void finishUpdateFlow(String title, String body) {
         try {
-            AlertDialog dialog = DialogManager.profileInfoUpdatedDialog(this, title, body);
+            AlertDialog dialog = DialogManager.profileUpdatedDialog(this, title, body);
             dialog.show();
             new Handler().postDelayed(() -> {
                 dialog.dismiss();
@@ -506,13 +515,13 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                 break;
 
             default:
-                MyToaster.getToast(this, updateProfileResponse.getMessage());
+                MyToaster.showToast(this, updateProfileResponse.getMessage());
         }
     }
 
     public void onNickNameBusy(List<String> nicks, String message) {
         try {
-            HelperUI.inputWarning(this, nickName, nickNameHead);
+            HelperUI.inputWarning(this, nickName, nickNameHead, false);
             nickNameBusy.setVisibility(View.VISIBLE);
             nickNameFirst.setVisibility(View.VISIBLE);
             nickNameTwo.setVisibility(View.VISIBLE);
@@ -529,7 +538,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     @Override
     public void onPhotoUploadedToS3() {
-        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(GlobalPreferences.getAppSettings(this).getS3_BUCKET_NAME(), profileImageFile.getName());
+        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(AppSettings.create(GlobalPreferences.getAppSettings()).getS3_BUCKET_NAME(), profileImageFile.getName());
         startUpdateInfo();
     }
 
@@ -548,7 +557,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
     @Override
     public void onError(String message) {
         getLoader(false);
-        MyToaster.getToast(this, message);
+        MyToaster.showToast(this, message);
     }
 
     @Override
@@ -566,7 +575,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
     }
 
     @Override
-    public void onChooseCountry(Country country) {
+    public void onChoseCountry(Country country) {
         this.country.setText(country.getName());
         this.countryId = country.getId();
     }

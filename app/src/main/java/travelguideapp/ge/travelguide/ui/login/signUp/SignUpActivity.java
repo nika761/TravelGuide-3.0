@@ -3,7 +3,6 @@ package travelguideapp.ge.travelguide.ui.login.signUp;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,9 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -29,8 +26,9 @@ import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.model.customModel.AppSettings;
+import travelguideapp.ge.travelguide.ui.webView.WebActivity;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.CheckNickRequest;
 import travelguideapp.ge.travelguide.model.request.SignUpRequest;
 import travelguideapp.ge.travelguide.model.response.CheckNickResponse;
@@ -42,7 +40,7 @@ import com.hbb20.CountryCodePicker;
 import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import travelguideapp.ge.travelguide.enums.LoadWebViewBy;
+import travelguideapp.ge.travelguide.enums.WebViewType;
 
 public class SignUpActivity extends BaseActivity implements SignUpListener {
 
@@ -119,10 +117,10 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
         signUpCancelBtn.setOnClickListener(v -> finish());
 
         TextView terms = findViewById(R.id.terms_register);
-        terms.setOnClickListener(v -> HelperUI.startWebActivity(SignUpActivity.this, LoadWebViewBy.TERMS, ""));
+        terms.setOnClickListener(v -> startActivity(WebActivity.getWebViewIntent(SignUpActivity.this, WebViewType.TERMS, "")));
 
         TextView policy = findViewById(R.id.policy_register);
-        policy.setOnClickListener(v -> HelperUI.startWebActivity(SignUpActivity.this, LoadWebViewBy.POLICY, ""));
+        policy.setOnClickListener(v -> startActivity(WebActivity.getWebViewIntent(SignUpActivity.this, WebViewType.POLICY, "")));
 
         mDateSetListener = (datePicker, year, month, day) -> {
             try {
@@ -130,10 +128,10 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
                     registerBirthDate.setText(HelperDate.getDateStringFormat(year, month, day));
                     timeStamp = HelperDate.getDateInMilliFromDate(year, month, day);
                 } else {
-                    MyToaster.getToast(this, getString(R.string.age_restriction_warning));
+                    MyToaster.showToast(this, getString(R.string.age_restriction_warning));
                 }
             } catch (Exception e) {
-                MyToaster.getUnknownErrorToast(this);
+                MyToaster.showUnknownErrorToast(this);
                 e.printStackTrace();
             }
         };
@@ -230,7 +228,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
                 break;
 
             case 4:
-                MyToaster.getToast(this, signUpResponse.getMessage());
+                MyToaster.showToast(this, signUpResponse.getMessage());
                 HelperUI.setBackgroundWarning(eMail, eEmailHead, getString(R.string.email), this);
                 break;
 
@@ -245,7 +243,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
             case 8:
 
             case 9:
-                MyToaster.getToast(this, signUpResponse.getMessage());
+                MyToaster.showToast(this, signUpResponse.getMessage());
                 break;
         }
     }
@@ -253,12 +251,12 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
     @Override
     public void onError(String message) {
         loader.setVisibility(View.GONE);
-        MyToaster.getToast(this, message);
+        MyToaster.showToast(this, message);
     }
 
     @Override
     public void onPhotoUploadToS3() {
-        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(GlobalPreferences.getAppSettings(this).getS3_BUCKET_NAME(), profilePhotoFile.getName());
+        photoUrl = ClientManager.amazonS3Client(this).getResourceUrl(AppSettings.create(GlobalPreferences.getAppSettings()).getS3_BUCKET_NAME(), profilePhotoFile.getName());
     }
 
     @Override
@@ -289,7 +287,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
         if (permissionGranted) {
             HelperMedia.startImagePicker(this);
         } else {
-            MyToaster.getToast(this, "No permission granted");
+            MyToaster.showToast(this, "No permission granted");
         }
     }
 
@@ -307,7 +305,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
     private void onGetData() {
 
         if (!genderChecked) {
-            MyToaster.getToast(this, getString(R.string.gender_restriction_warning));
+            MyToaster.showToast(this, getString(R.string.gender_restriction_warning));
             return;
         }
 
@@ -386,7 +384,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
             loadingVisibility(true);
             SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password,
                     confirmPassword, String.valueOf(timeStamp), phoneIndex, photoUrl,
-                    phoneNumber, String.valueOf(GlobalPreferences.getLanguageId(this)), gender);
+                    phoneNumber, String.valueOf(GlobalPreferences.getLanguageId()), gender);
             signUpPresenter.signUp(signUpRequest);
         }
 

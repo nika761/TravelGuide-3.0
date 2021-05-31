@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.ui.music.PlayMusicListener;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AddFavoriteMusic;
 import travelguideapp.ge.travelguide.model.request.ByMoodRequest;
 import travelguideapp.ge.travelguide.model.request.SearchMusicRequest;
@@ -209,7 +208,7 @@ public class SearchMusicFragment extends Fragment implements SearchMusicListener
 
     @Override
     public void onGetError(String message) {
-        MyToaster.getToast(moodsRecycler.getContext(), message);
+        MyToaster.showToast(moodsRecycler.getContext(), message);
     }
 
     @Override

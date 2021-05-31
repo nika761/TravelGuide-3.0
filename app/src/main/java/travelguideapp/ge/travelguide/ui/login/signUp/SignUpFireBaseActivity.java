@@ -2,7 +2,6 @@ package travelguideapp.ge.travelguide.ui.login.signUp;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -13,18 +12,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
-import travelguideapp.ge.travelguide.helper.AuthManager;
+import travelguideapp.ge.travelguide.helper.AuthorizationManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.AuthModel;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.model.request.CheckNickRequest;
 import travelguideapp.ge.travelguide.model.request.SignUpWithFirebaseRequest;
@@ -118,9 +116,9 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
                     dateOfBirth.setText(HelperDate.getDateStringFormat(year, month, day));
                     dateInMillis = HelperDate.getDateInMilliFromDate(year, month, day);
                 } else
-                    MyToaster.getToast(this, getString(R.string.age_restriction_warning));
+                    MyToaster.showToast(this, getString(R.string.age_restriction_warning));
             } catch (Exception e) {
-                MyToaster.getUnknownErrorToast(this);
+                MyToaster.showUnknownErrorToast(this);
                 e.printStackTrace();
             }
         };
@@ -161,28 +159,28 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
 
     private void onSaveAction() {
 
-        if (eNickName.getText().toString() == null || eNickName.getText().toString().equals("")) {
+        if (isNullOrEmpty(eNickName.getText().toString())) {
             nickName = null;
-            HelperUI.inputWarning(this, eNickName, nickHead);
+            HelperUI.inputWarning(this, eNickName, nickHead, false);
         } else {
             nickName = eNickName.getText().toString();
-            HelperUI.inputDefault(this, eNickName, nickHead);
+            HelperUI.inputDefault(this, eNickName, nickHead, false);
         }
 
         if (dateInMillis == 0) {
-            HelperUI.inputWarning(this, dateOfBirth, dateHead);
+            HelperUI.inputWarning(this, dateOfBirth, dateHead, false);
         } else {
-            HelperUI.inputDefault(this, dateOfBirth, dateHead);
+            HelperUI.inputDefault(this, dateOfBirth, dateHead, false);
         }
 
         if (gender == 4) {
-            MyToaster.getToast(this, getString(R.string.gender_restriction_warning));
+            MyToaster.showToast(this, getString(R.string.gender_restriction_warning));
             return;
         }
 
         if (nickName != null && dateInMillis != 0) {
             updateUI(false);
-            presenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(dateInMillis), GlobalPreferences.getLanguageId(this), platformId, gender));
+            presenter.signUpWithFirebase(new SignUpWithFirebaseRequest(key, nickName, String.valueOf(dateInMillis), GlobalPreferences.getLanguageId(), platformId, gender));
         }
 
     }
@@ -237,7 +235,7 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
         authModel.setUserRole(signUpWithFirebaseResponse.getUser().getRole());
         authModel.setAccessToken(signUpWithFirebaseResponse.getAccess_token());
 
-        AuthManager.persistAuthState(this, authModel);
+        AuthorizationManager.persistAuthorizationState(authModel);
 
         updateUI(true);
 
@@ -247,7 +245,7 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
 
     @Override
     public void onError(String message) {
-        MyToaster.getToast(this, message);
+        MyToaster.showToast(this, message);
         updateUI(true);
     }
 

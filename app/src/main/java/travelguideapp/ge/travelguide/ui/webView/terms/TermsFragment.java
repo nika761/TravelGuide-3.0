@@ -9,7 +9,6 @@ import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,8 +18,7 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.response.TermsPolicyResponse;
 import travelguideapp.ge.travelguide.model.request.TermsPolicyRequest;
 
@@ -65,7 +63,7 @@ public class TermsFragment extends Fragment implements TermsContract.View {
 
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
 
-        termsPresenter.getTerms(new TermsPolicyRequest(GlobalPreferences.getLanguageId(cancelBtn.getContext())));
+        termsPresenter.getTerms(new TermsPolicyRequest(GlobalPreferences.getLanguageId()));
     }
 
     private void loadAnimation(View target, int animationId, int offset) {
@@ -89,7 +87,7 @@ public class TermsFragment extends Fragment implements TermsContract.View {
     @Override
     public void onGetError(String message) {
         animationView.setVisibility(View.GONE);
-        MyToaster.getToast(cancelBtn.getContext(), message);
+        MyToaster.showToast(cancelBtn.getContext(), message);
     }
 
     @Override

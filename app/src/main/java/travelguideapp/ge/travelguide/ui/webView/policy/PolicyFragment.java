@@ -4,99 +4,110 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.helper.SystemManager;
+import travelguideapp.ge.travelguide.base.BaseFragment;
 import travelguideapp.ge.travelguide.model.response.TermsPolicyResponse;
 import travelguideapp.ge.travelguide.model.request.TermsPolicyRequest;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
-import java.util.Objects;
-
-public class PolicyFragment extends Fragment implements PolicyListener {
+public class PolicyFragment extends BaseFragment<PolicyPresenter> implements PolicyListener {
 
     private Button cancelBtn;
-    private LottieAnimationView animationView;
     private TextView policyHeader;
     private WebView policyTextWebView;
-    private PolicyPresenter policyPresenter;
+    private PolicyPresenter presenter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_policy, container, false);
+        View view = inflater.inflate(R.layout.fragment_policy, container, false);
 
-        cancelBtn = v.findViewById(R.id.cancel_btn_policy);
+        cancelBtn = view.findViewById(R.id.cancel_btn_policy);
         cancelBtn.setText(getString(R.string.back_btn));
-        cancelBtn.setOnClickListener(view -> Objects.requireNonNull(getActivity()).onBackPressed());
+        cancelBtn.setOnClickListener(v -> closeFragment());
 
-        animationView = v.findViewById(R.id.animation_view_policy);
-        policyHeader = v.findViewById(R.id.policy_header);
-        policyTextWebView = v.findViewById(R.id.policy_text);
+        policyHeader = view.findViewById(R.id.policy_header);
+        policyTextWebView = view.findViewById(R.id.policy_text);
         policyTextWebView.getSettings();
         policyTextWebView.setBackgroundColor(getResources().getColor(R.color.whiteNone));
 
-        policyPresenter = new PolicyPresenter(this);
-
-        return v;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         loadAnimation(cancelBtn, R.anim.anim_swipe_left, 50);
-
-        policyPresenter.sendPolicyResponse(new TermsPolicyRequest(GlobalPreferences.getLanguageId(cancelBtn.getContext())));
-
     }
 
     @Override
-    public void onDestroy() {
-        if (policyPresenter != null) {
-            policyPresenter = null;
+    public void onStart() {
+        super.onStart();
+        attachPresenter();
+        getPolicy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        detachPresenter();
+    }
+
+    private void closeFragment() {
+        try {
+            getActivity().onBackPressed();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        super.onDestroy();
-    }
-
-    private void loadAnimation(View target, int animationId, int offset) {
-        Animation animation = AnimationUtils.loadAnimation(cancelBtn.getContext(), animationId);
-        animation.setStartOffset(offset);
-        target.startAnimation(animation);
-    }
-
-    private void updateUI(TermsPolicyResponse.Policy policy) {
-        policyHeader.setText(policy.getPolicy_title());
-        policyTextWebView.loadData("<html><body>" + policy.getPolicy_text() + "</body></html>", "text/html", "UTF-8");
-
-        animationView.setVisibility(View.GONE);
     }
 
     @Override
     public void onGetPolicy(TermsPolicyResponse.Policy policy) {
-        updateUI(policy);
+        try {
+            policyHeader.setText(policy.getPolicy_title());
+            policyTextWebView.loadData("<html><body>" + policy.getPolicy_text() + "</body></html>", "text/html", "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getPolicy() {
+        try {
+            presenter.getPolicy(new TermsPolicyRequest(GlobalPreferences.getLanguageId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void onGetError(String message) {
-        MyToaster.getToast(cancelBtn.getContext(), message);
+    public void attachPresenter() {
+        try {
+            presenter = PolicyPresenter.getInstance();
+            presenter.attachView(this);
+
+            PolicyPresenter policyPresenter = new PolicyPresenter();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    @Override
+    public void detachPresenter() {
+        try {
+            if (presenter != null) {
+                presenter.detachView();
+                presenter = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

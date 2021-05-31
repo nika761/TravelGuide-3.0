@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
+import travelguideapp.ge.travelguide.model.customModel.AppSettings;
 import travelguideapp.ge.travelguide.model.customModel.ItemMedia;
 import travelguideapp.ge.travelguide.model.parcelable.MediaFileParams;
 import travelguideapp.ge.travelguide.ui.music.ChooseMusicActivity;
@@ -31,7 +32,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 
 public class EditPostActivity extends BaseActivity implements EditPostCallback {
@@ -89,7 +90,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
         try {
             if (mediaFiles.size() > 0 && mediaFiles.get(0).getMediaType() == MediaFileParams.MediaType.VIDEO) {
                 long duration = HelperMedia.getVideoDurationLong(mediaFiles.get(0).getMediaPath());
-                if (duration > GlobalPreferences.getAppSettings(this).getStory_video_duration_max()) {
+                if (duration > AppSettings.create(GlobalPreferences.getAppSettings()).getStory_video_duration_max()) {
                     isMustTrim = true;
                     onTrimChoose(mediaFiles.get(0).getMediaPath(), 0);
                 } else {
@@ -153,11 +154,11 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
     public void onCropChoose(String path, int position) {
         this.adapterPosition = position;
 
-        if (GlobalPreferences.getAppSettings(this).getCROP_OPTION_X() != 0 && GlobalPreferences.getAppSettings(this).getCROP_OPTION_Y() != 0) {
+        if (AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_X() != 0 && AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_Y() != 0) {
             try {
                 CropImage.activity(Uri.fromFile(new File(path)))
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(GlobalPreferences.getAppSettings(this).getCROP_OPTION_X(), GlobalPreferences.getAppSettings(this).getCROP_OPTION_Y())
+                        .setAspectRatio(AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_X(), AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_Y())
                         .setMultiTouchEnabled(true)
                         .start(this);
             } catch (Exception e) {
@@ -191,8 +192,8 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
 
     @Override
     public void onTrimChoose(String path, int position) {
-        long minValue = GlobalPreferences.getAppSettings(this).getStory_video_duration_min();
-        long maxValue = GlobalPreferences.getAppSettings(this).getStory_video_duration_max();
+        long minValue = AppSettings.create(GlobalPreferences.getAppSettings()).getStory_video_duration_min();
+        long maxValue = AppSettings.create(GlobalPreferences.getAppSettings()).getStory_video_duration_max();
         this.adapterPosition = position;
         Uri videoUri = Uri.fromFile(new File(path));
         Intent intent = new Intent(this, ActVideoTrimmer.class);
@@ -259,7 +260,7 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
                     try {
                         String trimmedVideoPath = data.getStringExtra(TrimmerConstants.TRIMMED_VIDEO_PATH);
                         long duration = HelperMedia.getVideoDurationLong(trimmedVideoPath);
-                        if (duration > GlobalPreferences.getAppSettings(this).getStory_video_duration_max()) {
+                        if (duration > AppSettings.create(GlobalPreferences.getAppSettings()).getStory_video_duration_max()) {
 //                            MyToaster.getErrorToaster(this, "Video should be smaller then " + GlobalPreferences.getAppSettings(this).getStory_video_duration_max());
                             finish();
                         } else

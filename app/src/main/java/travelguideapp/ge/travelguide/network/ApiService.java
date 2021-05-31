@@ -101,107 +101,62 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-
-    @POST("register")
-    Call<SignUpResponse> signUp(@Body SignUpRequest signUpRequest);
-
-
-    @POST("check_email")
-    Call<CheckMailResponse> checkEmail(@Body CheckMailRequest checkMailRequest);
-
-
-    @POST("check_nick")
-    Call<CheckNickResponse> checkNick(@Body CheckNickRequest checkNickRequest);
-
-
     @GET("get_languages")
     Call<LanguagesResponse> getLanguages();
-
 
     @POST("get/texts")
     Call<LanguageStringsResponse> getLanguageStrings(@Body LanguageStringsRequest languageStringsRequest);
 
-
     @GET("get/app_settings")
     Call<AppSettingsResponse> getAppSettings();
-
 
     @POST("get_terms_policy")
     Call<TermsPolicyResponse> getTerms(@Body TermsPolicyRequest termsPolicyRequest);
 
-
-    @POST("login")
-    Call<LoginResponse> signIn(@Body LoginRequest loginRequest);
-
-
     @POST("get/about")
     Call<AboutResponse> getAbout(@Body AboutRequest aboutRequest);
-
 
     @POST("change_language")
     Call<ChangeLangResponse> changeLanguage(@Body ChangeLangRequest changeLangRequest);
 
-//    
-//    @POST("upload_content")
-//    Call<UploadPostResponse> uploadPost(
-//                                        @Body UploadPostRequest uploadPostRequest);
-
-
     @POST("set/post_story_view")
     Call<SetPostViewResponse> setPostView(@Body SetPostViewRequest setPostViewRequest);
-
 
     @POST("get/get_posts")
     Call<PostResponse> getPosts(@Body PostRequest postRequest);
 
-
     @POST("get/posts_by_user")
     Call<PostResponse> getPostsByUser(@Body PostByUserRequest customerPostRequest);
-
 
     @POST("get/profile")
     Call<ProfileResponse> getProfile(@Body ProfileRequest profileRequest);
 
-
     @POST("set/profile")
     Call<UpdateProfileResponse> updateProfile(@Body UpdateProfileRequest updateProfileRequest);
-
 
     @POST("get/musics")
     Call<MusicResponse> getMusics();
 
-
     @POST("set/post_go_click")
     Call<Object> chooseGo(@Body ChooseGoRequest chooseGoRequest);
-
 
     @POST("set/favorite_music")
     Call<AddFavoriteMusicResponse> addFavoriteMusic(@Body AddFavoriteMusic addFavoriteMusic);
 
-
-    @POST("change/password")
-    Call<ChangePasswordResponse> changePassword(@Body ChangePasswordRequest changePasswordRequest);
-
-
     @POST("get/favorite_music")
     Call<FavoriteMusicResponse> getFavoriteMusics();
-
 
     @POST("set/follower")
     Call<FollowResponse> follow(@Body FollowRequest followRequest);
 
-
     @POST("get/followings")
     Call<FollowingResponse> getFollowing(@Body FollowingRequest followingRequest);
-
 
     @POST("get/followers")
     Call<FollowerResponse> getFollowers(@Body FollowersRequest followersRequest);
 
-
     @POST("get/moods")
     Call<MoodResponse> getMoods();
-
 
     @POST("get/mood/musics")
     Call<MusicResponse> getMusicsByMood(@Body ByMoodRequest byMoodRequest);
@@ -214,8 +169,6 @@ public interface ApiService {
     @POST("search/all")
     Call<FullSearchResponse> searchAll(@Body FullSearchRequest fullSearchRequest);
 
-//    @POST("set/post/view")
-//    Call<SetPostViewResponse> setPostView(@Body SetPostViewRequest setPostViewRequest);
 
     @POST("get/posts_by_location")
     Call<PostResponse> getPostsByLocation(@Body PostByLocationRequest postByLocationRequest);
@@ -224,98 +177,51 @@ public interface ApiService {
     @POST("get/posts_by_hashtag")
     Call<PostResponse> getPostsByHashtag(@Body PostByHashtagRequest postByHashtagRequest);
 
-
-    @POST("email/verify_email")
-    Call<VerifyEmailResponse> verifyEmail(@Body VerifyEmailRequest verifyEmailRequest);
-
-
     @POST("set/story_like")
     Call<SetStoryLikeResponse> setStoryLike(@Body SetStoryLikeRequest setStoryLikeRequest);
-
-
-    @POST("set/post_report")
-    Call<SetReportResponse> setPostReport(@Body SetPostReportRequest setReportRequest);
-
-
-    @POST("set/user_report")
-    Call<SetReportResponse> setUserReport(@Body SetUserReportRequest setUserReportRequest);
-
-
-    @POST("set/comment_report")
-    Call<SetReportResponse> setCommentReport(@Body SetCommentReportRequest setCommentReportRequest);
 
 
     @POST("set/post_favourite")
     Call<SetPostFavoriteResponse> setPostFavorite(@Body SetPostFavoriteRequest setPostFavoriteRequest);
 
-
-    @POST("password/email")
-    Call<ForgotPasswordResponse> forgotPassword(@Body ForgotPasswordRequest forgotPasswordRequest);
-
-
-    @POST("password/reset")
-    Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
-
-
     @POST("delete/post")
     Call<DeleteStoryResponse> deleteStory(@Body DeleteStoryRequest deleteStoryRequest);
-
 
     @POST("get/my_favourite_posts")
     Call<PostResponse> getFavoritePosts(@Body FavoritePostRequest favoritePostRequest);
 
-
     @POST("set/post_share")
     Call<SharePostResponse> setPostShare(@Body SharePostRequest sharePostRequest);
-
 
     @POST("search/hashtags")
     Call<HashtagResponse> getHashtags(@Body SearchHashtagRequest hashtagRequest);
 
-
     @POST("search/followers")
     Call<FollowerResponse> searchFollowers(@Body SearchFollowersRequest searchFollowersRequest);
-
 
     @POST("get/post_story_comments")
     Call<CommentResponse> getStoryComments(@Body CommentRequest commentRequest);
 
-
     @POST("get/post_comment_replies")
     Call<MoreReplyResponse> getMoreCommentReplies(@Body GetMoreCommentRequest moreCommentRequest);
-
 
     @POST("set/post_story_comment")
     Call<AddCommentResponse> addStoryComment(@Body AddCommentRequest addCommentRequest);
 
-
     @POST("delete/post_story_comment")
     Call<DeleteCommentResponse> deleteStoryComment(@Body DeleteCommentRequest deleteCommentRequest);
-
 
     @POST("delete/post_story_comment_reply")
     Call<DeleteReplyResponse> deleteStoryCommentReply(@Body DeleteReplyRequest deleteReplyRequest);
 
-
     @POST("set/post_story_comment_reply")
     Call<AddCommentReplyResponse> addStoryCommentReply(@Body AddCommentReplyRequest replyRequest);
-
 
     @POST("set/post_story_comment_like")
     Call<LikeCommentResponse> likeStoryComment(@Body LikeCommentRequest likeCommentRequest);
 
-
     @POST("set/post_story_comment_reply_like")
     Call<LikeCommentReplyResponse> likeCommentReply(@Body LikeCommentReplyRequest likeCommentReplyRequest);
-
-
-    @POST("login/by_outer_account")
-    Call<AuthWithFirebaseResponse> authWithFirebase(@Body AuthWitFirebaseRequest authWitFirebaseRequest);
-
-
-    @POST("register_outer_account")
-    Call<SignUpWithFirebaseResponse> signUpWithFirebase(@Body SignUpWithFirebaseRequest signUpWithFirebaseRequest);
-
 
     @POST("create/post")
     Call<UploadPostResponse> uploadPost(

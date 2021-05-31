@@ -3,9 +3,8 @@ package travelguideapp.ge.travelguide.model.customModel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
-
 public class AuthModel implements Parcelable {
+
     private int userId;
     private int userRole;
     private String loginType;

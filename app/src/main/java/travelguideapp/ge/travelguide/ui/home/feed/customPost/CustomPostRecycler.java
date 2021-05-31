@@ -49,12 +49,13 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.custom.CustomTimer;
-import travelguideapp.ge.travelguide.model.customModel.PostView;
+import travelguideapp.ge.travelguide.model.customModel.AppSettings;
+import travelguideapp.ge.travelguide.model.customModel.PostViewItem;
 import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.ui.home.feed.HashtagAdapter;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
+import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -120,7 +121,7 @@ public class CustomPostRecycler extends RecyclerView {
 
     private void init(Context context) {
         this.context = context.getApplicationContext();
-        ownerUserId = GlobalPreferences.getUserId(context);
+        ownerUserId = GlobalPreferences.getUserId();
         try {
             Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             Point point = new Point();
@@ -133,7 +134,7 @@ public class CustomPostRecycler extends RecyclerView {
 
         try {
 
-            long time = GlobalPreferences.getAppSettings(context).getPOST_VIEW_TIME();
+            long time = AppSettings.create(GlobalPreferences.getAppSettings()).getPOST_VIEW_TIME();
 
             if (time != 0)
                 customTimer = new CustomTimer(time, 1000);
@@ -438,9 +439,9 @@ public class CustomPostRecycler extends RecyclerView {
         try {
             if (customTimer != null) {
                 customTimer.cancel();
+                customTimer.setCurrentPost(new PostViewItem(post.getPost_id(), story.getStory_id()));
+                customTimer.start();
             }
-            customTimer.setPostView(new PostView(post.getPost_id(), story.getStory_id()));
-            customTimer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }

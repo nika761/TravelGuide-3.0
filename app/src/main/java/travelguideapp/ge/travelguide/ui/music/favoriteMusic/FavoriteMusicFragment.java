@@ -17,7 +17,6 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.request.AddFavoriteMusic;
 import travelguideapp.ge.travelguide.model.response.AddFavoriteMusicResponse;
 import travelguideapp.ge.travelguide.ui.music.PlayMusicListener;
-import travelguideapp.ge.travelguide.utility.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.response.FavoriteMusicResponse;
 
 import java.util.List;
@@ -81,7 +80,7 @@ public class FavoriteMusicFragment extends Fragment implements FavoriteMusicList
 
     @Override
     public void onError(String message) {
-        MyToaster.getToast(favoriteMusicRecycler.getContext(), message);
+        MyToaster.showToast(favoriteMusicRecycler.getContext(), message);
     }
 
 
