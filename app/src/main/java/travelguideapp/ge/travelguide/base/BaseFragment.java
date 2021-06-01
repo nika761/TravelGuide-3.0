@@ -16,12 +16,29 @@ import travelguideapp.ge.travelguide.helper.AuthorizationManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 
-public abstract class BaseFragment extends Fragment implements BaseListener {
+public abstract class BaseFragment<Presenter extends BasePresenter<?>> extends Fragment implements BaseViewListener {
 
     private int toastCount = 0;
     protected Dialog loader;
-
     private static AlertDialog alertDialog;
+
+    protected Presenter presenter;
+
+    protected void attachPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void detachPresenter() {
+        try {
+            if (presenter != null) {
+                presenter.detachView();
+                presenter = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onStart() {
@@ -33,6 +50,7 @@ public abstract class BaseFragment extends Fragment implements BaseListener {
     public void onStop() {
         super.onStop();
         detachLoader();
+        detachPresenter();
     }
 
     @Override
@@ -78,7 +96,7 @@ public abstract class BaseFragment extends Fragment implements BaseListener {
     @Override
     public void onUnknownError() {
         try {
-            DialogManager.customErrorDialog(getActivity(), null, null);
+            DialogManager.defaultDialog(getActivity(), null, null);
         } catch (Exception e) {
             e.printStackTrace();
         }

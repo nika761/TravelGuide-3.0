@@ -42,7 +42,7 @@ import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import static travelguideapp.ge.travelguide.utility.LogUtils.LOG_E;
 import static travelguideapp.ge.travelguide.utility.LogUtils.makeLogTag;
 
-public class ProfileFragment extends BaseFragment implements ProfileFragmentListener {
+public class ProfileFragment extends BaseFragment<ProfileFragmentPresenter> implements ProfileFragmentListener {
 
     private static final String TAG = makeLogTag(ProfileFragment.class);
 
@@ -79,7 +79,6 @@ public class ProfileFragment extends BaseFragment implements ProfileFragmentList
     private Context context;
 
     private ProfileResponse.Userinfo userProfileInfo;
-    private ProfileFragmentPresenter presenter;
     private ProfileFragmentCallBacks callBack;
 
     @Nullable
@@ -152,8 +151,16 @@ public class ProfileFragment extends BaseFragment implements ProfileFragmentList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        attachPresenter();
+        attachPresenter(ProfileFragmentPresenter.with(this));
         getProfileInfo();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        attachPresenter(ProfileFragmentPresenter.with(this));
+        changeStatusBarColor();
+        updateProfileInfo();
     }
 
     private void changeStatusBarColor() {
@@ -311,44 +318,6 @@ public class ProfileFragment extends BaseFragment implements ProfileFragmentList
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void attachPresenter() {
-        try {
-            if (presenter == null) {
-                presenter = ProfileFragmentPresenter.getInstance();
-                presenter.attachView(this);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void detachPresenter() {
-        try {
-            if (presenter != null) {
-                presenter.detachView();
-                presenter = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        attachPresenter();
-        changeStatusBarColor();
-        updateProfileInfo();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        detachPresenter();
     }
 
     public interface ProfileFragmentCallBacks {

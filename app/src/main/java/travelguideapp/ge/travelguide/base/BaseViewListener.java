@@ -1,6 +1,6 @@
 package travelguideapp.ge.travelguide.base;
 
-public interface BaseListener {
+public interface BaseViewListener {
 
     void showLoader();
 
@@ -9,8 +9,6 @@ public interface BaseListener {
     void attachLoader();
 
     void detachLoader();
-
-    void attachPresenter();
 
     void detachPresenter();
 

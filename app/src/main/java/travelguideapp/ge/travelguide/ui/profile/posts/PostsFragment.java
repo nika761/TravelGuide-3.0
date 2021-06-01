@@ -26,7 +26,7 @@ import static travelguideapp.ge.travelguide.model.parcelable.PostHomeParams.Type
 import static travelguideapp.ge.travelguide.model.parcelable.PostHomeParams.Type.FAVORITES;
 import static travelguideapp.ge.travelguide.model.parcelable.PostHomeParams.Type.MY_POSTS;
 
-public class PostsFragment extends BaseFragment implements PostListener {
+public class PostsFragment extends BaseFragment<PostPresenter> implements PostListener {
 
     public static PostsFragment getInstance(PostChooseListener callback) {
         PostsFragment userPostsFragment = new PostsFragment();
@@ -37,7 +37,6 @@ public class PostsFragment extends BaseFragment implements PostListener {
     private RecyclerView postsRecycler;
 
     private PostChooseListener callback;
-    private PostPresenter presenter;
     private List<PostResponse.Posts> posts;
     private PostAdapter postAdapter;
     private PostHomeParams.Type loadPageType;
@@ -59,34 +58,29 @@ public class PostsFragment extends BaseFragment implements PostListener {
     @Override
     public void onStart() {
         super.onStart();
-        attachPresenter();
+        attachPresenter(PostPresenter.with(this));
         getExtras();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        detachPresenter();
-        if (postAdapter != null)
-            postAdapter = null;
     }
 
     private void getExtras() {
         try {
+            if (posts != null)
+                return;
+
             this.loadPageType = (PostHomeParams.Type) getArguments().getSerializable("request_type");
             if (loadPageType != null) {
                 switch (loadPageType) {
                     case MY_POSTS:
-                        presenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(), 0), MY_POSTS, false);
+                        presenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(), 0), MY_POSTS);
                         break;
 
                     case CUSTOMER_POSTS:
                         this.customerUserId = getArguments().getInt("customer_user_id");
-                        presenter.getPosts(new PostByUserRequest(customerUserId, 0), CUSTOMER_POSTS, false);
+                        presenter.getPosts(new PostByUserRequest(customerUserId, 0), CUSTOMER_POSTS);
                         break;
 
                     case FAVORITES:
-                        presenter.getPosts(new FavoritePostRequest(0), FAVORITES, false);
+                        presenter.getPosts(new FavoritePostRequest(0), FAVORITES);
                         break;
 
                     case SEARCH:
@@ -129,28 +123,6 @@ public class PostsFragment extends BaseFragment implements PostListener {
     }
 
     @Override
-    public void attachPresenter() {
-        try {
-            presenter = PostPresenter.getInstance();
-            presenter.attachView(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void detachPresenter() {
-        try {
-            if (presenter != null) {
-                presenter.detachView();
-                presenter = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void onLazyLoad(int postId) {
         if (presenter != null)
             switch (loadPageType) {
@@ -158,15 +130,15 @@ public class PostsFragment extends BaseFragment implements PostListener {
                     break;
 
                 case FAVORITES:
-                    presenter.getPosts(new FavoritePostRequest(postId), FAVORITES, false);
+                    presenter.getPosts(new FavoritePostRequest(postId), FAVORITES);
                     break;
 
                 case MY_POSTS:
-                    presenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(), postId), MY_POSTS, false);
+                    presenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(), postId), MY_POSTS);
                     break;
 
                 case CUSTOMER_POSTS:
-                    presenter.getPosts(new PostByUserRequest(customerUserId, postId), CUSTOMER_POSTS, false);
+                    presenter.getPosts(new PostByUserRequest(customerUserId, postId), CUSTOMER_POSTS);
                     break;
             }
     }

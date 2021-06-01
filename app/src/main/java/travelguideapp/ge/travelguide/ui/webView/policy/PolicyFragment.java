@@ -17,12 +17,11 @@ import travelguideapp.ge.travelguide.model.response.TermsPolicyResponse;
 import travelguideapp.ge.travelguide.model.request.TermsPolicyRequest;
 import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
-public class PolicyFragment extends BaseFragment implements PolicyListener {
+public class PolicyFragment extends BaseFragment<PolicyPresenter> implements PolicyListener {
 
     private Button cancelBtn;
     private TextView policyHeader;
     private WebView policyTextWebView;
-    private PolicyPresenter presenter;
 
     @Nullable
     @Override
@@ -50,14 +49,8 @@ public class PolicyFragment extends BaseFragment implements PolicyListener {
     @Override
     public void onStart() {
         super.onStart();
-        attachPresenter();
+        attachPresenter(PolicyPresenter.with(this));
         getPolicy();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        detachPresenter();
     }
 
     private void closeFragment() {
@@ -81,30 +74,6 @@ public class PolicyFragment extends BaseFragment implements PolicyListener {
     private void getPolicy() {
         try {
             presenter.getPolicy(new TermsPolicyRequest(GlobalPreferences.getLanguageId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void attachPresenter() {
-        try {
-            presenter = PolicyPresenter.getInstance();
-            presenter.attachView(this);
-
-            PolicyPresenter policyPresenter = new PolicyPresenter();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void detachPresenter() {
-        try {
-            if (presenter != null) {
-                presenter.detachView();
-                presenter = null;
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

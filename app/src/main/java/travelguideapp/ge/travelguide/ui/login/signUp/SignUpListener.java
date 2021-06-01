@@ -1,9 +1,10 @@
 package travelguideapp.ge.travelguide.ui.login.signUp;
 
+import travelguideapp.ge.travelguide.base.BaseViewListener;
 import travelguideapp.ge.travelguide.model.response.SignUpResponse;
 import travelguideapp.ge.travelguide.model.response.CheckNickResponse;
 
-public interface SignUpListener {
+public interface SignUpListener extends BaseViewListener {
 
     void onSignUpResponse(SignUpResponse signUpResponse);
 

@@ -1,9 +1,7 @@
 package travelguideapp.ge.travelguide.model.request;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
-public class ChangePasswordRequest implements Parcelable {
+public class ChangePasswordRequest {
 
     private final String old_password;
     private final String new_password;
@@ -14,36 +12,6 @@ public class ChangePasswordRequest implements Parcelable {
         this.new_password = newPassword;
         this.confirm_password = confirmPassword;
     }
-
-    private ChangePasswordRequest(Parcel in) {
-        old_password = in.readString();
-        new_password = in.readString();
-        confirm_password = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(old_password);
-        dest.writeString(new_password);
-        dest.writeString(confirm_password);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ChangePasswordRequest> CREATOR = new Creator<ChangePasswordRequest>() {
-        @Override
-        public ChangePasswordRequest createFromParcel(Parcel in) {
-            return new ChangePasswordRequest(in);
-        }
-
-        @Override
-        public ChangePasswordRequest[] newArray(int size) {
-            return new ChangePasswordRequest[size];
-        }
-    };
 
     public String getCurrentPassword() {
         return old_password;

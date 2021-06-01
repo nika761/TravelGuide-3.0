@@ -198,7 +198,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
                         finish();
                     }
                 } else {
-                    if (GlobalPreferences.getLanguageId() != 0) {
+                    if (GlobalPreferences.getLanguageId() != -1) {
                         if (GlobalPreferences.getAccessToken() != null && !GlobalPreferences.getAccessToken().equals(""))
                             openHome();
                         else

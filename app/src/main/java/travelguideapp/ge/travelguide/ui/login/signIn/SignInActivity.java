@@ -62,7 +62,6 @@ public class SignInActivity extends BaseActivity implements SignInListener {
     private SignInPresenter signInPresenter;
     private CallbackManager callbackManager;
 
-
     private TextView enterMailHead;
     private TextView enterPasswordHead;
     private TextView and;

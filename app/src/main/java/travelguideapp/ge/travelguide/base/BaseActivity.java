@@ -32,7 +32,7 @@ import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
  * In the beginning was the Word, and the Word was with God, and the Word was God.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements BaseListener {
+public abstract class BaseActivity extends AppCompatActivity {
 
     public static final String READ_EXTERNAL_STORAGE = "read_external_storage";
     public static final String WRITE_EXTERNAL_STORAGE = "write_external_storage";
@@ -41,8 +41,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseList
     public static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 4321;
 
     private int toastCount = 0;
-    protected Dialog loader;
-    private static AlertDialog alertDialog;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -93,7 +91,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseList
         }
     }
 
-
     protected void openKeyBoard(View view) {
         try {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -111,99 +108,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseList
             if (inputMethodManager != null) {
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        attachLoader();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        detachLoader();
-    }
-
-    @Override
-    public void showLoader() {
-        try {
-            loader.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void hideLoader() {
-        try {
-            if (loader.isShowing())
-                loader.dismiss();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void attachLoader() {
-        try {
-            loader = DialogManager.progressDialog(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void detachLoader() {
-        try {
-            if (loader != null) {
-                loader.dismiss();
-                loader = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void attachPresenter() {
-
-    }
-
-    @Override
-    public void detachPresenter() {
-
-    }
-
-    @Override
-    public void onConnectionError() {
-        try {
-            if (alertDialog == null) {
-                alertDialog = DialogManager.noInternetConnectionDialog(this);
-                alertDialog.setOnDismissListener(dialog -> alertDialog = null);
-                alertDialog.show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onAuthenticationError() {
-        try {
-            AuthorizationManager.logOut(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onUnknownError() {
-        try {
-            DialogManager.customErrorDialog(this, null, null);
         } catch (Exception e) {
             e.printStackTrace();
         }

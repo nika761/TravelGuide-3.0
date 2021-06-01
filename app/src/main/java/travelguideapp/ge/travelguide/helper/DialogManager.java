@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
@@ -129,16 +128,16 @@ public class DialogManager {
         dialog.show();
     }
 
-    public static void customErrorDialog(Activity activity, String message, DialogDismissListener dialogDismissListener) {
+    public static void defaultDialog(Activity activity, String message, DialogDismissListener dialogDismissListener) {
         try {
             if (activity == null) {
                 return;
             }
 
-            Dialog errorDialog = new Dialog(activity);
-            View errorDialogLayout = activity.getLayoutInflater().inflate(R.layout.dialog_default_error, null);
+            Dialog defaultDialog = new Dialog(activity);
+            View defaultDialogView = activity.getLayoutInflater().inflate(R.layout.dialog_default, null);
 
-            TextView bodyTxt = errorDialogLayout.findViewById(R.id.dialog_error_body);
+            TextView bodyTxt = defaultDialogView.findViewById(R.id.dialog_error_body);
 
             if (message == null) {
                 bodyTxt.setText(activity.getString(R.string.default_error_message));
@@ -146,23 +145,23 @@ public class DialogManager {
                 bodyTxt.setText(message);
             }
 
-            Button closeBtn = errorDialogLayout.findViewById(R.id.dialog_error_btn);
+            Button closeBtn = defaultDialogView.findViewById(R.id.dialog_error_btn);
 
-            errorDialog.setContentView(errorDialogLayout);
-            errorDialog.setCancelable(false);
+            defaultDialog.setContentView(defaultDialogView);
+            defaultDialog.setCancelable(false);
 
             if (dialogDismissListener != null)
-                errorDialog.setOnDismissListener(dialog -> dialogDismissListener.onClosed());
+                defaultDialog.setOnDismissListener(dialog -> dialogDismissListener.onClosed());
 
-            closeBtn.setOnClickListener(v -> errorDialog.dismiss());
+            closeBtn.setOnClickListener(v -> defaultDialog.dismiss());
 
-            if (errorDialog.getWindow() != null) {
-                errorDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                errorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            if (defaultDialog.getWindow() != null) {
+                defaultDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                defaultDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 //                errorDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
             }
 
-            errorDialog.show();
+            defaultDialog.show();
         } catch (Exception e) {
             e.printStackTrace();
         }

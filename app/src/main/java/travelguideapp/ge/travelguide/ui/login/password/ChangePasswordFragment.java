@@ -24,7 +24,7 @@ import travelguideapp.ge.travelguide.model.response.ChangePasswordResponse;
 import static travelguideapp.ge.travelguide.utility.LogUtils.LOG_E;
 import static travelguideapp.ge.travelguide.utility.LogUtils.makeLogTag;
 
-public class ChangePasswordFragment extends BaseFragment implements ChangePasswordListener {
+public class ChangePasswordFragment extends BaseFragment<ChangePasswordPresenter> implements ChangePasswordListener {
 
     private static final String TAG = makeLogTag(ChangePasswordFragment.class);
 
@@ -37,8 +37,6 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
     public static ChangePasswordFragment getInstance() {
         return new ChangePasswordFragment();
     }
-
-    private ChangePasswordPresenter presenter;
 
     private ImageButton newPasswordBtn, currentPasswordBtn, confirmPasswordBtn;
     private TextView currentHead, passwordHead, confirmHead;
@@ -79,13 +77,7 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
     @Override
     public void onStart() {
         super.onStart();
-        attachPresenter();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        detachPresenter();
+        attachPresenter(ChangePasswordPresenter.with(this));
     }
 
     private void onPasswordStateChange(String passwordType) {
@@ -162,7 +154,6 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
         }
     }
 
-
     private void checkPasswords() {
         try {
             if (isNullOrEmpty(currentField.getText().toString())) {
@@ -199,7 +190,7 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
 
         try {
             if (currentPassword != null && password != null && passwordConfirm != null) {
-                if (HelperUI.checkPassword(currentPassword) && HelperUI.checkPassword(password) && HelperUI.checkConfirmPassword(password, passwordConfirm)) {
+                if (HelperUI.checkPasswordChanging(currentPassword, password, passwordConfirm)) {
                     startChangePassword();
                 } else {
                     showToast(getString(R.string.not_match_password));
@@ -227,41 +218,17 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
         }
     }
 
-
     @Override
     public void onChangePasswordResponse(ChangePasswordResponse changePasswordResponse) {
         try {
             if (changePasswordResponse.getStatus() == 0) {
-                DialogManager.customErrorDialog(getActivity(), changePasswordResponse.getMessage(), this::onPasswordChanged);
+                DialogManager.defaultDialog(getActivity(), changePasswordResponse.getMessage(), this::onPasswordChanged);
             } else {
-                DialogManager.customErrorDialog(getActivity(), changePasswordResponse.getMessage(), null);
+                DialogManager.defaultDialog(getActivity(), changePasswordResponse.getMessage(), null);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    @Override
-    public void attachPresenter() {
-        try {
-            presenter = ChangePasswordPresenter.getInstance();
-            presenter.attachView(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void detachPresenter() {
-        try {
-            if (presenter != null) {
-                presenter.detachView();
-                presenter = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }

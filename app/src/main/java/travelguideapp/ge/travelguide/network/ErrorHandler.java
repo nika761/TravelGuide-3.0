@@ -1,8 +1,17 @@
-package travelguideapp.ge.travelguide.utility;
+package travelguideapp.ge.travelguide.network;
 
-public class ResponseHandler {
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.net.UnknownHostException;
 
-    public static class Fail {
+import okhttp3.ResponseBody;
+import retrofit2.Converter;
+import retrofit2.Response;
+import travelguideapp.ge.travelguide.network.RetrofitManager;
+
+public class ErrorHandler {
+
+    public static class FailBody {
 
         public static final String KIND_NO_CONNECTION = "KIND_NO_CONNECTION";
         public static final String KIND_CUSTOM_FAIL = "KIND_CUSTOM_FAIL";
@@ -13,7 +22,25 @@ public class ResponseHandler {
         private String kind;
         private int code;
 
-        public Fail() {
+        public FailBody() {
+        }
+
+        public static FailBody from(Throwable throwable) throws Exception {
+            try {
+                FailBody responseFail = new FailBody();
+
+                if (throwable instanceof UnknownHostException) {
+                    responseFail.setCode(CODE_NO_CONNECTION);
+                    responseFail.setKind(KIND_NO_CONNECTION);
+                } else {
+                    responseFail.setCode(CODE_CUSTOM_FAIL);
+                    responseFail.setKind(KIND_CUSTOM_FAIL);
+                }
+                return responseFail;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         public int getCode() {
@@ -41,14 +68,31 @@ public class ResponseHandler {
         }
     }
 
-    public static class Error {
+    public static class ErrorBody {
 
         private String message;
-
         private int responseCode;
         private int status;
 
-        public Error() {
+        public ErrorBody() {
+        }
+
+        public static ErrorBody from(Response<?> response) throws Exception {
+
+            Converter<ResponseBody, ErrorBody> bodyConverter = RetrofitManager.getRetrofit().
+                    responseBodyConverter(ErrorBody.class, new Annotation[0]);
+
+            ErrorBody responseError;
+
+            try {
+                responseError = bodyConverter.convert(response.errorBody());
+                responseError.setResponseCode(response.code());
+            } catch (IOException e) {
+                return null;
+            }
+
+            return responseError;
+
         }
 
         public String getMessage() {

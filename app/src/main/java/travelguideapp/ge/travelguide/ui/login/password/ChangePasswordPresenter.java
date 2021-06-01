@@ -2,62 +2,34 @@ package travelguideapp.ge.travelguide.ui.login.password;
 
 import retrofit2.Response;
 import travelguideapp.ge.travelguide.base.BasePresenter;
-import travelguideapp.ge.travelguide.base.BaseResponse;
-import travelguideapp.ge.travelguide.utility.ResponseHandler;
+import travelguideapp.ge.travelguide.network.BaseCallback;
 import travelguideapp.ge.travelguide.model.request.ChangePasswordRequest;
 import travelguideapp.ge.travelguide.model.response.ChangePasswordResponse;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 import travelguideapp.ge.travelguide.network.api.AuthorizationApi;
+import travelguideapp.ge.travelguide.network.ErrorHandler;
 
 public class ChangePasswordPresenter extends BasePresenter<ChangePasswordListener> {
 
-    private ChangePasswordListener listener;
-    private AuthorizationApi authorizationApi;
+    private final AuthorizationApi authorizationApi;
 
-    public static ChangePasswordPresenter getInstance() {
-        return new ChangePasswordPresenter();
-    }
-
-    private ChangePasswordPresenter() {
-    }
-
-    @Override
-    protected void attachView(ChangePasswordListener changePasswordListener) {
-        this.listener = changePasswordListener;
+    private ChangePasswordPresenter(ChangePasswordListener changePasswordListener) {
+        super.attachView(changePasswordListener);
         this.authorizationApi = RetrofitManager.getAuthorizationApi();
     }
 
-    @Override
-    protected void detachView() {
-        try {
-            this.listener = null;
-            this.authorizationApi = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static ChangePasswordPresenter with(ChangePasswordListener changePasswordListener) {
+        return new ChangePasswordPresenter(changePasswordListener);
     }
 
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
-        if (isViewAttached(listener))
-            listener.showLoader();
-
-        authorizationApi.changePassword(changePasswordRequest).enqueue(new BaseResponse<ChangePasswordResponse>() {
+        super.showLoader();
+        authorizationApi.changePassword(changePasswordRequest).enqueue(new BaseCallback<ChangePasswordResponse>(this) {
             @Override
             protected void onSuccess(Response<ChangePasswordResponse> response) {
-                if (isViewAttached(listener)) {
-                    listener.hideLoader();
+                if (isViewAttached()) {
                     listener.onChangePasswordResponse(response.body());
                 }
-            }
-
-            @Override
-            protected void onError(ResponseHandler.Error responseError) {
-                onResponseError(responseError, listener);
-            }
-
-            @Override
-            protected void onFail(ResponseHandler.Fail responseFail) {
-                onRequestFailed(responseFail, listener);
             }
         });
 

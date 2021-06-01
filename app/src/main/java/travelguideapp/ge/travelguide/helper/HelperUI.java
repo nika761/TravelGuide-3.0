@@ -88,6 +88,19 @@ public class HelperUI {
         return passwordValidate;
     }
 
+    public static boolean checkPasswordChanging(String currentPassword, String password, String confirmPassword) {
+
+        if (currentPassword.trim().length() < 8) {
+            return false;
+        }
+
+        if (password.trim().length() < 8) {
+            return false;
+        }
+
+        return password.equals(confirmPassword);
+    }
+
 
     public static boolean checkConfirmPassword(String password, String confirmPassword) {
         boolean confirmPasswordValidate = false;

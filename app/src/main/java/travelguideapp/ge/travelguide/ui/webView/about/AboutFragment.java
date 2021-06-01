@@ -17,9 +17,8 @@ import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.request.AboutRequest;
 import travelguideapp.ge.travelguide.model.response.AboutResponse;
 
-public class AboutFragment extends BaseFragment implements AboutListener {
+public class AboutFragment extends BaseFragment<AboutPresenter> implements AboutListener {
 
-    private AboutPresenter presenter;
     private WebView aboutTextWebView;
     private TextView aboutHeader;
     private Button cancelBtn;
@@ -52,14 +51,8 @@ public class AboutFragment extends BaseFragment implements AboutListener {
     @Override
     public void onStart() {
         super.onStart();
-        attachPresenter();
+        attachPresenter(AboutPresenter.with(this));
         getAbout();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        detachPresenter();
     }
 
     private void closeFragment() {
@@ -83,28 +76,6 @@ public class AboutFragment extends BaseFragment implements AboutListener {
         try {
             aboutHeader.setText(about.getAbout_title());
             aboutTextWebView.loadData("<html><body>" + about.getAbout_text() + "</body></html>", "text/html", "UTF-8");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void attachPresenter() {
-        try {
-            presenter = AboutPresenter.getInstance();
-            presenter.attachView(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void detachPresenter() {
-        try {
-            if (presenter != null) {
-                presenter.detachView();
-                presenter = null;
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

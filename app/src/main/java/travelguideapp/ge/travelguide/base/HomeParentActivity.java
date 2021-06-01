@@ -60,23 +60,26 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
             if (fragment instanceof HomeFragment) {
                 return fragment.getChildFragmentManager();
+            } else {
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
     public void onBackPressed() {
-        FragmentManager currentChildFragmentManager = getCurrentChildFragmentManager();
-        if (currentChildFragmentManager != null) {
-            if (currentChildFragmentManager.getBackStackEntryCount() == 0) {
+        try {
+            FragmentManager currentChildFragmentManager = getCurrentChildFragmentManager();
+            if (currentChildFragmentManager == null || currentChildFragmentManager.getBackStackEntryCount() == 0) {
                 super.onBackPressed();
             } else {
                 currentChildFragmentManager.popBackStackImmediate();
             }
-        } else {
+        } catch (Exception e) {
+            e.printStackTrace();
             super.onBackPressed();
         }
     }

@@ -48,10 +48,10 @@ public class GlobalPreferences {
             appSettings = sharedPreferences.getString(APP_SETTINGS, "");
             accessToken = sharedPreferences.getString(ACCESS_TOKEN, "");
             language = sharedPreferences.getString(LANGUAGE_LOCALE, "");
-            languageId = sharedPreferences.getInt(LANGUAGE_ID, 0);
-            appVersion = sharedPreferences.getInt(APP_VERSION, 0);
-            userRole = sharedPreferences.getInt(USER_ROLE, 20);
-            userId = sharedPreferences.getInt(USER_ID, 0);
+            languageId = sharedPreferences.getInt(LANGUAGE_ID, -1);
+            appVersion = sharedPreferences.getInt(APP_VERSION, -1);
+            userRole = sharedPreferences.getInt(USER_ROLE, -1);
+            userId = sharedPreferences.getInt(USER_ID, -1);
         } catch (Exception e) {
             e.printStackTrace();
         }

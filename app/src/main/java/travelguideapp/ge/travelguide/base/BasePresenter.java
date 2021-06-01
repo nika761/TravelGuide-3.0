@@ -1,41 +1,69 @@
 package travelguideapp.ge.travelguide.base;
 
-import travelguideapp.ge.travelguide.utility.ResponseHandler;
+import travelguideapp.ge.travelguide.network.ErrorHandler;
+import travelguideapp.ge.travelguide.network.RequestListener;
 
-public abstract class BasePresenter<V extends BaseListener> {
+import static travelguideapp.ge.travelguide.utility.LogUtils.LOG_E;
+import static travelguideapp.ge.travelguide.utility.LogUtils.makeLogTag;
 
-    protected abstract void attachView(V v);
+public abstract class BasePresenter<V extends BaseViewListener> implements RequestListener {
 
-    protected abstract void detachView();
+    private static final String TAG = makeLogTag(BasePresenter.class);
 
-    protected boolean isViewAttached(V v) {
-        return v != null;
+    protected V listener;
+
+    protected void attachView(V listener) {
+        this.listener = listener;
     }
 
-    protected void onRequestFailed(ResponseHandler.Fail responseFail, V v) {
+    protected void detachView() {
+        this.listener = null;
+    }
+
+    protected boolean isViewAttached() {
+        return listener != null;
+    }
+
+    protected void showLoader() {
         try {
-            if (isViewAttached(v)) {
+            if (isViewAttached())
+                listener.showLoader();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                if (responseFail == null) {
-                    v.onUnknownError();
-                    return;
-                }
+    @Override
+    public void onSuccess() {
+        try {
+            if (isViewAttached()) {
+                listener.hideLoader();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                if (responseFail.getCode() == 0) {
-                    v.onUnknownError();
+    @Override
+    public void onFail(ErrorHandler.FailBody responseFail) {
+        try {
+            if (isViewAttached()) {
+
+                listener.hideLoader();
+
+                if (responseFail == null || responseFail.getCode() == 0) {
+                    listener.onUnknownError();
                     return;
                 }
 
                 switch (responseFail.getCode()) {
-                    case ResponseHandler.Fail.CODE_NO_CONNECTION:
-                        v.onConnectionError();
+                    case ErrorHandler.FailBody.CODE_NO_CONNECTION:
+                        listener.onConnectionError();
                         break;
-                    case ResponseHandler.Fail.CODE_CUSTOM_FAIL:
-                        v.onUnknownError();
+                    case ErrorHandler.FailBody.CODE_CUSTOM_FAIL:
+                        listener.onUnknownError();
                         break;
                 }
-
-                v.hideLoader();
 
             }
         } catch (Exception e) {
@@ -43,32 +71,28 @@ public abstract class BasePresenter<V extends BaseListener> {
         }
     }
 
-    protected void onResponseError(ResponseHandler.Error responseError, V v) {
+    @Override
+    public void onError(ErrorHandler.ErrorBody responseError) {
         try {
-            if (isViewAttached(v)) {
+            if (isViewAttached()) {
 
-                if (responseError == null) {
-                    v.onUnknownError();
-                    return;
-                }
+                listener.hideLoader();
 
-                if (responseError.getResponseCode() == 0) {
-                    v.onUnknownError();
+                if (responseError == null || responseError.getResponseCode() == 0) {
+                    listener.onUnknownError();
                     return;
                 }
 
                 switch (responseError.getResponseCode()) {
                     case 401:
                     case 403:
-                        v.onAuthenticationError();
+                        listener.onAuthenticationError();
                         break;
 
                     default:
-                        v.onUnknownError();
+                        listener.onUnknownError();
                         break;
                 }
-
-                v.hideLoader();
 
             }
         } catch (Exception e) {

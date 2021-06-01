@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BasePresenterActivity;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.AuthorizationManager;
 import travelguideapp.ge.travelguide.listener.PostChooseListener;
@@ -30,7 +31,7 @@ import travelguideapp.ge.travelguide.ui.gallery.GalleryActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class HomePageActivity extends HomeParentActivity implements HomePageListener, PostChooseListener,
+public class HomePageActivity extends BasePresenterActivity<HomePagePresenter> implements HomePageListener, PostChooseListener,
         ProfileFragment.ProfileFragmentCallBacks {
 
     public static Intent getRedirectIntent(Context context) {
@@ -40,7 +41,6 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
     }
 
     private BottomNavigationView bottomNavigationView;
-    private HomePagePresenter presenter;
 
     private boolean isFromLanguageChanged = true;
     private boolean backToProfile = false;
@@ -53,7 +53,7 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
-        attachPresenter();
+        attachPresenter(HomePagePresenter.with(this));
         getUserProfileInfo();
         initBtmNav();
         try {
@@ -63,30 +63,9 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         }
     }
 
-    @Override
-    public void attachPresenter() {
-        try {
-            presenter = HomePagePresenter.attach(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void detachPresenter() {
-        try {
-            if (presenter != null) {
-                presenter.detachView();
-                presenter = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void getUserProfileInfo() {
         try {
-            presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId()), false);
+            presenter.getProfile(new ProfileRequest(GlobalPreferences.getUserId()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -287,11 +266,5 @@ public class HomePageActivity extends HomeParentActivity implements HomePageList
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        detachPresenter();
     }
 }

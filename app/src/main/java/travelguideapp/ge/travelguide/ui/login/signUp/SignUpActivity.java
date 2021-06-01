@@ -21,6 +21,7 @@ import com.daimajia.androidanimations.library.YoYo;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseActivity;
+import travelguideapp.ge.travelguide.base.BasePresenterActivity;
 import travelguideapp.ge.travelguide.helper.ClientManager;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperDate;
@@ -42,11 +43,10 @@ import java.io.File;
 import de.hdodenhof.circleimageview.CircleImageView;
 import travelguideapp.ge.travelguide.enums.WebViewType;
 
-public class SignUpActivity extends BaseActivity implements SignUpListener {
+public class SignUpActivity extends BasePresenterActivity<SignUpPresenter> implements SignUpListener {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private CountryCodePicker countryCodePicker;
-    private SignUpPresenter signUpPresenter;
     private File profilePhotoFile;
 
     private String photoUrl, userName, userSurname, nickName, birthDate, phoneIndex, phoneNumber, nickNameFirst, nickNameSecond;
@@ -68,13 +68,12 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        attachPresenter(SignUpPresenter.with(this));
         initUI();
     }
 
     private void initUI() {
         this.blackColor = ContextCompat.getColor(this, R.color.black);
-
-        signUpPresenter = new SignUpPresenter(this);
 
         loader = findViewById(R.id.loader_sign_up);
         loaderBackground = findViewById(R.id.bg_loader_sign_up);
@@ -194,7 +193,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
         String picturePath = HelperMedia.getPathFromImageUri(this, uri);
         if (picturePath != null) {
             profilePhotoFile = new File(picturePath);
-            signUpPresenter.uploadToS3(ClientManager.transferObserver(this, profilePhotoFile));
+            presenter.uploadToS3(ClientManager.transferObserver(this, profilePhotoFile));
             HelperMedia.loadCirclePhoto(this, picturePath, profileImage);
         }
 
@@ -216,6 +215,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
 
         loadingVisibility(false);
 
+
         switch (signUpResponse.getStatus()) {
             case 0:
                 DialogManager.signUpConfirmDialog(this, signUpResponse.getTitle(), signUpResponse.getMessage());
@@ -224,7 +224,7 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
 
             case 2:
                 HelperUI.setBackgroundWarning(eNickName, eNickNameHead, getString(R.string.nick_name), this);
-                signUpPresenter.checkNick(new CheckNickRequest(nickName, userName, userSurname));
+                presenter.checkNick(new CheckNickRequest(nickName, userName, userSurname));
                 break;
 
             case 4:
@@ -385,16 +385,10 @@ public class SignUpActivity extends BaseActivity implements SignUpListener {
             SignUpRequest signUpRequest = new SignUpRequest(userName, userSurname, nickName, email, password,
                     confirmPassword, String.valueOf(timeStamp), phoneIndex, photoUrl,
                     phoneNumber, String.valueOf(GlobalPreferences.getLanguageId()), gender);
-            signUpPresenter.signUp(signUpRequest);
+            presenter.signUp(signUpRequest);
+
         }
 
     }
 
-    @Override
-    protected void onDestroy() {
-        if (signUpPresenter != null) {
-            signUpPresenter = null;
-        }
-        super.onDestroy();
-    }
 }
