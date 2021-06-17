@@ -16,7 +16,7 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
-import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.response.HashtagResponse;
 import travelguideapp.ge.travelguide.ui.search.SearchActivity;
 import travelguideapp.ge.travelguide.ui.upload.tag.AddTagAdapter;
@@ -111,7 +111,7 @@ public class HashtagsFragment extends Fragment implements HashtagsFragmentListen
     @Override
     public void onHashtagChoose(HashtagResponse.Hashtags hashtag) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostSearchParams(hashtag.getHashtag(), PostSearchParams.SearchBy.HASHTAG));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(hashtag.getHashtag(), SearchPostParams.SearchBy.HASHTAG));
         } catch (Exception e) {
             e.printStackTrace();
         }

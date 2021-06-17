@@ -18,6 +18,8 @@ import travelguideapp.ge.travelguide.helper.MyToaster;
 
 public abstract class BaseFragment<Presenter extends BasePresenter<?>> extends Fragment implements BaseViewListener {
 
+    public static final String LOADING_TYPE_DEFAULT = "LOADING_TYPE_DEFAULT";
+    public static final String LOADING_TYPE_PAGING = "LOADING_TYPE_PAGING";
     private int toastCount = 0;
     protected Dialog loader;
     private static AlertDialog alertDialog;

@@ -1,5 +1,6 @@
 package travelguideapp.ge.travelguide.ui.home.customerUser;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,13 +17,14 @@ import androidx.viewpager.widget.ViewPager;
 import com.airbnb.lottie.LottieAnimationView;
 
 import travelguideapp.ge.travelguide.R;
+import travelguideapp.ge.travelguide.base.BasePresenterActivity;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.listener.PostChooseListener;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.HelperUI;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.ReportParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragment;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
@@ -37,14 +39,10 @@ import travelguideapp.ge.travelguide.ui.profile.follow.FollowActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CustomerProfileActivity extends HomeParentActivity implements CustomerProfileListener, PostChooseListener {
-
-    private CustomerProfilePresenter customerProfilePresenter;
+public class CustomerProfileActivity extends BasePresenterActivity<CustomerProfilePresenter> implements CustomerProfileListener, PostChooseListener {
 
     private TextView userName, nickName, following, follower, reaction, bio, bioBtn, followBtn;
     private ConstraintLayout fragmentContainerMain;
-    private LottieAnimationView lottieLoader;
-    private FrameLayout loaderContainer;
     private LinearLayout bioContainer;
     private CircleImageView image;
 
@@ -52,10 +50,17 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
     private int customerUserId;
     private boolean isFollowing;
 
+    public static Intent getCustomerIntent(Context context, int userId) {
+        Intent intent = new Intent(context, CustomerProfileActivity.class);
+        intent.putExtra("id", userId);
+        return intent;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_profile);
+        attachPresenter(CustomerProfilePresenter.with(this));
 
         try {
             this.customerUserId = getIntent().getIntExtra("id", 0);
@@ -66,7 +71,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
         initUI();
 
         if (customerUserId != 0)
-            customerProfilePresenter.getProfile(new ProfileRequest(customerUserId));
+            presenter.getProfile(new ProfileRequest(customerUserId));
         else
             onBackPressed();
 
@@ -85,14 +90,12 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
 
     private void initUI() {
 
-        customerProfilePresenter = new CustomerProfilePresenter(this);
-
         ViewPager viewPager = findViewById(R.id.customer_view_pager);
         TabLayout tabLayout = findViewById(R.id.customer_profile_tab);
 
         fragmentContainerMain = findViewById(R.id.customer_profile_fragment_container_main);
 
-        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getSupportFragmentManager(), PostHomeParams.Type.CUSTOMER_POSTS);
+        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getSupportFragmentManager(), HomePostParams.Type.CUSTOMER_POSTS);
         profilePagerAdapter.setCustomerUserId(customerUserId);
         profilePagerAdapter.setCallback(this);
         viewPager.setAdapter(profilePagerAdapter);
@@ -125,10 +128,6 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
         bio = findViewById(R.id.customer_bio_text);
         bioBtn = findViewById(R.id.customer_bio_btn);
         bioContainer = findViewById(R.id.customer_profile_bio);
-
-        loaderContainer = findViewById(R.id.customer_profile_frame);
-        lottieLoader = findViewById(R.id.loader_customer_profile);
-
     }
 
     @Override
@@ -164,19 +163,9 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
                 bioBtn.setVisibility(View.GONE);
             }
 
-            loaderContainer.setVisibility(View.GONE);
-            lottieLoader.setVisibility(View.GONE);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onError(String message) {
-        loaderContainer.setVisibility(View.GONE);
-        lottieLoader.setVisibility(View.GONE);
-        MyToaster.showToast(this, message);
     }
 
     @Override
@@ -202,7 +191,7 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
                 followBtn.setText(getResources().getString(R.string.following));
                 isFollowing = true;
             }
-            customerProfilePresenter.follow(new FollowRequest(customerUserId));
+            presenter.follow(new FollowRequest(customerUserId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -213,14 +202,6 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
         intent.putExtra("user_name", customerUserName);
         intent.putExtra("customer_user_id", customerUserId);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (customerProfilePresenter != null) {
-            customerProfilePresenter = null;
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -255,8 +236,6 @@ public class CustomerProfileActivity extends HomeParentActivity implements Custo
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
 
 
 }

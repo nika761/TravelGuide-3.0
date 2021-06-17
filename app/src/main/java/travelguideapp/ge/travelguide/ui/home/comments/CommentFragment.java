@@ -25,7 +25,7 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.customModel.ReportParams;
+import travelguideapp.ge.travelguide.model.parcelable.ReportParams;
 import travelguideapp.ge.travelguide.model.request.AddCommentRequest;
 import travelguideapp.ge.travelguide.model.request.CommentRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteCommentRequest;
@@ -314,7 +314,7 @@ public class CommentFragment extends Fragment implements CommentListener {
 
     @Override
     public void onDeleteChoose(int commentId) {
-        DialogManager.sureDialog(context, getString(R.string.delete_comment), () -> presenter.deleteComment(new DeleteCommentRequest(postId, storyId, commentId)));
+        DialogManager.questionDialog(context, getString(R.string.delete_comment), () -> presenter.deleteComment(new DeleteCommentRequest(postId, storyId, commentId)));
     }
 
     @Override

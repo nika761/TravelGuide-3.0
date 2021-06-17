@@ -1,6 +1,7 @@
 package travelguideapp.ge.travelguide.model.request;
 
 public class FollowingRequest {
+
     private int user_id;
 
     public int getUser_id() {
@@ -14,4 +15,5 @@ public class FollowingRequest {
     public FollowingRequest(int user_id) {
         this.user_id = user_id;
     }
+
 }

@@ -7,13 +7,11 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import travelguideapp.ge.travelguide.model.response.ProfileResponse;
-
 public class AppSettings implements Parcelable {
 
     @Expose
     @SerializedName("android_version")
-    private int APP_VERSION;
+    private int appVersion;
 
     @Expose
     @SerializedName("ios_version")
@@ -21,7 +19,7 @@ public class AppSettings implements Parcelable {
 
     @Expose
     @SerializedName("story_view_deley_duration")
-    private int POST_VIEW_TIME;
+    private int postViewTime;
 
     @Expose
     @SerializedName("s3_link")
@@ -49,15 +47,15 @@ public class AppSettings implements Parcelable {
 
     @Expose
     @SerializedName("story_photo_crop_height")
-    private int CROP_OPTION_Y;
+    private int cropOptionY;
 
     @Expose
     @SerializedName("story_photo_crop_width")
-    private int CROP_OPTION_X;
+    private int cropOptionX;
 
     @Expose
     @SerializedName("age_restriction")
-    private int AGE_RESTRICTION;
+    private int ageRestriction;
 
     @Expose
     @SerializedName("output_video_from_photo_bitrate")
@@ -69,7 +67,7 @@ public class AppSettings implements Parcelable {
 
     @Expose
     @SerializedName("profile_posts_quntity_per_page")
-    private int POST_PER_PAGE_SIZE;
+    private int postPerPageSize;
 
     @Expose
     @SerializedName("home_posts_quntity_per_page")
@@ -125,21 +123,21 @@ public class AppSettings implements Parcelable {
 
 
     protected AppSettings(Parcel in) {
-        APP_VERSION = in.readInt();
+        appVersion = in.readInt();
         ios_version = in.readInt();
-        POST_VIEW_TIME = in.readInt();
+        postViewTime = in.readInt();
         S3_END_POINT = in.readString();
         S3_BUCKET_NAME = in.readString();
         S3_1 = in.readString();
         S3_2 = in.readString();
         hashtag_lenght = in.readInt();
         story_video_template_for_photo = in.readString();
-        CROP_OPTION_Y = in.readInt();
-        CROP_OPTION_X = in.readInt();
-        AGE_RESTRICTION = in.readInt();
+        cropOptionY = in.readInt();
+        cropOptionX = in.readInt();
+        ageRestriction = in.readInt();
         output_video_from_photo_bitrate = in.readInt();
         output_video_bitrate = in.readInt();
-        POST_PER_PAGE_SIZE = in.readInt();
+        postPerPageSize = in.readInt();
         home_posts_quntity_per_page = in.readInt();
         openapp_redirect_link = in.readString();
         ios_download_link = in.readString();
@@ -168,15 +166,15 @@ public class AppSettings implements Parcelable {
     };
 
     public int getAppVersion() {
-        return APP_VERSION;
+        return appVersion;
     }
 
     public int getIos_version() {
         return ios_version;
     }
 
-    public int getPOST_VIEW_TIME() {
-        return POST_VIEW_TIME;
+    public int getPostViewTime() {
+        return postViewTime;
     }
 
     public String getS3_END_POINT() {
@@ -199,16 +197,16 @@ public class AppSettings implements Parcelable {
         return story_video_template_for_photo;
     }
 
-    public int getCROP_OPTION_Y() {
-        return CROP_OPTION_Y;
+    public int getCropOptionY() {
+        return cropOptionY;
     }
 
-    public int getCROP_OPTION_X() {
-        return CROP_OPTION_X;
+    public int getCropOptionX() {
+        return cropOptionX;
     }
 
-    public int getAGE_RESTRICTION() {
-        return AGE_RESTRICTION;
+    public int getAgeRestriction() {
+        return ageRestriction;
     }
 
     public int getOutput_video_from_photo_bitrate() {
@@ -219,8 +217,8 @@ public class AppSettings implements Parcelable {
         return output_video_bitrate;
     }
 
-    public int getPOST_PER_PAGE_SIZE() {
-        return POST_PER_PAGE_SIZE;
+    public int getPostPerPage() {
+        return postPerPageSize;
     }
 
     public int getHome_posts_quntity_per_page() {
@@ -286,21 +284,21 @@ public class AppSettings implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(APP_VERSION);
+        dest.writeInt(appVersion);
         dest.writeInt(ios_version);
-        dest.writeInt(POST_VIEW_TIME);
+        dest.writeInt(postViewTime);
         dest.writeString(S3_END_POINT);
         dest.writeString(S3_BUCKET_NAME);
         dest.writeString(S3_1);
         dest.writeString(S3_2);
         dest.writeInt(hashtag_lenght);
         dest.writeString(story_video_template_for_photo);
-        dest.writeInt(CROP_OPTION_Y);
-        dest.writeInt(CROP_OPTION_X);
-        dest.writeInt(AGE_RESTRICTION);
+        dest.writeInt(cropOptionY);
+        dest.writeInt(cropOptionX);
+        dest.writeInt(ageRestriction);
         dest.writeInt(output_video_from_photo_bitrate);
         dest.writeInt(output_video_bitrate);
-        dest.writeInt(POST_PER_PAGE_SIZE);
+        dest.writeInt(postPerPageSize);
         dest.writeInt(home_posts_quntity_per_page);
         dest.writeString(openapp_redirect_link);
         dest.writeString(ios_download_link);

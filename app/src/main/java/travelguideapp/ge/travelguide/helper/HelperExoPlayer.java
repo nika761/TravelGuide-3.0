@@ -24,7 +24,6 @@ public class HelperExoPlayer {
         LoadControl loadControl = new DefaultLoadControl();
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
-
         return ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
     }
 

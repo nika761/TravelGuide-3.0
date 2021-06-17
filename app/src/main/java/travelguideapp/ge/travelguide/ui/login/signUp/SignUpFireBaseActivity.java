@@ -107,7 +107,7 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
         save = findViewById(R.id.enter_info_save);
         save.setOnClickListener(v -> {
             onSaveAction();
-            hideKeyboard(v);
+            closeKeyBoard(v);
         });
 
         mDateSetListener = (datePicker, year, month, day) -> {
@@ -207,16 +207,6 @@ public class SignUpFireBaseActivity extends BaseActivity implements SignUpFireBa
             e.printStackTrace();
         }
 
-    }
-
-
-    protected void hideKeyboard(View view) {
-        try {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

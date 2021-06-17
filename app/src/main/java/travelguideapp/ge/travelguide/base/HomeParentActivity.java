@@ -20,8 +20,8 @@ import java.util.List;
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.MyToaster;
 import travelguideapp.ge.travelguide.model.customModel.Report;
-import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
+import travelguideapp.ge.travelguide.model.parcelable.ReportParams;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;
@@ -171,7 +171,7 @@ public class HomeParentActivity extends BaseActivity implements HomeParentListen
     public void startSearchPostActivity(Parcelable data) {
         try {
             Intent intent = new Intent(this, PostByLocationActivity.class);
-            intent.putExtra(PostSearchParams.POST_SEARCH_PARAMS, data);
+            intent.putExtra(SearchPostParams.POST_SEARCH_PARAMS, data);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

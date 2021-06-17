@@ -40,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static final int READ_EXTERNAL_STORAGE_REQUEST_CODE = 1234;
     public static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 4321;
 
-    private int toastCount = 0;
+    private boolean toastShowing;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -119,10 +119,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void showToast(String message) {
         try {
-            if (toastCount == 0) {
-                toastCount++;
+            if (!toastShowing) {
+                toastShowing = true;
                 MyToaster.showToast(this, message);
-                new Handler().postDelayed(() -> toastCount = 0, 1800);
+                new Handler().postDelayed(() -> toastShowing = false, 1800);
             }
         } catch (Exception e) {
             e.printStackTrace();

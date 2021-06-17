@@ -15,9 +15,8 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BasePresenterActivity;
-import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.HelperUI;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
 import travelguideapp.ge.travelguide.model.request.FullSearchRequest;
 import travelguideapp.ge.travelguide.model.request.PostByLocationRequest;
 import travelguideapp.ge.travelguide.model.request.SearchHashtagRequest;
@@ -292,13 +291,13 @@ public class SearchActivity extends BasePresenterActivity<SearchPresenter> imple
         try {
             int position = getPositionById(postId);
 
-            PostHomeParams postDataLoad = new PostHomeParams();
-            postDataLoad.setPageType(PostHomeParams.Type.SEARCH);
+            HomePostParams postDataLoad = new HomePostParams();
+            postDataLoad.setPageType(HomePostParams.Type.SEARCH);
             postDataLoad.setScrollPosition(position);
             postDataLoad.setPosts(posts);
 
             Bundle data = new Bundle();
-            data.putParcelable(PostHomeParams.POST_HOME_PARAMS, postDataLoad);
+            data.putParcelable(HomePostParams.POST_HOME_PARAMS, postDataLoad);
 
             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, true, true, this);
 

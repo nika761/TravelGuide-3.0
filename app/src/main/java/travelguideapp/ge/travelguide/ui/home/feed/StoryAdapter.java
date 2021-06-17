@@ -19,7 +19,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
-import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.custom.CustomFrameLayout;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
@@ -272,7 +272,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder>
 
                 case R.id.post_location:
                     Intent postHashtagIntent = new Intent(videoItem.getContext(), PostByLocationActivity.class);
-                    postHashtagIntent.putExtra("search_type", PostSearchParams.SearchBy.LOCATION);
+                    postHashtagIntent.putExtra("search_type", SearchPostParams.SearchBy.LOCATION);
                     postHashtagIntent.putExtra("search_post_id", currentPost.getPost_id());
                     like.getContext().startActivity(postHashtagIntent);
                     break;

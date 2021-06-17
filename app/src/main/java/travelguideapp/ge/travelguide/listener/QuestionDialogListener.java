@@ -1,5 +1,5 @@
 package travelguideapp.ge.travelguide.listener;
 
-public interface DialogChoseListener {
+public interface QuestionDialogListener {
     void onYes();
 }

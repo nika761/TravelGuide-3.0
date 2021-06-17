@@ -154,11 +154,11 @@ public class EditPostActivity extends BaseActivity implements EditPostCallback {
     public void onCropChoose(String path, int position) {
         this.adapterPosition = position;
 
-        if (AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_X() != 0 && AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_Y() != 0) {
+        if (AppSettings.create(GlobalPreferences.getAppSettings()).getCropOptionX() != 0 && AppSettings.create(GlobalPreferences.getAppSettings()).getCropOptionY() != 0) {
             try {
                 CropImage.activity(Uri.fromFile(new File(path)))
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_X(), AppSettings.create(GlobalPreferences.getAppSettings()).getCROP_OPTION_Y())
+                        .setAspectRatio(AppSettings.create(GlobalPreferences.getAppSettings()).getCropOptionX(), AppSettings.create(GlobalPreferences.getAppSettings()).getCropOptionY())
                         .setMultiTouchEnabled(true)
                         .start(this);
             } catch (Exception e) {

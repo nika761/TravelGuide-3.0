@@ -13,13 +13,13 @@ import travelguideapp.ge.travelguide.model.customModel.Country;
 
 import java.util.List;
 
-public class ChooseCountryAdapter extends RecyclerView.Adapter<ChooseCountryAdapter.CountryHolder> {
+public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.CountryHolder> {
 
     private List<Country> countries;
 
     private final ChooseCountryListener chooseCountryListener;
 
-    ChooseCountryAdapter(ChooseCountryListener chooseCountryListener) {
+    CountriesAdapter(ChooseCountryListener chooseCountryListener) {
         this.chooseCountryListener = chooseCountryListener;
     }
 

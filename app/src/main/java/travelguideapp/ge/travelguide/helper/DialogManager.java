@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
 import java.util.Calendar;
 
 import travelguideapp.ge.travelguide.R;
-import travelguideapp.ge.travelguide.listener.DialogChoseListener;
+import travelguideapp.ge.travelguide.listener.QuestionDialogListener;
 import travelguideapp.ge.travelguide.listener.DialogDismissListener;
 import travelguideapp.ge.travelguide.ui.login.signIn.SignInActivity;
 
@@ -111,21 +111,31 @@ public class DialogManager {
 
     }
 
-    public static void sureDialog(Context context, String question, DialogChoseListener callback) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(question)
-                .setPositiveButton(context.getString(R.string.yes), (dialog, which) -> callback.onYes())
-                .setNegativeButton(context.getString(R.string.no), (dialog, which) -> dialog.dismiss())
-                .create();
+    public static void questionDialog(Context context, String question, QuestionDialogListener callback) {
+        try {
+            if (context == null) {
+                return;
+            }
 
-        AlertDialog dialog = builder.create();
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.questionDialogTextColor);
+            builder.setTitle(question)
+                    .setPositiveButton(context.getString(R.string.yes), (dialog, which) -> callback.onYes())
+                    .setNegativeButton(context.getString(R.string.no), (dialog, which) -> dialog.dismiss())
+                    .create();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_sign_out_dialog));
-            dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+            AlertDialog dialog = builder.create();
+
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_sign_out_dialog));
+                dialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+            }
+
+            dialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        dialog.show();
     }
 
     public static void defaultDialog(Activity activity, String message, DialogDismissListener dialogDismissListener) {

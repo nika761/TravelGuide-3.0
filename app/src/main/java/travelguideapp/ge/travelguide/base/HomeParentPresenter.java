@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import travelguideapp.ge.travelguide.model.customModel.ReportParams;
+import travelguideapp.ge.travelguide.model.parcelable.ReportParams;
 import travelguideapp.ge.travelguide.model.request.SetCommentReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetPostReportRequest;
 import travelguideapp.ge.travelguide.model.request.SetUserReportRequest;

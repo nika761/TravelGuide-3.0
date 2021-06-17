@@ -8,16 +8,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import travelguideapp.ge.travelguide.listener.PostChooseListener;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
 
 
 public class PostPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final PostHomeParams.Type loadPageType;
+    private final HomePostParams.Type loadPageType;
     private PostChooseListener callback;
     private int customerUserId;
 
-    public PostPagerAdapter(@NonNull FragmentManager fragmentManager, PostHomeParams.Type loadPageType) {
+    public PostPagerAdapter(@NonNull FragmentManager fragmentManager, HomePostParams.Type loadPageType) {
         super(fragmentManager);
         this.loadPageType = loadPageType;
     }
@@ -34,14 +34,14 @@ public class PostPagerAdapter extends FragmentStatePagerAdapter {
             case MY_POSTS:
                 if (position == 0) {
                     data = new Bundle();
-                    data.putSerializable("request_type", PostHomeParams.Type.MY_POSTS);
+                    data.putSerializable("request_type", HomePostParams.Type.MY_POSTS);
                     PostsFragment userPostsFragment = PostsFragment.getInstance(callback);
                     userPostsFragment.setArguments(data);
                     return userPostsFragment;
                 }
                 if (position == 1) {
                     data = new Bundle();
-                    data.putSerializable("request_type", PostHomeParams.Type.FAVORITES);
+                    data.putSerializable("request_type", HomePostParams.Type.FAVORITES);
                     PostsFragment userPostsFragment = PostsFragment.getInstance(callback);
                     userPostsFragment.setArguments(data);
                     return userPostsFragment;

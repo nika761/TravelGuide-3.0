@@ -34,9 +34,9 @@ import travelguideapp.ge.travelguide.custom.CustomTimer;
 import travelguideapp.ge.travelguide.ui.home.feed.customPost.CustomPostAdapter;
 import travelguideapp.ge.travelguide.ui.home.feed.customPost.CustomPostRecycler;
 import travelguideapp.ge.travelguide.custom.CustomProgressBar;
-import travelguideapp.ge.travelguide.model.customModel.ReportParams;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
-import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
+import travelguideapp.ge.travelguide.model.parcelable.ReportParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.request.ChooseGoRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteStoryRequest;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
     private int customerUserId;
 
-    private PostHomeParams.Type pageType;
+    private HomePostParams.Type pageType;
     private CustomPostRecycler customPostRecycler;
     private CustomPostAdapter customPostAdapter;
 
@@ -135,7 +135,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
             try {
-                PostHomeParams postHomeParams = getArguments().getParcelable(PostHomeParams.POST_HOME_PARAMS);
+                HomePostParams postHomeParams = getArguments().getParcelable(HomePostParams.POST_HOME_PARAMS);
                 this.pageType = postHomeParams.getPageType();
                 switch (pageType) {
                     case FAVORITES:
@@ -274,18 +274,18 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
 
 
     @Override
-    public void onLocationChoose(int postId, PostSearchParams.SearchBy searchBy) {
+    public void onLocationChoose(int postId, SearchPostParams.SearchBy searchBy) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostSearchParams(postId, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(postId, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onHashtagChoose(String hashtag, PostSearchParams.SearchBy searchBy) {
+    public void onHashtagChoose(String hashtag, SearchPostParams.SearchBy searchBy) {
         try {
-            ((HomeParentActivity) getActivity()).startSearchPostActivity(new PostSearchParams(hashtag, searchBy));
+            ((HomeParentActivity) getActivity()).startSearchPostActivity(new SearchPostParams(hashtag, searchBy));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -421,7 +421,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, Comm
         View bottomSheetLayout = View.inflate(postRecycler.getContext(), R.layout.dialog_post_edit, null);
 
         LinearLayout delete = bottomSheetLayout.findViewById(R.id.post_edit_delete);
-        delete.setOnClickListener(v -> DialogManager.sureDialog(postRecycler.getContext(), getString(R.string.delete_story), () -> {
+        delete.setOnClickListener(v -> DialogManager.questionDialog(postRecycler.getContext(), getString(R.string.delete_story), () -> {
             deleteStory(post);
             bottomSheetDialog.dismiss();
         }));

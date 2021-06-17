@@ -1,7 +1,7 @@
 package travelguideapp.ge.travelguide.ui.profile.follow;
 
-import org.jetbrains.annotations.NotNull;
-
+import retrofit2.Response;
+import travelguideapp.ge.travelguide.base.BasePresenter;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.request.FollowersRequest;
 import travelguideapp.ge.travelguide.model.request.FollowingRequest;
@@ -9,86 +9,65 @@ import travelguideapp.ge.travelguide.model.response.FollowResponse;
 import travelguideapp.ge.travelguide.model.response.FollowerResponse;
 import travelguideapp.ge.travelguide.model.response.FollowingResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
+import travelguideapp.ge.travelguide.network.BaseCallback;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+class FollowFragmentPresenter extends BasePresenter<FollowFragmentListener> {
 
-class FollowFragmentPresenter {
-
-    private final FollowFragmentListener listener;
     private final ApiService apiService;
 
-    FollowFragmentPresenter(FollowFragmentListener listener) {
-        this.listener = listener;
+    private FollowFragmentPresenter(FollowFragmentListener followFragmentListener) {
+        super.attachView(followFragmentListener);
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getFollowing(FollowingRequest followingRequest) {
-        apiService.getFollowing(followingRequest).enqueue(new Callback<FollowingResponse>() {
-            @Override
-            public void onResponse(@NotNull Call<FollowingResponse> call, @NotNull Response<FollowingResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().getStatus() == 0) {
-                        if (response.body().getFollowings().size() > 0)
-                            listener.onGetFollowData(response.body());
-                        else
-                            listener.onError(null);
-                    } else {
-                        listener.onError(response.message());
-                    }
-                } else {
-                    listener.onError(response.message());
-                }
-            }
+    public static FollowFragmentPresenter with(FollowFragmentListener followFragmentListener) {
+        return new FollowFragmentPresenter(followFragmentListener);
+    }
 
+    void getFollowing(FollowingRequest followingRequest) {
+        super.showLoader();
+        apiService.getFollowing(followingRequest).enqueue(new BaseCallback<FollowingResponse>(this) {
             @Override
-            public void onFailure(@NotNull Call<FollowingResponse> call, @NotNull Throwable t) {
-                listener.onError(t.getMessage());
+            protected void onSuccess(Response<FollowingResponse> response) {
+                try {
+                    if (response.body().getFollowings().size() > 0) {
+                        if (isViewAttached())
+                            listener.onGetFollowData(response.body());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
     }
 
     void getFollowers(FollowersRequest followersRequest) {
-        apiService.getFollowers(followersRequest).enqueue(new Callback<FollowerResponse>() {
+        super.showLoader();
+        apiService.getFollowers(followersRequest).enqueue(new BaseCallback<FollowerResponse>(this) {
             @Override
-            public void onResponse(@NotNull Call<FollowerResponse> call, @NotNull Response<FollowerResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().getStatus() == 0) {
-                        if (response.body().getFollowers().size() > 0)
+            protected void onSuccess(Response<FollowerResponse> response) {
+                try {
+                    if (response.body().getFollowers().size() > 0) {
+                        if (isViewAttached())
                             listener.onGetFollowData(response.body());
-                        else
-                            listener.onError(null);
-                    } else {
-                        listener.onError(response.message());
                     }
-                } else
-                    listener.onError(response.message());
-            }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            @Override
-            public void onFailure(@NotNull Call<FollowerResponse> call, @NotNull Throwable t) {
-                listener.onError(t.getMessage());
             }
         });
 
     }
 
     void startAction(FollowRequest followRequest) {
-        apiService.follow(followRequest).enqueue(new Callback<FollowResponse>() {
+        super.showLoader();
+        apiService.follow(followRequest).enqueue(new BaseCallback<FollowResponse>(this) {
             @Override
-            public void onResponse(@NotNull Call<FollowResponse> call, @NotNull Response<FollowResponse> response) {
-                if (response.isSuccessful() && response.body() != null)
-                    listener.onFollowActionDone(response.body());
-                else
-                    listener.onError(response.message());
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<FollowResponse> call, @NotNull Throwable t) {
-                listener.onError(t.getMessage());
+            protected void onSuccess(Response<FollowResponse> response) {
+                listener.onFollowActionDone(response.body());
             }
         });
     }

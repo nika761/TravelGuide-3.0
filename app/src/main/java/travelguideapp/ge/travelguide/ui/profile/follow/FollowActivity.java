@@ -15,7 +15,7 @@ import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 
 import com.google.android.material.tabs.TabLayout;
 
-public class FollowActivity extends BaseActivity implements FollowFragment.FollowFragmentCallbacks {
+public class FollowActivity extends BaseActivity {
 
     private int customerUserId;
 
@@ -50,7 +50,6 @@ public class FollowActivity extends BaseActivity implements FollowFragment.Follo
         FollowPagerAdapter followPagerAdapter = new FollowPagerAdapter(getSupportFragmentManager());
         followPagerAdapter.setTitles(getString(R.string.following), getString(R.string.followers));
         followPagerAdapter.setCustomerUserId(customerUserId);
-        followPagerAdapter.setFollowFragmentCallback(this);
         viewPager.setAdapter(followPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -61,17 +60,4 @@ public class FollowActivity extends BaseActivity implements FollowFragment.Follo
 //        overridePendingTransition(R.anim.anim_activity_slide_in_left, R.anim.anim_activity_slide_out_rigth);
     }
 
-    @Override
-    public void onChooseUser(int userId) {
-        try {
-            if (GlobalPreferences.getUserId() != userId) {
-                Intent intent = new Intent(this, CustomerProfileActivity.class);
-                intent.putExtra("id", userId);
-                startActivity(intent);
-//                overridePendingTransition(R.anim.anim_activity_slide_in_right, R.anim.anim_activity_slide_out_left);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

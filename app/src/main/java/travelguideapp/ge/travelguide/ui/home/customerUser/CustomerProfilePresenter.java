@@ -2,65 +2,62 @@ package travelguideapp.ge.travelguide.ui.home.customerUser;
 
 import org.jetbrains.annotations.NotNull;
 
+import travelguideapp.ge.travelguide.base.BasePresenter;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.request.FollowRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.model.response.FollowResponse;
 import travelguideapp.ge.travelguide.network.ApiService;
+import travelguideapp.ge.travelguide.network.BaseCallback;
 import travelguideapp.ge.travelguide.network.RetrofitManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import travelguideapp.ge.travelguide.ui.home.HomePageListener;
+import travelguideapp.ge.travelguide.ui.home.HomePagePresenter;
 
-public class CustomerProfilePresenter {
-    private final CustomerProfileListener customerProfileListener;
+public class CustomerProfilePresenter extends BasePresenter<CustomerProfileListener> {
     private final ApiService apiService;
 
-    CustomerProfilePresenter(CustomerProfileListener customerProfileListener) {
-        this.customerProfileListener = customerProfileListener;
+    private CustomerProfilePresenter(CustomerProfileListener customerProfileListener) {
+        super.attachView(customerProfileListener);
         this.apiService = RetrofitManager.getApiService();
     }
 
-    void getProfile(ProfileRequest profileRequest) {
-        apiService.getProfile(profileRequest).enqueue(new Callback<ProfileResponse>() {
-            @Override
-            public void onResponse(@NotNull Call<ProfileResponse> call, @NotNull Response<ProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus() == 0) {
-                        customerProfileListener.onGetProfile(response.body());
-                    } else {
-                        customerProfileListener.onError(response.body().getStatus() + response.message());
-                    }
-                } else {
-                    customerProfileListener.onError(response.message());
-                }
-            }
+    public static CustomerProfilePresenter with(CustomerProfileListener customerProfileListener) {
+        return new CustomerProfilePresenter(customerProfileListener);
+    }
 
+    void getProfile(ProfileRequest profileRequest) {
+        super.showLoader();
+        apiService.getProfile(profileRequest).enqueue(new BaseCallback<ProfileResponse>(this) {
             @Override
-            public void onFailure(@NotNull Call<ProfileResponse> call, @NotNull Throwable t) {
-                customerProfileListener.onError(t.getMessage());
+            protected void onSuccess(Response<ProfileResponse> response) {
+                try {
+                    if (isViewAttached()) {
+                        if (response.body().getStatus() == 0) {
+                            listener.onGetProfile(response.body());
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
     public void follow(FollowRequest followRequest) {
-        apiService.follow(followRequest).enqueue(new Callback<FollowResponse>() {
+        apiService.follow(followRequest).enqueue(new BaseCallback<FollowResponse>(this) {
             @Override
-            public void onResponse(@NotNull Call<FollowResponse> call, @NotNull Response<FollowResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        customerProfileListener.onFollowSuccess(response.body());
-                    } else {
-                        customerProfileListener.onError(response.message());
+            protected void onSuccess(Response<FollowResponse> response) {
+                try {
+                    if (isViewAttached()) {
+                        listener.onFollowSuccess(response.body());
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call<FollowResponse> call, @NotNull Throwable t) {
-                customerProfileListener.onError(t.getMessage());
-
             }
         });
     }

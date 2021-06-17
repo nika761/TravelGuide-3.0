@@ -3,8 +3,7 @@ package travelguideapp.ge.travelguide.ui.profile.posts;
 import retrofit2.Response;
 import travelguideapp.ge.travelguide.base.BasePresenter;
 import travelguideapp.ge.travelguide.network.BaseCallback;
-import travelguideapp.ge.travelguide.network.ErrorHandler;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
@@ -24,7 +23,7 @@ class PostPresenter extends BasePresenter<PostListener> {
         return new PostPresenter(postListener);
     }
 
-    public void getPosts(Object request, PostHomeParams.Type pageType) {
+    public void getPosts(Object request, HomePostParams.Type pageType) {
         switch (pageType) {
             case CUSTOMER_POSTS:
             case MY_POSTS:

@@ -5,6 +5,7 @@
     <stroke
         android:width="1.5dp"
         android:color="@color/yellowTextView" />
+
     <corners android:radius="11dp" />
 
 </shape>

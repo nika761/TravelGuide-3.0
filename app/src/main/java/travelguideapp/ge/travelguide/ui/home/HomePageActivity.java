@@ -11,12 +11,11 @@ import androidx.fragment.app.FragmentManager;
 
 import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BasePresenterActivity;
-import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.AuthorizationManager;
 import travelguideapp.ge.travelguide.listener.PostChooseListener;
 import travelguideapp.ge.travelguide.enums.WebViewType;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.profile.editProfile.ProfileEditActivity;
@@ -124,10 +123,10 @@ public class HomePageActivity extends BasePresenterActivity<HomePagePresenter> i
                         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
                         if (!(fragment instanceof HomeFragment) || backToProfile) {
                             backToProfile = false;
-                            PostHomeParams postDataLoad = new PostHomeParams();
-                            postDataLoad.setPageType(PostHomeParams.Type.FEED);
+                            HomePostParams postDataLoad = new HomePostParams();
+                            postDataLoad.setPageType(HomePostParams.Type.FEED);
                             Bundle data = new Bundle();
-                            data.putParcelable(PostHomeParams.POST_HOME_PARAMS, postDataLoad);
+                            data.putParcelable(HomePostParams.POST_HOME_PARAMS, postDataLoad);
                             HelperUI.loadFragment(HomeFragment.getInstance(), data, R.id.home_fragment_container, false, true, HomePageActivity.this);
                         }
                     } catch (Exception e) {
@@ -214,6 +213,7 @@ public class HomePageActivity extends BasePresenterActivity<HomePagePresenter> i
 
     @Override
     public void onPostChoose(Bundle fragmentData) {
+
         try {
             backToProfile = fragmentData.getBoolean("back_to_profile");
         } catch (Exception e) {

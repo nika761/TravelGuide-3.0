@@ -2,12 +2,12 @@ package travelguideapp.ge.travelguide.model.customModel;
 
 public class FireBaseUserModel {
 
+    private String pictureUrl;
+    private String lastName;
+    private String token;
     private String email;
     private String name;
-    private String lastName;
     private String id;
-    private String pictureUrl;
-    private String token;
 
     public FireBaseUserModel(String email, String name, String lastName, String id, String pictureUrl, String token) {
         this.email = email;

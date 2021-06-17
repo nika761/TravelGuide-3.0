@@ -27,12 +27,12 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 
-public class ChooseCountryFragment extends DialogFragment implements ChooseCountryListener {
+public class CountriesDialogFragment extends DialogFragment implements ChooseCountryListener {
 
     public static final String TAG = "countryChooserDialog";
 
-    public static ChooseCountryFragment getInstance(List<Country> countries, ChooseCountryListener chooseCountryListener) {
-        ChooseCountryFragment chooseCountryFragment = new ChooseCountryFragment();
+    public static CountriesDialogFragment getInstance(List<Country> countries, ChooseCountryListener chooseCountryListener) {
+        CountriesDialogFragment chooseCountryFragment = new CountriesDialogFragment();
         chooseCountryFragment.chooseCountryListener = chooseCountryListener;
         chooseCountryFragment.countries = countries;
         return chooseCountryFragment;
@@ -42,7 +42,7 @@ public class ChooseCountryFragment extends DialogFragment implements ChooseCount
     private ChooseCountryListener chooseCountryListener;
 
     private EditText searchCountry;
-    private ChooseCountryAdapter chooseCountryAdapter;
+    private CountriesAdapter chooseCountryAdapter;
 
     @Nullable
     @Override
@@ -65,7 +65,7 @@ public class ChooseCountryFragment extends DialogFragment implements ChooseCount
             RecyclerView countryRecycler = view.findViewById(R.id.country_chooser_recycler);
             countryRecycler.setLayoutManager(new LinearLayoutManager(countryRecycler.getContext()));
             countryRecycler.setHasFixedSize(true);
-            chooseCountryAdapter = new ChooseCountryAdapter(this);
+            chooseCountryAdapter = new CountriesAdapter(this);
             chooseCountryAdapter.setCountries(countries);
             countryRecycler.setAdapter(chooseCountryAdapter);
 

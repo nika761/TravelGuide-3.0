@@ -36,7 +36,7 @@ import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.request.UpdateProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.login.password.ChangePasswordFragment;
-import travelguideapp.ge.travelguide.ui.profile.changeCountry.ChooseCountryFragment;
+import travelguideapp.ge.travelguide.ui.profile.changeCountry.CountriesDialogFragment;
 import travelguideapp.ge.travelguide.ui.profile.changeCountry.ChooseCountryListener;
 import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
 import travelguideapp.ge.travelguide.model.response.UpdateProfileResponse;
@@ -240,7 +240,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
 
     private void getCountryChooserDialog() {
         try {
-            ChooseCountryFragment countryFragment = ChooseCountryFragment.getInstance(userInfo.getCountries(), this);
+            CountriesDialogFragment countryFragment = CountriesDialogFragment.getInstance(userInfo.getCountries(), this);
 
             if (countryFragment.getDialog() != null) {
                 Dialog dialog = countryFragment.getDialog();
@@ -251,7 +251,7 @@ public class ProfileEditActivity extends BaseActivity implements ProfileEditList
                 }
             }
 
-            countryFragment.show(getSupportFragmentManager(), ChooseCountryFragment.TAG);
+            countryFragment.show(getSupportFragmentManager(), CountriesDialogFragment.TAG);
 
         } catch (Exception e) {
             e.printStackTrace();

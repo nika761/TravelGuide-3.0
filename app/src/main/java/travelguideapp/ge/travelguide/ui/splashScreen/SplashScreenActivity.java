@@ -186,7 +186,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LanguageL
 
                 GlobalPreferences.setAppSettings(appSettingsResponse.getApp_settings().serialize());
 
-                MainApplication.AGE_RESTRICTION = appSettingsResponse.getApp_settings().getAGE_RESTRICTION();
+                MainApplication.AGE_RESTRICTION = appSettingsResponse.getApp_settings().getAgeRestriction();
 
                 if (appSettingsResponse.getApp_settings().getAppVersion() > GlobalPreferences.getAppVersion()) {
                     final String appPackageName = getPackageName();

@@ -16,15 +16,16 @@ import travelguideapp.ge.travelguide.R;
 import travelguideapp.ge.travelguide.base.BaseFragment;
 import travelguideapp.ge.travelguide.listener.PostChooseListener;
 import travelguideapp.ge.travelguide.model.customModel.AppSettings;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
 import travelguideapp.ge.travelguide.model.request.FavoritePostRequest;
 import travelguideapp.ge.travelguide.model.request.PostByUserRequest;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.preferences.GlobalPreferences;
+import travelguideapp.ge.travelguide.utility.Navigation;
 
-import static travelguideapp.ge.travelguide.model.parcelable.PostHomeParams.Type.CUSTOMER_POSTS;
-import static travelguideapp.ge.travelguide.model.parcelable.PostHomeParams.Type.FAVORITES;
-import static travelguideapp.ge.travelguide.model.parcelable.PostHomeParams.Type.MY_POSTS;
+import static travelguideapp.ge.travelguide.model.parcelable.HomePostParams.Type.CUSTOMER_POSTS;
+import static travelguideapp.ge.travelguide.model.parcelable.HomePostParams.Type.FAVORITES;
+import static travelguideapp.ge.travelguide.model.parcelable.HomePostParams.Type.MY_POSTS;
 
 public class PostsFragment extends BaseFragment<PostPresenter> implements PostListener {
 
@@ -39,8 +40,10 @@ public class PostsFragment extends BaseFragment<PostPresenter> implements PostLi
     private PostChooseListener callback;
     private List<PostResponse.Posts> posts;
     private PostAdapter postAdapter;
-    private PostHomeParams.Type loadPageType;
+    private HomePostParams.Type pageType;
     private int customerUserId;
+
+    private int pageSize;
 
     @Nullable
     @Override
@@ -67,28 +70,45 @@ public class PostsFragment extends BaseFragment<PostPresenter> implements PostLi
             if (posts != null)
                 return;
 
-            this.loadPageType = (PostHomeParams.Type) getArguments().getSerializable("request_type");
-            if (loadPageType != null) {
-                switch (loadPageType) {
-                    case MY_POSTS:
-                        presenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(), 0), MY_POSTS);
-                        break;
+            this.pageType = (HomePostParams.Type) getArguments().getSerializable("request_type");
 
-                    case CUSTOMER_POSTS:
-                        this.customerUserId = getArguments().getInt("customer_user_id");
-                        presenter.getPosts(new PostByUserRequest(customerUserId, 0), CUSTOMER_POSTS);
-                        break;
-
-                    case FAVORITES:
-                        presenter.getPosts(new FavoritePostRequest(0), FAVORITES);
-                        break;
-
-                    case SEARCH:
-                        break;
-                }
+            if (pageType == null) {
+                return;
             }
+
+            this.pageSize = AppSettings.create(GlobalPreferences.getAppSettings()).getPostPerPage();
+
+            if (pageSize == 0) {
+                return;
+            }
+
+            if (getArguments().containsKey("customer_user_id")) {
+                this.customerUserId = getArguments().getInt("customer_user_id");
+            }
+
+            getPostsByPageType(pageType, 0);
+
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getPostsByPageType(HomePostParams.Type pageType, int fromPostId) {
+        switch (pageType) {
+            case MY_POSTS:
+                presenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(), fromPostId), MY_POSTS);
+                break;
+
+            case CUSTOMER_POSTS:
+                presenter.getPosts(new PostByUserRequest(customerUserId, fromPostId), CUSTOMER_POSTS);
+                break;
+
+            case FAVORITES:
+                presenter.getPosts(new FavoritePostRequest(fromPostId), FAVORITES);
+                break;
+
+            case SEARCH:
+                break;
         }
     }
 
@@ -107,11 +127,7 @@ public class PostsFragment extends BaseFragment<PostPresenter> implements PostLi
     public void onGetPosts(List<PostResponse.Posts> posts) {
         try {
             if (postAdapter == null) {
-                if (posts.size() < AppSettings.create(GlobalPreferences.getAppSettings()).getPOST_PER_PAGE_SIZE()) {
-                    initRecycler(posts, false);
-                } else {
-                    initRecycler(posts, true);
-                }
+                initRecycler(posts, posts.size() >= pageSize);
                 this.posts = posts;
             } else {
                 this.posts.addAll(posts);
@@ -124,54 +140,48 @@ public class PostsFragment extends BaseFragment<PostPresenter> implements PostLi
 
     @Override
     public void onLazyLoad(int postId) {
-        if (presenter != null)
-            switch (loadPageType) {
-                case SEARCH:
-                    break;
-
-                case FAVORITES:
-                    presenter.getPosts(new FavoritePostRequest(postId), FAVORITES);
-                    break;
-
-                case MY_POSTS:
-                    presenter.getPosts(new PostByUserRequest(GlobalPreferences.getUserId(), postId), MY_POSTS);
-                    break;
-
-                case CUSTOMER_POSTS:
-                    presenter.getPosts(new PostByUserRequest(customerUserId, postId), CUSTOMER_POSTS);
-                    break;
+        try {
+            if (presenter == null || pageType == null) {
+                return;
             }
+
+            getPostsByPageType(pageType, postId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onPostChoose(int position) {
         try {
 //            int position = getPositionById(postId);
-            PostHomeParams loadPostParams = new PostHomeParams();
+            HomePostParams postHomeParams = new HomePostParams();
             Bundle bundle = new Bundle();
-            loadPostParams.setPosts(posts);
-            loadPostParams.setScrollPosition(position);
-            switch (loadPageType) {
+            postHomeParams.setPosts(posts);
+            postHomeParams.setScrollPosition(position);
+            switch (pageType) {
                 case SEARCH:
                     break;
 
                 case FAVORITES:
-                    loadPostParams.setPageType(FAVORITES);
-                    bundle.putBoolean("back_to_profile", true);
+                    postHomeParams.setPageType(FAVORITES);
+                    postHomeParams.setNavigation(Navigation.BACK_TO_PROFILE);
+                    bundle.putBoolean(Navigation.BACK_TO_PROFILE, true);
                     break;
 
                 case MY_POSTS:
-                    loadPostParams.setPageType(MY_POSTS);
-                    bundle.putBoolean("back_to_profile", true);
+                    postHomeParams.setPageType(MY_POSTS);
+                    postHomeParams.setNavigation(Navigation.BACK_TO_PROFILE);
+                    bundle.putBoolean(Navigation.BACK_TO_PROFILE, true);
                     break;
 
                 case CUSTOMER_POSTS:
-                    loadPostParams.setPageType(CUSTOMER_POSTS);
-                    loadPostParams.setUserId(customerUserId);
+                    postHomeParams.setPageType(CUSTOMER_POSTS);
+                    postHomeParams.setUserId(customerUserId);
                     break;
             }
-
-            bundle.putParcelable(PostHomeParams.POST_HOME_PARAMS, loadPostParams);
+            bundle.putParcelable(HomePostParams.POST_HOME_PARAMS, postHomeParams);
             callback.onPostChoose(bundle);
         } catch (Exception e) {
             e.printStackTrace();

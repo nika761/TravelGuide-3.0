@@ -32,7 +32,7 @@ import travelguideapp.ge.travelguide.enums.WebViewType;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.listener.PostChooseListener;
-import travelguideapp.ge.travelguide.model.parcelable.PostHomeParams;
+import travelguideapp.ge.travelguide.model.parcelable.HomePostParams;
 import travelguideapp.ge.travelguide.model.request.ProfileRequest;
 import travelguideapp.ge.travelguide.model.response.ProfileResponse;
 import travelguideapp.ge.travelguide.ui.profile.changeLanguage.ChangeLangFragment;
@@ -106,7 +106,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresenter> impl
         ViewPager viewPager = mIncludedLayout.findViewById(R.id.profile_view_pager);
         TabLayout tabLayout = mIncludedLayout.findViewById(R.id.profile_tabs);
 
-        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getChildFragmentManager(), PostHomeParams.Type.MY_POSTS);
+        PostPagerAdapter profilePagerAdapter = new PostPagerAdapter(getChildFragmentManager(), HomePostParams.Type.MY_POSTS);
         profilePagerAdapter.setCallback((PostChooseListener) context);
 
         viewPager.setAdapter(profilePagerAdapter);
@@ -220,7 +220,7 @@ public class ProfileFragment extends BaseFragment<ProfileFragmentPresenter> impl
 
     private void logOutDialog() {
         try {
-            DialogManager.sureDialog(context, getString(R.string.sign_out), () -> callBack.onChooseLogOut());
+            DialogManager.questionDialog(context, getString(R.string.sign_out), () -> callBack.onChooseLogOut());
         } catch (Exception e) {
             e.printStackTrace();
         }

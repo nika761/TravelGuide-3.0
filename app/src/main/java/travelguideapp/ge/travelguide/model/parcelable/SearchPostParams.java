@@ -3,7 +3,7 @@ package travelguideapp.ge.travelguide.model.parcelable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class PostSearchParams implements Parcelable {
+public class SearchPostParams implements Parcelable {
 
     /**
      * Created by n.butskhrikidze on 01/07/2020.
@@ -23,20 +23,20 @@ public class PostSearchParams implements Parcelable {
     private String hashtag;
     private SearchBy searchBy;
 
-    public PostSearchParams() {
+    public SearchPostParams() {
     }
 
-    public PostSearchParams(int postId, SearchBy searchBy) {
+    public SearchPostParams(int postId, SearchBy searchBy) {
         this.postId = postId;
         this.searchBy = searchBy;
     }
 
-    public PostSearchParams(String hashtag, SearchBy searchBy) {
+    public SearchPostParams(String hashtag, SearchBy searchBy) {
         this.hashtag = hashtag;
         this.searchBy = searchBy;
     }
 
-    public PostSearchParams(int postId, String hashtag, SearchBy searchBy) {
+    public SearchPostParams(int postId, String hashtag, SearchBy searchBy) {
         this.postId = postId;
         this.hashtag = hashtag;
         this.searchBy = searchBy;
@@ -66,21 +66,21 @@ public class PostSearchParams implements Parcelable {
         this.searchBy = searchBy;
     }
 
-    protected PostSearchParams(Parcel in) {
+    protected SearchPostParams(Parcel in) {
         postId = in.readInt();
         hashtag = in.readString();
         searchBy = (SearchBy) in.readValue(SearchBy.class.getClassLoader());
     }
 
-    public static final Creator<PostSearchParams> CREATOR = new Creator<PostSearchParams>() {
+    public static final Creator<SearchPostParams> CREATOR = new Creator<SearchPostParams>() {
         @Override
-        public PostSearchParams createFromParcel(Parcel in) {
-            return new PostSearchParams(in);
+        public SearchPostParams createFromParcel(Parcel in) {
+            return new SearchPostParams(in);
         }
 
         @Override
-        public PostSearchParams[] newArray(int size) {
-            return new PostSearchParams[size];
+        public SearchPostParams[] newArray(int size) {
+            return new SearchPostParams[size];
         }
     };
 

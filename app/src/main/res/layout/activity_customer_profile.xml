@@ -299,25 +299,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
-        android:id="@+id/customer_profile_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/transparent"
-        android:visibility="visible">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/loader_customer_profile"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:visibility="visible"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/loading_yellow" />
-
-    </FrameLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/customer_profile_fragment_container_main"
         android:layout_width="match_parent"

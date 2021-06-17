@@ -139,7 +139,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    class FollowerHolder extends RecyclerView.ViewHolder {
+    private class FollowerHolder extends RecyclerView.ViewHolder {
 
         Animation animation;
         CircleImageView userImage;
@@ -157,25 +157,21 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             userImage = itemView.findViewById(R.id.followers_user_image);
 
             followBtn = itemView.findViewById(R.id.followers_user_follow);
-            followBtn.setOnClickListener(v -> listener.onFollowAction(followers.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
-//            followBtn.setOnClickListener(v -> {
-//                if (followers.get(getLayoutPosition()).getIs_following() == 1) {
-//
-//                }
-//            });
-
+            followBtn.setOnClickListener(v -> {
+                        FollowerResponse.Followers current = followers.get(getLayoutPosition());
+                        if (current.getIs_following() == 1) {
+                            listener.onStopFollowing(current.getName(), current.getUser_id(), getLayoutPosition());
+                        } else {
+                            listener.onStartFollowing(current.getUser_id(), getLayoutPosition());
+                        }
+                    }
+            );
 //            animation = AnimationUtils.loadAnimation(nickName.getContext(), R.anim.anim_follow_item_up);
-
         }
 
         void onBind(int position) {
             try {
-                if (position == followers.size() - 1) {
-
-                }
-
 //            itemView.startAnimation(animation);
-
                 HelperMedia.loadCirclePhoto(followBtn.getContext(), followers.get(position).getProfile_pic(), userImage);
 
                 userName.setText(followers.get(position).getName());
@@ -199,7 +195,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    class FollowingHolder extends RecyclerView.ViewHolder {
+    private class FollowingHolder extends RecyclerView.ViewHolder {
 
         Animation animation;
         CircleImageView userImage;
@@ -218,7 +214,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             userImage = itemView.findViewById(R.id.following_user_image);
 
             unFollow = itemView.findViewById(R.id.following_user_unfollow);
-            unFollow.setOnClickListener(v -> listener.onFollowAction(followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
+            unFollow.setOnClickListener(v -> listener.onStopFollowing(followings.get(getLayoutPosition()).getName(), followings.get(getLayoutPosition()).getUser_id(), getLayoutPosition()));
 //            animation = AnimationUtils.loadAnimation(userName.getContext(), R.anim.anim_follow_item_up);
             if (isCustomer)
                 unFollow.setVisibility(View.GONE);
@@ -241,7 +237,7 @@ public class FollowRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    class LazyLoaderHolder extends RecyclerView.ViewHolder {
+    private class LazyLoaderHolder extends RecyclerView.ViewHolder {
 
         LottieAnimationView animation;
 

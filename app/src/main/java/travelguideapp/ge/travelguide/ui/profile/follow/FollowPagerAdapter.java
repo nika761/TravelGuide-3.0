@@ -15,17 +15,16 @@ import java.util.ArrayList;
 public class FollowPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<String> fragmentsTitle = new ArrayList<>();
-    private FollowFragment.FollowFragmentCallbacks followFragmentCallback;
     private int customerUserId;
 
-    FollowPagerAdapter(@NonNull FragmentManager fm) {
-        super(fm);
+    FollowPagerAdapter(@NonNull FragmentManager fragmentManager) {
+        super(fragmentManager);
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        FollowFragment followFragment = FollowFragment.getInstance(followFragmentCallback);
+        FollowFragment followFragment = FollowFragment.getInstance();
         Bundle bundle = new Bundle();
         bundle.putSerializable("request_type", position == 0 ? FollowType.FOLLOWING : FollowType.FOLLOWER);
         bundle.putInt("customer_user_id", customerUserId);
@@ -47,10 +46,6 @@ public class FollowPagerAdapter extends FragmentPagerAdapter {
     void setTitles(String titleFirst, String titleSecond) {
         fragmentsTitle.add(0, titleFirst);
         fragmentsTitle.add(1, titleSecond);
-    }
-
-    public void setFollowFragmentCallback(FollowFragment.FollowFragmentCallbacks followFragmentCallback) {
-        this.followFragmentCallback = followFragmentCallback;
     }
 
     void setCustomerUserId(int customerUserId) {

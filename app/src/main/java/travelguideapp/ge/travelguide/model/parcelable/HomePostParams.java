@@ -9,7 +9,7 @@ import java.util.List;
 
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 
-public class PostHomeParams implements Serializable, Parcelable {
+public class HomePostParams implements Serializable, Parcelable {
 
     /**
      * Created by n.butskhrikidze on 01/07/2020.
@@ -22,23 +22,25 @@ public class PostHomeParams implements Serializable, Parcelable {
      * FAVORITES - get posts by user favorites.
      * MY_POSTS - get current user own posts.
      * CUSTOMER_POSTS  - get posts by selected user.
-     * FEED - get posts random.
      * SEARCH - get posts by search.
+     * FEED - get posts random.
      */
     public enum Type {
         FAVORITES, MY_POSTS, CUSTOMER_POSTS, FEED, SEARCH
     }
 
 
-    private int userId;
-    private int scrollPosition;
-    private Type pageType;
     private List<PostResponse.Posts> posts;
+    private int scrollPosition;
+    private int userId;
 
-    public PostHomeParams() {
+    private Type pageType;
+    private String navigation;
+
+    public HomePostParams() {
     }
 
-    public PostHomeParams(int userId, int scrollPosition, Type pageType, List<PostResponse.Posts> posts) {
+    public HomePostParams(int userId, int scrollPosition, Type pageType, List<PostResponse.Posts> posts) {
         this.userId = userId;
         this.scrollPosition = scrollPosition;
         this.pageType = pageType;
@@ -77,7 +79,15 @@ public class PostHomeParams implements Serializable, Parcelable {
         this.posts = posts;
     }
 
-    protected PostHomeParams(Parcel in) {
+    public void setNavigation(String navigation) {
+        this.navigation = navigation;
+    }
+
+    public String getNavigation() {
+        return navigation;
+    }
+
+    protected HomePostParams(Parcel in) {
         userId = in.readInt();
         scrollPosition = in.readInt();
         pageType = (Type) in.readValue(Type.class.getClassLoader());
@@ -107,15 +117,15 @@ public class PostHomeParams implements Serializable, Parcelable {
         return 0;
     }
 
-    public static final Creator<PostHomeParams> CREATOR = new Creator<PostHomeParams>() {
+    public static final Creator<HomePostParams> CREATOR = new Creator<HomePostParams>() {
         @Override
-        public PostHomeParams createFromParcel(Parcel in) {
-            return new PostHomeParams(in);
+        public HomePostParams createFromParcel(Parcel in) {
+            return new HomePostParams(in);
         }
 
         @Override
-        public PostHomeParams[] newArray(int size) {
-            return new PostHomeParams[size];
+        public HomePostParams[] newArray(int size) {
+            return new HomePostParams[size];
         }
     };
 }

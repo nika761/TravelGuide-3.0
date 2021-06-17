@@ -25,7 +25,7 @@ import travelguideapp.ge.travelguide.base.HomeParentActivity;
 import travelguideapp.ge.travelguide.helper.DialogManager;
 import travelguideapp.ge.travelguide.helper.HelperMedia;
 import travelguideapp.ge.travelguide.helper.MyToaster;
-import travelguideapp.ge.travelguide.model.customModel.ReportParams;
+import travelguideapp.ge.travelguide.model.parcelable.ReportParams;
 import travelguideapp.ge.travelguide.model.request.AddCommentReplyRequest;
 import travelguideapp.ge.travelguide.model.request.DeleteReplyRequest;
 import travelguideapp.ge.travelguide.model.request.GetMoreCommentRequest;
@@ -204,7 +204,7 @@ public class RepliesFragment extends Fragment implements RepliesListener, View.O
 
     @Override
     public void onChooseDelete(int replyId) {
-        DialogManager.sureDialog(likeBtn.getContext(), getString(R.string.delete_comment), () -> presenter.deleteCommentReply(new DeleteReplyRequest(replyId)));
+        DialogManager.questionDialog(likeBtn.getContext(), getString(R.string.delete_comment), () -> presenter.deleteCommentReply(new DeleteReplyRequest(replyId)));
     }
 
     @Override

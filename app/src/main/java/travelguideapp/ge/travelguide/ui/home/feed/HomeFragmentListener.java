@@ -1,6 +1,6 @@
 package travelguideapp.ge.travelguide.ui.home.feed;
 
-import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.response.DeleteStoryResponse;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.model.response.SharePostResponse;
@@ -21,9 +21,9 @@ public interface HomeFragmentListener {
 
     void onGetPosts(List<PostResponse.Posts> posts);
 
-    void onLocationChoose(int postId, PostSearchParams.SearchBy searchBy);
+    void onLocationChoose(int postId, SearchPostParams.SearchBy searchBy);
 
-    void onHashtagChoose(String hashtag, PostSearchParams.SearchBy searchBy);
+    void onHashtagChoose(String hashtag, SearchPostParams.SearchBy searchBy);
 
 
     void onFollowChoose(int userId);

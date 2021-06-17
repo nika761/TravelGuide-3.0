@@ -51,7 +51,7 @@ import travelguideapp.ge.travelguide.custom.CustomProgressBar;
 import travelguideapp.ge.travelguide.custom.CustomTimer;
 import travelguideapp.ge.travelguide.model.customModel.AppSettings;
 import travelguideapp.ge.travelguide.model.customModel.PostViewItem;
-import travelguideapp.ge.travelguide.model.parcelable.PostSearchParams;
+import travelguideapp.ge.travelguide.model.parcelable.SearchPostParams;
 import travelguideapp.ge.travelguide.model.response.PostResponse;
 import travelguideapp.ge.travelguide.ui.home.feed.HashtagAdapter;
 import travelguideapp.ge.travelguide.ui.home.feed.HomeFragmentListener;
@@ -134,7 +134,7 @@ public class CustomPostRecycler extends RecyclerView {
 
         try {
 
-            long time = AppSettings.create(GlobalPreferences.getAppSettings()).getPOST_VIEW_TIME();
+            long time = AppSettings.create(GlobalPreferences.getAppSettings()).getPostViewTime();
 
             if (time != 0)
                 customTimer = new CustomTimer(time, 1000);
@@ -539,7 +539,7 @@ public class CustomPostRecycler extends RecyclerView {
 
             holder.comment.setOnClickListener(v -> homeFragmentListener.onCommentChoose(story.getStory_id(), post.getPost_id()));
 
-            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), PostSearchParams.SearchBy.LOCATION));
+            holder.location.setOnClickListener(v -> homeFragmentListener.onLocationChoose(post.getPost_id(), SearchPostParams.SearchBy.LOCATION));
 
             holder.share.setOnClickListener(v -> homeFragmentListener.onShareChoose(post.getPost_share_url(), post.getPost_id()));
 
